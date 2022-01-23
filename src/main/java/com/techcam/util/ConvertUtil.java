@@ -1,5 +1,8 @@
 package com.techcam.util;
 
+import com.techcam.dto.error.ErrorRespDto;
+import com.techcam.exception.IllegalStateConfig;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -31,9 +34,9 @@ public class ConvertUtil {
         try {
             return new SimpleDateFormat(pattern).parse(startDate);
         } catch (ParseException e) {
-            // TODO trả về exception thời gian không hợp lệ
-            e.printStackTrace();
-            return null;
+            throw new IllegalStateConfig(ErrorRespDto.builder()
+                    .message("Thời gian không hợp lệ")
+                    .build());
         }
     }
 }
