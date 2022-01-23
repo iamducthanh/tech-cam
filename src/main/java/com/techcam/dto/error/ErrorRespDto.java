@@ -2,6 +2,8 @@ package com.techcam.dto.error;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 /**
  * Description :
  *
@@ -20,8 +22,6 @@ public class ErrorRespDto {
 
     private String message;
 
-    private String code;
-
-    private String field;
+    private LocalDateTime date = LocalDateTime.now();
 
 }

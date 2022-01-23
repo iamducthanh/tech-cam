@@ -9,8 +9,8 @@ import java.util.List;
  *
  * @author : quang
  * @version : 1.0
- * @since : 1/16/2022 5:06 PM
- * Project_name : HTTool
+ * @since : 1/23/2022 9:09 PM
+ * Project_name : tech-cam
  */
 
 public class ArithmeticConfig extends RuntimeConfig {
