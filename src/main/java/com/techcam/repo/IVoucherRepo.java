@@ -2,7 +2,10 @@ package com.techcam.repo;
 
 import com.techcam.entity.VoucherEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * Description :
@@ -15,4 +18,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IVoucherRepo extends JpaRepository<VoucherEntity, String> {
+
+    @Query("select o from VoucherEntity o " +
+            "where o.voucherCode = :voucherCode " +
+            "and o.deleteFlag = false")
+    List<VoucherEntity> findByVoucherCode(String voucherCode);
+
 }
