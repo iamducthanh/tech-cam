@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *
  * @author : quang
  * @version : 1.0
- * @since : 1/5/2022 2:06 PM
- * Project_name : HTTool
+ * @since : 1/23/2022 9:09 PM
+ * Project_name : tech-cam
  */
 
 @ControllerAdvice

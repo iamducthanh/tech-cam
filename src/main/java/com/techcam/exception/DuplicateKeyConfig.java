@@ -9,8 +9,8 @@ import java.util.List;
  *
  * @author : quang
  * @version : 1.0
- * @since : 1/5/2022 2:43 PM
- * Project_name : HTTool
+ * @since : 1/23/2022 9:09 PM
+ * Project_name : tech-cam
  */
 
 public class DuplicateKeyConfig extends RuntimeConfig {
