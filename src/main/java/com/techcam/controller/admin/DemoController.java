@@ -1,5 +1,6 @@
 package com.techcam.controller.admin;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 /**
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
  * @since : 23.1.2022
  * Description :
  */
+@Controller
 public class DemoController {
 
     @GetMapping("/")

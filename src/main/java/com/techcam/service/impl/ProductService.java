@@ -1,6 +1,7 @@
 package com.techcam.service.impl;
 
 import com.techcam.service.IProductService;
+import org.springframework.stereotype.Service;
 
 /**
  * Project_name : SMW_TECHCAM
@@ -10,5 +11,6 @@ import com.techcam.service.IProductService;
  * @since : 23.1.2022
  * Description :
  */
+@Service
 public class ProductService implements IProductService {
 }
