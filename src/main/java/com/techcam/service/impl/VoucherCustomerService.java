@@ -1,6 +1,6 @@
 package com.techcam.service.impl;
 
-import com.techcam.service.IVoucherService;
+import com.techcam.service.IVoucherCustomerService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,5 +12,5 @@ import org.springframework.stereotype.Service;
  * Description :
  */
 @Service
-public class VoucherCustomerService implements IVoucherService {
+public class VoucherCustomerService implements IVoucherCustomerService {
 }
