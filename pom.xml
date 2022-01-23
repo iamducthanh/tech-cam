@@ -11,7 +11,7 @@
     <groupId>com.techcam</groupId>
     <artifactId>tech-cam</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>tech-cam</name>
+    <name>SMW_TECHCAM-ADMIN</name>
     <description>About Final project SMW TechCam</description>
     <properties>
         <java.version>8</java.version>

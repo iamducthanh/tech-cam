@@ -2,6 +2,7 @@ package com.techcam.api;
 
 import com.techcam.service.IStaffService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,4 +21,7 @@ public class StaffAPI {
 
     @Autowired
     private IStaffService staffService;
+
+//    @GetMapping
+//    public
 }
