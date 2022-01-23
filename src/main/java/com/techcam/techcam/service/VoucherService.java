@@ -1,6 +1,7 @@
 package com.techcam.techcam.service;
 
-import com.techcam.techcam.dto.response.VoucherResp;
+import com.techcam.techcam.dto.request.VoucherResDto;
+import com.techcam.techcam.dto.response.VoucherRespDto;
 
 /**
  * Description :
@@ -13,8 +14,8 @@ import com.techcam.techcam.dto.response.VoucherResp;
 
 public interface VoucherService {
 
-    VoucherResp checkVoucher(String voucherCode);
+    VoucherRespDto checkVoucher(String voucherCode);
 
-
+    VoucherRespDto createVoucher(VoucherResDto voucherResDto);
 
 }

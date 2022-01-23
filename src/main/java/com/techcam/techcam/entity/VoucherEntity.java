@@ -1,5 +1,9 @@
 package com.techcam.techcam.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
@@ -8,6 +12,9 @@ import java.time.Instant;
 
 @Table(name = "voucher")
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class VoucherEntity extends BaseEntity {
     @Column(name = "name", nullable = false, length = 200)
     private String name;

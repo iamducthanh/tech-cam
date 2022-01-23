@@ -1,11 +1,14 @@
 package com.techcam.techcam.service.impl;
 
-import com.techcam.techcam.dto.response.VoucherResp;
+import com.techcam.techcam.dto.request.VoucherResDto;
+import com.techcam.techcam.dto.response.VoucherRespDto;
 import com.techcam.techcam.entity.VoucherEntity;
 import com.techcam.techcam.repo.VoucherRepo;
+import com.techcam.techcam.util.ConvertUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -24,7 +27,7 @@ public class VoucherServiceImpl implements com.techcam.techcam.service.VoucherSe
     private final VoucherRepo voucherRepo;
 
     @Override
-    public VoucherResp checkVoucher(String voucherCode) {
+    public VoucherRespDto checkVoucher(String voucherCode) {
         if (voucherCode == null) {
             // TODO return exception voucher không đúng
         }
@@ -35,9 +38,38 @@ public class VoucherServiceImpl implements com.techcam.techcam.service.VoucherSe
         return mapToVoucherResp(lstVouchers.get(0));
     }
 
-    private VoucherResp mapToVoucherResp(VoucherEntity voucherEntity) {
+    @Override
+    public VoucherRespDto createVoucher(VoucherResDto voucherResDto) {
+        if (voucherResDto == null) {
+            // TODO trả về dữ liệu rỗng
+            return null;
+        }
+        if (!voucherRepo.findByVoucherCode(voucherResDto.getVoucherCode()).isEmpty()) {
+            // TODO trả về mã code đã tồn tại
+            return null;
+        }
+        VoucherEntity voucherEntity = mapToVoucherEntity(voucherResDto);
+        voucherRepo.save(voucherEntity);
+        return mapToVoucherResp(voucherEntity);
+    }
+
+    private VoucherEntity mapToVoucherEntity(VoucherResDto voucherResDto) {
+        if (voucherResDto == null) return null;
+        return VoucherEntity.builder()
+                .name(voucherResDto.getName())
+                .voucherCode(voucherResDto.getVoucherCode())
+                .quantity(voucherResDto.getQuantity())
+                .startDate(ConvertUtil.get().strToDate(voucherResDto.getStartDate(), "yyyy-MM-dd hh:mm").toInstant())
+                .endDate(ConvertUtil.get().strToDate(voucherResDto.getEndDate(), "yyyy-MM-dd hh:mm").toInstant())
+                .note(voucherResDto.getNote())
+                .discount(voucherResDto.getDiscount())
+                .build();
+
+    }
+
+    private VoucherRespDto mapToVoucherResp(VoucherEntity voucherEntity) {
         if (voucherEntity == null) return null;
-        return VoucherResp.builder()
+        return VoucherRespDto.builder()
                 .name(voucherEntity.getName())
                 .voucherCode(voucherEntity.getVoucherCode())
                 .startDate(voucherEntity.getStartDate().toString())

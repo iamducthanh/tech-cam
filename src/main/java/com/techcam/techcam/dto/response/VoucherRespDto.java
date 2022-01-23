@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class VoucherResp {
+public class VoucherRespDto {
 
     private String name;
 
