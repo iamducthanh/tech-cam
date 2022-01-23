@@ -1,7 +1,6 @@
 package com.techcam.service.impl;
 
 import com.techcam.service.IBrandService;
-import org.springframework.stereotype.Service;
 
 /**
  * Project_name : SMW_TECHCAM
