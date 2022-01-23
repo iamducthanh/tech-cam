@@ -1,8 +1,11 @@
 package com.techcam.service.impl;
 
+import com.techcam.dto.error.ErrorRespDto;
 import com.techcam.dto.request.VoucherResDto;
 import com.techcam.dto.response.VoucherRespDto;
 import com.techcam.entity.VoucherEntity;
+import com.techcam.exception.DuplicateKeyConfig;
+import com.techcam.exception.IllegalStateConfig;
 import com.techcam.repo.IVoucherRepo;
 import com.techcam.service.IVoucherService;
 import com.techcam.util.ConvertUtil;
@@ -29,13 +32,15 @@ public class VoucherService implements IVoucherService {
     @Override
     public VoucherRespDto checkVoucher(String voucherCode) {
         if (voucherCode == null) {
-            // TODO return exception voucher không đúng
-            return null;
+            throw new IllegalStateConfig(ErrorRespDto.builder()
+                    .message("Không có dữ liệu")
+                    .build());
         }
         List<VoucherEntity> lstVouchers = voucherRepo.findByVoucherCode(voucherCode);
         if (lstVouchers.isEmpty()) {
-            // TODO return exception voucher không đúng
-            return null;
+            throw new IllegalStateConfig(ErrorRespDto.builder()
+                    .message("Không có dữ liệu")
+                    .build());
         }
         return mapToVoucherResp(lstVouchers.get(0));
     }
@@ -43,12 +48,14 @@ public class VoucherService implements IVoucherService {
     @Override
     public VoucherRespDto createVoucher(VoucherResDto voucherResDto) {
         if (voucherResDto == null) {
-            // TODO trả về dữ liệu rỗng
-            return null;
+            throw new IllegalStateConfig(ErrorRespDto.builder()
+                    .message("Không có dữ liệu")
+                    .build());
         }
         if (!voucherRepo.findByVoucherCode(voucherResDto.getVoucherCode()).isEmpty()) {
-            // TODO trả về mã code đã tồn tại
-            return null;
+            throw new DuplicateKeyConfig(ErrorRespDto.builder()
+                    .message("Mã voucher đã tồn tại rồi")
+                    .build());
         }
         VoucherEntity voucherEntity = mapToVoucherEntity(voucherResDto);
         voucherRepo.save(voucherEntity);
