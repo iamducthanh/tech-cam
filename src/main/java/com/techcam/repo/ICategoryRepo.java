@@ -2,6 +2,7 @@ package com.techcam.repo;
 
 import com.techcam.entity.CategoryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  * Description :
@@ -12,5 +13,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Project_name : tech-cam
  */
 
+@Repository
 public interface ICategoryRepo extends JpaRepository<CategoryEntity, String> {
 }
