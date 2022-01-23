@@ -1,8 +1,6 @@
 package com.techcam.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,7 +13,11 @@ import java.time.Instant;
 @ToString
 @Table(name = "voucher")
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class VoucherEntity extends BaseEntity {
+
     @Column(name = "name", nullable = false, length = 200)
     private String name;
 
