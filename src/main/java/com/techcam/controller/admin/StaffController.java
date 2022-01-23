@@ -18,6 +18,6 @@ public class StaffController {
 
     @GetMapping
     public String index() {
-        return "admin/001_Staff";
+        return "001_Staff";
     }
 }
