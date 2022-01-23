@@ -10,4 +10,5 @@ package com.techcam.techcam.util;
  */
 
 public class Demo {
+
 }
