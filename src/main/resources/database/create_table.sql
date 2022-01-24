@@ -24,7 +24,6 @@ CREATE TABLE customer
     email             varchar(50)  NOT NULL,
     address           varchar(255) NOT NULL,
     date_of_birth     date         NOT NULL,
-    avatar            varchar(255) NOT NULL,
     role              varchar(20)  NOT NULL,
     status            varchar(50)  NOT NULL,
     count_login_false int(1)       NOT NULL,
