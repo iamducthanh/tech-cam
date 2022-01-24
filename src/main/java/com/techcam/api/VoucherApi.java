@@ -33,7 +33,7 @@ public class VoucherApi {
         Instant endDate = ConvertUtil.get().strToDate(voucherResDto.getEndDate(), "yyyy-MM-dd hh:mm").toInstant();
         if (startDate.compareTo(Instant.now()) < 0) {
             throw new IllegalStateConfig(ErrorRespDto.builder()
-                    .message("Không thể tạo voucher cho một thời gian đã trôi qua")
+                    .message("Không thể tạo %S cho một thời gian đã trôi qua")
                     .build());
         }
         if (startDate.compareTo(endDate) > 0) {
