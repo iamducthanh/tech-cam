@@ -1,5 +1,7 @@
 package com.techcam.service;
 
+import com.techcam.entity.StaffEntity;
+
 /**
  * Project_name : SMW_TECHCAM
  *
@@ -9,4 +11,5 @@ package com.techcam.service;
  * Description :
  */
 public interface IStaffService {
+    StaffEntity getByEmail(String email);
 }
