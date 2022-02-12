@@ -26,4 +26,9 @@ public class StaffService implements IStaffService {
         List<StaffEntity> list = repo.findByEmail(email);
         return list.isEmpty() ? null : list.get(0);
     }
+
+    @Override
+    public void saveStaff(StaffEntity staffEntity) {
+        repo.save(staffEntity);
+    }
 }

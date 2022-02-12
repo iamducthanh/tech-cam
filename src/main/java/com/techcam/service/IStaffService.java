@@ -12,4 +12,5 @@ import com.techcam.entity.StaffEntity;
  */
 public interface IStaffService {
     StaffEntity getByEmail(String email);
+    void saveStaff(StaffEntity staffEntity);
 }
