@@ -6,6 +6,11 @@ import com.techcam.service.IStaffService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+import java.security.MessageDigest;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 
 /**
@@ -30,5 +35,16 @@ public class StaffService implements IStaffService {
     @Override
     public void saveStaff(StaffEntity staffEntity) {
         repo.save(staffEntity);
+    }
+
+
+    public static void main(String[] args)  {
+//        String secretKey = "TVDqqqqqqqq";
+//        String originalString = "teamvietdev.com";
+//
+//        String encryptedString = encrypt(originalString, secretKey);
+//        System.out.println("Encrypt: " + encryptedString);
+//        String decryptedString = decrypt(encryptedString, secretKey);
+//        System.out.println("Decrypt: " + decryptedString);
     }
 }
