@@ -5,7 +5,7 @@
     <title>SMW - TECHCAM</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- App favicon -->
-    <link rel="shortcut icon" href="https://image.flaticon.com/icons/png/128/809/809052.png">
+    <link rel="shortcut icon" href="https://cdn-icons-png.flaticon.com/512/809/809052.png">
 
     <!-- DataTables -->
     <link rel="stylesheet" type="text/css" th:href="@{/assets/css/dataTables.bootstrap4.min.css}">
@@ -30,6 +30,9 @@
     <!-- Chosen -->
     <link rel="stylesheet" type="text/css" th:href="@{/assets/css/chosen.min.css}">
 
+    <!-- SweetAlert2-->
+    <script src="sweetalert2.all.min.js"></script>
+
     <!-- Custom CSS -->
     <link rel="stylesheet" type="text/css" th:href="@{/assets/css/style.css}"/>
 </head>
@@ -52,12 +55,14 @@
                 <div class="navbar-brand-box d-block d-lg-none">
                     <a href="index.html" class="logo logo-light">
                             <span class="logo-sm">
-                                <img src="https://image.flaticon.com/icons/png/128/809/809052.png" alt="" height="22">
+                                <img src="https://cdn-icons-png.flaticon.com/512/809/809052.png" alt="" height="22">
                             </span>
                     </a>
                 </div>
 
-                <button type="button" class="btn btn-sm me-2 font-size-24 d-lg-none header-item waves-effect waves-light" data-bs-toggle="collapse" data-bs-target="#topnav-menu-content">
+                <button type="button"
+                        class="btn btn-sm me-2 font-size-24 d-lg-none header-item waves-effect waves-light"
+                        data-bs-toggle="collapse" data-bs-target="#topnav-menu-content">
                     <i class="mdi mdi-menu"></i>
                 </button>
 
@@ -67,34 +72,41 @@
                     </li>
                     <li class="list-inline-item">
                         <div class="dropdown d-none d-lg-block">
-                            <button type="button" class="btn header-item waves-effect" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img class="me-2" src="assets/img/vn_flag.jpg" alt="Header Language" height="14"><span class="mdi mdi-chevron-down">Vietnam</span>
+                            <button type="button" class="btn header-item waves-effect" data-bs-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false">
+                                <img class="me-2" src="assets/img/vn_flag.jpg" alt="Header Language" height="14"><span
+                                    class="mdi mdi-chevron-down">Vietnam</span>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
 
                                 <!-- item-->
                                 <a href="javascript:void(0);" class="dropdown-item notify-item">
-                                    <img src="assets/img/us_flag.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle"> United States </span>
+                                    <img src="assets/img/us_flag.jpg" alt="user-image" class="me-1" height="12"> <span
+                                        class="align-middle"> United States </span>
                                 </a>
 
                                 <!-- item-->
                                 <a href="javascript:void(0);" class="dropdown-item notify-item">
-                                    <img src="assets/img/french_flag.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle"> French </span>
+                                    <img src="assets/img/french_flag.jpg" alt="user-image" class="me-1" height="12">
+                                    <span class="align-middle"> French </span>
                                 </a>
 
                                 <!-- item-->
                                 <a href="javascript:void(0);" class="dropdown-item notify-item">
-                                    <img src="assets/img/germany_flag.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle"> German </span>
+                                    <img src="assets/img/germany_flag.jpg" alt="user-image" class="me-1" height="12">
+                                    <span class="align-middle"> German </span>
                                 </a>
 
                                 <!-- item-->
                                 <a href="javascript:void(0);" class="dropdown-item notify-item">
-                                    <img src="assets/img/italy_flag.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle"> Italian </span>
+                                    <img src="assets/img/italy_flag.jpg" alt="user-image" class="me-1" height="12">
+                                    <span class="align-middle"> Italian </span>
                                 </a>
 
                                 <!-- item-->
                                 <a href="javascript:void(0);" class="dropdown-item notify-item">
-                                    <img src="assets/img/spain_flag.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle"> Spanish </span>
+                                    <img src="assets/img/spain_flag.jpg" alt="user-image" class="me-1" height="12">
+                                    <span class="align-middle"> Spanish </span>
                                 </a>
                             </div>
                         </div>
@@ -117,18 +129,22 @@
             <div class="d-flex">
 
                 <div class="dropdown d-none d-lg-block">
-                    <button type="button" class="btn header-item toggle-search noti-icon waves-effect" data-target="#search-wrap">
+                    <button type="button" class="btn header-item toggle-search noti-icon waves-effect"
+                            data-target="#search-wrap">
                         <i class="mdi mdi-magnify"></i>
                     </button>
                 </div>
 
 
                 <div class="dropdown d-inline-block ms-2">
-                    <button type="button" class="btn header-item noti-icon waves-effect" id="page-header-notifications-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button type="button" class="btn header-item noti-icon waves-effect"
+                            id="page-header-notifications-dropdown" data-bs-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false">
                         <i class="mdi mdi-bell-outline"></i>
                         <span class="badge bg-danger rounded-pill">3</span>
                     </button>
-                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0" aria-labelledby="page-header-notifications-dropdown">
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
+                         aria-labelledby="page-header-notifications-dropdown">
                         <div class="p-3">
                             <div class="row align-items-center">
                                 <div class="col">
@@ -215,9 +231,8 @@
                                     </div>
                                 </div>
                             </a>
-
-
                         </div>
+
                         <div class="p-2 border-top">
                             <a class="btn btn-sm btn-link font-size-14 btn-block" href="javascript:void(0)">
                                 View all
@@ -229,16 +244,35 @@
                 <div class="dropdown d-inline-block ms-2">
                     <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <img class="rounded-circle header-profile-user" src="assets/img/avatar-6.jpg" alt="Header Avatar">
-                        <span class="d-none d-md-inline-block ms-1">VDB<i class="mdi mdi-chevron-down"></i> </span>
+                        <span class="d-none d-md-inline-block ms-1">
+                            VDB
+                            <i class="mdi mdi-chevron-down"></i>
+                        </span>
                     </button>
                     <div class="dropdown-menu dropdown-menu-end">
                         <!-- item-->
-                        <a class="dropdown-item" href="#"><i class="dripicons-user font-size-16 align-middle me-2 text-muted"></i> Profile</a>
-                        <a class="dropdown-item" href="#"><i class="dripicons-wallet font-size-16 align-middle me-2 text-muted"></i> My Wallet</a>
-                        <a class="dropdown-item d-block" href="#"><span class="badge bg-success float-end">5</span><i class="dripicons-gear font-size-16 align-middle me-2 text-muted"></i> Settings</a>
-                        <a class="dropdown-item" href="#"><i class="dripicons-lock font-size-16 align-middle me-2 text-muted"></i> Lock screen</a>
+                        <a class="dropdown-item" href="#">
+                            <i class="dripicons-user font-size-16 align-middle me-2 text-muted"></i>
+                            Profile
+                        </a>
+                        <a class="dropdown-item" href="#">
+                            <i class="dripicons-wallet font-size-16 align-middle me-2 text-muted"></i>
+                            My Wallet
+                        </a>
+                        <a class="dropdown-item d-block" href="#">
+                            <span class="badge bg-success float-end">5</span>
+                            <i class="dripicons-gear font-size-16 align-middle me-2 text-muted"></i>
+                            Settings
+                        </a>
+                        <a class="dropdown-item" href="#">
+                            <i class="dripicons-lock font-size-16 align-middle me-2 text-muted"></i>
+                            Lock screen
+                        </a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#"><i class="dripicons-exit font-size-16 align-middle me-2 text-muted"></i> Logout</a>
+                        <a class="dropdown-item" href="#">
+                            <i class="dripicons-exit font-size-16 align-middle me-2 text-muted"></i>
+                            Logout
+                        </a>
                     </div>
                 </div>
 
@@ -247,7 +281,6 @@
                         <i class="mdi mdi-spin mdi-cog"></i>
                     </button>
                 </div>
-
             </div>
         </div>
 
@@ -257,14 +290,14 @@
                     <!-- LOGO -->
                     <div class="navbar-brand-box d-none d-lg-block">
                         <a href="index.html" class="logo logo-light">
-                                <span class="logo-sm">
-                                    <img src="https://image.flaticon.com/icons/png/128/809/809052.png" alt="" height="32">
-                                    <span style="font-size: 27px; color: yellow;">FShop</span>
-                                </span>
+                            <span class="logo-sm">
+                                <img src="https://cdn-icons-png.flaticon.com/512/809/809052.png" alt="" height="32">
+                                <span style="font-size: 27px; color: yellow;">FShop</span>
+                            </span>
                             <span class="logo-lg">
-                                    <img src="https://image.flaticon.com/icons/png/128/809/809052.png" alt="" height="40">
-                                    <span style="font-size: 27px; color: yellow;">FShop</span>
-                                </span>
+                                <img src="https://cdn-icons-png.flaticon.com/512/809/809052.png" alt="" height="40">
+                                <span style="font-size: 27px; color: yellow;">FShop</span>
+                            </span>
                         </a>
                     </div>
 
@@ -273,13 +306,15 @@
                         <div class="collapse navbar-collapse" id="topnav-menu-content">
                             <ul class="navbar-nav">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="index.html" tppabs="https://themesbrand.com/foxia/layouts/blue/index.html">
+                                    <a class="nav-link" href="index.html"
+                                       tppabs="https://themesbrand.com/foxia/layouts/blue/index.html">
                                         <i class="dripicons-meter me-2"></i>Tổng quan
                                     </a>
                                 </li>
 
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-user-Interface" role="button">
+                                    <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-user-Interface"
+                                       role="button">
                                         <i class="fas fa-box-open me-2"></i>Hàng hoá
                                         <div class="arrow-down"></div>
                                     </a>
@@ -298,7 +333,8 @@
                                 </li>
 
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-components" role="button">
+                                    <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-components"
+                                       role="button">
                                         <i class="fas fa-exchange-alt me-2"></i>Giao dịch
                                         <div class="arrow-down"></div>
                                     </a>
@@ -360,7 +396,6 @@
                                         </a>
                                     </div>
                                 </li>
-
                             </ul>
                         </div>
                     </nav>
@@ -383,7 +418,7 @@
                         <h1 class="heading-page">Người dùng</h1>
                         <div class="filter-report">
                             <div class="boxLeft">
-                                <h3 class="leftTitle">Vai trò</h3>
+                                <h3 class="leftTitle">Chức vụ</h3>
                                 <div class="boxLeftC">
                                     <select class="roleFilter w-100" multiple>
                                         <option value="">Quản trị chi nhánh</option>
@@ -396,20 +431,20 @@
                                 <h3 class="leftTitle">Trạng thái</h3>
                                 <div class="boxLeftC">
                                     <div class="form-group form-check">
-                                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                                        <label class="form-check-label" for="flexRadioDefault1">
+                                        <input class="form-check-input" type="radio" name="status" id="statusAll" value="Tất cả" onchange="onStatusChange(this)" checked>
+                                        <label class="form-check-label" for="statusAll">
                                             Tất cả
                                         </label>
                                     </div>
                                     <div class="form-group form-check">
-                                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-                                        <label class="form-check-label" for="flexRadioDefault2">
+                                        <input class="form-check-input" type="radio" name="status" id="statusActive" value="Đang hoạt động" onchange="onStatusChange(this)">
+                                        <label class="form-check-label" for="statusActive">
                                             Đang hoạt động
                                         </label>
                                     </div>
                                     <div class="form-group form-check">
-                                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3">
-                                        <label class="form-check-label" for="flexRadioDefault3">
+                                        <input class="form-check-input" type="radio" name="status" id="statusInactive" value="Ngừng hoạt động" onchange="onStatusChange(this)">
+                                        <label class="form-check-label" for="statusInactive">
                                             Ngừng hoạt động
                                         </label>
                                     </div>
@@ -432,76 +467,70 @@
                                         <h5 class="modal-title mt-0">Thêm người dùng</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <div class="modal-body">
-                                        <div class="row">
-                                            <div class="col-6 px-4">
-                                                <table class="table-borderless w-100">
-                                                    <tr>
-                                                        <th style="width: 140px"><label class="form-label" for="fullname">Tên người dùng</label></th>
-                                                        <td><input class="form-control" type="text" name="fullname" id="fullname"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th><label class="form-label" for="username">Tên đăng nhập</label></th>
-                                                        <td><input type="text" name="username" id="username" class="form-control"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th><label for="password" class="form-label">Mật khẩu</label></th>
-                                                        <td><input type="password" name="password" id="password" class="form-control"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th><label for="repassword" class="form-label">Nhập lại mật khẩu</label></th>
-                                                        <td><input type="password" name="repassword" id="repassword" class="form-control"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Vai trò</th>
-                                                        <td>
-                                                            <select class="form-select" name="role" id="role">
-                                                                <option value="" disabled selected>-- Chọn vai trò --</option>
-                                                                <option value="">Quản trị chi nhánh</option>
-                                                                <option value="">Nhân viên kho</option>
-                                                                <option value="">Nhân viên thu ngân</option>
-                                                            </select>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th><label for="phone" class="form-label">Điện thoại</label></th>
-                                                        <td><input type="text" name="phone" id="phone" class="form-control"></td>
-                                                    </tr>
-                                                </table>
-                                            </div>
-                                            <div class="col-6 px-4">
-                                                <table class="table-borderless w-100">
-                                                    <tr>
-                                                        <th style="width: 140px;"><label for="email" class="form-label">Email</label></th>
-                                                        <td><input type="email" name="email" id="email" class="form-control"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th><label for="address" class="form-label">Địa chỉ</label></th>
-                                                        <td><input type="text" name="address" id="address" class="form-control"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th><label for="datepicker" class="form-label">Ngày sinh</label></th>
-                                                        <td>
-                                                            <input type="text" id="datepicker" class="form-control">
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th style="vertical-align: top; padding-top: 7px;">
-                                                            <label for="note" class="form-label">Ghi chú</label>
-                                                        </th>
-                                                        <td>
-                                                            <textarea name="note" id="note" cols="30" rows="3"></textarea>
-                                                        </td>
-                                                    </tr>
-                                                </table>
+                                    <form id="formAdd">
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-6 px-4">
+                                                    <table class="table-borderless w-100">
+                                                        <tr>
+                                                            <th style="width: 140px"><label class="form-label" for="fullName">Họ và tên</label><span class="required"> *</span></th>
+                                                            <td><input class="form-control" type="text" name="fullName" id="fullName" onblur="onType(this)"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th style="width: 140px;"><label for="email" class="form-label">Email</label><span class="required"> *</span></th>
+                                                            <td><input type="email" name="email" id="email" class="form-control" onblur="onType(this)"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th><label for="password" class="form-label">Mật khẩu</label><span class="required"> *</span></th>
+                                                            <td><input type="password" name="password" id="password" class="form-control" onblur="onType(this)"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th><label for="repassword" class="form-label">Nhập lại mật khẩu</label><span class="required"> *</span></th>
+                                                            <td><input type="password" id="repassword" class="form-control" onblur="onType(this)"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th><label for="role" class="form-label">Chức vụ</label><span class="required"> *</span></th>
+                                                            <td>
+                                                                <select class="form-select" name="role" id="role" onchange="onType(this)">
+                                                                    <option value="" disabled selected>-- Chọn Chức vụ --</option>
+                                                                    <option value="ROLE_ADMIN">Quản trị viên</option>
+                                                                    <option value="ROLE_USER">Nhân viên</option>
+                                                                </select>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                <div class="col-6 px-4">
+                                                    <table class="table-borderless w-100">
+                                                        <tr>
+                                                            <th><label for="phone" class="form-label">Điện thoại</label></th>
+                                                            <td><input type="number" name="phone" id="phone" class="form-control"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th><label for="address" class="form-label">Địa chỉ</label></th>
+                                                            <td><input type="text" name="address" id="address" class="form-control"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th><label for="datepicker" class="form-label">Ngày sinh</label></th>
+                                                            <td><input type="text" name="dateOfBirth" id="datepicker" class="form-control"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th style="vertical-align: top; padding-top: 7px;"><label for="note" class="form-label">Ghi chú</label></th>
+                                                            <td><textarea name="note" id="note" cols="30" rows="3"></textarea></td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </form>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                            <i class="fas fa-ban me-2"></i>Close
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="resetForm()">
+                                            <i class="fas fa-ban me-2"></i>Đóng
                                         </button>
-                                        <button type="button" class="btn btn-primary waves-effect waves-light">
+                                        <button type="button" class="btn btn-success" onclick="resetForm()">
+                                            <i class="fa fa-trash me-2"></i>Làm mới
+                                        </button>
+                                        <button type="button" id="btnAdd" class="btn btn-primary waves-effect waves-light">
                                             <i class="fas fa-save pe-2"></i>Lưu
                                         </button>
                                     </div>
@@ -511,87 +540,43 @@
                             <!-- /.modal-dialog -->
                         </div>
                         <!-- End Modal Add Staff -->
+
                         <table id="datatable" class="table table-striped table-hover table-bordered dt-responsive nowrap dataTable no-footer">
                             <thead>
-                            <th><input type="checkbox" name="checkAll" id="checkAll" onclick="checkAllJquery('checkAll', 'check-item');"></th>
-                            <th>Chức năng</th>
-                            <th>ID</th>
-                            <th>Họ tên</th>
-                            <th>Ngày sinh</th>
-                            <th>Số điện thoại</th>
-                            <th>Email</th>
-                            <th>Địa chỉ</th>
-                            <th>CCCD</th>
-                            <th>Ảnh</th>
-                            <th>Lương</th>
-                            <th>Giới tính</th>
-                            <th>Chức vụ</th>
-                            <th>Ngày bắt đầu</th>
-                            <th>Trạng thái</th>
+                                <th><input type="checkbox" name="checkAll" id="checkAll" onclick="checkAllJquery('checkAll', 'check-item');"></th>
+                                <th>Chức năng</th>
+                                <th>ID</th>
+                                <th>Mã nhân viên</th>
+                                <th>Họ tên</th>
+                                <th>Ngày sinh</th>
+                                <th>Số điện thoại</th>
+                                <th>Email</th>
+                                <th>Địa chỉ</th>
+                                <th>Ảnh</th>
+                                <th>Chức vụ</th>
+                                <th>Ngày bắt đầu</th>
+                                <th>Trạng thái</th>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td><input type="checkbox" class="check-item" value="id"></td>
-                                <td class="row" style="width: 100px;">
-                                    <i class="col-4 fas fa-edit" style="color: darkblue;" title="Cập nhật"></i>
-                                    <i class="col-4 fas fa-lock-open" style="color: green;" title="Khoá tài khoản"></i>
-                                    <i class="col-4 fas fa-user-times" style="color: red;" title="Xoá người dùng"></i>
-                                </td>
-                                <td>ID</td>
-                                <td>Họ tên</td>
-                                <td>Ngày sinh</td>
-                                <td>Số điện thoại</td>
-                                <td>Email</td>
-                                <td>Địa chỉ</td>
-                                <td>CCCD</td>
-                                <td>Ảnh</td>
-                                <td>Lương</td>
-                                <td>Giới tính</td>
-                                <td>Chức vụ</td>
-                                <td>Ngày bắt đầu</td>
-                                <td>Trạng thái Trạng thái Trạng thái Trạng thái Trạng thái Trạng thái Trạng thái </td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox" class="check-item" value="id"></td>
-                                <td class="row" style="width: 100px;">
-                                    <i class="col-4 fas fa-edit" style="color: darkblue;" title="Cập nhật"></i>
-                                    <i class="col-4 fas fa-lock" style="color: red;" title="Mở tài khoản"></i>
-                                    <i class="col-4 fas fa-user-times" style="color: red;" title="Xoá người dùng"></i>
-                                </td>
-                                <td>ID</td>
-                                <td>Họ tên</td>
-                                <td>Ngày sinh</td>
-                                <td>Số điện thoại</td>
-                                <td>Email</td>
-                                <td>Địa chỉ</td>
-                                <td>CCCD</td>
-                                <td>Ảnh</td>
-                                <td>Lương</td>
-                                <td>Giới tính</td>
-                                <td>Chức vụ</td>
-                                <td>Ngày bắt đầu</td>
-                                <td>Trạng thái Trạng thái Trạng thái Trạng thái Trạng thái Trạng thái Trạng thái </td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox" class="check-item" name="id" id="" value="id"></td>
-                                <td class="row" style="width: 100px;">
-                                    <i class="col-4 fas fa-edit" style="color: darkblue;" title="Cập nhật"></i>
-                                    <i class="col-4 fas fa-lock-open" style="color: green;" title="Khoá tài khoản"></i>
-                                    <i class="col-4 fas fa-user-times" style="color: red;" title="Xoá người dùng"></i></td>
-                                <td>ID</td>
-                                <td>Họ tên</td>
-                                <td>Ngày sinh</td>
-                                <td>Số điện thoại</td>
-                                <td>Email</td>
-                                <td>Địa chỉ</td>
-                                <td>CCCD</td>
-                                <td>Ảnh</td>
-                                <td>Lương</td>
-                                <td>Giới tính</td>
-                                <td>Chức vụ</td>
-                                <td>Ngày bắt đầu</td>
-                                <td>Trạng thái Trạng thái Trạng thái Trạng thái Trạng thái Trạng thái Trạng thái </td>
-                            </tr>
+                                <tr th:each="staff : ${staffs}">
+                                    <td><input type="checkbox" class="check-item" th:value="${staff.getId()}"></td>
+                                    <td class="row" style="width: 100px;">
+                                        <i class="col-4 fas fa-edit" style="color: darkblue;" title="Cập nhật"></i>
+                                        <i class="col-4 fas fa-lock-open" style="color: green;" title="Khoá tài khoản"></i>
+                                        <i class="col-4 fas fa-user-times" style="color: red;" title="Xoá người dùng"></i>
+                                    </td>
+                                    <td th:text="${staff.getId()}"></td>
+                                    <td th:text="${staff.getStaffCode()}">Mã nhân viên</td>
+                                    <td th:text="${staff.getFullName()}">Họ tên</td>
+                                    <td th:text="${#dates.format(staff.getDateOfBirth(), 'dd/MM/yyyy')}">Ngày sinh</td>
+                                    <td th:text="${staff.getPhoneNumber()}">Số điện thoại</td>
+                                    <td th:text="${staff.getEmail()}">Email</td>
+                                    <td th:text="${staff.getAddress()}">Địa chỉ</td>
+                                    <td th:text="${staff.getAvatar()}">Ảnh</td>
+                                    <td th:text="${staff.getRole()}">Chức vụ</td>
+                                    <td th:text="${#temporals.format(staff.getCreateDate(), 'dd/MM/yyyy HH:mm:ss')}">Ngày bắt đầu</td>
+                                    <td th:text="${staff.getStatus() == '1'} ? 'Đang hoạt động' : 'Ngừng hoạt động'"></td>
+                                </tr>
                             </tbody>
                         </table>
 
@@ -608,56 +593,63 @@
                                             <div class="col-6 px-4">
                                                 <table class="table-borderless w-100">
                                                     <tr>
-                                                        <th><label class="form-label" for="fullname-edit">Tên người dùng</label></th>
-                                                        <td><input class="form-control" type="text" name="fullname" id="fullname-edit"></td>
+                                                        <th><label class="form-label" for="fullName-edit">Họ và tên</label><span class="required"> *</span></th>
+                                                        <td><input class="form-control" type="text" name="fullName" id="fullName-edit" onblur="onType(this)"></td>
                                                     </tr>
                                                     <tr>
-                                                        <th><label class="form-label" for="username-edit">Tên đăng nhập</label></th>
-                                                        <td><input type="text" name="username" id="username-edit" class="form-control" title="Không thể sửa tên đăng nhập" disabled></td>
+                                                        <th><label class="form-label" for="staffCode-edit">Mã nhân viên</label><span class="required"> *</span></th>
+                                                        <td><input type="text" name="staffCode" id="staffCode-edit" class="form-control" onblur="onType(this)"></td>
                                                     </tr>
                                                     <tr>
-                                                        <th><label for="phone-edit" class="form-label">Điện thoại</label></th>
-                                                        <td><input type="text" name="phone" id="phone-edit" class="form-control"></td>
+                                                        <th><label for="email-edit" class="form-label">Email</label><span class="required"> *</span></th>
+                                                        <td><input type="email" name="email" id="email-edit" class="form-control" title="Không thể sửa email" disabled></td>
                                                     </tr>
                                                     <tr>
-                                                        <th><label for="email-edit" class="form-label">Email</label></th>
-                                                        <td><input type="email" name="email" id="email-edit" class="form-control"></td>
+                                                        <th><label for="role-edit" class="form-label">Chức vụ</label><span class="required"> *</span></th>
+                                                        <td>
+                                                            <select class="form-select" name="role" id="role-edit">
+                                                                <option value="" disabled selected>-- Chọn Chức vụ --</option>
+                                                                <option value="ROLE_ADMIN">Quản trị viên</option>
+                                                                <option value="ROLE_USER">Nhân viên</option>
+                                                            </select>
+                                                        </td>
                                                     </tr>
                                                 </table>
                                             </div>
                                             <div class="col-6 px-4">
                                                 <table class="table-borderless w-100">
                                                     <tr>
+                                                        <th><label for="phone-edit" class="form-label">Điện thoại</label></th>
+                                                        <td><input type="number" name="phone" id="phone-edit" class="form-control"></td>
+                                                    </tr>
+                                                    <tr>
                                                         <th><label for="address-edit" class="form-label">Địa chỉ</label></th>
                                                         <td><input type="text" name="address" id="address-edit" class="form-control"></td>
                                                     </tr>
                                                     <tr>
                                                         <th><label for="birthdate-edit" class="form-label">Ngày sinh</label></th>
-                                                        <td>
-                                                            <input type="text" id="birthdate-edit" class="form-control">
-                                                        </td>
+                                                        <td><input type="text" id="birthdate-edit" class="form-control"></td>
                                                     </tr>
                                                     <tr>
-                                                        <th style="vertical-align: top; padding-top: 7px;">
-                                                            <label for="note-edit" class="form-label">Ghi chú</label>
-                                                        </th>
-                                                        <td>
-                                                            <textarea name="note" id="note-edit" cols="30" rows="3"></textarea>
-                                                        </td>
+                                                        <th style="vertical-align: top; padding-top: 7px;"><label for="note-edit" class="form-label">Ghi chú</label></th>
+                                                        <td><textarea name="note" id="note-edit" cols="30" rows="3"></textarea></td>
                                                     </tr>
                                                 </table>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                            <i class="fas fa-ban me-2"></i>Close
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="resetForm()">
+                                            <i class="fas fa-ban me-2"></i>
+                                            Đóng
                                         </button>
-                                        <button type="button" class="btn btn-success edit-role">
-                                            <i class="fas fa-shield-alt me-2"></i>Phân quyền
+                                        <button type="button" class="btn btn-success" onclick="resetForm()">
+                                            <i class="fa fa-trash me-2"></i>
+                                            Làm mới
                                         </button>
                                         <button type="button" class="btn btn-primary waves-effect waves-light">
-                                            <i class="fas fa-save pe-2"></i>Lưu
+                                            <i class="fas fa-save pe-2"></i>
+                                            Lưu
                                         </button>
                                     </div>
                                 </div>
@@ -666,839 +658,9 @@
                             <!-- /.modal-dialog -->
                         </div>
                         <!-- End Modal Edit Staff -->
-
-                        <!-- Modal Role Staff -->
-                        <div class="modal fade modal-role-staff" tabindex="-1" style="display: none;" aria-hidden="true">
-                            <div class="modal-dialog modal-xl modal-dialog-scrollable">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title mt-0">Phân quyền</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="row">
-                                            <div class="col-3 px-4 rounded">
-                                                <div class="userBranch">
-                                                    <h4 style="color: #655be6; font-size: 16px;">Chi nhánh</h4>
-                                                    <select class="form-select boxRole" size="4" aria-label="size 3 select example">
-                                                        <option value="" selected>Chi nhánh trung tâm</option>
-                                                        <option value="1">One</option>
-                                                        <option value="2">Two</option>
-                                                        <option value="3">Three</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-9 px-4">
-                                                <div class="row form-group">
-                                                    <div class="col-auto align-self-center">Vai trò</div>
-                                                    <div class="col-3">
-                                                        <select class="form-select" name="role">
-                                                            <option value="">Không phân quyền</option>
-                                                            <option value="">Quản trị chi nhánh</option>
-                                                            <option value="">Nhân viên kho</option>
-                                                            <option value="">Nhân viên thu ngân</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="row roleList">
-                                                    <div class="col-4">
-                                                        <h3>Hệ thống</h3>
-                                                        <ul>
-                                                            <li>
-                                                                <input type="checkbox" class="form-check-input" name="tall" id="tall11">
-                                                                <label for="tall11">Thiết lập</label>
-                                                            </li>
-                                                            <li>
-                                                                <i class="fas fa-play arrow"></i>
-                                                                <input type="checkbox" class="form-check-input" name="short" id="short11">
-                                                                <label for="short11">Mẫu in</label>
-
-                                                                <ul class="expand">
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="short-1" id="short-13">
-                                                                        <label for="short-13">Xem Danh sách</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="short-2" id="short-23">
-                                                                        <label for="short-23">Cập nhật</label>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                            <li>
-                                                                <i class="fas fa-play arrow"></i>
-                                                                <input type="checkbox" class="form-check-input" name="tall1" id="tall12">
-                                                                <label for="tall12">Người dùng</label>
-
-                                                                <ul class="expand">
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall-1" id="tall-13">
-                                                                        <label for="tall-13">Xem Danh sách</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall-2" id="tall-23">
-                                                                        <label for="tall-23">Thêm mới</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall-4" id="tall-43">
-                                                                        <label for="tall-43">Cập nhật</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall-5" id="tall-53">
-                                                                        <label for="tall-53">Xoá</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall-6" id="tall-63">
-                                                                        <label for="tall-63">Xuất file</label>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                            <li>
-                                                                <i class="fas fa-play arrow"></i>
-                                                                <input type="checkbox" class="form-check-input" name="tall2" id="tall23">
-                                                                <label for="tall23">Chi nhánh</label>
-
-                                                                <ul class="expand">
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall1-1" id="tall1-13">
-                                                                        <label for="tall1-13">Xem Danh sách</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall1-2" id="tall1-23">
-                                                                        <label for="tall1-23">Thêm mới</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall1-4" id="tall1-43">
-                                                                        <label for="tall1-43">Cập nhật</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall1-5" id="tall1-53">
-                                                                        <label for="tall1-53">Xoá</label>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                            <li>
-                                                                <i class="fas fa-play arrow"></i>
-                                                                <input type="checkbox" class="form-check-input" name="tall1" id="tall133">
-                                                                <label for="tall133">Thu khác</label>
-
-                                                                <ul class="expand">
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall2-1" id="tall2-13">
-                                                                        <label for="tall2-13">Xem Danh sách</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall2-2" id="tall2-23">
-                                                                        <label for="tall2-23">Thêm mới</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall2-4" id="tall2-43">
-                                                                        <label for="tall2-43">Cập nhật</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall2-5" id="tall2-53">
-                                                                        <label for="tall2-53">Xoá</label>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                            <li>
-                                                                <i class="fas fa-play arrow"></i>
-                                                                <input type="checkbox" class="form-check-input" name="tall3" id="tall33">
-                                                                <label for="tall33">Chi phí nhập hàng</label>
-
-                                                                <ul class="expand">
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall3-1" id="tall3-13">
-                                                                        <label for="tall3-13">Xem Danh sách</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall3-2" id="tall3-23">
-                                                                        <label for="tall3-23">Thêm mới</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall3-4" id="tall3-43">
-                                                                        <label for="tall3-43">Cập nhật</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall3-5" id="tall3-53">
-                                                                        <label for="tall3-53">Xoá</label>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                            <li>
-                                                                <input type="checkbox" class="form-check-input" name="tall1" id="tall13">
-                                                                <label for="tall13">Lịch sử thao tác</label>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                    <div class="col-4">
-                                                        <h3>Hệ thống</h3>
-                                                        <ul>
-                                                            <li>
-                                                                <input type="checkbox" class="form-check-input" name="tall" id="tall32">
-                                                                <label for="tall32">Thiết lập</label>
-                                                            </li>
-                                                            <li>
-                                                                <i class="fas fa-play arrow"></i>
-                                                                <input type="checkbox" class="form-check-input" name="short" id="short3">
-                                                                <label for="short3">Mẫu in</label>
-
-                                                                <ul class="expand">
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="short-1" id="short-132">
-                                                                        <label for="short-132">Xem Danh sách</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="short-2" id="short-232">
-                                                                        <label for="short-232">Cập nhật</label>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                            <li>
-                                                                <i class="fas fa-play arrow"></i>
-                                                                <input type="checkbox" class="form-check-input" name="tall1" id="tall122">
-                                                                <label for="tall122">Người dùng</label>
-
-                                                                <ul class="expand">
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall-1" id="tall-12">
-                                                                        <label for="tall-12">Xem Danh sách</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall-2" id="tall-22">
-                                                                        <label for="tall-22">Thêm mới</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall-4" id="tall-42">
-                                                                        <label for="tall-42">Cập nhật</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall-5" id="tall-52">
-                                                                        <label for="tall-52">Xoá</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall-6" id="tall-62">
-                                                                        <label for="tall-62">Xuất file</label>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                            <li>
-                                                                <i class="fas fa-play arrow"></i>
-                                                                <input type="checkbox" class="form-check-input" name="tall2" id="tall21">
-                                                                <label for="tall21">Chi nhánh</label>
-
-                                                                <ul class="expand">
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall1-1" id="tall1-11">
-                                                                        <label for="tall1-11">Xem Danh sách</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall1-2" id="tall1-21">
-                                                                        <label for="tall1-21">Thêm mới</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall1-4" id="tall1-41">
-                                                                        <label for="tall1-41">Cập nhật</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall1-5" id="tall1-51">
-                                                                        <label for="tall1-51">Xoá</label>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                            <li>
-                                                                <i class="fas fa-play arrow"></i>
-                                                                <input type="checkbox" class="form-check-input" name="tall1" id="tall14">
-                                                                <label for="tall14">Thu khác</label>
-
-                                                                <ul class="expand">
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall2-1" id="tall2-14">
-                                                                        <label for="tall2-14">Xem Danh sách</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall2-2" id="tall2-24">
-                                                                        <label for="tall2-24">Thêm mới</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall2-4" id="tall2-44">
-                                                                        <label for="tall2-44">Cập nhật</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall2-5" id="tall2-54">
-                                                                        <label for="tall2-54">Xoá</label>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                            <li>
-                                                                <i class="fas fa-play arrow"></i>
-                                                                <input type="checkbox" class="form-check-input" name="tall3" id="tall34">
-                                                                <label for="tall34">Chi phí nhập hàng</label>
-
-                                                                <ul class="expand">
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall3-1" id="tall3-14">
-                                                                        <label for="tall3-14">Xem Danh sách</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall3-2" id="tall3-24">
-                                                                        <label for="tall3-24">Thêm mới</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall3-4" id="tall3-44">
-                                                                        <label for="tall3-44">Cập nhật</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall3-5" id="tall3-54">
-                                                                        <label for="tall3-54">Xoá</label>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                            <li>
-                                                                <input type="checkbox" class="form-check-input" name="tall1" id="tall1422">
-                                                                <label for="tall1422">Lịch sử thao tác</label>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                    <div class="col-4">
-                                                        <h3>Hệ thống</h3>
-                                                        <ul>
-                                                            <li>
-                                                                <input type="checkbox" class="form-check-input" name="tall" id="tall5">
-                                                                <label for="tall5">Thiết lập</label>
-                                                            </li>
-                                                            <li>
-                                                                <i class="fas fa-play arrow"></i>
-                                                                <input type="checkbox" class="form-check-input" name="short" id="short5">
-                                                                <label for="short5">Mẫu in</label>
-
-                                                                <ul class="expand">
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="short-1" id="short-15">
-                                                                        <label for="short-15">Xem Danh sách</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="short-2" id="short-25">
-                                                                        <label for="short-25">Cập nhật</label>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                            <li>
-                                                                <i class="fas fa-play arrow"></i>
-                                                                <input type="checkbox" class="form-check-input" name="tall1" id="tall15">
-                                                                <label for="tall15">Người dùng</label>
-
-                                                                <ul class="expand">
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall-1" id="tall-15">
-                                                                        <label for="tall-15">Xem Danh sách</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall-2" id="tall-25">
-                                                                        <label for="tall-25">Thêm mới</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall-4" id="tall-45">
-                                                                        <label for="tall-45">Cập nhật</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall-5" id="tall-55">
-                                                                        <label for="tall-55">Xoá</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall-6" id="tall-65">
-                                                                        <label for="tall-65">Xuất file</label>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                            <li>
-                                                                <i class="fas fa-play arrow"></i>
-                                                                <input type="checkbox" class="form-check-input" name="tall2" id="tall25">
-                                                                <label for="tall25">Chi nhánh</label>
-
-                                                                <ul class="expand">
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall1-1" id="tall1-15">
-                                                                        <label for="tall1-15">Xem Danh sách</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall1-2" id="tall1-25">
-                                                                        <label for="tall1-25">Thêm mới</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall1-4" id="tall1-45">
-                                                                        <label for="tall1-45">Cập nhật</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall1-5" id="tall1-55">
-                                                                        <label for="tall1-55">Xoá</label>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                            <li>
-                                                                <i class="fas fa-play arrow"></i>
-                                                                <input type="checkbox" class="form-check-input" name="tall1" id="tall152">
-                                                                <label for="tall152">Thu khác</label>
-
-                                                                <ul class="expand">
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall2-1" id="tall2-15">
-                                                                        <label for="tall2-15">Xem Danh sách</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall2-2" id="tall2-25">
-                                                                        <label for="tall2-25">Thêm mới</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall2-4" id="tall2-45">
-                                                                        <label for="tall2-45">Cập nhật</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall2-5" id="tall2-52">
-                                                                        <label for="tall2-52">Xoá</label>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                            <li>
-                                                                <i class="fas fa-play arrow"></i>
-                                                                <input type="checkbox" class="form-check-input" name="tall3" id="tall322">
-                                                                <label for="tall322">Chi phí nhập hàng</label>
-
-                                                                <ul class="expand">
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall3-1" id="tall3-11">
-                                                                        <label for="tall3-11">Xem Danh sách</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall3-2" id="tall3-21">
-                                                                        <label for="tall3-21">Thêm mới</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall3-4" id="tall3-41">
-                                                                        <label for="tall3-41">Cập nhật</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall3-5" id="tall3-51">
-                                                                        <label for="tall3-51">Xoá</label>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                            <li>
-                                                                <input type="checkbox" class="form-check-input" name="tall1" id="tall112">
-                                                                <label for="tall112">Lịch sử thao tác</label>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                    <div class="col-4">
-                                                        <h3>Hệ thống</h3>
-                                                        <ul>
-                                                            <li>
-                                                                <input type="checkbox" class="form-check-input" name="tall" id="tall6">
-                                                                <label for="tall6">Thiết lập</label>
-                                                            </li>
-                                                            <li>
-                                                                <i class="fas fa-play arrow"></i>
-                                                                <input type="checkbox" class="form-check-input" name="short" id="short6">
-                                                                <label for="short6">Mẫu in</label>
-
-                                                                <ul class="expand">
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="short-1" id="short-16">
-                                                                        <label for="short-16">Xem Danh sách</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="short-2" id="short-26">
-                                                                        <label for="short-26">Cập nhật</label>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                            <li>
-                                                                <i class="fas fa-play arrow"></i>
-                                                                <input type="checkbox" class="form-check-input" name="tall1" id="tall16">
-                                                                <label for="tall16">Người dùng</label>
-
-                                                                <ul class="expand">
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall-1" id="tall-166">
-                                                                        <label for="tall-166">Xem Danh sách</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall-2" id="tall-26">
-                                                                        <label for="tall-26">Thêm mới</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall-4" id="tall-46">
-                                                                        <label for="tall-46">Cập nhật</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall-5" id="tall-56">
-                                                                        <label for="tall-56">Xoá</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall-6" id="tall-66">
-                                                                        <label for="tall-66">Xuất file</label>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                            <li>
-                                                                <i class="fas fa-play arrow"></i>
-                                                                <input type="checkbox" class="form-check-input" name="tall2" id="tall26">
-                                                                <label for="tall26">Chi nhánh</label>
-
-                                                                <ul class="expand">
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall1-1" id="tall1-16">
-                                                                        <label for="tall1-16">Xem Danh sách</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall1-2" id="tall1-26">
-                                                                        <label for="tall1-26">Thêm mới</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall1-4" id="tall1-46">
-                                                                        <label for="tall1-46">Cập nhật</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall1-5" id="tall1-56">
-                                                                        <label for="tall1-56">Xoá</label>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                            <li>
-                                                                <i class="fas fa-play arrow"></i>
-                                                                <input type="checkbox" class="form-check-input" name="tall1" id="tall162">
-                                                                <label for="tall162">Thu khác</label>
-
-                                                                <ul class="expand">
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall2-1" id="tall2-16">
-                                                                        <label for="tall2-16">Xem Danh sách</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall2-2" id="tall2-26">
-                                                                        <label for="tall2-26">Thêm mới</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall2-4" id="tall2-46">
-                                                                        <label for="tall2-46">Cập nhật</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall2-5" id="tall2-56">
-                                                                        <label for="tall2-56">Xoá</label>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                            <li>
-                                                                <i class="fas fa-play arrow"></i>
-                                                                <input type="checkbox" class="form-check-input" name="tall3" id="tall36">
-                                                                <label for="tall36">Chi phí nhập hàng</label>
-
-                                                                <ul class="expand">
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall3-1" id="tall3-16">
-                                                                        <label for="tall3-16">Xem Danh sách</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall3-2" id="tall3-26">
-                                                                        <label for="tall3-26">Thêm mới</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall3-4" id="tall3-46">
-                                                                        <label for="tall3-46">Cập nhật</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall3-5" id="tall3-56">
-                                                                        <label for="tall3-56">Xoá</label>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                            <li>
-                                                                <input type="checkbox" class="form-check-input" name="tall1" id="tall1621">
-                                                                <label for="tall1621">Lịch sử thao tác</label>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                    <div class="col-4">
-                                                        <h3>Hệ thống</h3>
-                                                        <ul>
-                                                            <li>
-                                                                <input type="checkbox" class="form-check-input" name="tall" id="tall7">
-                                                                <label for="tall7">Thiết lập</label>
-                                                            </li>
-                                                            <li>
-                                                                <i class="fas fa-play arrow"></i>
-                                                                <input type="checkbox" class="form-check-input" name="short" id="short7">
-                                                                <label for="short7">Mẫu in</label>
-
-                                                                <ul class="expand">
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="short-1" id="short-17">
-                                                                        <label for="short-17">Xem Danh sách</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="short-2" id="short-27">
-                                                                        <label for="short-27">Cập nhật</label>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                            <li>
-                                                                <i class="fas fa-play arrow"></i>
-                                                                <input type="checkbox" class="form-check-input" name="tall1" id="tall17">
-                                                                <label for="tall17">Người dùng</label>
-
-                                                                <ul class="expand">
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall-1" id="tall-18">
-                                                                        <label for="tall-18">Xem Danh sách</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall-2" id="tall-28">
-                                                                        <label for="tall-28">Thêm mới</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall-4" id="tall-48">
-                                                                        <label for="tall-48">Cập nhật</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall-5" id="tall-58">
-                                                                        <label for="tall-58">Xoá</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall-6" id="tall-68">
-                                                                        <label for="tall-68">Xuất file</label>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                            <li>
-                                                                <i class="fas fa-play arrow"></i>
-                                                                <input type="checkbox" class="form-check-input" name="tall2" id="tall28">
-                                                                <label for="tall28">Chi nhánh</label>
-
-                                                                <ul class="expand">
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall1-1" id="tall1-18">
-                                                                        <label for="tall1-18">Xem Danh sách</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall1-2" id="tall1-28">
-                                                                        <label for="tall1-28">Thêm mới</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall1-4" id="tall1-48">
-                                                                        <label for="tall1-48">Cập nhật</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall1-5" id="tall1-58">
-                                                                        <label for="tall1-58">Xoá</label>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                            <li>
-                                                                <i class="fas fa-play arrow"></i>
-                                                                <input type="checkbox" class="form-check-input" name="tall1" id="tall18">
-                                                                <label for="tall18">Thu khác</label>
-
-                                                                <ul class="expand">
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall2-1" id="tall2-18">
-                                                                        <label for="tall2-18">Xem Danh sách</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall2-2" id="tall2-28">
-                                                                        <label for="tall2-28">Thêm mới</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall2-4" id="tall2-48">
-                                                                        <label for="tall2-48">Cập nhật</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall2-5" id="tall2-58">
-                                                                        <label for="tall2-58">Xoá</label>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                            <li>
-                                                                <i class="fas fa-play arrow"></i>
-                                                                <input type="checkbox" class="form-check-input" name="tall3" id="tall38">
-                                                                <label for="tall38">Chi phí nhập hàng</label>
-
-                                                                <ul class="expand">
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall3-1" id="tall3-18">
-                                                                        <label for="tall3-18">Xem Danh sách</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall3-2" id="tall3-28">
-                                                                        <label for="tall3-28">Thêm mới</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall3-4" id="tall3-48">
-                                                                        <label for="tall3-48">Cập nhật</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall3-5" id="tall3-58">
-                                                                        <label for="tall3-58">Xoá</label>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                            <li>
-                                                                <input type="checkbox" class="form-check-input" name="tall1" id="tall19">
-                                                                <label for="tall19">Lịch sử thao tác</label>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                    <div class="col-4">
-                                                        <h3>Hệ thống</h3>
-                                                        <ul>
-                                                            <li>
-                                                                <input type="checkbox" class="form-check-input" name="tall" id="tall">
-                                                                <label for="tall">Thiết lập</label>
-                                                            </li>
-                                                            <li>
-                                                                <i class="fas fa-play arrow"></i>
-                                                                <input type="checkbox" class="form-check-input" name="short" id="short">
-                                                                <label for="short">Mẫu in</label>
-
-                                                                <ul class="expand">
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="short-1" id="short-1">
-                                                                        <label for="short-1">Xem Danh sách</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="short-2" id="short-2">
-                                                                        <label for="short-2">Cập nhật</label>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                            <li>
-                                                                <i class="fas fa-play arrow"></i>
-                                                                <input type="checkbox" class="form-check-input" name="tall1" id="tall199">
-                                                                <label for="tall199">Người dùng</label>
-
-                                                                <ul class="expand">
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall-1" id="tall-1">
-                                                                        <label for="tall-1">Xem Danh sách</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall-2" id="tall-2">
-                                                                        <label for="tall-2">Thêm mới</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall-4" id="tall-4">
-                                                                        <label for="tall-4">Cập nhật</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall-5" id="tall-5">
-                                                                        <label for="tall-5">Xoá</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall-6" id="tall-6">
-                                                                        <label for="tall-6">Xuất file</label>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                            <li>
-                                                                <i class="fas fa-play arrow"></i>
-                                                                <input type="checkbox" class="form-check-input" name="tall2" id="tall2">
-                                                                <label for="tall2">Chi nhánh</label>
-
-                                                                <ul class="expand">
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall1-1" id="tall1-1">
-                                                                        <label for="tall1-1">Xem Danh sách</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall1-2" id="tall1-2">
-                                                                        <label for="tall1-2">Thêm mới</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall1-4" id="tall1-4">
-                                                                        <label for="tall1-4">Cập nhật</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall1-5" id="tall1-5">
-                                                                        <label for="tall1-5">Xoá</label>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                            <li>
-                                                                <i class="fas fa-play arrow"></i>
-                                                                <input type="checkbox" class="form-check-input" name="tall1" id="tall197">
-                                                                <label for="tall197">Thu khác</label>
-
-                                                                <ul class="expand">
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall2-1" id="tall2-1">
-                                                                        <label for="tall2-1">Xem Danh sách</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall2-2" id="tall2-2">
-                                                                        <label for="tall2-2">Thêm mới</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall2-4" id="tall2-4">
-                                                                        <label for="tall2-4">Cập nhật</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall2-5" id="tall2-5">
-                                                                        <label for="tall2-5">Xoá</label>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                            <li>
-                                                                <i class="fas fa-play arrow"></i>
-                                                                <input type="checkbox" class="form-check-input" name="tall3" id="tall3">
-                                                                <label for="tall3">Chi phí nhập hàng</label>
-
-                                                                <ul class="expand">
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall3-1" id="tall3-1">
-                                                                        <label for="tall3-1">Xem Danh sách</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall3-2" id="tall3-2">
-                                                                        <label for="tall3-2">Thêm mới</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall3-4" id="tall3-4">
-                                                                        <label for="tall3-4">Cập nhật</label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input type="checkbox" class="form-check-input" name="tall3-5" id="tall3-5">
-                                                                        <label for="tall3-5">Xoá</label>
-                                                                    </li>
-                                                                </ul>
-                                                            </li>
-                                                            <li>
-                                                                <input type="checkbox" class="form-check-input" name="tall1" id="tall1">
-                                                                <label for="tall1">Lịch sử thao tác</label>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                            <i class="fas fa-ban me-2"></i>Close
-                                        </button>
-                                        <button type="button" class="btn btn-primary waves-effect waves-light">
-                                            <i class="fas fa-save pe-2"></i>Lưu
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- /.modal-content -->
-                        </div>
-                        <!-- /.modal-dialog -->
                     </section>
                 </section>
             </div>
-            <!-- End Modal Role Staff -->
-            </section>
-            </section>
-
         </div>
     </div>
     <!-- End Page-content -->
@@ -1506,7 +668,8 @@
     <footer class="footer text-center">
         <script>
             document.write(new Date().getFullYear())
-        </script> © FShop <span class="d-none d-sm-inline-block"> - Work by <i class="mdi mdi-heart text-danger"></i></span>
+        </script>
+        © FShop <span class="d-none d-sm-inline-block"> - Work by <i class="mdi mdi-heart text-danger"></i></span>
     </footer>
 </div>
 <!-- end main content-->
@@ -1542,7 +705,8 @@
             </div>
 
             <div class="form-check form-switch mb-3">
-                <input class="form-check-input theme-choice" type="checkbox" id="dark-mode-switch" data-bsStyle="assets/css/bootstrap-dark.min.css" data-appStyle="assets/css/app-dark.min.css">
+                <input class="form-check-input theme-choice" type="checkbox" id="dark-mode-switch"
+                       data-bsStyle="assets/css/bootstrap-dark.min.css" data-appStyle="assets/css/app-dark.min.css">
                 <label class="form-check-label" for="dark-mode-switch">Dark Mode</label>
             </div>
 
@@ -1598,27 +762,27 @@
 <script th:src="@{/assets/js/datatables.init.js}"></script>
 
 <script type="text/javascript">
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('.roleFilter').chosen();
 
-        $('.fa-lock-open').hover(function() {
+        $('.fa-lock-open').hover(function () {
             $(this).removeClass('fa-lock-open').addClass('fa-lock').css('color', 'red');
-        }, function() {
+        }, function () {
             $(this).removeClass('fa-lock').addClass('fa-lock-open').css('color', 'green');
         })
 
-        $('.fa-lock').hover(function() {
+        $('.fa-lock').hover(function () {
             $(this).removeClass('fa-lock').addClass('fa-lock-open').css('color', 'green');
-        }, function() {
+        }, function () {
             $(this).removeClass('fa-lock-open').addClass('fa-lock').css('color', 'red');
         })
     });
 
-    $('.fa-edit').click(function() {
+    $('.fa-edit').click(function () {
         $('.modal-edit-staff').modal('show');
     })
 
-    $('.edit-role').click(function() {
+    $('.edit-role').click(function () {
         $('.modal-edit-staff').modal('toggle');
         $('.modal-role-staff').modal('show');
     })
@@ -1632,68 +796,193 @@
     // }
 
     function checkAllJquery(baseId, itemClass) {
-        var baseCheck = $('#' + baseId).is(":checked");
-        $('.' + itemClass).each(function() {
+        let baseCheck = $('#' + baseId).is(":checked");
+        $('.' + itemClass).each(function () {
             if (!$(this).is(':disabled')) {
                 $(this).prop('checked', baseCheck);
             }
         });
     }
 
-    $('.arrow').click(function(e) {
+    $('.arrow').click(function (e) {
         $(this).toggleClass('down');
         $(this).siblings('.expand').toggle();
     })
 
-    $('input[type="checkbox"]').change(function(e) {
+    $('.check-item').change(function (e) {
+        const flag = checkSiblings();
 
-        var checked = $(this).prop("checked"),
-            container = $(this).parent(),
-            siblings = container.siblings();
-
-        container.find('input[type="checkbox"]').prop({
-            indeterminate: false,
-            checked: checked
-        });
-
-        function checkSiblings(el) {
-
-            var parent = el.parent().parent(),
-                all = true;
-
-            el.siblings().each(function() {
-                let returnValue = all = ($(this).children('input[type="checkbox"]').prop("checked") === checked);
-                return returnValue;
-            });
-
-            if (all && checked) {
-
-                parent.children('input[type="checkbox"]').prop({
-                    indeterminate: false,
-                    checked: checked
-                });
-
-                checkSiblings(parent);
-
-            } else if (all && !checked) {
-
-                parent.children('input[type="checkbox"]').prop("checked", checked);
-                parent.children('input[type="checkbox"]').prop("indeterminate", (parent.find('input[type="checkbox"]:checked').length > 0));
-                checkSiblings(parent);
-
-            } else {
-
-                el.parents("li").children('input[type="checkbox"]').prop({
-                    indeterminate: true,
-                    checked: false
-                });
-
-            }
-
+        if (flag) {
+            $('#checkAll').prop('checked', true);
+        } else {
+            $('#checkAll').prop('checked', false);
         }
 
-        checkSiblings(container);
+        function checkSiblings() {
+            const checkboxes = $('.check-item').parent().find('input[type="checkbox"]');
+            let checkFlag = true;
+
+            checkboxes.each(function () {
+                if ($(this).prop("checked") === false) {
+                    checkFlag = false;
+                }
+            });
+            return checkFlag;
+        }
     });
+
+    // disable mousewheel on a input number field when in focus
+    // (to prevent Chromium browsers change the value when scrolling)
+    $('form').on('focus', 'input[type=number]', function (e) {
+        $(this).on('wheel.disableScroll', function (e) {
+            e.preventDefault()
+        })
+    })
+    $('form').on('blur', 'input[type=number]', function (e) {
+        $(this).off('wheel.disableScroll')
+    })
+</script>
+
+<script>
+    // event filter table by status
+    function onStatusChange(element) {
+        const value = $(element).val();
+        console.log(value);
+        const tagAll = $('#datatable tbody tr');
+        const tag = $('tr td').filter(function() {
+            return $(this).text()===value;
+        });
+        console.log(tag);
+
+        if(value==='Tất cả') {
+            tagAll.show();
+        } else {
+            tagAll.hide();
+            tag.parent().show();
+        }
+    }
+
+    // event reset form
+    function resetForm() {
+        const formInput = $("form :input");
+        formInput.val("");
+        $('#role').prop('selectedIndex', 0);
+        formInput.removeClass('error');
+    }
+
+    // Submit formAdd
+    $('#btnAdd').click(function () {
+        let data = {};
+        let formData = $('#formAdd').serializeArray();
+        $.each(formData, function (i, v) {
+            data["" + v.name + ""] = v.value;
+        });
+        console.log(data);
+
+        if(validateFormAdd()) {
+            addStaff(data);
+        } else {
+            console.log("validate fail");
+        }
+       // $('#formAdd').submit();
+
+    });
+
+    // Event onKeyPress formAdd
+    function onType(element) {
+        const tag = $(element);
+        if(tag.val() === '') {
+            tag.addClass('error');
+        } else {
+            tag.removeClass('error');
+        }
+    }
+
+    // Validation formAdd
+    function validateFormAdd() {
+        const fullName = $('#fullName');
+        let flag = true;
+
+        if(fullName.val() === '') {
+            fullName.addClass('error');
+            flag = false;
+        }
+
+        const email = $('#email');
+        if(email.val() === '') {
+            email.addClass('error');
+            flag = false;
+        }
+
+        const password = $('#password');
+        if(password.val() === '') {
+            password.addClass('error');
+            flag = false;
+        }
+
+        const repassword = $('#repassword');
+        if(repassword.val() === '') {
+            repassword.addClass('error');
+            flag = false;
+        }
+
+        const role = $('#role');
+        if(role.val() === null) {
+            role.addClass('error');
+            flag = false;
+        }
+
+        if(flag) {
+            return true
+        }
+        return false;
+    }
+
+    //API add Staff
+    function addStaff(data) {
+        $.ajax({
+            url: '/api/staff',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            dataType: 'json',
+            success: function (result) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Thêm thành công'
+                }).then(()=> windows.location.href = "/staff");
+            },
+            error: function (error) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Lỗi khi thêm mới'
+                })
+            }
+        })
+    }
+
 </script>
 
 </body>
