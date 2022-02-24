@@ -1,5 +1,11 @@
 package com.techcam.service;
 
+import com.techcam.dto.request.StaffAddRequestDTO;
+import com.techcam.dto.request.StaffEditRequestDTO;
+import com.techcam.dto.response.StaffResponseDTO;
+
+import java.util.List;
+
 import com.techcam.entity.StaffEntity;
 
 /**
@@ -11,6 +17,37 @@ import com.techcam.entity.StaffEntity;
  * Description :
  */
 public interface IStaffService {
+    // All staffs
+    List<StaffResponseDTO> findAll();
+
+    // Staff by ID
+    StaffResponseDTO findById(String id);
+
+    // Staffs deleted
+    List<StaffResponseDTO> findAllByDeleteFlagIsTrue();
+
+    // Staffs not deleted
+    List<StaffResponseDTO> findAllByDeleteFlagIsFalse();
+
+    // Staffs active & not delete
+    List<StaffResponseDTO> findAllByStatusIsTrueAndDeleteFlagIsTrue();
+
+    // Staffs inactive & not delete
+    List<StaffResponseDTO> findAllByStatusIsFalseAndDeleteFlagIsTrue();
+
+    // Add staff
+    String addStaff(StaffAddRequestDTO staff);
+
+    // Edit staff
+    String editStaff(StaffEditRequestDTO staff);
+
+    // Delete staff
+    boolean deleteStaff(String id);
+
+    // Block/Unblock staff by status
+    boolean changeStatusStaff(String id, String status);
+
     StaffEntity getByEmail(String email);
+
     void saveStaff(StaffEntity staffEntity);
 }

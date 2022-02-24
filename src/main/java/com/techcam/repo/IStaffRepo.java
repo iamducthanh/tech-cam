@@ -17,5 +17,21 @@ import java.util.List;
 
 @Repository
 public interface IStaffRepo extends JpaRepository<StaffEntity, String> {
+    // Staffs deleted
+    List<StaffEntity> findAllByDeleteFlagIsTrue();
+
+    // Staffs not deleted
+    List<StaffEntity> findAllByDeleteFlagIsFalse();
+
+    // Staffs active & not delete
+    List<StaffEntity> findAllByStatusIsTrueAndDeleteFlagIsTrue();
+
+    // Staffs inactive & not delete
+    List<StaffEntity> findAllByStatusIsFalseAndDeleteFlagIsTrue();
+
+    // Find staff by staffCode
+    StaffEntity findByStaffCode(Integer staffCode);
+
+    // Find staff by email
     List<StaffEntity> findByEmail(String email);
 }
