@@ -1,9 +1,11 @@
 package com.techcam.api;
 
 import com.techcam.dto.request.StaffAddRequestDTO;
+import com.techcam.dto.request.StaffEditRequestDTO;
 import com.techcam.dto.response.StaffResponseDTO;
 import com.techcam.service.IStaffService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -27,8 +29,34 @@ public class StaffAPI {
         return staffService.findById(id);
     }
 
-//    @PostMapping
-//    public StaffAddRequestDTO addStaff(StaffAddRequestDTO staff) {
-//        staffService
-//    }
+    @PostMapping
+    public ResponseEntity addStaff(@RequestBody StaffAddRequestDTO staff) {
+        String status = staffService.addStaff(staff);
+        if (status.equalsIgnoreCase("ok")) {
+            return ResponseEntity.ok().body(staff);
+        }
+        return ResponseEntity.badRequest().body(staff);
+    }
+
+    @PutMapping
+    public ResponseEntity updateStaff(@RequestBody StaffEditRequestDTO staff) {
+        staffService.editStaff(staff);
+        return ResponseEntity.ok().body(staff);
+    }
+
+    @PutMapping("/status/{id}/{status}")
+    public ResponseEntity deleteStaff(@PathVariable("id") String id, @PathVariable("status") String status) {
+        if (staffService.changeStatusStaff(id, status)) {
+            return ResponseEntity.ok("oke");
+        }
+        return ResponseEntity.badRequest().body("fail");
+    }
+
+    @PutMapping("/delete/{id}")
+    public ResponseEntity deleteStaff(@PathVariable("id") String id) {
+        if (staffService.deleteStaff(id)) {
+            return ResponseEntity.ok("oke");
+        }
+        return ResponseEntity.badRequest().body("fail");
+    }
 }

@@ -1,6 +1,7 @@
 package com.techcam.service;
 
 import com.techcam.dto.request.StaffAddRequestDTO;
+import com.techcam.dto.request.StaffEditRequestDTO;
 import com.techcam.dto.response.StaffResponseDTO;
 
 import java.util.List;
@@ -33,5 +34,14 @@ public interface IStaffService {
     List<StaffResponseDTO> findAllByStatusIsFalseAndDeleteFlagIsTrue();
 
     // Add staff
-    StaffAddRequestDTO addStaff(StaffResponseDTO staff);
+    String addStaff(StaffAddRequestDTO staff);
+
+    // Edit staff
+    String editStaff(StaffEditRequestDTO staff);
+
+    // Delete staff
+    boolean deleteStaff(String id);
+
+    // Block/Unblock staff by status
+    boolean changeStatusStaff(String id, String status);
 }

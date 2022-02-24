@@ -1,7 +1,9 @@
 package com.techcam.dto.request;
 
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -32,7 +34,7 @@ public class StaffAddRequestDTO {
 
     private String role;
 
-    private String status;
+    private String note;
 
-    private LocalDateTime createDate;
+    private String status;
 }

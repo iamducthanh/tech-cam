@@ -1,8 +1,7 @@
-package com.techcam.dto.response;
+package com.techcam.dto.request;
 
 import lombok.Data;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -14,7 +13,7 @@ import java.util.Date;
  */
 
 @Data
-public class StaffResponseDTO {
+public class StaffEditRequestDTO {
 
     private String id;
 
@@ -22,21 +21,13 @@ public class StaffResponseDTO {
 
     private String phoneNumber;
 
-    private String email;
-
     private String address;
 
     private Integer staffCode;
 
     private Date dateOfBirth;
 
-    private String avatar;
-
     private String role;
 
     private String note;
-
-    private String status;
-
-    private LocalDateTime createDate;
 }

@@ -28,4 +28,10 @@ public interface IStaffRepo extends JpaRepository<StaffEntity, String> {
 
     // Staffs inactive & not delete
     List<StaffEntity> findAllByStatusIsFalseAndDeleteFlagIsTrue();
+
+    // Find staff by staffCode
+    StaffEntity findByStaffCode(Integer staffCode);
+
+    // Find staff by email
+    StaffEntity findByEmail(String email);
 }

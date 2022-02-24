@@ -31,7 +31,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{/assets/css/chosen.min.css}">
 
     <!-- SweetAlert2-->
-    <script src="sweetalert2.all.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Custom CSS -->
     <link rel="stylesheet" type="text/css" th:href="@{/assets/css/style.css}"/>
@@ -478,15 +478,7 @@
                                                         </tr>
                                                         <tr>
                                                             <th style="width: 140px;"><label for="email" class="form-label">Email</label><span class="required"> *</span></th>
-                                                            <td><input type="email" name="email" id="email" class="form-control" onblur="onType(this)"></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th><label for="password" class="form-label">Mật khẩu</label><span class="required"> *</span></th>
-                                                            <td><input type="password" name="password" id="password" class="form-control" onblur="onType(this)"></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th><label for="repassword" class="form-label">Nhập lại mật khẩu</label><span class="required"> *</span></th>
-                                                            <td><input type="password" id="repassword" class="form-control" onblur="onType(this)"></td>
+                                                            <td><input type="email" name="email" id="email" class="form-control" onblur="onType(this)" placeholder="abc@email.com"></td>
                                                         </tr>
                                                         <tr>
                                                             <th><label for="role" class="form-label">Chức vụ</label><span class="required"> *</span></th>
@@ -503,16 +495,16 @@
                                                 <div class="col-6 px-4">
                                                     <table class="table-borderless w-100">
                                                         <tr>
-                                                            <th><label for="phone" class="form-label">Điện thoại</label></th>
-                                                            <td><input type="number" name="phone" id="phone" class="form-control"></td>
+                                                            <th><label for="phoneNumber" class="form-label">Điện thoại</label><span class="required"> *</span></th>
+                                                            <td><input type="number" name="phoneNumber" id="phoneNumber" class="form-control" onblur="onType(this)" placeholder="0323456789"></td>
                                                         </tr>
                                                         <tr>
-                                                            <th><label for="address" class="form-label">Địa chỉ</label></th>
-                                                            <td><input type="text" name="address" id="address" class="form-control"></td>
+                                                            <th><label for="address" class="form-label">Địa chỉ</label><span class="required"> *</span></th>
+                                                            <td><input type="text" name="address" id="address" class="form-control" onblur="onType(this)"></td>
                                                         </tr>
                                                         <tr>
-                                                            <th><label for="datepicker" class="form-label">Ngày sinh</label></th>
-                                                            <td><input type="text" name="dateOfBirth" id="datepicker" class="form-control"></td>
+                                                            <th><label for="datepicker" class="form-label">Ngày sinh</label><span class="required"> *</span></th>
+                                                            <td><input type="text" name="dateOfBirth" id="datepicker" class="form-control" onblur="onType(this)" placeholder="dd/MM/yyyy"></td>
                                                         </tr>
                                                         <tr>
                                                             <th style="vertical-align: top; padding-top: 7px;"><label for="note" class="form-label">Ghi chú</label></th>
@@ -560,10 +552,11 @@
                             <tbody>
                                 <tr th:each="staff : ${staffs}">
                                     <td><input type="checkbox" class="check-item" th:value="${staff.getId()}"></td>
-                                    <td class="row" style="width: 100px;">
-                                        <i class="col-4 fas fa-edit" style="color: darkblue;" title="Cập nhật"></i>
-                                        <i class="col-4 fas fa-lock-open" style="color: green;" title="Khoá tài khoản"></i>
-                                        <i class="col-4 fas fa-user-times" style="color: red;" title="Xoá người dùng"></i>
+                                    <td class="row" style="width: 100px;" th:switch="${staff.getStatus()}">
+                                        <i class="col-4 fas fa-edit" style="color: darkblue;" title="Cập nhật" onclick="onBtnEdit(this)"></i>
+                                        <i th:case="1" class="col-4 fas fa-lock-open" style="color: green;" title="Khoá tài khoản" onclick="onBtnStatus(this)"></i>
+                                        <i th:case="0" class="col-4 fas fa-lock" style="color: red;" title="Mở khoá tài khoản" onclick="onBtnStatus(this)"></i>
+                                        <i class="col-4 fas fa-user-times" style="color: red;" title="Xoá người dùng" onclick="onBtnDelete(this)"></i>
                                     </td>
                                     <td th:text="${staff.getId()}"></td>
                                     <td th:text="${staff.getStaffCode()}">Mã nhân viên</td>
@@ -573,9 +566,15 @@
                                     <td th:text="${staff.getEmail()}">Email</td>
                                     <td th:text="${staff.getAddress()}">Địa chỉ</td>
                                     <td th:text="${staff.getAvatar()}">Ảnh</td>
-                                    <td th:text="${staff.getRole()}">Chức vụ</td>
+                                    <td th:switch="${staff.getRole()}">
+                                        <span th:case="ROLE_ADMIN">Quản trị viên</span>
+                                        <span th:case="ROLE_USER">Nhân viên</span>
+                                    </td>
                                     <td th:text="${#temporals.format(staff.getCreateDate(), 'dd/MM/yyyy HH:mm:ss')}">Ngày bắt đầu</td>
-                                    <td th:text="${staff.getStatus() == '1'} ? 'Đang hoạt động' : 'Ngừng hoạt động'"></td>
+                                    <td th:switch="${staff.getStatus()}">
+                                        <span th:case="1">Đang hoạt động</span>
+                                        <span th:case="0">Ngừng hoạt động</span>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -588,56 +587,59 @@
                                         <h5 class="modal-title mt-0">Cập nhật người dùng</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <div class="modal-body">
-                                        <div class="row">
-                                            <div class="col-6 px-4">
-                                                <table class="table-borderless w-100">
-                                                    <tr>
-                                                        <th><label class="form-label" for="fullName-edit">Họ và tên</label><span class="required"> *</span></th>
-                                                        <td><input class="form-control" type="text" name="fullName" id="fullName-edit" onblur="onType(this)"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th><label class="form-label" for="staffCode-edit">Mã nhân viên</label><span class="required"> *</span></th>
-                                                        <td><input type="text" name="staffCode" id="staffCode-edit" class="form-control" onblur="onType(this)"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th><label for="email-edit" class="form-label">Email</label><span class="required"> *</span></th>
-                                                        <td><input type="email" name="email" id="email-edit" class="form-control" title="Không thể sửa email" disabled></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th><label for="role-edit" class="form-label">Chức vụ</label><span class="required"> *</span></th>
-                                                        <td>
-                                                            <select class="form-select" name="role" id="role-edit">
-                                                                <option value="" disabled selected>-- Chọn Chức vụ --</option>
-                                                                <option value="ROLE_ADMIN">Quản trị viên</option>
-                                                                <option value="ROLE_USER">Nhân viên</option>
-                                                            </select>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </div>
-                                            <div class="col-6 px-4">
-                                                <table class="table-borderless w-100">
-                                                    <tr>
-                                                        <th><label for="phone-edit" class="form-label">Điện thoại</label></th>
-                                                        <td><input type="number" name="phone" id="phone-edit" class="form-control"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th><label for="address-edit" class="form-label">Địa chỉ</label></th>
-                                                        <td><input type="text" name="address" id="address-edit" class="form-control"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th><label for="birthdate-edit" class="form-label">Ngày sinh</label></th>
-                                                        <td><input type="text" id="birthdate-edit" class="form-control"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th style="vertical-align: top; padding-top: 7px;"><label for="note-edit" class="form-label">Ghi chú</label></th>
-                                                        <td><textarea name="note" id="note-edit" cols="30" rows="3"></textarea></td>
-                                                    </tr>
-                                                </table>
+                                    <form id="formEdit">
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-6 px-4">
+                                                    <table class="table-borderless w-100">
+                                                        <tr>
+                                                            <th><label class="form-label" for="fullName-edit">Họ và tên</label><span class="required"> *</span></th>
+                                                            <td><input class="form-control" type="text" name="fullName" id="fullName-edit" onblur="onType(this)"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th><label class="form-label" for="staffCode-edit">Mã nhân viên</label><span class="required"> *</span></th>
+                                                            <td><input type="text" name="staffCode" id="staffCode-edit" class="form-control" onblur="onType(this)"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th><label for="email-edit" class="form-label">Email</label><span class="required"> *</span></th>
+                                                            <td><input type="email" name="email" id="email-edit" class="form-control" title="Không thể sửa email" disabled></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th><label for="role-edit" class="form-label">Chức vụ</label><span class="required"> *</span></th>
+                                                            <td>
+                                                                <select class="form-select" name="role" id="role-edit">
+                                                                    <option value="" disabled selected>-- Chọn Chức vụ --</option>
+                                                                    <option value="ROLE_ADMIN">Quản trị viên</option>
+                                                                    <option value="ROLE_USER">Nhân viên</option>
+                                                                </select>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                <div class="col-6 px-4">
+                                                    <table class="table-borderless w-100">
+                                                        <tr>
+                                                            <th><label for="phoneNumber-edit" class="form-label">Điện thoại</label><span class="required"> *</span></th>
+                                                            <td><input type="number" name="phoneNumber" id="phoneNumber-edit" class="form-control" onblur="onType(this)" placeholder="0323456789"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th><label for="address-edit" class="form-label">Địa chỉ</label><span class="required"> *</span></th>
+                                                            <td><input type="text" name="address" id="address-edit" class="form-control" onblur="onType(this)"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th><label for="birthdate-edit" class="form-label">Ngày sinh</label><span class="required"> *</span></th>
+                                                            <td><input type="text" name="dateOfBirth"  id="birthdate-edit" class="form-control" onblur="onType(this)" placeholder="dd/MM/yyyy"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th style="vertical-align: top; padding-top: 7px;"><label for="note-edit" class="form-label">Ghi chú</label></th>
+                                                            <td><textarea name="note" id="note-edit" cols="30" rows="3"></textarea></td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                        <input type="hidden" name="id" id="id">
+                                    </form>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="resetForm()">
                                             <i class="fas fa-ban me-2"></i>
@@ -647,7 +649,7 @@
                                             <i class="fa fa-trash me-2"></i>
                                             Làm mới
                                         </button>
-                                        <button type="button" class="btn btn-primary waves-effect waves-light">
+                                        <button type="button" id="btnEdit" class="btn btn-primary waves-effect waves-light">
                                             <i class="fas fa-save pe-2"></i>
                                             Lưu
                                         </button>
@@ -765,6 +767,10 @@
     $(document).ready(function () {
         $('.roleFilter').chosen();
 
+        hoverIconLock();
+    });
+
+    function hoverIconLock() {
         $('.fa-lock-open').hover(function () {
             $(this).removeClass('fa-lock-open').addClass('fa-lock').css('color', 'red');
         }, function () {
@@ -776,24 +782,7 @@
         }, function () {
             $(this).removeClass('fa-lock-open').addClass('fa-lock').css('color', 'red');
         })
-    });
-
-    $('.fa-edit').click(function () {
-        $('.modal-edit-staff').modal('show');
-    })
-
-    $('.edit-role').click(function () {
-        $('.modal-edit-staff').modal('toggle');
-        $('.modal-role-staff').modal('show');
-    })
-
-    // function blockUser() {
-    //     $(this).removeClass('fa-lock-open').addClass('fa-lock').css('color', 'red');
-    // }
-
-    // function unlockUser() {
-    //     $(this).removeClass('fa-lock').addClass('fa-lock-open').css('color', 'green');
-    // }
+    }
 
     function checkAllJquery(baseId, itemClass) {
         let baseCheck = $('#' + baseId).is(":checked");
@@ -877,15 +866,12 @@
         $.each(formData, function (i, v) {
             data["" + v.name + ""] = v.value;
         });
-        console.log(data);
 
-        if(validateFormAdd()) {
+        if(validateForm('add')) {
             addStaff(data);
         } else {
             console.log("validate fail");
         }
-       // $('#formAdd').submit();
-
     });
 
     // Event onKeyPress formAdd
@@ -899,42 +885,74 @@
     }
 
     // Validation formAdd
-    function validateFormAdd() {
-        const fullName = $('#fullName');
+    function validateForm(type) {
+        let errorMessage = '';
+        const fullName = (type==='add') ? $('#fullName') : $('#fullName-edit');
         let flag = true;
 
-        if(fullName.val() === '') {
+        if (fullName.val() === '') {
             fullName.addClass('error');
             flag = false;
         }
 
-        const email = $('#email');
-        if(email.val() === '') {
+        const email = (type==='add') ? $('#email') : $('#email-edit');
+        const patternEmail = /^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b$/i;
+        if (email.val() === '') {
             email.addClass('error');
             flag = false;
-        }
-
-        const password = $('#password');
-        if(password.val() === '') {
-            password.addClass('error');
+        } else if (!patternEmail.test(email.val())) {
+            email.addClass('error');
+            errorMessage += 'Email không hợp lệ!\n';
             flag = false;
         }
 
-        const repassword = $('#repassword');
-        if(repassword.val() === '') {
-            repassword.addClass('error');
-            flag = false;
-        }
-
-        const role = $('#role');
-        if(role.val() === null) {
+        const role = (type==='add') ? $('#role') : $('#role-edit');
+        if (role.val() === null) {
             role.addClass('error');
             flag = false;
         }
 
-        if(flag) {
+        const phoneNumber = (type==='add') ? $('#phoneNumber') : $('#phoneNumber-edit');
+        const patternPhone = /^(84|0[3|5|7|8|9])+([0-9]{8})\b$/i;
+        if (phoneNumber.val() === '') {
+            phoneNumber.addClass('error');
+            flag = false;
+        } else if (!patternPhone.test(phoneNumber.val())) {
+            phoneNumber.addClass('error');
+            errorMessage += 'Số điện thoại không hợp lệ!\n\n';
+            flag = false;
+        }
+
+        const address = (type==='add') ? $('#address') : $('#address-edit');
+        if (address.val() === '') {
+            address.addClass('error');
+            flag = false;
+        }
+        const datepicker = (type==='add') ? $('#datepicker') : $('#birthdate-edit');
+        if (datepicker.val() === '') {
+            datepicker.addClass('error');
+            flag = false;
+        }
+
+        if (flag) {
             return true
         }
+        errorMessage += 'Mời nhập lại!'
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        })
+        Toast.fire({
+            icon: 'error',
+            title: errorMessage
+        })
         return false;
     }
 
@@ -961,7 +979,7 @@
                 Toast.fire({
                     icon: 'success',
                     title: 'Thêm thành công'
-                }).then(()=> windows.location.href = "/staff");
+                }).then(() => window.location.href = "/staff");
             },
             error: function (error) {
                 const Toast = Swal.mixin({
@@ -977,12 +995,180 @@
                 })
                 Toast.fire({
                     icon: 'error',
-                    title: 'Lỗi khi thêm mới'
+                    title: "Email đã tồn tại!"
+                    // title: 'Lỗi khi thêm mới'
                 })
             }
         })
     }
 
+    // Submit formEdit
+    $('#btnEdit').click(function () {
+        let data = {};
+        let formData = $('#formEdit').serializeArray();
+        $.each(formData, function (i, v) {
+            data["" + v.name + ""] = v.value;
+        });
+        data["dateOfBirth"] = moment(formData.dateOfBirth).format('YYYY-MM-DD')
+
+        if(validateForm('edit')) {
+            editStaff(data);
+        } else {
+            console.log("validate fail");
+        }
+    });
+
+    //API edit Staff
+    function editStaff(data) {
+        $.ajax({
+            url: '/api/staff',
+            type: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            dataType: 'json',
+            success: function (result) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Cập nhật thành công'
+                }).then(() => window.location.href = "/staff");
+            },
+            error: function (error) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+                Toast.fire({
+                    icon: 'error',
+                    title: "Lỗi hệ thống!\nVui lòng thử lại sau"
+                })
+            }
+        })
+    }
+
+    function onBtnEdit (element) {
+        const tag = $(element).parent().parent().find('.check-item');
+        $.ajax({
+            url: `/api/staff/${tag.val()}`,
+            type: 'GET',
+            contentType: 'application/json',
+            success: function (result) {
+                $('#id').val(result.id);
+                $('#fullName-edit').val(result.fullName);
+                $('#staffCode-edit').val(result.staffCode);
+                $('#email-edit').val(result.email);
+                $('#role-edit').val(result.role);
+                $('#phoneNumber-edit').val(result.phoneNumber);
+                $('#address-edit').val(result.address);
+                $('#birthdate-edit').val(moment(result.dateOfBirth).format('DD/MM/YYYY'));
+                $('#note-edit').val(result.note);
+
+                $('.modal-edit-staff').modal('show');
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        })
+    }
+
+    function onBtnStatus (element) {
+        const tag = $(element).parent().parent();
+        const lock = $(element).hasClass('fa-lock');
+        const status = lock ? "0" : "1";
+        $.ajax({
+            url: `/api/staff/status/${tag.find('.check-item').val()}/${status}`,
+            type: 'PUT',
+            contentType: 'application/json',
+            success: function (result) {
+                Swal.fire(
+                    lock ? 'Đã khoá tài khoản!' : 'Đã mở khoá tài khoản',
+                    `Mã nhân viên ${tag.children().eq(3).text()}`,
+                    'success'
+                ).then(() => {
+                    if (lock) {
+                        $(element).removeClass('fa-lock-open').addClass('fa-lock').css('color', 'red');
+                        tag.children().eq(12).text("Ngừng hoạt động");
+                    } else {
+                        $(element).removeClass('fa-lock').addClass('fa-lock-open').css('color', 'green');
+                        tag.children().eq(12).text("Đang hoạt động");
+                    }
+
+                    hoverIconLock();
+                })
+            },
+            error: function (error) {
+                console.log(error);
+                Swal.fire(
+                    'Lỗi hệ thống!\nVui lòng thử lại sau!',
+                    'error'
+                )
+            }
+        })
+    }
+
+    function onBtnDelete (element) {
+        const tag = $(element).parent().parent();
+        $.ajax({
+            url: `/api/staff/delete/${tag.find('.check-item').val()}`,
+            type: 'PUT',
+            contentType: 'application/json',
+            success: function (result) {
+                const swalWithBootstrapButtons = Swal.mixin({
+                    customClass: {
+                        confirmButton: 'btn btn-success',
+                        cancelButton: 'btn btn-danger'
+                    },
+                    buttonsStyling: false
+                })
+
+                swalWithBootstrapButtons.fire({
+                    title: `Bạn chắc chắn muốn xoá nhân viên có mã ${tag.children().eq(3).text()} chứ?`,
+                    text: "Chú ý không thể hoàn tác sau khi thực hiện tác vụ này!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Vâng, tôi chắc chắn!',
+                    cancelButtonText: 'Không, huỷ bỏ tác vụ!',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        swalWithBootstrapButtons.fire(
+                            'Đã xoá thành công!',
+                            'Dữ liệu đã bị xoá.',
+                            'success'
+                        ).then(() => window.location.href = "/staff");
+                    } else if (
+                        result.dismiss === Swal.DismissReason.cancel
+                    ) {
+                        swalWithBootstrapButtons.fire(
+                            'Đã huỷ tác vụ',
+                            'Dữ liệu được bảo toàn :)',
+                            'error'
+                        )
+                    }
+                })
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        })
+    }
 </script>
 
 </body>
