@@ -5,13 +5,23 @@ import com.techcam.dto.request.StaffEditRequestDTO;
 import com.techcam.dto.response.StaffResponseDTO;
 import com.techcam.entity.StaffEntity;
 import com.techcam.repo.IStaffRepo;
+import com.techcam.entity.StaffEntity;
+import com.techcam.repo.IStaffRepo;
 import com.techcam.service.IStaffService;
 import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+import java.security.MessageDigest;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
 
 /**
  * Project_name : SMW_TECHCAM
@@ -22,6 +32,7 @@ import java.util.Optional;
  * Description :
  */
 @Service
+@RequiredArgsConstructor
 public class StaffService implements IStaffService {
 
     private static final String DEFAULT_PASSWORD = "0123456789";
@@ -204,5 +215,28 @@ public class StaffService implements IStaffService {
         staff.setCreateDate(entity.getCreateDate());
         staff.setStatus(entity.getStatus());
         return staff;
+    }
+    private final IStaffRepo repo;
+
+    @Override
+    public StaffEntity getByEmail(String email) {
+        List<StaffEntity> list = repo.findByEmail(email);
+        return list.isEmpty() ? null : list.get(0);
+    }
+
+    @Override
+    public void saveStaff(StaffEntity staffEntity) {
+        repo.save(staffEntity);
+    }
+
+
+    public static void main(String[] args)  {
+//        String secretKey = "TVDqqqqqqqq";
+//        String originalString = "teamvietdev.com";
+//
+//        String encryptedString = encrypt(originalString, secretKey);
+//        System.out.println("Encrypt: " + encryptedString);
+//        String decryptedString = decrypt(encryptedString, secretKey);
+//        System.out.println("Decrypt: " + decryptedString);
     }
 }
