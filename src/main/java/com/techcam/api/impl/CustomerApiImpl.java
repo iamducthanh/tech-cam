@@ -2,16 +2,12 @@ package com.techcam.api.impl;
 
 import com.techcam.api.CustomerApi;
 import com.techcam.dto.request.Customer.CustomerRequest;
-import com.techcam.dto.response.Customer.CustomerInfoResponse;
 import com.techcam.dto.response.Customer.CustomerResponse;
 import com.techcam.dto.response.Customer.CustomerServiceResponse;
-import com.techcam.exception.ErrorMessage;
-import com.techcam.exception.ErrorMessageLoader;
 import com.techcam.exception.TechCamExp;
 import com.techcam.service.ICustomerService;
 import com.techcam.type.CommonTypeMethod;
 import com.techcam.type.CustomerStatus;
-import com.techcam.type.ErrorCodeConstant;
 import com.techcam.util.ConstantsErrorCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
