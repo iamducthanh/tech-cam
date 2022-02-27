@@ -3,14 +3,12 @@ package com.techcam.entity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.Column;
-import javax.persistence.EntityListeners;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 /**
@@ -30,6 +28,11 @@ import java.time.LocalDateTime;
 public abstract class BaseEntity {
 
     @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
     @Column(name = "id", nullable = false, length = 64)
     private String id;
 
@@ -45,7 +48,8 @@ public abstract class BaseEntity {
      */
     @LastModifiedBy
     @Column(name = "modifier_by", length = 50, nullable = false)
-    private String modifiedBy;
+//    private String modifiedBy;
+    private String modifiedBy = "ADMIN";
 
     /**
      * trạng thái xoá bản ghi

@@ -4,6 +4,8 @@ import com.techcam.entity.StaffEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Description :
  *
@@ -15,4 +17,21 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IStaffRepo extends JpaRepository<StaffEntity, String> {
+    // Staffs deleted
+    List<StaffEntity> findAllByDeleteFlagIsTrue();
+
+    // Staffs not deleted
+    List<StaffEntity> findAllByDeleteFlagIsFalse();
+
+    // Staffs active & not delete
+    List<StaffEntity> findAllByStatusIsTrueAndDeleteFlagIsTrue();
+
+    // Staffs inactive & not delete
+    List<StaffEntity> findAllByStatusIsFalseAndDeleteFlagIsTrue();
+
+    // Find staff by staffCode
+    StaffEntity findByStaffCode(Integer staffCode);
+
+    // Find staff by email
+    List<StaffEntity> findByEmail(String email);
 }
