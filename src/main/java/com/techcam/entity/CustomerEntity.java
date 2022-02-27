@@ -31,19 +31,7 @@ public class CustomerEntity extends BaseEntity {
     @Column(name = "date_of_birth", nullable = false)
     private LocalDate dateOfBirth;
 
-    @Column(name = "avatar", nullable = false)
-    private String avatar;
-
-    @Column(name = "role", nullable = false, length = 20)
-    private String role;
-
     @Column(name = "status", nullable = false, length = 50)
     private String status;
 
-    @Column(name = "count_login_false", nullable = false)
-    private Integer countLoginFalse;
-
-    @Lob
-    @Column(name = "note")
-    private String note;
 }
