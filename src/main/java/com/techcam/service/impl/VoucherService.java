@@ -12,7 +12,10 @@ import com.techcam.util.ConvertUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Description :
@@ -34,12 +37,14 @@ public class VoucherService implements IVoucherService {
         if (voucherCode == null) {
             throw new IllegalStateConfig(ErrorRespDto.builder()
                     .message("Không có dữ liệu")
+                    .date(LocalDateTime.now())
                     .build());
         }
         List<VoucherEntity> lstVouchers = voucherRepo.findByVoucherCode(voucherCode);
         if (lstVouchers.isEmpty()) {
             throw new IllegalStateConfig(ErrorRespDto.builder()
                     .message("Không có dữ liệu")
+                    .date(LocalDateTime.now())
                     .build());
         }
         return mapToVoucherResp(lstVouchers.get(0));
@@ -50,14 +55,45 @@ public class VoucherService implements IVoucherService {
         if (voucherResDto == null) {
             throw new IllegalStateConfig(ErrorRespDto.builder()
                     .message("Không có dữ liệu")
+                    .date(LocalDateTime.now())
                     .build());
         }
         if (!voucherRepo.findByVoucherCode(voucherResDto.getVoucherCode()).isEmpty()) {
             throw new DuplicateKeyConfig(ErrorRespDto.builder()
                     .message("Mã voucher đã tồn tại rồi")
+                    .date(LocalDateTime.now())
                     .build());
         }
         VoucherEntity voucherEntity = mapToVoucherEntity(voucherResDto);
+        voucherEntity.setId(UUID.randomUUID().toString());
+        voucherEntity.setStatus("Active");
+        voucherEntity.setCreateDate(LocalDateTime.now());
+        voucherEntity.setModifiedBy("System");
+        voucherRepo.save(voucherEntity);
+        return mapToVoucherResp(voucherEntity);
+    }
+
+    @Override
+    public VoucherRespDto updateVoucher(String id, VoucherResDto voucherResDto) {
+        if (voucherResDto == null) {
+            throw new IllegalStateConfig(ErrorRespDto.builder()
+                    .message("Không có dữ liệu")
+                    .date(LocalDateTime.now())
+                    .build());
+        }
+        VoucherEntity voucherEntity = voucherRepo.getById(voucherResDto.getId());
+        if (voucherEntity == null) {
+            throw new IllegalStateConfig(ErrorRespDto.builder()
+                    .message("Voucher không tồn tại")
+                    .date(LocalDateTime.now())
+                    .build());
+        }
+        voucherEntity.setName(voucherResDto.getName());
+        voucherEntity.setQuantity(voucherResDto.getQuantity());
+        voucherEntity.setStartDate(ConvertUtil.get().strToDate(voucherResDto.getStartDate(), "yyyy-MM-dd HH:mm").toInstant());
+        voucherEntity.setEndDate(ConvertUtil.get().strToDate(voucherResDto.getEndDate(), "yyyy-MM-dd HH:mm").toInstant());
+        voucherEntity.setNote(voucherResDto.getNote());
+        voucherEntity.setDiscount(voucherResDto.getDiscount());
         voucherRepo.save(voucherEntity);
         return mapToVoucherResp(voucherEntity);
     }
@@ -87,6 +123,7 @@ public class VoucherService implements IVoucherService {
                 .endDate(voucherEntity.getEndDate().toString())
                 .note(voucherEntity.getNote())
                 .discount(voucherEntity.getDiscount())
+                .hidden(voucherEntity.getStartDate().compareTo(Instant.now()) < 0)
                 .build();
     }
 

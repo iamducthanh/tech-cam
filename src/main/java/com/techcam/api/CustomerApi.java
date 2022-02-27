@@ -1,11 +1,13 @@
 package com.techcam.api;
 
-import com.techcam.dto.request.CustomerDto;
-import com.techcam.exception.ErrorMessage;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.techcam.dto.request.Customer.CustomerRequest;
+import com.techcam.dto.response.Customer.CustomerInfoResponse;
+import com.techcam.dto.response.Customer.CustomerResponse;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Description:
@@ -19,9 +21,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("api/v1/customer")
 public interface CustomerApi {
-    @PostMapping("save")
-    CustomerDto postSaveCustomer();
-    @GetMapping
-    ErrorMessage test();
+    @GetMapping("find-customers/{keyWord}")
+    List<CustomerInfoResponse> findCustomers(@PathVariable String keyWord);
+
+    @PostMapping("/registration-customer")
+    CustomerResponse postSaveCustomer(@Valid @RequestBody CustomerRequest customerRequest, BindingResult bindingResult);
+
+    @PostMapping("/update-customer")
+    CustomerResponse postUpdateCustomer(@Valid @RequestBody CustomerRequest customerRequest, BindingResult bindingResult);
+
+    @DeleteMapping("delete-customer/{id}")
+    CustomerResponse deleteCustomer(@PathVariable String id);
 
 }

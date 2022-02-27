@@ -8,7 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.Table;
-import java.time.LocalDate;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -29,7 +29,7 @@ public class StaffEntity extends BaseEntity {
     private String address;
 
     @Column(name = "date_of_birth", nullable = false)
-    private LocalDate dateOfBirth;
+    private Date dateOfBirth;
 
     @Column(name = "staff_code", nullable = false)
     private Integer staffCode;
