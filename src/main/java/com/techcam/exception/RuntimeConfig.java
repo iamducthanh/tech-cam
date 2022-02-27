@@ -21,7 +21,9 @@ public class RuntimeConfig extends RuntimeException {
     private List<ErrorRespDto> errors = new ArrayList<>();
 
     public RuntimeConfig(String message) {
-        super(message);
+        errors.add(ErrorRespDto.builder()
+                .message(message)
+                .build());
     }
 
     public RuntimeConfig(List<ErrorRespDto> errors) {

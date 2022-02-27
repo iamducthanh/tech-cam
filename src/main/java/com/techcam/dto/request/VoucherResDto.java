@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 /**
  * Description :
  *
@@ -22,18 +24,24 @@ public class VoucherResDto {
 
     private String id;
 
-    private String name;
-
     private String voucherCode;
 
-    private Integer quantity;
+    private String voucherName;
 
     private String startDate;
 
     private String endDate;
 
-    private String note;
+    private String discount;
 
-    private Long discount;
+    private String minAmount;
+
+    private String quantity;
+
+    private String description;
+
+    private String categoryId;
+
+    private String status;
 
 }

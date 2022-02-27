@@ -1,5 +1,6 @@
 package com.techcam.repo;
 
+import com.techcam.dto.response.VoucherRespDto;
 import com.techcam.entity.VoucherEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -27,4 +28,6 @@ public interface IVoucherRepo extends JpaRepository<VoucherEntity, String> {
     @Override
     @Query("select o from VoucherEntity o where o.deleteFlag = false")
     VoucherEntity getById(String s);
+
+    List<VoucherEntity> findAllByDeleteFlagIsFalse();
 }

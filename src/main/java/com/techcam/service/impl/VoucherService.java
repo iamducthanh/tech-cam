@@ -16,6 +16,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Description :
@@ -74,7 +75,7 @@ public class VoucherService implements IVoucherService {
     }
 
     @Override
-    public VoucherRespDto updateVoucher(String id, VoucherResDto voucherResDto) {
+    public VoucherRespDto updateVoucher(VoucherResDto voucherResDto) {
         if (voucherResDto == null) {
             throw new IllegalStateConfig(ErrorRespDto.builder()
                     .message("Không có dữ liệu")
@@ -88,26 +89,32 @@ public class VoucherService implements IVoucherService {
                     .date(LocalDateTime.now())
                     .build());
         }
-        voucherEntity.setName(voucherResDto.getName());
-        voucherEntity.setQuantity(voucherResDto.getQuantity());
+        voucherEntity.setName(voucherResDto.getVoucherName());
+        voucherEntity.setQuantity(Integer.parseInt(voucherResDto.getQuantity()));
         voucherEntity.setStartDate(ConvertUtil.get().strToDate(voucherResDto.getStartDate(), "yyyy-MM-dd HH:mm").toInstant());
         voucherEntity.setEndDate(ConvertUtil.get().strToDate(voucherResDto.getEndDate(), "yyyy-MM-dd HH:mm").toInstant());
-        voucherEntity.setNote(voucherResDto.getNote());
-        voucherEntity.setDiscount(voucherResDto.getDiscount());
+        voucherEntity.setNote(voucherResDto.getDescription());
+        voucherEntity.setDiscount(Long.parseLong(voucherResDto.getDiscount()));
         voucherRepo.save(voucherEntity);
         return mapToVoucherResp(voucherEntity);
+    }
+
+    @Override
+    public List<VoucherRespDto> getAllVoucher() {
+        return voucherRepo.findAllByDeleteFlagIsFalse().stream()
+                .map(this::mapToVoucherResp).collect(Collectors.toList());
     }
 
     private VoucherEntity mapToVoucherEntity(VoucherResDto voucherResDto) {
         if (voucherResDto == null) return null;
         VoucherEntity voucherEntity = VoucherEntity.builder()
-                .name(voucherResDto.getName())
+                .name(voucherResDto.getVoucherName())
                 .voucherCode(voucherResDto.getVoucherCode())
-                .quantity(voucherResDto.getQuantity())
+                .quantity(Integer.parseInt(voucherResDto.getQuantity()))
                 .startDate(ConvertUtil.get().strToDate(voucherResDto.getStartDate(), "yyyy-MM-dd hh:mm").toInstant())
                 .endDate(ConvertUtil.get().strToDate(voucherResDto.getEndDate(), "yyyy-MM-dd hh:mm").toInstant())
-                .note(voucherResDto.getNote())
-                .discount(voucherResDto.getDiscount())
+                .note(voucherResDto.getDescription())
+                .discount(Long.parseLong(voucherResDto.getDiscount()))
                 .build();
         voucherEntity.setId(voucherResDto.getId());
         return voucherEntity;
@@ -117,11 +124,11 @@ public class VoucherService implements IVoucherService {
         if (voucherEntity == null) return null;
         return VoucherRespDto.builder()
                 .id(voucherEntity.getId())
-                .name(voucherEntity.getName())
+                .voucherName(voucherEntity.getName())
                 .voucherCode(voucherEntity.getVoucherCode())
-                .startDate(voucherEntity.getStartDate().toString())
-                .endDate(voucherEntity.getEndDate().toString())
-                .note(voucherEntity.getNote())
+//                .startDate(voucherEntity.getStartDate())
+//                .endDate(voucherEntity.getEndDate().toString())
+//                .note(voucherEntity.getNote())
                 .discount(voucherEntity.getDiscount())
                 .hidden(voucherEntity.getStartDate().compareTo(Instant.now()) < 0)
                 .build();
