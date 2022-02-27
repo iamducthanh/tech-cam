@@ -16,6 +16,14 @@ public class DemoController {
 
     @GetMapping("/")
     public String index() {
+        return "views/layout_container";
+    }
+    @GetMapping("/1")
+    public String index1() {
         return "index";
+    }
+
+    public static void main(String[] args) {
+
     }
 }
