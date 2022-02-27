@@ -60,7 +60,7 @@
                                     </div>
                                     <div class="col-sm-6 text-end">
                                         <button class="btn btn-primary w-md waves-effect waves-light" style="display: none" id="btnLoginReal" type="submit">Đăng nhập</button>
-                                        <div onclick="checkCountLoginFalse()" class="btn btn-primary w-md waves-effect waves-light" id="btnLoginFake" type="submit">Đăng nhập</div>
+                                        <div onclick="checkCountLoginFalse()" class="btn btn-primary w-md waves-effect waves-light" id="btnLoginFake">Đăng nhập</div>
                                     </div>
                                 </div>
 
@@ -97,9 +97,16 @@
             url: '/api/count_login_false?email=' + email,
             error: function (errors) {
                 console.log(errors)
+                let error_login = $('#error_login')[0]
+                error_login.style.display = 'unset';
+                error_login.innerHTML = errors.responseText
             },
             success: function (dataOut) {
+                console.log(document.getElementById('btnLoginReal'))
                 console.log(dataOut)
+                document.getElementById('btnLoginReal').click();
+                // document.getElementById("myForm").submit();
+
             },
             type: 'GET'
         });

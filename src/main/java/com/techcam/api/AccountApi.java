@@ -136,10 +136,12 @@ public class AccountApi {
  public String getCountLoginFalse(@RequestParam("email") String email) {
   System.out.println("get " + email);
   StaffEntity staff = staffService.getByEmail(email);
-  Integer count = staff.getCountLoginFalse();
-  if(count >= 5){
-   System.out.println("lỗi cmnr");
-   throw new UsernameNotFoundException("Tài khoản " + email + " đã đăng nhập sai quá 5 lần, vui lòng nhấn quên mật khẩu để xác nhận lại tài khoản!");
+  if(staff != null){
+   Integer count = staff.getCountLoginFalse();
+   if(count >= 5){
+    System.out.println("lỗi cmnr");
+    throw new IllegalStateConfig("Tài khoản " + email + " đã đăng nhập sai quá 5 lần, vui lòng nhấn quên mật khẩu để xác nhận lại tài khoản!");
+   }
   }
   return "done";
  }
