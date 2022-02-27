@@ -38,6 +38,7 @@ public class CustomerService implements ICustomerService {
     private ModelMapper modelMapper = new ModelMapper();
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomerService.class);
     private static final String NUMBER = "[0-9]*";
+
     @Override
     public List<CustomerInfoResponse> getCustomers() {
         List<CustomerInfoResponse> customerInfoResponses = new ArrayList<>();
@@ -45,53 +46,56 @@ public class CustomerService implements ICustomerService {
         }.getType();
         List<CustomerEntity> customerEntities = customerRepo.findAllByStatus(CustomerStatus.ON.name());
         if (!CollectionUtils.isEmpty(customerEntities)) {
-            customerInfoResponses  =modelMapper.map(customerEntities, customersType);
+            customerInfoResponses = modelMapper.map(customerEntities, customersType);
         }
         return customerInfoResponses;
     }
 
     @Override
     public List<CustomerInfoResponse> findCustomers(String keyWord) {
-        List<CustomerEntity> customerEntities= new ArrayList<>();
+        List<CustomerEntity> customerEntities = new ArrayList<>();
         List<CustomerInfoResponse> customerInfoResponses = new ArrayList<>();
         Type customersType = new TypeToken<List<CustomerInfoResponse>>() {
         }.getType();
-        if(!keyWord.matches(NUMBER)){
-            customerEntities = customerRepo.findAllByFullNameStartingWithAndStatus(keyWord,CustomerStatus.ON.name());
-        }else {
-            customerEntities = customerRepo.findAllByPhoneNumberStartsWithAndStatus(keyWord,CustomerStatus.ON.name());
+        if (!keyWord.matches(NUMBER)) {
+            customerEntities = customerRepo.findAllByFullNameStartingWithAndStatus(keyWord, CustomerStatus.ON.name());
+        } else {
+            customerEntities = customerRepo.findAllByPhoneNumberStartsWithAndStatus(keyWord, CustomerStatus.ON.name());
         }
-        if(!CollectionUtils.isEmpty(customerEntities)){
-            customerInfoResponses = modelMapper.map(customerEntities,customersType);
+        if (!CollectionUtils.isEmpty(customerEntities)) {
+            customerInfoResponses = modelMapper.map(customerEntities, customersType);
         }
         return customerInfoResponses;
     }
 
     @Override
     public CustomerInfoResponse getCustomerByEmail(String email) {
+        CustomerInfoResponse customerInfoResponse = new CustomerInfoResponse();
         CustomerEntity customerEntity = customerRepo.findByEmailAndStatus(email, CustomerStatus.ON.name());
-        if (Objects.isNull(customerEntity)) {
-            return null;
+        if (Objects.nonNull(customerEntity)) {
+            customerInfoResponse = modelMapper.map(customerEntity, CustomerInfoResponse.class);
         }
-        return modelMapper.map(customerEntity, CustomerInfoResponse.class);
+        return customerInfoResponse;
     }
 
     @Override
     public CustomerInfoResponse getCustomerByPhoneNumber(String phoneNumber) {
+        CustomerInfoResponse customerInfoResponse = new CustomerInfoResponse();
         CustomerEntity customerEntity = customerRepo.findByPhoneNumberAndStatus(phoneNumber, CustomerStatus.ON.name());
-        if (Objects.isNull(customerEntity)) {
-            return null;
+        if (Objects.nonNull(customerEntity)) {
+            customerInfoResponse = modelMapper.map(customerEntity, CustomerInfoResponse.class);
         }
-        return modelMapper.map(customerEntity, CustomerInfoResponse.class);
+        return customerInfoResponse;
     }
 
     @Override
     public CustomerInfoResponse getCustomerById(String id) {
+        CustomerInfoResponse customerInfoResponse = new CustomerInfoResponse();
         CustomerEntity customerEntity = customerRepo.findByIdAndStatus(id, CustomerStatus.ON.name());
-        if (Objects.isNull(customerEntity)) {
-            return null;
+        if (Objects.nonNull(customerEntity)) {
+            customerInfoResponse = modelMapper.map(customerEntity, CustomerInfoResponse.class);
         }
-        return modelMapper.map(customerEntity, CustomerInfoResponse.class);
+        return customerInfoResponse;
     }
 
     @Override
@@ -105,7 +109,7 @@ public class CustomerService implements ICustomerService {
         if (Objects.nonNull(getCustomerByEmail(customerRequest.getEmail()))
                 || Objects.nonNull(getCustomerByPhoneNumber(customerRequest.getPhoneNumber()))) {
             customerResponse.setExisting(true);
-        }else {
+        } else {
             try {
                 customerEntity = modelMapper.map(customerRequest, CustomerEntity.class);
                 customerEntity.setId(UUID.randomUUID().toString());
@@ -138,19 +142,19 @@ public class CustomerService implements ICustomerService {
                 customerEntity.setStatus(CustomerStatus.OFF.name());
             }
             if (StringUtils.equals(typeMethod, CommonTypeMethod.UPDATE.name())) {
-               if(checkEmailCustomerUpdate(customerRequest, customerEntity)){
-                   customerResponse.setEmailExisting(true);
-                   return customerResponse;
-               }
-              if(checkPhoneNumberCustomerUpdate(customerRequest,customerEntity)){
-                  customerResponse.setPhoneNumberExisting(true);
-                  return customerResponse;
-              }
-              customerEntity.setPhoneNumber(customerRequest.getPhoneNumber());
-              customerEntity.setEmail(customerRequest.getEmail());
-              customerEntity.setAddress(customerRequest.getAddress());
-              customerEntity.setDateOfBirth(customerRequest.getDateOfBirth());
-              customerEntity.setFullName(customerRequest.getFullName());
+                if (checkEmailCustomerUpdate(customerRequest, customerEntity)) {
+                    customerResponse.setEmailExisting(true);
+                    return customerResponse;
+                }
+                if (checkPhoneNumberCustomerUpdate(customerRequest, customerEntity)) {
+                    customerResponse.setPhoneNumberExisting(true);
+                    return customerResponse;
+                }
+                customerEntity.setPhoneNumber(customerRequest.getPhoneNumber());
+                customerEntity.setEmail(customerRequest.getEmail());
+                customerEntity.setAddress(customerRequest.getAddress());
+                customerEntity.setDateOfBirth(customerRequest.getDateOfBirth());
+                customerEntity.setFullName(customerRequest.getFullName());
 
                 // todo còn update time chưa cập nhật người sửa người tạo
             }
@@ -166,16 +170,17 @@ public class CustomerService implements ICustomerService {
     }
 
     private boolean checkEmailCustomerUpdate(CustomerRequest customerRequest, CustomerEntity customerEntity) {
-        if(!StringUtils.equalsIgnoreCase(customerEntity.getEmail(), customerRequest.getEmail())
-        && Objects.nonNull(getCustomerByEmail(customerRequest.getEmail()))){
-          return true;
+        if (!StringUtils.equalsIgnoreCase(customerEntity.getEmail(), customerRequest.getEmail())
+                && Objects.nonNull(getCustomerByEmail(customerRequest.getEmail()))) {
+            return true;
         }
         return false;
     }
+
     private boolean checkPhoneNumberCustomerUpdate(CustomerRequest customerRequest, CustomerEntity customerEntity) {
-        if(!StringUtils.equalsIgnoreCase(customerEntity.getEmail(), customerRequest.getEmail())
-                && Objects.nonNull(getCustomerByPhoneNumber(customerRequest.getPhoneNumber()))){
-           return true;
+        if (!StringUtils.equalsIgnoreCase(customerEntity.getEmail(), customerRequest.getEmail())
+                && Objects.nonNull(getCustomerByPhoneNumber(customerRequest.getPhoneNumber()))) {
+            return true;
         }
         return false;
     }
