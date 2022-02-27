@@ -17,4 +17,5 @@ public interface IVoucherService {
 
     VoucherRespDto createVoucher(VoucherResDto voucherResDto);
 
+    VoucherRespDto updateVoucher(String id, VoucherResDto voucherResDto);
 }

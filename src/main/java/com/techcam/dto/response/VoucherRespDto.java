@@ -34,4 +34,6 @@ public class VoucherRespDto {
 
     private Long discount;
 
+    private boolean hidden;
+
 }

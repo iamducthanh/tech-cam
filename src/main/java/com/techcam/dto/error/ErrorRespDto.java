@@ -22,6 +22,6 @@ public class ErrorRespDto {
 
     private String message;
 
-    private LocalDateTime date = LocalDateTime.now();
+    private LocalDateTime date;
 
 }
