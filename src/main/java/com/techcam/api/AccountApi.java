@@ -15,6 +15,7 @@ import com.techcam.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -129,6 +130,18 @@ public class AccountApi {
   String password = pass.encode(changePasswordDto.getPasswordNew());
   staffEntity.setPassword(password);
   staffService.saveStaff(staffEntity);
+ }
+
+ @GetMapping("/count_login_false")
+ public String getCountLoginFalse(@RequestParam("email") String email) {
+  System.out.println("get " + email);
+  StaffEntity staff = staffService.getByEmail(email);
+  Integer count = staff.getCountLoginFalse();
+  if(count >= 5){
+   System.out.println("lỗi cmnr");
+   throw new UsernameNotFoundException("Tài khoản " + email + " đã đăng nhập sai quá 5 lần, vui lòng nhấn quên mật khẩu để xác nhận lại tài khoản!");
+  }
+  return "done";
  }
 
 }

@@ -226,6 +226,7 @@ public class StaffService implements IStaffService {
 
     @Override
     public void saveStaff(StaffEntity staffEntity) {
+        System.out.println("save done");
         repo.save(staffEntity);
     }
 
