@@ -17,3 +17,16 @@ spring:
       ddl-auto: none
     database-platform: org.hibernate.dialect.MySQL8Dialect
     show-sql: 'false'
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: iamducthanh01@gmail.com
+    password: adgjadgj
+    properties:
+      mail:
+        smpt:
+          auth: true
+        smtp:
+          starttls:
+            enable: true
