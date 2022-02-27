@@ -17,6 +17,8 @@ import java.util.List;
 public interface ICustomerService {
     List<CustomerInfoResponse> getCustomers();
 
+    List<CustomerInfoResponse> findCustomers(String keyWord);
+
     CustomerInfoResponse getCustomerByEmail(String email);
 
     CustomerInfoResponse getCustomerByPhoneNumber(String phoneNumber);

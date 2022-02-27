@@ -21,5 +21,7 @@ import lombok.NoArgsConstructor;
 public class CustomerServiceResponse {
    private Boolean saved;
    private Boolean existing;
+   private Boolean emailExisting;
+   private Boolean phoneNumberExisting;
    private CustomerInfoResponse customerInfoResponse;
 }

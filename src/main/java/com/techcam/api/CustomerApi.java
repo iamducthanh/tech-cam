@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Description:
@@ -20,10 +21,15 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("api/v1/customer")
 public interface CustomerApi {
+    @GetMapping("find-customers/{keyWord}")
+    List<CustomerInfoResponse> findCustomers(@PathVariable String keyWord);
+
     @PostMapping("/registration-customer")
-    CustomerResponse postSaveCustomer(@Valid  @RequestBody CustomerRequest customerRequest , BindingResult bindingResult);
+    CustomerResponse postSaveCustomer(@Valid @RequestBody CustomerRequest customerRequest, BindingResult bindingResult);
+
     @PostMapping("/update-customer")
     CustomerResponse postUpdateCustomer(@Valid @RequestBody CustomerRequest customerRequest, BindingResult bindingResult);
+
     @DeleteMapping("delete-customer/{id}")
     CustomerResponse deleteCustomer(@PathVariable String id);
 

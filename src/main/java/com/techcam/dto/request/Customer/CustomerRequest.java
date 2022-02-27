@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 /**
@@ -21,9 +22,17 @@ import java.time.LocalDate;
 @Builder
 public class CustomerRequest {
     private String id;
+    @NotBlank
+    @Pattern(regexp = "[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ ]{0,50}$")
     private String fullName;
+    @NotBlank
+    @Pattern(regexp = "\"|[0][3245879]{1}[0-9]{8}\"")
     private String phoneNumber;
+    @NotBlank
+    @Pattern(regexp = " \"^(.+)@(\\\\S+)$\"")
     private String email;
+    @NotBlank
     private String address;
+    @NotNull
     private LocalDate dateOfBirth;
 }

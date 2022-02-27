@@ -17,8 +17,15 @@ import java.util.List;
 @Repository
 public interface ICustomerRepo extends JpaRepository<CustomerEntity, String> {
     List<CustomerEntity> findAllByStatus(String status);
+
+    List<CustomerEntity> findAllByPhoneNumberStartsWithAndStatus(String phoneNumber, String status);
+
+    List<CustomerEntity> findAllByFullNameStartingWithAndStatus(String fullName, String status);
+
     CustomerEntity findByEmailAndStatus(String email, String status);
+
     CustomerEntity findByPhoneNumberAndStatus(String phoneNumber, String status);
+
     CustomerEntity findByIdAndStatus(String id, String status);
 
 }

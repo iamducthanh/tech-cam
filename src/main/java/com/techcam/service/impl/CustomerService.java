@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -36,16 +37,34 @@ public class CustomerService implements ICustomerService {
     private ICustomerRepo customerRepo;
     private ModelMapper modelMapper = new ModelMapper();
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomerService.class);
-
+    private static final String NUMBER = "[0-9]*";
     @Override
     public List<CustomerInfoResponse> getCustomers() {
+        List<CustomerInfoResponse> customerInfoResponses = new ArrayList<>();
         Type customersType = new TypeToken<List<CustomerInfoResponse>>() {
         }.getType();
         List<CustomerEntity> customerEntities = customerRepo.findAllByStatus(CustomerStatus.ON.name());
-        if (CollectionUtils.isEmpty(customerEntities)) {
-            return null;
+        if (!CollectionUtils.isEmpty(customerEntities)) {
+            customerInfoResponses  =modelMapper.map(customerEntities, customersType);
         }
-        return modelMapper.map(customerEntities, customersType);
+        return customerInfoResponses;
+    }
+
+    @Override
+    public List<CustomerInfoResponse> findCustomers(String keyWord) {
+        List<CustomerEntity> customerEntities= new ArrayList<>();
+        List<CustomerInfoResponse> customerInfoResponses = new ArrayList<>();
+        Type customersType = new TypeToken<List<CustomerInfoResponse>>() {
+        }.getType();
+        if(!keyWord.matches(NUMBER)){
+            customerEntities = customerRepo.findAllByFullNameStartingWithAndStatus(keyWord,CustomerStatus.ON.name());
+        }else {
+            customerEntities = customerRepo.findAllByPhoneNumberStartsWithAndStatus(keyWord,CustomerStatus.ON.name());
+        }
+        if(!CollectionUtils.isEmpty(customerEntities)){
+            customerInfoResponses = modelMapper.map(customerEntities,customersType);
+        }
+        return customerInfoResponses;
     }
 
     @Override
@@ -86,17 +105,19 @@ public class CustomerService implements ICustomerService {
         if (Objects.nonNull(getCustomerByEmail(customerRequest.getEmail()))
                 || Objects.nonNull(getCustomerByPhoneNumber(customerRequest.getPhoneNumber()))) {
             customerResponse.setExisting(true);
-        }
-        try {
-            customerEntity = modelMapper.map(customerRequest, CustomerEntity.class);
-            customerEntity.setId(UUID.randomUUID().toString());
-            // todo thiếu  tên người thêm lấy sau.
-            customerEntity = customerRepo.save(customerEntity);
-            customerResponse.setSaved(true);
-            customerResponse.setExisting(false);
-            customerResponse.setCustomerInfoResponse(modelMapper.map(customerEntity, CustomerInfoResponse.class));
-        } catch (Exception e) {
-            LOGGER.error("Save customer fail Exception {}", e);
+        }else {
+            try {
+                customerEntity = modelMapper.map(customerRequest, CustomerEntity.class);
+                customerEntity.setId(UUID.randomUUID().toString());
+                customerEntity.setStatus(CustomerStatus.ON.name());
+                // todo thiếu  tên người thêm lấy sau.
+                customerEntity = customerRepo.save(customerEntity);
+                customerResponse.setSaved(true);
+                customerResponse.setExisting(false);
+                customerResponse.setCustomerInfoResponse(modelMapper.map(customerEntity, CustomerInfoResponse.class));
+            } catch (Exception e) {
+                LOGGER.error("Save customer fail Exception {}", e);
+            }
         }
         return customerResponse;
     }
@@ -107,6 +128,8 @@ public class CustomerService implements ICustomerService {
                 .builder()
                 .saved(false)
                 .existing(false)
+                .emailExisting(false)
+                .phoneNumberExisting(false)
                 .build();
         CustomerEntity customerEntity = customerRepo.findByIdAndStatus(customerRequest.getId(), CustomerStatus.ON.name());
         if (Objects.nonNull(customerEntity)) {
@@ -115,9 +138,22 @@ public class CustomerService implements ICustomerService {
                 customerEntity.setStatus(CustomerStatus.OFF.name());
             }
             if (StringUtils.equals(typeMethod, CommonTypeMethod.UPDATE.name())) {
-                customerEntity = modelMapper.map(customerRequest, CustomerEntity.class);
+               if(checkEmailCustomerUpdate(customerRequest, customerEntity)){
+                   customerResponse.setEmailExisting(true);
+                   return customerResponse;
+               }
+              if(checkPhoneNumberCustomerUpdate(customerRequest,customerEntity)){
+                  customerResponse.setPhoneNumberExisting(true);
+                  return customerResponse;
+              }
+              customerEntity.setPhoneNumber(customerRequest.getPhoneNumber());
+              customerEntity.setEmail(customerRequest.getEmail());
+              customerEntity.setAddress(customerRequest.getAddress());
+              customerEntity.setDateOfBirth(customerRequest.getDateOfBirth());
+              customerEntity.setFullName(customerRequest.getFullName());
+
+                // todo còn update time chưa cập nhật người sửa người tạo
             }
-            // todo còn update time chưa cập nhật
             try {
                 customerEntity = customerRepo.save(customerEntity);
                 customerResponse.setSaved(true);
@@ -127,5 +163,20 @@ public class CustomerService implements ICustomerService {
             }
         }
         return customerResponse;
+    }
+
+    private boolean checkEmailCustomerUpdate(CustomerRequest customerRequest, CustomerEntity customerEntity) {
+        if(!StringUtils.equalsIgnoreCase(customerEntity.getEmail(), customerRequest.getEmail())
+        && Objects.nonNull(getCustomerByEmail(customerRequest.getEmail()))){
+          return true;
+        }
+        return false;
+    }
+    private boolean checkPhoneNumberCustomerUpdate(CustomerRequest customerRequest, CustomerEntity customerEntity) {
+        if(!StringUtils.equalsIgnoreCase(customerEntity.getEmail(), customerRequest.getEmail())
+                && Objects.nonNull(getCustomerByPhoneNumber(customerRequest.getPhoneNumber()))){
+           return true;
+        }
+        return false;
     }
 }
