@@ -1,8 +1,14 @@
 package com.techcam.controller;
 
+import com.techcam.dto.response.Customer.CustomerInfoResponse;
+import com.techcam.service.ICustomerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
 
 /**
  * Description:
@@ -14,11 +20,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 
 @Controller
-@RequestMapping("v1/view/customer")
+@RequestMapping("/customer")
 public class CustomerView {
-    @GetMapping()
-    public String customerView(){
-        return "link customer";
+    @Autowired
+    private ICustomerService customerService;
+    @GetMapping("")
+    public String customerView(Model model){
+//        List<CustomerInfoResponse> customerInfoResponses = customerService.getCustomers();
+//        model.addAttribute("customers",customerInfoResponses);
+        return "views/customer/test";
     }
 
 }
