@@ -1,5 +1,6 @@
 package com.techcam.api;
 
+import com.sun.istack.NotNull;
 import com.techcam.dto.error.ErrorRespDto;
 import com.techcam.dto.request.VoucherResDto;
 import com.techcam.dto.response.VoucherRespDto;
@@ -68,41 +69,42 @@ public class VoucherApi {
 
     @PutMapping
     public ResponseEntity<?> updateVoucher(@RequestBody VoucherResDto voucherResDto) {
-        try {
-            if (voucherResDto.getId() == null || voucherResDto.getId().isEmpty()) {
-                throw new IllegalStateConfig("Voucher không đúng");
-            }
-            Date startDate = ConvertUtil.get().strToDate(voucherResDto.getStartDate(), "yyyy-MM-dd hh:mm");
-            Date endDate = ConvertUtil.get().strToDate(voucherResDto.getEndDate(), "yyyy-MM-dd hh:mm");
-            if (endDate.compareTo(new Date()) < 0) {
-                throw new IllegalStateConfig(ErrorRespDto.builder()
-                        .message("Không thể tạo voucher cho một thời gian đã trôi qua")
-                        .date(LocalDateTime.now())
-                        .build());
-            }
-            if (startDate.compareTo(endDate) > 0) {
-                throw new IllegalStateConfig(ErrorRespDto.builder()
-                        .message("Thời gian kết thúc không thể sớm hơn thời gian bắt đầu hiệu lực voucher")
-                        .date(LocalDateTime.now())
-                        .build());
-            }
-            if (Integer.parseInt(voucherResDto.getQuantity()) < 1) {
-                throw new IllegalStateConfig(ErrorRespDto.builder()
-                        .message("Số lượng voucher tạo ban đầu không thể nhỏ hơn 1")
-                        .date(LocalDateTime.now())
-                        .build());
-            }
-            if (Integer.parseInt(voucherResDto.getDiscount()) < 1) {
-                throw new IllegalStateConfig(ErrorRespDto.builder()
-                        .message("Số tiền giảm cho mỗi voucher không thể nhỏ hơn 1")
-                        .date(LocalDateTime.now())
-                        .build());
-            }
-            return ResponseEntity.ok(_voucherService.updateVoucher(voucherResDto));
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+        return ResponseEntity.ok(voucherResDto);
+//        try {
+//            if (voucherResDto.getId() == null || voucherResDto.getId().isEmpty()) {
+//                throw new IllegalStateConfig("Voucher không đúng");
+//            }
+//            Date startDate = ConvertUtil.get().strToDate(voucherResDto.getStartDate(), "yyyy-MM-dd hh:mm");
+//            Date endDate = ConvertUtil.get().strToDate(voucherResDto.getEndDate(), "yyyy-MM-dd hh:mm");
+//            if (endDate.compareTo(new Date()) < 0) {
+//                throw new IllegalStateConfig(ErrorRespDto.builder()
+//                        .message("Không thể tạo voucher cho một thời gian đã trôi qua")
+//                        .date(LocalDateTime.now())
+//                        .build());
+//            }
+//            if (startDate.compareTo(endDate) > 0) {
+//                throw new IllegalStateConfig(ErrorRespDto.builder()
+//                        .message("Thời gian kết thúc không thể sớm hơn thời gian bắt đầu hiệu lực voucher")
+//                        .date(LocalDateTime.now())
+//                        .build());
+//            }
+//            if (Integer.parseInt(voucherResDto.getQuantity()) < 1) {
+//                throw new IllegalStateConfig(ErrorRespDto.builder()
+//                        .message("Số lượng voucher tạo ban đầu không thể nhỏ hơn 1")
+//                        .date(LocalDateTime.now())
+//                        .build());
+//            }
+//            if (Integer.parseInt(voucherResDto.getDiscount()) < 1) {
+//                throw new IllegalStateConfig(ErrorRespDto.builder()
+//                        .message("Số tiền giảm cho mỗi voucher không thể nhỏ hơn 1")
+//                        .date(LocalDateTime.now())
+//                        .build());
+//            }
+//            return ResponseEntity.ok(_voucherService.updateVoucher(voucherResDto));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            throw new RuntimeException(e);
+//        }
     }
 
     @GetMapping(params = "voucher-code")
