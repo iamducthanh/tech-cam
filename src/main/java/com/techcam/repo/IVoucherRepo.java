@@ -1,6 +1,5 @@
 package com.techcam.repo;
 
-import com.techcam.dto.response.VoucherRespDto;
 import com.techcam.entity.VoucherEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

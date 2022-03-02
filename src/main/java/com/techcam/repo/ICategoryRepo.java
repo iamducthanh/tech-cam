@@ -1,7 +1,6 @@
 package com.techcam.repo;
 
 import com.techcam.entity.CategoryEntity;
-import org.codehaus.groovy.vmplugin.v8.PluginDefaultGroovyMethods;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

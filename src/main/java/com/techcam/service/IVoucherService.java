@@ -1,10 +1,5 @@
 package com.techcam.service;
 
-import com.techcam.dto.request.VoucherResDto;
-import com.techcam.dto.response.VoucherRespDto;
-
-import java.util.List;
-
 /**
  * Project_name : SMW_TECHCAM
  *
@@ -15,11 +10,4 @@ import java.util.List;
  */
 public interface IVoucherService {
 
-    VoucherRespDto checkVoucher(String voucherCode);
-
-    VoucherRespDto createVoucher(VoucherResDto voucherResDto);
-
-    VoucherRespDto updateVoucher(VoucherResDto voucherResDto);
-
-    List<VoucherRespDto> getAllVoucher();
 }

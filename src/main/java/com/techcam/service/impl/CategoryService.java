@@ -1,7 +1,6 @@
 package com.techcam.service.impl;
 
 import com.techcam.dto.response.CategoryRespDto;
-import com.techcam.entity.CategoryEntity;
 import com.techcam.repo.ICategoryRepo;
 import com.techcam.service.ICategoryService;
 import lombok.RequiredArgsConstructor;

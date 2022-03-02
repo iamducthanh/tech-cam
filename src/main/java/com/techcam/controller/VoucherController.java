@@ -57,7 +57,7 @@ public class VoucherController {
         model.addAttribute("lstCategory", lstCategory);
         // TODO lịch sử sử dụng voucher
 //        model.addAttribute("lstHistoryUseVoucher", )
-        return "views/voucher";
+        return "views/voucher/index";
     }
 
 }

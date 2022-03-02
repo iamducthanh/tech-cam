@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/weblayout}"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý sản phẩm - TechCam</title>
+</head>
+<body>
+<div layout:fragment="content" class="myContainer">
+    <div class="row container1">
+        <div class="col-lg-3" id="leftKH">
+            <div class="card" id="formLeft">
+                <div class="card-body">
+                    <div id="sidebar-menu">
+                        <ul class="list-unstyled" id="side-menu">
+                            <li>
+                                <a class="has-arrow waves-effect mb-3">
+                                    <strong>Trạng thái: </strong>
+                                </a>
+                                <ul class="sub-menu" style="padding: 0 10px 0 30px;">
+                                    <div class="mb-2">
+                                        <input class="form-check-input"
+                                               type="radio" name="filter-status" checked
+                                               id="filter-status-all" data-filter="ALL"
+                                               onchange="changeFilterStatus(this)">
+                                        <label for="filter-status-all"
+                                               class="col-form-label">
+                                            Tất cả
+                                        </label>
+                                    </div>
+                                    <div class="mb-2">
+                                        <input class="form-check-input"
+                                               type="radio" name="filter-status" id="filter-status-true"
+                                               data-filter="TRUE"
+                                               onchange="changeFilterStatus(this)">
+                                        <label for="filter-status-true"
+                                               class="col-form-label">
+                                            Kích hoạt
+                                        </label>
+                                    </div>
+                                    <div class="mb-2">
+                                        <input class="form-check-input"
+                                               type="radio" name="filter-status" id="filter-status-false"
+                                               data-filter="FALSE"
+                                               onchange="changeFilterStatus(this)">
+                                        <label for="filter-status-false"
+                                               class="col-form-label">
+                                            Chưa áp dụng
+                                        </label>
+                                    </div>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- Sidebar -->
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-9" id="rightKH">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <h1 class="header-title mb-4">
+                                <i class="mdi mdi-menu" style="font-size: 16pt;"
+                                   onclick="editMenuKH();"></i>
+                                Quản lý sản phẩm</h1>
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="dropdown myDropdown myBtn">
+                                <button class="btn btn-primary" id="dropdownMenuButton"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-filter"></i>
+                                    <i class="mdi mdi-chevron-down"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-end" style="width: 650%;">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="loc">
+                                                <input class="form-check-input" data-field="voucher-code"
+                                                       onclick="changeHidenTable(this)"
+                                                       type="checkbox" id="chk-voucher-code">
+                                                <label for="chk-voucher-code"
+                                                       class="col-form-label">
+                                                    Mã phát hành
+                                                </label>
+                                            </div>
+                                            <div class="loc">
+                                                <input class="form-check-input" data-field="voucher-name"
+                                                       onclick="changeHidenTable(this)"
+                                                       type="checkbox" id="chk-voucher-name">
+                                                <label for="chk-voucher-name"
+                                                       class="col-form-label">
+                                                    Tên đợt phát hành
+                                                </label>
+                                            </div>
+                                            <div class="loc">
+                                                <input class="form-check-input"
+                                                       data-field="voucher-start-date"
+                                                       onclick="changeHidenTable(this)"
+                                                       type="checkbox" id="chk-voucher-start-date">
+                                                <label for="chk-voucher-start-date"
+                                                       class="col-form-label">
+                                                    Từ ngày
+                                                </label>
+                                            </div>
+                                            <div class="loc">
+                                                <input class="form-check-input"
+                                                       data-field="voucher-end-date"
+                                                       onclick="changeHidenTable(this)"
+                                                       type="checkbox" id="chk-voucher-end-date">
+                                                <label for="chk-voucher-end-date"
+                                                       class="col-form-label">
+                                                    Đến ngày
+                                                </label>
+                                            </div>
+                                            <div class="loc">
+                                                <input class="form-check-input"
+                                                       data-field="voucher-quantity"
+                                                       onclick="changeHidenTable(this)"
+                                                       type="checkbox" id="chk-voucher-quantity">
+                                                <label for="chk-voucher-quantity"
+                                                       class="col-form-label">
+                                                    Số lượng
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="loc">
+                                                <input class="form-check-input"
+                                                       data-field="voucher-discount"
+                                                       onclick="changeHidenTable(this)"
+                                                       type="checkbox" id="chk-voucher-discount">
+                                                <label for="chk-voucher-discount"
+                                                       class="col-form-label">
+                                                    Mệnh giá
+                                                </label>
+                                            </div>
+                                            <div class="loc">
+                                                <input class="form-check-input" data-field="voucher-status"
+                                                       onclick="changeHidenTable(this)"
+                                                       type="checkbox" id="chk-voucher-status">
+                                                <label for="chk-voucher-status"
+                                                       class="col-form-label">
+                                                    Trạng thái
+                                                </label>
+                                            </div>
+                                            <div class="loc">
+                                                <input class="form-check-input"
+                                                       data-field="voucher-create-by"
+                                                       onclick="changeHidenTable(this)"
+                                                       type="checkbox" id="chk-voucher-create-by">
+                                                <label for="chk-voucher-create-by"
+                                                       class="col-form-label">
+                                                    Người tạo
+                                                </label>
+                                            </div>
+                                            <div class="loc">
+                                                <input class="form-check-input"
+                                                       data-field="voucher-create-date"
+                                                       onclick="changeHidenTable(this)"
+                                                       type="checkbox" id="chk-voucher-create-date">
+                                                <label for="chk-voucher-create-date"
+                                                       class="col-form-label">
+                                                    Ngày tạo
+                                                </label>
+                                            </div>
+                                            <div class="loc">
+                                                <input class="form-check-input"
+                                                       data-field="voucher-modified-date"
+                                                       onclick="changeHidenTable(this)"
+                                                       type="checkbox" id="chk-voucher-modified-date">
+                                                <label for="chk-voucher-modified-date"
+                                                       class="col-form-label">
+                                                    Ngày cập nhật
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary myBtn">
+                                <b> + Thêm mới</b>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <table id="datatable-buttons"
+                                           class="table dt-responsive nowrap"
+                                           style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                        <thead>
+                                        <tr class="text-center">
+                                            <th>
+                                                <input type="checkbox" class="form-check-input"/>
+                                            </th>
+                                            <th class="product-code">Mã sản phẩm</th>
+                                            <th class="product-name">Tên sản phẩm</th>
+                                            <th class="product-price">Giá bán</th>
+                                            <th class="product-quantity">Tồn kho</th>
+                                            <th class="product-status">Trạng thái</th>
+                                            <th class="product-create-date">Ngày tạo</th>
+                                            <th class="product-modified-date">Ngày cập nhật</th>
+                                            <th>Thao tác</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td class="text-center">
+                                                <input type="checkbox" class="form-check-input"/>
+                                            </td>
+                                            <td class="product-code">Mã sản phẩm</td>
+                                            <td class="product-name">Tên sản phẩm</td>
+                                            <td class="product-price">Giá bán</td>
+                                            <td class="product-quantity">Tồn kho</td>
+                                            <td class="product-status">Trạng thái</td>
+                                            <td class="product-create-date">Ngày tạo</td>
+                                            <td class="product-modified-date">Ngày cập nhật</td>
+                                            <td class="text-center">
+                                                <a class="btn btn-info mx-1 waves-effect waves-light"
+                                                   onclick="showDetailProduct(this)">
+                                                    Chi tiết
+                                                </a>
+                                                <a href="#modal-product" class="btn btn-warning" data-bs-toggle="modal">
+                                                    Chỉnh sửa
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr class="hide-product-detail" hidden="true">
+                                            <td colspan="100">
+                                                <div class="mx-5 row">
+                                                    <div class="col-lg-6 row">
+                                                        <label class="col-sm-5 col-form-label font-size-14">
+                                                            Mà sắc:
+                                                        </label>
+                                                        <strong class="col-sm-7 col-form-label font-size-15">
+                                                            Đỏ lá chanh
+                                                        </strong>
+                                                    </div>
+                                                    <div class="col-lg-6 row">
+                                                        <label class="col-sm-5 col-form-label font-size-14">
+                                                            Giá:
+                                                        </label>
+                                                        <strong class="col-sm-7 col-form-label font-size-15">
+                                                            200000
+                                                        </strong>
+                                                        <label class="col-sm-5 col-form-label font-size-14">
+                                                            Tồn kho:
+                                                        </label>
+                                                        <strong class="col-sm-7 col-form-label font-size-15">
+                                                            99
+                                                        </strong>
+                                                    </div>
+                                                </div>
+                                                <hr class="text-danger"/>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div id="morris-bar-stacked" class="morris-chart-height morris-charts"></div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade bs-example-modal-lg" id="modal-product" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title mt-0">Thêm sản phẩm</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="nav nav-tabs nav-tabs-custom nav-justified"
+                        role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#info" role="tab">
+                                <span class="d-none d-md-block">
+                                    Thông tin
+                                </span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#detail" role="tab">
+                                <span class="d-none d-md-block">
+                                    Mô tả chi tiết
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div class="tab-pane active p-3" id="info" role="tabpanel">
+                            <div class="row">
+                                <div class="col-lg-6 row">
+                                    <label class="col-sm-5 col-form-label font-size-14">
+                                        Mã sản phẩm:
+                                    </label>
+                                    <div class="col-sm-7">
+                                        <input class="form-control myInputNoBorder" type="text"
+                                               placeholder="Mã sản phẩm tự động"/>
+                                    </div>
+                                    <label class="col-sm-5 col-form-label font-size-14">
+                                        Tên sản phẩm:
+                                    </label>
+                                    <div class="col-sm-7">
+                                        <input class="form-control myInputNoBorder" type="text"
+                                               placeholder="Tên sản phẩm"/>
+                                    </div>
+                                    <label class="col-sm-5 col-form-label font-size-14">
+                                        Danh mục:
+                                    </label>
+                                    <div class="col-sm-7">
+                                        <select class="form-select form-select-sm">
+                                            <option>Tất cả</option>
+                                        </select>
+                                    </div>
+                                    <label class="col-sm-5 col-form-label font-size-14">
+                                        Giá bán:
+                                    </label>
+                                    <div class="col-sm-7">
+                                        <input class="form-control myInputNoBorder" type="text"
+                                               value="0"/>
+                                    </div>
+                                    <label class="col-sm-5 col-form-label font-size-14">
+                                        Giá vốn:
+                                    </label>
+                                    <div class="col-sm-7">
+                                        <input class="form-control myInputNoBorder" type="text"
+                                               value="0"/>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 row">
+                                    <label class="col-12 mb-2 col-form-label font-size-14">
+                                        Hình ảnh sản phẩm:
+                                    </label>
+                                    <div class="col-lg-5 mx-1" style="border: 0.25em dotted gray; height: 16.7em">
+                                        imh0
+                                    </div>
+                                    <div class="col-lg-7 row" style="height: 16.7em">
+                                        <div class="col-lg-5 mx-1 mb-1" style="border: 0.15em dotted gray; height: 8em">
+                                            img
+                                        </div>
+                                        <div class="col-lg-5 mx-1 mb-1" style="border: 0.15em dotted gray; height: 8em">
+                                            img2
+                                        </div>
+                                        <div class="col-lg-5 mx-1 mt-1" style="border: 0.15em dotted gray; height: 8em">
+                                            imh3
+                                        </div>
+                                        <div class="col-lg-5 mx-1 mt-1" style="border: 0.15em dotted gray; height: 8em">
+                                            imh4
+                                        </div>
+                                    </div>
+                                    <div class="col-12 mt-3">
+                                        <input type="checkbox" class="form-check-input"/>
+                                        Được bán trực tiếp
+                                    </div>
+                                </div>
+                                <div class="col-12 mt-3">
+                                    <label class="col-form-label font-size-14">
+                                        Mô tả:
+                                    </label>
+                                    <textarea class="form-control border-1" rows="10"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane p-3" id="detail" role="tabpanel">
+                            <div class="row mb-3">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-success waves-effect waves-light">Lưu</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <script>
+
+        function showDetailProduct(e) {
+            // $('.voucher-update').hide()
+            e.parentElement.parentElement.nextElementSibling.hidden = !e.parentElement.parentElement.nextElementSibling.hidden
+            console.log(e.innerHTML)
+            if (e.innerHTML.includes('Chi tiết')) {
+                e.innerHTML = 'Đóng'
+            } else if (e.innerHTML.includes('Đóng')) {
+                e.innerHTML = 'Chi tiết'
+            }
+        }
+
+    </script>
+
+</div>
+</body>
+</html>

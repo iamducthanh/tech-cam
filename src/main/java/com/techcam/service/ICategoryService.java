@@ -1,7 +1,6 @@
 package com.techcam.service;
 
 import com.techcam.dto.response.CategoryRespDto;
-import com.techcam.entity.CategoryEntity;
 
 import java.util.List;
 

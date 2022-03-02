@@ -1,45 +1,132 @@
 package com.techcam.entity;
 
-import lombok.*;
+import javax.persistence.*;
+import java.time.LocalDate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.Table;
-import java.time.Instant;
-
-@Getter
-@Setter
-@ToString
 @Table(name = "voucher")
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class VoucherEntity extends BaseEntity {
-
-    @Column(name = "name", nullable = false, length = 200)
+    @Column(name = "NAME", nullable = false, length = 200)
     private String name;
 
-    @Column(name = "voucher_code", nullable = false, length = 50)
-    private String voucherCode;
+    @Column(name = "CODE", nullable = false, length = 10)
+    private String code;
 
-    @Column(name = "quantity", nullable = false)
+    @Column(name = "QUANTITY", nullable = false)
     private Integer quantity;
 
-    @Column(name = "start_date", nullable = false)
-    private Instant startDate;
+    @Column(name = "DISCOUNT", nullable = false)
+    private Long discount;
 
-    @Column(name = "end_date", nullable = false)
-    private Instant endDate;
+    @Column(name = "START_DATE", nullable = false)
+    private LocalDate startDate;
+
+    @Column(name = "END_DATE", nullable = false)
+    private LocalDate endDate;
 
     @Lob
-    @Column(name = "note")
-    private String note;
+    @Column(name = "DESCRIPTION", nullable = false)
+    private String description;
 
-    @Column(name = "status", nullable = false, length = 50)
+    @Column(name = "MIN_AMOUNT", nullable = false)
+    private Integer minAmount;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "CATEGORY_ID", nullable = false)
+    private CategoryEntity category;
+
+    @Column(name = "STATUS", nullable = false, length = 50)
     private String status;
 
-    @Column(name = "discount", nullable = false)
-    private Long discount;
+    @Lob
+    @Column(name = "NOTE")
+    private String note;
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public CategoryEntity getCategory() {
+        return category;
+    }
+
+    public void setCategory(CategoryEntity category) {
+        this.category = category;
+    }
+
+    public Integer getMinAmount() {
+        return minAmount;
+    }
+
+    public void setMinAmount(Integer minAmount) {
+        this.minAmount = minAmount;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public Long getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(Long discount) {
+        this.discount = discount;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

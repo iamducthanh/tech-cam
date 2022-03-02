@@ -9,7 +9,9 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * Description :
@@ -41,7 +43,22 @@ public abstract class BaseEntity {
      */
     @CreatedDate
     @Column(name = "create_date", updatable = false, nullable = false, columnDefinition = "TIMESTAMP")
-    private LocalDateTime createDate;
+    private Timestamp createDate;
+
+    /**
+     * người tạo bản ghi
+     */
+    @LastModifiedBy
+    @Column(name = "create_by", length = 50, nullable = false)
+//    private String modifiedBy;
+    private String createBy = "ADMIN";
+
+    /**
+     * ngày cập nhật bản ghi
+     */
+    @CreatedDate
+    @Column(name = "modifier_date", updatable = false, nullable = false, columnDefinition = "TIMESTAMP")
+    private Timestamp modifierDate;
 
     /**
      * người cập nhật bản ghi
@@ -49,7 +66,7 @@ public abstract class BaseEntity {
     @LastModifiedBy
     @Column(name = "modifier_by", length = 50, nullable = false)
 //    private String modifiedBy;
-    private String modifiedBy = "ADMIN";
+    private String modifierBy = "ADMIN";
 
     /**
      * trạng thái xoá bản ghi

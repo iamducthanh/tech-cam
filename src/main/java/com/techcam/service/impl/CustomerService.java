@@ -3,7 +3,6 @@ package com.techcam.service.impl;
 import com.techcam.dto.request.Customer.CustomerRequest;
 import com.techcam.dto.response.Customer.CustomerInfoResponse;
 import com.techcam.dto.response.Customer.CustomerServiceResponse;
-import com.techcam.entity.CustomerEntity;
 import com.techcam.repo.ICustomerRepo;
 import com.techcam.service.ICustomerService;
 import com.techcam.type.CommonTypeMethod;
