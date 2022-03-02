@@ -3,9 +3,6 @@ package com.techcam.service.impl;
 import com.techcam.dto.request.StaffAddRequestDTO;
 import com.techcam.dto.request.StaffEditRequestDTO;
 import com.techcam.dto.response.StaffResponseDTO;
-import com.techcam.entity.StaffEntity;
-import com.techcam.repo.IStaffRepo;
-import com.techcam.entity.StaffEntity;
 import com.techcam.repo.IStaffRepo;
 import com.techcam.service.IStaffService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +12,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
-import java.security.MessageDigest;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
 
 /**
  * Project_name : SMW_TECHCAM

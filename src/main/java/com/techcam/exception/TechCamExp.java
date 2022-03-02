@@ -17,9 +17,15 @@ import org.apache.catalina.connector.Response;
 
 @Data
 public class TechCamExp extends RuntimeException {
+
     private ErrorMessage errorMessage;
-    public TechCamExp(String errorCode){
-        super(errorCode);
-        this.errorMessage =ErrorMessageLoader.getMessage(errorCode);
+
+    public TechCamExp(String errorCode) {
+        this.errorMessage = ErrorMessageLoader.getMessage(errorCode);
     }
+
+    public TechCamExp(String errorCode, Object... args) {
+        this.errorMessage = ErrorMessageLoader.getMessage(String.format(errorCode, args));
+    }
+
 }

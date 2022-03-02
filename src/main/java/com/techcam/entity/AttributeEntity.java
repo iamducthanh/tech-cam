@@ -2,19 +2,15 @@ package com.techcam.entity;
 
 import javax.persistence.*;
 
-@Table(name = "product")
+@Table(name = "attribute")
 @Entity
-public class ProductEntity extends BaseEntity {
-    @Column(name = "NAME", nullable = false, length = 100)
-    private String name;
+public class AttributeEntity extends BaseEntity {
+    @Column(name = "ATTRIBUTE_NAME", nullable = false, length = 50)
+    private String attributeName;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "CATAGORY_ID", nullable = false)
-    private CategoryEntity catagory;
-
-    @Lob
-    @Column(name = "DETAIL")
-    private String detail;
+    private Catagory catagory;
 
     @Column(name = "STATUS", nullable = false, length = 50)
     private String status;
@@ -39,27 +35,19 @@ public class ProductEntity extends BaseEntity {
         this.status = status;
     }
 
-    public String getDetail() {
-        return detail;
-    }
-
-    public void setDetail(String detail) {
-        this.detail = detail;
-    }
-
-    public CategoryEntity getCatagory() {
+    public Catagory getCatagory() {
         return catagory;
     }
 
-    public void setCatagory(CategoryEntity catagory) {
+    public void setCatagory(Catagory catagory) {
         this.catagory = catagory;
     }
 
-    public String getName() {
-        return name;
+    public String getAttributeName() {
+        return attributeName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setAttributeName(String attributeName) {
+        this.attributeName = attributeName;
     }
 }

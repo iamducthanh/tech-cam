@@ -1,8 +1,5 @@
 package com.techcam.service;
 
-import com.techcam.dto.request.VoucherResDto;
-import com.techcam.dto.response.VoucherRespDto;
-
 /**
  * Project_name : SMW_TECHCAM
  *
@@ -13,9 +10,4 @@ import com.techcam.dto.response.VoucherRespDto;
  */
 public interface IVoucherService {
 
-    VoucherRespDto checkVoucher(String voucherCode);
-
-    VoucherRespDto createVoucher(VoucherResDto voucherResDto);
-
-    VoucherRespDto updateVoucher(String id, VoucherResDto voucherResDto);
 }
