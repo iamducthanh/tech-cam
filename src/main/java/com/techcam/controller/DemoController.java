@@ -20,7 +20,7 @@ public class DemoController {
     }
     @GetMapping("/1")
     public String index1() {
-        return "index";
+        return "views/layout_container";
     }
 
     public static void main(String[] args) {

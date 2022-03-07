@@ -15,7 +15,7 @@ import com.techcam.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
@@ -44,7 +44,7 @@ public class AccountApi {
  public void changePassword(@RequestBody ChangePasswordDto changePasswordDto){
   System.out.println(changePasswordDto.toString());
   StaffEntity staffEntity = (StaffEntity) sessionUtil.getObject("STAFF");
-  BCryptPasswordEncoder pass = new BCryptPasswordEncoder();
+//  BCryptPasswordEncoder pass = new BCryptPasswordEncoder();
   if(changePasswordDto.getPasswordOld().trim().length() == 0
   || changePasswordDto.getPasswordNew().trim().length() == 0
   || changePasswordDto.getPasswordComfirm().trim().length() == 0
@@ -116,7 +116,7 @@ public class AccountApi {
   System.out.println(changePasswordDto.toString());
   String email = (String) sessionUtil.getObject("resetPass");
   StaffEntity staffEntity = staffService.getByEmail(email);
-  BCryptPasswordEncoder pass = new BCryptPasswordEncoder();
+//  BCryptPasswordEncoder pass = new BCryptPasswordEncoder();
   if(changePasswordDto.getPasswordNew().trim().length() == 0
           || changePasswordDto.getPasswordComfirm().trim().length() == 0
   ){
