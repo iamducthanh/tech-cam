@@ -31,4 +31,8 @@ public interface ConstantsErrorCode {
     String VOUCHER_END_DATE_BLANK = "TC-005-005";
     String VOUCHER_DISCOUNT_BLANK = "TC-005-006";
 
+    //Lỗi supplier
+
+    String SUPPLIER_EXIST = "TC-003-001";
+    String SUPPLIER_NOT_EXIST = "TC-003-002";
 }

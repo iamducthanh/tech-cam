@@ -10,7 +10,7 @@ public class AttributeEntity extends BaseEntity {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "CATAGORY_ID", nullable = false)
-    private Catagory catagory;
+    private CategoryEntity catagory;
 
     @Column(name = "STATUS", nullable = false, length = 50)
     private String status;
@@ -35,11 +35,11 @@ public class AttributeEntity extends BaseEntity {
         this.status = status;
     }
 
-    public Catagory getCatagory() {
+    public CategoryEntity getCatagory() {
         return catagory;
     }
 
-    public void setCatagory(Catagory catagory) {
+    public void setCatagory(CategoryEntity catagory) {
         this.catagory = catagory;
     }
 

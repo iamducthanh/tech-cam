@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 import java.time.LocalDate;
+import java.util.Date;
 
 @Table(name = "staff")
 @Entity
@@ -124,7 +125,7 @@ public class StaffEntity extends BaseEntity {
         this.staffCode = staffCode;
     }
 
-    public LocalDate getDateOfBirth() {
+    public Date getDateOfBirth() {
         return dateOfBirth;
     }
 
