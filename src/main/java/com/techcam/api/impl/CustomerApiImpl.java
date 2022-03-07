@@ -51,7 +51,7 @@ public class CustomerApiImpl implements CustomerApi {
     public CustomerResponse postSaveCustomer(@Valid @RequestBody CustomerRequest customerRequest, BindingResult bindingResult) {
         CustomerResponse customerResponse = new CustomerResponse().builder().status(CustomerStatus.FAILED.name()).build();
         if (bindingResult.hasErrors()) {
-            LOGGER.error("Create Customer : Input data is incorrect");
+            LOGGER.error("Create Customer : Input data is incorrect {}", bindingResult.getFieldErrors());
             throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
         }
         CustomerServiceResponse customerServiceResponse = customerService.saveCustomer(customerRequest);

@@ -26,10 +26,10 @@ public class CustomerRequest {
     @Pattern(regexp = "[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ ]{0,50}$")
     private String fullName;
     @NotBlank
-    @Pattern(regexp = "\"|[0][3245879]{1}[0-9]{8}\"")
+//    @Pattern(regexp = "|[0][3245879]{1}[0-9]{8}\"")
     private String phoneNumber;
     @NotBlank
-    @Pattern(regexp = " \"^(.+)@(\\\\S+)$\"")
+//    @Pattern(regexp = " \"^(.+)@(\\\\S+)$\"")
     private String email;
     @NotBlank
     private String address;

@@ -35,7 +35,7 @@ import java.util.UUID;
 public class CustomerService implements ICustomerService {
     @Autowired
     private ICustomerRepo customerRepo;
-    private ModelMapper modelMapper = new ModelMapper();
+    private final ModelMapper modelMapper = new ModelMapper();
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomerService.class);
     private static final String NUMBER = "[0-9]*";
 
@@ -53,7 +53,7 @@ public class CustomerService implements ICustomerService {
 
     @Override
     public List<CustomerInfoResponse> findCustomers(String keyWord) {
-        List<CustomerEntity> customerEntities = new ArrayList<>();
+        List<CustomerEntity> customerEntities;
         List<CustomerInfoResponse> customerInfoResponses = new ArrayList<>();
         Type customersType = new TypeToken<List<CustomerInfoResponse>>() {
         }.getType();
@@ -70,42 +70,40 @@ public class CustomerService implements ICustomerService {
 
     @Override
     public CustomerInfoResponse getCustomerByEmail(String email) {
-        CustomerInfoResponse customerInfoResponse = new CustomerInfoResponse();
         CustomerEntity customerEntity = customerRepo.findByEmailAndStatus(email, CustomerStatus.ON.name());
-        if (Objects.nonNull(customerEntity)) {
-            customerInfoResponse = modelMapper.map(customerEntity, CustomerInfoResponse.class);
+        if (Objects.isNull(customerEntity)) {
+            return null;
         }
-        return customerInfoResponse;
+        return  modelMapper.map(customerEntity, CustomerInfoResponse.class);
     }
 
     @Override
     public CustomerInfoResponse getCustomerByPhoneNumber(String phoneNumber) {
-        CustomerInfoResponse customerInfoResponse = new CustomerInfoResponse();
         CustomerEntity customerEntity = customerRepo.findByPhoneNumberAndStatus(phoneNumber, CustomerStatus.ON.name());
-        if (Objects.nonNull(customerEntity)) {
-            customerInfoResponse = modelMapper.map(customerEntity, CustomerInfoResponse.class);
+        if (Objects.isNull(customerEntity)) {
+            return null;
         }
-        return customerInfoResponse;
+        return  modelMapper.map(customerEntity, CustomerInfoResponse.class);
     }
 
     @Override
     public CustomerInfoResponse getCustomerById(String id) {
-        CustomerInfoResponse customerInfoResponse = new CustomerInfoResponse();
         CustomerEntity customerEntity = customerRepo.findByIdAndStatus(id, CustomerStatus.ON.name());
-        if (Objects.nonNull(customerEntity)) {
-            customerInfoResponse = modelMapper.map(customerEntity, CustomerInfoResponse.class);
+        if (Objects.isNull(customerEntity)) {
+            return null;
         }
-        return customerInfoResponse;
+        return  modelMapper.map(customerEntity, CustomerInfoResponse.class);
     }
 
     @Override
     public CustomerServiceResponse saveCustomer(CustomerRequest customerRequest) {
-        CustomerServiceResponse customerResponse = new CustomerServiceResponse()
+        CustomerServiceResponse customerResponse = CustomerServiceResponse
                 .builder()
                 .saved(false)
                 .existing(false)
                 .build();
-        CustomerEntity customerEntity = new CustomerEntity();
+        new CustomerEntity();
+        CustomerEntity customerEntity;
         if (Objects.nonNull(getCustomerByEmail(customerRequest.getEmail()))
                 || Objects.nonNull(getCustomerByPhoneNumber(customerRequest.getPhoneNumber()))) {
             customerResponse.setExisting(true);
@@ -128,7 +126,7 @@ public class CustomerService implements ICustomerService {
 
     @Override
     public CustomerServiceResponse updateCustomer(CustomerRequest customerRequest, String typeMethod) {
-        CustomerServiceResponse customerResponse = new CustomerServiceResponse()
+        CustomerServiceResponse customerResponse = CustomerServiceResponse
                 .builder()
                 .saved(false)
                 .existing(false)
@@ -170,18 +168,12 @@ public class CustomerService implements ICustomerService {
     }
 
     private boolean checkEmailCustomerUpdate(CustomerRequest customerRequest, CustomerEntity customerEntity) {
-        if (!StringUtils.equalsIgnoreCase(customerEntity.getEmail(), customerRequest.getEmail())
-                && Objects.nonNull(getCustomerByEmail(customerRequest.getEmail()))) {
-            return true;
-        }
-        return false;
+        return !StringUtils.equalsIgnoreCase(customerEntity.getEmail(), customerRequest.getEmail())
+                && Objects.nonNull(getCustomerByEmail(customerRequest.getEmail()));
     }
 
     private boolean checkPhoneNumberCustomerUpdate(CustomerRequest customerRequest, CustomerEntity customerEntity) {
-        if (!StringUtils.equalsIgnoreCase(customerEntity.getEmail(), customerRequest.getEmail())
-                && Objects.nonNull(getCustomerByPhoneNumber(customerRequest.getPhoneNumber()))) {
-            return true;
-        }
-        return false;
+        return !StringUtils.equalsIgnoreCase(customerEntity.getPhoneNumber(), customerRequest.getPhoneNumber())
+                && Objects.nonNull(getCustomerByPhoneNumber(customerRequest.getPhoneNumber()));
     }
 }
