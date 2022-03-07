@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 /**
  * Description :
  *
@@ -22,18 +25,32 @@ public class VoucherRespDto {
 
     private String id;
 
-    private String name;
-
     private String voucherCode;
 
-    private String startDate;
+    private String voucherName;
 
-    private String endDate;
+    private Date startDate;
 
-    private String note;
+    private Date endDate;
 
     private Long discount;
 
-    private boolean hidden;
+    private Long minAmount;
+
+    private Integer quantity;
+
+    private String description;
+
+    private String categoryId;
+
+    private Boolean status;
+
+    private Boolean hidden;
+
+    private Date createDate;
+
+    private String createBy;
+
+    private Date modifiedDate;
 
 }

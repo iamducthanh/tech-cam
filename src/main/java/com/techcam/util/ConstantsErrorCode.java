@@ -10,15 +10,25 @@ package com.techcam.util;
  */
 
 public interface ConstantsErrorCode {
+
+    String ERROR_LENGTH = "CM-TC-001";
+
     // lỗi hệ thống
-     String ERROR_DATA_REQUEST = "TC-000-001";
-     String INTERNAL_SERVER_ERROR="TC-000-002";
-     String EMAIL_EXIST="TC-000-004";
-     String PHONE_NUMBER_EXIST="TC-000-003";
+    String ERROR_DATA_REQUEST = "TC-000-001";
+    String INTERNAL_SERVER_ERROR = "TC-000-002";
+    String EMAIL_EXIST = "TC-000-004";
+    String PHONE_NUMBER_EXIST = "TC-000-003";
 
 
-     // lỗi customer
-     String CUSTOMER_EXIST= "TC-004-002";
-     String CUSTOMER_NOT_EXIST="TC-004-003";
-     
+    // lỗi customer
+    String CUSTOMER_EXIST = "TC-004-002";
+    String CUSTOMER_NOT_EXIST = "TC-004-003";
+
+    String DATE_NOT_FORMAT = "TC-005-002";
+    String VOUCHER_CODE_BLANK = "TC-005-001";
+    String VOUCHER_NAME_BLANK = "TC-005-003";
+    String VOUCHER_START_DATE_BLANK = "TC-005-004";
+    String VOUCHER_END_DATE_BLANK = "TC-005-005";
+    String VOUCHER_DISCOUNT_BLANK = "TC-005-006";
+
 }

@@ -1,21 +1,22 @@
 package com.techcam.entity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Lob;
+import javax.persistence.Table;
 import java.time.LocalDate;
 
-@Table(name = "voucher_customer")
+@Table(name = "images")
 @Entity
-public class VoucherCustomerEntity extends BaseEntity {
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "CUSTOMER_ID", nullable = false)
-    private CustomerEntity customer;
+public class ImageEntity extends BaseEntity {
+    @Column(name = "IMAGE_LINK", nullable = false, length = 4000)
+    private String imageLink;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "VOUCHER_ID", nullable = false)
-    private VoucherEntity voucher;
+    @Column(name = "OBJECT_ID", nullable = false, length = 64)
+    private String objectId;
 
-    @Column(name = "DISCOUNT", nullable = false)
-    private Long discount;
+    @Column(name = "OBJECT_TYPE", nullable = false, length = 50)
+    private String objectType;
 
     @Column(name = "START_DT", nullable = false)
     private LocalDate startDt;
@@ -62,27 +63,27 @@ public class VoucherCustomerEntity extends BaseEntity {
         this.startDt = startDt;
     }
 
-    public Long getDiscount() {
-        return discount;
+    public String getObjectType() {
+        return objectType;
     }
 
-    public void setDiscount(Long discount) {
-        this.discount = discount;
+    public void setObjectType(String objectType) {
+        this.objectType = objectType;
     }
 
-    public VoucherEntity getVoucher() {
-        return voucher;
+    public String getObjectId() {
+        return objectId;
     }
 
-    public void setVoucher(VoucherEntity voucher) {
-        this.voucher = voucher;
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
     }
 
-    public CustomerEntity getCustomer() {
-        return customer;
+    public String getImageLink() {
+        return imageLink;
     }
 
-    public void setCustomer(CustomerEntity customer) {
-        this.customer = customer;
+    public void setImageLink(String imageLink) {
+        this.imageLink = imageLink;
     }
 }

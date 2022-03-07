@@ -1,7 +1,6 @@
 package com.techcam.util;
 
 import com.techcam.dto.error.ErrorRespDto;
-import com.techcam.exception.IllegalStateConfig;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
