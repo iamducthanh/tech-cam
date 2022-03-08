@@ -34,25 +34,9 @@ public class VoucherController {
 
     @GetMapping
     public String voucherManager(Model model) {
-//        List<VoucherRespDto> lstVoucher = voucherService.getAllVoucher();
-//        List<CategoryRespDto> lstCategory = categoryService.getAllCategory();
-        List<VoucherRespDto> lstVoucher = new ArrayList<>();
-        List<CategoryRespDto> lstCategory = new ArrayList<>();
-        VoucherRespDto voucherRespDto = VoucherRespDto.builder()
-                .id("1")
-                .voucherCode("2")
-                .voucherName("3")
-                .startDate(new Date())
-                .endDate(new Date())
-                .discount(Long.parseLong("324325"))
-                .minAmount(Long.parseLong("20000"))
-                .status(true)
-                .hidden(false)
-                .createBy("Ngoc")
-                .createDate(new Date())
-                .modifiedDate(new Date())
-                .build();
-        lstVoucher.add(voucherRespDto);
+        List<VoucherRespDto> lstVoucher = voucherService.getAllVoucher();
+        List<CategoryRespDto> lstCategory = categoryService.getAllCategory();
+        lstVoucher.sort(((o1, o2) -> o2.getCreateDate().compareTo(o1.getCreateDate())));
         model.addAttribute("lstVoucher", lstVoucher);
         model.addAttribute("lstCategory", lstCategory);
         // TODO lịch sử sử dụng voucher

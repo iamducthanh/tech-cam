@@ -25,7 +25,7 @@ public class TechCamExp extends RuntimeException {
     }
 
     public TechCamExp(String errorCode, Object... args) {
-        this.errorMessage = ErrorMessageLoader.getMessage(String.format(errorCode, args));
+        this.errorMessage = ErrorMessageLoader.getMessage(errorCode, args);
     }
 
 }

@@ -63,4 +63,6 @@ public class VoucherResDto {
 
     private String status;
 
+    private String note;
+
 }

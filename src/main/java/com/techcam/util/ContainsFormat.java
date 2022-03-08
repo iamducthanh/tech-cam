@@ -16,4 +16,8 @@ public interface ContainsFormat {
 
     String REGEX_NUMBER = "[0-9]{0,}";
 
+    String REGIEX_ENGLISH = "[a-zA-Z0-9-]+";
+
+    String REGEX_VIETNAM = "^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\\s\\W|_]+$";
+
 }

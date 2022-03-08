@@ -1,8 +1,11 @@
 package com.techcam.repo;
 
+import com.techcam.dto.response.product.ProductResponse;
 import com.techcam.entity.ProductEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * Description :
@@ -15,4 +18,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IProductRepo extends JpaRepository<ProductEntity, String> {
+
+    List<ProductEntity> findAllByDeleteFlagIsFalse();
+
+    List<ProductEntity> findALlByProductCodeAndDeleteFlagIsFalse(String productCode);
+
+    ProductEntity getByIdAndDeleteFlagIsFalse(String id);
 }

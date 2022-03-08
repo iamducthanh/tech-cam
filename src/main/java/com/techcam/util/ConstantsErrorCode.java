@@ -11,6 +11,10 @@ package com.techcam.util;
 
 public interface ConstantsErrorCode {
 
+    String SUCCESS = "Success";
+
+    String ERROR = "Error";
+
     String ERROR_LENGTH = "CM-TC-001";
 
     // lỗi hệ thống
@@ -30,5 +34,20 @@ public interface ConstantsErrorCode {
     String VOUCHER_START_DATE_BLANK = "TC-005-004";
     String VOUCHER_END_DATE_BLANK = "TC-005-005";
     String VOUCHER_DISCOUNT_BLANK = "TC-005-006";
+
+    String ERROR_BLANK = "CM-TC-002";
+
+    String PRODUCT_CODE_ERROR_REGEX = "TC-006-001";
+
+    String PRODUCT_MONEY_ERROR = "TC-006-002";
+
+    String PRODUCT_NAME_ERROR = "TC-006-003";
+
+    String PRODUCT_IMAGE_ERROR = "TC-006-004";
+
+    String PRODUCT_IMAGE_MAX = "TC-006-005";
+
+    String PRODUCT_NOT_EXISTS = "TC-006-006";
+
 
 }

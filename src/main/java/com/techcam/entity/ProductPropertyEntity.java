@@ -1,9 +1,16 @@
 package com.techcam.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
 @Table(name = "product_property")
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProductPropertyEntity extends BaseEntity {
     @ManyToOne(optional = false)
     @JoinColumn(name = "ATTRIBUTE_ID", nullable = false)

@@ -1,5 +1,9 @@
 package com.techcam.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
@@ -7,6 +11,9 @@ import javax.persistence.Table;
 
 @Table(name = "category")
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CategoryEntity extends BaseEntity {
     @Column(name = "NAME", nullable = false, length = 50)
     private String name;

@@ -1,9 +1,12 @@
 package com.techcam.util;
 
 import com.techcam.dto.error.ErrorRespDto;
+import com.techcam.exception.TechCamExp;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 
 /**
@@ -29,13 +32,13 @@ public class ConvertUtil {
         return convertUtil;
     }
 
-    public Date strToDate(String startDate, String pattern) {
+    public LocalDate strToDate(String startDate, String pattern) {
         try {
-            return new SimpleDateFormat(pattern).parse(startDate);
+            return new SimpleDateFormat(pattern).parse(startDate).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         } catch (ParseException e) {
-            throw new IllegalStateConfig(ErrorRespDto.builder()
-                    .message("Thời gian không hợp lệ")
-                    .build());
+            e.printStackTrace();
+            throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
         }
     }
+
 }

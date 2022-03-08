@@ -1,25 +1,35 @@
 package com.techcam.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 import javax.persistence.*;
 
 @Table(name = "product_detail")
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class ProductDetailEntity extends BaseEntity {
-    @Column(name = "QUANTITY", nullable = false)
+
+    @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
-    @Column(name = "PRICE", nullable = false)
+    @Column(name = "price", nullable = false)
     private Long price;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "PRODUCT_ID", nullable = false)
+    @JoinColumn(name = "product_id", nullable = false)
     private ProductEntity product;
 
-    @Column(name = "STATUS", nullable = false, length = 50)
+    @Column(name = "status", nullable = false, length = 50)
     private String status;
 
     @Lob
-    @Column(name = "NOTE")
+    @Column(name = "note")
     private String note;
 
     public String getNote() {

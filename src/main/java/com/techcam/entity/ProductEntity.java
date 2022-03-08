@@ -1,23 +1,34 @@
 package com.techcam.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
 @Table(name = "product")
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProductEntity extends BaseEntity {
+
     @Column(name = "NAME", nullable = false, length = 100)
     private String name;
 
+    @Column(name = "PRODUCT_CODE", nullable = false, length = 100)
+    private String productCode;
+
     @ManyToOne(optional = false)
-    @JoinColumn(name = "CATAGORY_ID", nullable = false)
-    private CategoryEntity catagory;
+    @JoinColumn(name = "category_ID", nullable = false)
+    private CategoryEntity category;
 
     @Lob
     @Column(name = "DETAIL")
     private String detail;
 
-    @Column(name = "STATUS", nullable = false, length = 50)
-    private String status;
+    @Column(name = "STATUS", nullable = false)
+    private Boolean status;
 
     @Lob
     @Column(name = "NOTE")
@@ -31,11 +42,11 @@ public class ProductEntity extends BaseEntity {
         this.note = note;
     }
 
-    public String getStatus() {
+    public Boolean getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Boolean status) {
         this.status = status;
     }
 
@@ -47,12 +58,12 @@ public class ProductEntity extends BaseEntity {
         this.detail = detail;
     }
 
-    public CategoryEntity getCatagory() {
-        return catagory;
+    public CategoryEntity getcategory() {
+        return category;
     }
 
-    public void setCatagory(CategoryEntity catagory) {
-        this.catagory = catagory;
+    public void setcategory(CategoryEntity category) {
+        this.category = category;
     }
 
     public String getName() {

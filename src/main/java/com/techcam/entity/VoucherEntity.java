@@ -1,10 +1,17 @@
 package com.techcam.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Table(name = "voucher")
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class VoucherEntity extends BaseEntity {
     @Column(name = "NAME", nullable = false, length = 200)
     private String name;
@@ -32,11 +39,11 @@ public class VoucherEntity extends BaseEntity {
     private Integer minAmount;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "CATEGORY_ID", nullable = false)
+    @JoinColumn(name = "CATEGORY_ID")
     private CategoryEntity category;
 
     @Column(name = "STATUS", nullable = false, length = 50)
-    private String status;
+    private Boolean status;
 
     @Lob
     @Column(name = "NOTE")
@@ -50,11 +57,11 @@ public class VoucherEntity extends BaseEntity {
         this.note = note;
     }
 
-    public String getStatus() {
+    public Boolean getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Boolean status) {
         this.status = status;
     }
 

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -29,13 +30,13 @@ public class VoucherRespDto {
 
     private String voucherName;
 
-    private Date startDate;
+    private LocalDate startDate;
 
-    private Date endDate;
+    private LocalDate endDate;
 
     private Long discount;
 
-    private Long minAmount;
+    private Integer minAmount;
 
     private Integer quantity;
 
@@ -47,10 +48,10 @@ public class VoucherRespDto {
 
     private Boolean hidden;
 
-    private Date createDate;
+    private LocalDateTime createDate;
 
     private String createBy;
 
-    private Date modifiedDate;
+    private LocalDateTime modifiedDate;
 
 }

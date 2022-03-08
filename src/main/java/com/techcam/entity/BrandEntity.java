@@ -1,7 +1,5 @@
 package com.techcam.entity;
 
-import com.techcam.entity.BaseEntity;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;

@@ -3,6 +3,7 @@ package com.techcam.service.impl;
 import com.techcam.dto.request.StaffAddRequestDTO;
 import com.techcam.dto.request.StaffEditRequestDTO;
 import com.techcam.dto.response.StaffResponseDTO;
+import com.techcam.entity.StaffEntity;
 import com.techcam.repo.IStaffRepo;
 import com.techcam.service.IStaffService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -138,7 +139,7 @@ public class StaffService implements IStaffService {
             }
         }
         entity.setStaffCode(staffCode);
-        entity.setDateOfBirth(staff.getDateOfBirth());
+//        entity.setDateOfBirth(staff.getDateOfBirth());
         entity.setStatus("1");
         entity.setNote(staff.getNote());
         entity.setCountLoginFalse(0);
@@ -156,7 +157,7 @@ public class StaffService implements IStaffService {
         entity.setPhoneNumber(staff.getPhoneNumber());
         entity.setAddress(staff.getAddress());
         entity.setStaffCode(staff.getStaffCode());
-        entity.setDateOfBirth(staff.getDateOfBirth());
+//        entity.setDateOfBirth(staff.getDateOfBirth());
         entity.setNote(staff.getNote());
 
         staffRepo.save(entity);
@@ -194,7 +195,7 @@ public class StaffService implements IStaffService {
         StaffResponseDTO staff = new StaffResponseDTO();
         staff.setId(entity.getId());
         staff.setFullName(entity.getFullName());
-        staff.setDateOfBirth(entity.getDateOfBirth());
+//        staff.setDateOfBirth(entity.getDateOfBirth());
         staff.setStaffCode(entity.getStaffCode());
         staff.setPhoneNumber(entity.getPhoneNumber());
         staff.setEmail(entity.getEmail());

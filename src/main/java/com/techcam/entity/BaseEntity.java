@@ -30,11 +30,11 @@ import java.util.Date;
 public abstract class BaseEntity {
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
+//    @GeneratedValue(generator = "UUID")
+//    @GenericGenerator(
+//            name = "UUID",
+//            strategy = "org.hibernate.id.UUIDGenerator"
+//    )
     @Column(name = "id", nullable = false, length = 64)
     private String id;
 
@@ -43,7 +43,7 @@ public abstract class BaseEntity {
      */
     @CreatedDate
     @Column(name = "create_date", updatable = false, nullable = false, columnDefinition = "TIMESTAMP")
-    private Timestamp createDate;
+    private LocalDateTime createDate;
 
     /**
      * người tạo bản ghi
@@ -58,7 +58,7 @@ public abstract class BaseEntity {
      */
     @CreatedDate
     @Column(name = "modifier_date", updatable = false, nullable = false, columnDefinition = "TIMESTAMP")
-    private Timestamp modifierDate;
+    private LocalDateTime modifierDate;
 
     /**
      * người cập nhật bản ghi
