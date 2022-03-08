@@ -3,6 +3,7 @@ package com.techcam.service.impl;
 import com.techcam.dto.request.StaffAddRequestDTO;
 import com.techcam.dto.request.StaffEditRequestDTO;
 import com.techcam.dto.response.StaffResponseDTO;
+import com.techcam.entity.StaffEntity;
 import com.techcam.repo.IStaffRepo;
 import com.techcam.service.IStaffService;
 import org.springframework.beans.factory.annotation.Autowired;

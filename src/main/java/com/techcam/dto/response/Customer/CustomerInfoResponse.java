@@ -29,5 +29,4 @@ public class CustomerInfoResponse {
     private String email;
     private String address;
     private LocalDate dateOfBirth;
-    private LocalDateTime createDate;
 }

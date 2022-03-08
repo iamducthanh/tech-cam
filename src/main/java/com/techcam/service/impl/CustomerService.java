@@ -3,6 +3,7 @@ package com.techcam.service.impl;
 import com.techcam.dto.request.Customer.CustomerRequest;
 import com.techcam.dto.response.Customer.CustomerInfoResponse;
 import com.techcam.dto.response.Customer.CustomerServiceResponse;
+import com.techcam.entity.CustomerEntity;
 import com.techcam.repo.ICustomerRepo;
 import com.techcam.service.ICustomerService;
 import com.techcam.type.CommonTypeMethod;
@@ -17,10 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.sql.Timestamp;
+import java.util.*;
 
 /**
  * Description:
@@ -152,6 +151,7 @@ public class CustomerService implements ICustomerService {
                 customerEntity.setAddress(customerRequest.getAddress());
                 customerEntity.setDateOfBirth(customerRequest.getDateOfBirth());
                 customerEntity.setFullName(customerRequest.getFullName());
+                customerEntity.setModifierDate(new Timestamp(new Date().getTime()));
 
                 // todo còn update time chưa cập nhật người sửa người tạo
             }

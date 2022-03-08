@@ -8,6 +8,7 @@ import com.techcam.dto.request.ForgotPasswordDto;
 import com.techcam.dto.request.MailDto;
 import com.techcam.entity.StaffEntity;
 import com.techcam.exception.IllegalStateConfig;
+import com.techcam.exception.TechCamExp;
 import com.techcam.service.impl.StaffService;
 import com.techcam.util.EncodeUtil;
 import com.techcam.util.MailerUtil;
@@ -49,7 +50,7 @@ public class AccountApi {
   || changePasswordDto.getPasswordNew().trim().length() == 0
   || changePasswordDto.getPasswordComfirm().trim().length() == 0
   ){
-   throw new IllegalStateConfig("Vui lòng nhập đầy đủ thông tin!");
+   throw new TechCamExp("Vui lòng nhập đầy đủ thông tin!");
   }
   if(!pass.matches(changePasswordDto.getPasswordOld(), staffEntity.getPassword())){
    throw new IllegalStateConfig("Mật khẩu cũ không chính xác!");
