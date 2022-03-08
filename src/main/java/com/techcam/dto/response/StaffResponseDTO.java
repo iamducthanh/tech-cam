@@ -2,7 +2,6 @@ package com.techcam.dto.response;
 
 import lombok.Data;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -38,5 +37,5 @@ public class StaffResponseDTO {
 
     private String status;
 
-    private LocalDateTime createDate;
+    private Date createDate;
 }

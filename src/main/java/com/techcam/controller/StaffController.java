@@ -30,6 +30,6 @@ public class StaffController {
         List<StaffResponseDTO> staffs = staffService.findAllByDeleteFlagIsFalse();
         model.addAttribute("staffs", staffs);
 
-        return "001_Staff";
+        return "views/staff/001_Staff";
     }
 }
