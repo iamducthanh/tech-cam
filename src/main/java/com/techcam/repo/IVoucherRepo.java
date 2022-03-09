@@ -20,7 +20,7 @@ import java.util.List;
 public interface IVoucherRepo extends JpaRepository<VoucherEntity, String> {
 
     @Query("select o from VoucherEntity o " +
-            "where o.voucherCode = :voucherCode " +
+            "where o.code = :voucherCode " +
             "and o.deleteFlag = false")
     List<VoucherEntity> findByVoucherCode(String voucherCode);
 

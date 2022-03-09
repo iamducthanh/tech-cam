@@ -31,6 +31,7 @@
 </head>
 <body data-topbar="colored" data-layout="horizontal">
 
+<!-- Loader -->
 <div id="preloader">
     <div id="status">
         <div class="spinner"></div>
@@ -38,25 +39,24 @@
 </div>
 
 <div id="layout-wrapper">
-    <!--    header-->
+    <!--header-->
     <div th:replace="~{/commons/header :: header}"></div>
     <div class="main-content">
         <div class="page-content">
             <div layout:fragment="content"></div>
         </div>
 
-<!--        footer-->
+        <!--footer-->
         <div th:replace="~{/commons/footer :: footer}"></div>
 
     </div>
-
 </div>
 
 <!-- cài đặt page -->
 <div class="right-bar">
     <div data-simplebar class="h-100">
         <div class="rightbar-title px-3 py-4">
-            <a href="" class="right-bar-toggle float-end">
+            <a href="#" class="right-bar-toggle float-end">
                 <i class="mdi mdi-close noti-icon"></i>
             </a>
             <h5 class="m-0">Settings</h5>
@@ -137,5 +137,6 @@
 <script th:src="@{/assets/js/myjs.js}"></script>
 <script th:src="@{/assets/js/bootstrap-datepicker.min.js}"></script>
 
+<script layout:fragment="script"></script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-package com.techcam.util;
+package com.techcam.repo.util;
 
 import com.techcam.dto.request.MailDto;
 import org.springframework.beans.factory.annotation.Autowired;
