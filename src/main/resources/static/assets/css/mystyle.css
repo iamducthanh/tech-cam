@@ -52,7 +52,7 @@
 }
 
 ::-webkit-scrollbar {
-    width: 10px;
+    width: 7px;
     height: 0px;
 }
 
@@ -84,4 +84,12 @@
     border-left: none;
     border-right: none;
     margin-bottom: 10px;
+}
+
+.shadow {
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px!important;
+}
+
+.shadow-top {
+    box-shadow: rgb(0 0 0 / 7%) 0px -5px 15px;
 }

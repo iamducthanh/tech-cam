@@ -47,6 +47,4 @@ public interface IStaffService {
     boolean changeStatusStaff(String id, String status);
 
     StaffEntity getByEmail(String email);
-
-    void saveStaff(StaffEntity staffEntity);
 }

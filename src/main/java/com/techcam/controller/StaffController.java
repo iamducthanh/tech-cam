@@ -18,8 +18,8 @@ import java.util.List;
  * @since : 23.1.2022
  * Description :
  */
-@RequestMapping("/staff")
 @Controller
+@RequestMapping("/staff")
 public class StaffController {
 
     @Autowired

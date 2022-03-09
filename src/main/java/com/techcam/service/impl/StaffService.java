@@ -6,8 +6,10 @@ import com.techcam.dto.response.StaffResponseDTO;
 import com.techcam.entity.StaffEntity;
 import com.techcam.repo.IStaffRepo;
 import com.techcam.service.IStaffService;
-import org.springframework.beans.factory.annotation.Autowired;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ import java.util.Optional;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class StaffService implements IStaffService {
 
     private static final String DEFAULT_PASSWORD = "0123456789";
@@ -115,7 +118,7 @@ public class StaffService implements IStaffService {
     @Override
     public String addStaff(StaffAddRequestDTO staff) {
         StaffEntity entity = new StaffEntity();
-        if (staffRepo.findByEmail(staff.getEmail()) != null) {
+        if (staffRepo.findByEmail(staff.getEmail()).size() != 0) {
             return "Email đã tồn tại";
         }
 
@@ -129,22 +132,25 @@ public class StaffService implements IStaffService {
             entity.setAvatar("none");
         }
 
-        Integer staffCode;
-        for (; ; ) {
-            int min = 1;
-            int max = 9999;
-            staffCode = (int) Math.floor(Math.random() * (max - min + 1) + min);
-            if (staffRepo.findByStaffCode(staffCode) == null) {
-                break;
-            }
-        }
+        // Generate random StaffCode
+        int staffCode;
+        do {
+            staffCode = Integer.parseInt(RandomStringUtils.randomNumeric(4));
+        } while (staffRepo.findByStaffCode(staffCode) != null);
+
         entity.setStaffCode(staffCode);
         entity.setDateOfBirth(staff.getDateOfBirth());
         entity.setStatus("1");
         entity.setNote(staff.getNote());
         entity.setCountLoginFalse(0);
+        entity.setUsername(staff.getUsername());
+        entity.setIdentityNumber(staff.getIdentityNumber());
 
-        staffRepo.save(entity);
+        try {
+            staffRepo.save(entity);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
 
         return "ok";
     }
@@ -158,9 +164,15 @@ public class StaffService implements IStaffService {
         entity.setAddress(staff.getAddress());
         entity.setStaffCode(staff.getStaffCode());
         entity.setDateOfBirth(staff.getDateOfBirth());
+        entity.setIdentityNumber(staff.getIdentityNumber());
+        entity.setUsername(staff.getUsername());
         entity.setNote(staff.getNote());
 
-        staffRepo.save(entity);
+        try {
+            staffRepo.save(entity);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
         return "ok";
     }
 
@@ -184,7 +196,13 @@ public class StaffService implements IStaffService {
         if (optionalStaff.isPresent()) {
             StaffEntity entity = optionalStaff.get();
             entity.setStatus(status);
-            staffRepo.save(entity);
+
+            try {
+                staffRepo.save(entity);
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
+
             return true;
         }
         return false;
@@ -198,6 +216,8 @@ public class StaffService implements IStaffService {
         staff.setDateOfBirth(entity.getDateOfBirth());
         staff.setStaffCode(entity.getStaffCode());
         staff.setPhoneNumber(entity.getPhoneNumber());
+        staff.setIdentityNumber(entity.getIdentityNumber());
+        staff.setUsername(entity.getUsername());
         staff.setEmail(entity.getEmail());
         staff.setAddress(entity.getAddress());
         staff.setAvatar(entity.getAvatar());
@@ -207,6 +227,7 @@ public class StaffService implements IStaffService {
         staff.setStatus(entity.getStatus());
         return staff;
     }
+
     private final IStaffRepo repo;
 
     @Override
@@ -215,13 +236,7 @@ public class StaffService implements IStaffService {
         return list.isEmpty() ? null : list.get(0);
     }
 
-    @Override
-    public void saveStaff(StaffEntity staffEntity) {
-        repo.save(staffEntity);
-    }
-
-
-    public static void main(String[] args)  {
+    public static void main(String[] args) {
 //        String secretKey = "TVDqqqqqqqq";
 //        String originalString = "teamvietdev.com";
 //

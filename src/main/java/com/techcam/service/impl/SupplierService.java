@@ -6,7 +6,7 @@ import com.techcam.entity.SupplierEntity;
 import com.techcam.exception.SupplierException;
 import com.techcam.repo.ISupplierRepo;
 import com.techcam.service.ISupplierService;
-import com.techcam.util.ConstantsErrorCode;
+import com.techcam.repo.util.ConstantsErrorCode;
 import org.apache.logging.log4j.util.Strings;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;

@@ -1,9 +1,9 @@
 package com.techcam.entity;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
 import javax.persistence.*;
 import java.util.Date;
-import java.sql.Timestamp;
-import java.util.Objects;
 
 /**
  * @author DucBV
@@ -12,11 +12,10 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "staff", schema = "poly_techcam", catalog = "")
-public class StaffEntity {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class StaffEntity extends BaseEntity {
     @Id
     @Column(name = "ID")
-    private String id;
+    private String id = RandomStringUtils.randomNumeric(6);
     @Basic
     @Column(name = "FULL_NAME")
     private String fullName;
@@ -59,21 +58,6 @@ public class StaffEntity {
     @Basic
     @Column(name = "NOTE")
     private String note;
-    @Basic
-    @Column(name = "CREATE_DATE")
-    private Timestamp createDate;
-    @Basic
-    @Column(name = "MODIFIER_DATE")
-    private Timestamp modifierDate;
-    @Basic
-    @Column(name = "CREATE_BY")
-    private String createBy;
-    @Basic
-    @Column(name = "MODIFIER_BY")
-    private String modifierBy;
-    @Basic
-    @Column(name = "DELETE_FLAG")
-    private boolean deleteFlag;
 
     public String getId() {
         return id;
@@ -195,56 +179,4 @@ public class StaffEntity {
         this.note = note;
     }
 
-    public Timestamp getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Timestamp createDate) {
-        this.createDate = createDate;
-    }
-
-    public Timestamp getModifierDate() {
-        return modifierDate;
-    }
-
-    public void setModifierDate(Timestamp modifierDate) {
-        this.modifierDate = modifierDate;
-    }
-
-    public String getCreateBy() {
-        return createBy;
-    }
-
-    public void setCreateBy(String createBy) {
-        this.createBy = createBy;
-    }
-
-    public String getModifierBy() {
-        return modifierBy;
-    }
-
-    public void setModifierBy(String modifierBy) {
-        this.modifierBy = modifierBy;
-    }
-
-    public boolean isDeleteFlag() {
-        return deleteFlag;
-    }
-
-    public void setDeleteFlag(boolean deleteFlag) {
-        this.deleteFlag = deleteFlag;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        StaffEntity that = (StaffEntity) o;
-        return staffCode == that.staffCode && countLoginFalse == that.countLoginFalse && deleteFlag == that.deleteFlag && Objects.equals(id, that.id) && Objects.equals(fullName, that.fullName) && Objects.equals(phoneNumber, that.phoneNumber) && Objects.equals(email, that.email) && Objects.equals(address, that.address) && Objects.equals(dateOfBirth, that.dateOfBirth) && Objects.equals(identityNumber, that.identityNumber) && Objects.equals(avatar, that.avatar) && Objects.equals(role, that.role) && Objects.equals(username, that.username) && Objects.equals(password, that.password) && Objects.equals(status, that.status) && Objects.equals(note, that.note) && Objects.equals(createDate, that.createDate) && Objects.equals(modifierDate, that.modifierDate) && Objects.equals(createBy, that.createBy) && Objects.equals(modifierBy, that.modifierBy);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, fullName, phoneNumber, email, address, dateOfBirth, staffCode, identityNumber, avatar, role, username, password, countLoginFalse, status, note, createDate, modifierDate, createBy, modifierBy, deleteFlag);
-    }
 }

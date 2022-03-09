@@ -25,13 +25,17 @@ public class StaffResponseDTO {
 
     private String address;
 
+    private Date dateOfBirth;
+
     private Integer staffCode;
 
-    private Date dateOfBirth;
+    private String identityNumber;
 
     private String avatar;
 
     private String role;
+
+    private String username;
 
     private String note;
 

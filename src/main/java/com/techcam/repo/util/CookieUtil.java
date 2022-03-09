@@ -1,4 +1,4 @@
-package com.techcam.util;
+package com.techcam.repo.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
