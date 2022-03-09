@@ -1,118 +1,85 @@
 package com.techcam.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.Table;
-import java.time.LocalDate;
+import javax.persistence.*;
+import java.util.Date;
+import java.sql.Timestamp;
+import java.util.Objects;
 
-@Table(name = "customer")
+/**
+ * @author DucBV
+ * @version 1.0
+ * @since 8.3.2022
+ */
 @Entity
-public class CustomerEntity extends BaseEntity {
-    @Column(name = "FULL_NAME", nullable = false, length = 100)
+@Table(name = "customer", schema = "poly_techcam", catalog = "")
+public class CustomerEntity {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @Column(name = "ID")
+    private String id;
+    @Basic
+    @Column(name = "FULL_NAME")
     private String fullName;
-
-    @Column(name = "PHONE_NUMBER", nullable = false, length = 20)
+    @Basic
+    @Column(name = "PHONE_NUMBER")
     private String phoneNumber;
-
-    @Column(name = "EMAIL", nullable = false, length = 50)
+    @Basic
+    @Column(name = "EMAIL")
     private String email;
-
-    @Column(name = "ADDRESS", nullable = false, length = 200)
+    @Basic
+    @Column(name = "ADDRESS")
     private String address;
-
-    @Column(name = "IDENTITY_NUMBER", nullable = false, length = 20)
+    @Basic
+    @Column(name = "IDENTITY_NUMBER")
     private String identityNumber;
-
-    @Column(name = "AVATAR", nullable = false)
+    @Basic
+    @Column(name = "AVATAR")
     private String avatar;
-
-    @Column(name = "ROLE", nullable = false, length = 20)
+    @Basic
+    @Column(name = "ROLE")
     private String role;
-
-    @Column(name = "DATE_OF_BIRTH", nullable = false)
-    private LocalDate dateOfBirth;
-
-    @Column(name = "COUNT_LOGIN_FALSE", nullable = false)
-    private Integer countLoginFalse;
-
-    @Column(name = "STATUS", nullable = false, length = 50)
+    @Basic
+    @Column(name = "DATE_OF_BIRTH")
+    private Date dateOfBirth;
+    @Basic
+    @Column(name = "COUNT_LOGIN_FALSE")
+    private int countLoginFalse;
+    @Basic
+    @Column(name = "STATUS")
     private String status;
-
-    @Lob
+    @Basic
     @Column(name = "NOTE")
     private String note;
+    @Basic
+    @Column(name = "CREATE_DATE")
+    private Timestamp createDate;
+    @Basic
+    @Column(name = "MODIFIER_DATE")
+    private Timestamp modifierDate;
+    @Basic
+    @Column(name = "CREATE_BY")
+    private String createBy;
+    @Basic
+    @Column(name = "MODIFIER_BY")
+    private String modifierBy;
+    @Basic
+    @Column(name = "DELETE_FLAG")
+    private boolean deleteFlag;
 
-    public String getNote() {
-        return note;
+    public String getId() {
+        return id;
     }
 
-    public void setNote(String note) {
-        this.note = note;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getStatus() {
-        return status;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Integer getCountLoginFalse() {
-        return countLoginFalse;
-    }
-
-    public void setCountLoginFalse(Integer countLoginFalse) {
-        this.countLoginFalse = countLoginFalse;
-    }
-
-    public LocalDate getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(LocalDate dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    public String getIdentityNumber() {
-        return identityNumber;
-    }
-
-    public void setIdentityNumber(String identityNumber) {
-        this.identityNumber = identityNumber;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getPhoneNumber() {
@@ -123,11 +90,128 @@ public class CustomerEntity extends BaseEntity {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getEmail() {
+        return email;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getIdentityNumber() {
+        return identityNumber;
+    }
+
+    public void setIdentityNumber(String identityNumber) {
+        this.identityNumber = identityNumber;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public int getCountLoginFalse() {
+        return countLoginFalse;
+    }
+
+    public void setCountLoginFalse(int countLoginFalse) {
+        this.countLoginFalse = countLoginFalse;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public Timestamp getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Timestamp createDate) {
+        this.createDate = createDate;
+    }
+
+    public Timestamp getModifierDate() {
+        return modifierDate;
+    }
+
+    public void setModifierDate(Timestamp modifierDate) {
+        this.modifierDate = modifierDate;
+    }
+
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
+    }
+
+    public String getModifierBy() {
+        return modifierBy;
+    }
+
+    public void setModifierBy(String modifierBy) {
+        this.modifierBy = modifierBy;
+    }
+
+    public boolean isDeleteFlag() {
+        return deleteFlag;
+    }
+
+    public void setDeleteFlag(boolean deleteFlag) {
+        this.deleteFlag = deleteFlag;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CustomerEntity that = (CustomerEntity) o;
+        return countLoginFalse == that.countLoginFalse && deleteFlag == that.deleteFlag && Objects.equals(id, that.id) && Objects.equals(fullName, that.fullName) && Objects.equals(phoneNumber, that.phoneNumber) && Objects.equals(email, that.email) && Objects.equals(address, that.address) && Objects.equals(identityNumber, that.identityNumber) && Objects.equals(avatar, that.avatar) && Objects.equals(role, that.role) && Objects.equals(dateOfBirth, that.dateOfBirth) && Objects.equals(status, that.status) && Objects.equals(note, that.note) && Objects.equals(createDate, that.createDate) && Objects.equals(modifierDate, that.modifierDate) && Objects.equals(createBy, that.createBy) && Objects.equals(modifierBy, that.modifierBy);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, fullName, phoneNumber, email, address, identityNumber, avatar, role, dateOfBirth, countLoginFalse, status, note, createDate, modifierDate, createBy, modifierBy, deleteFlag);
     }
 }

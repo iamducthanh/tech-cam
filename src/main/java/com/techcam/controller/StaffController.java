@@ -18,8 +18,8 @@ import java.util.List;
  * @since : 23.1.2022
  * Description :
  */
-@RequestMapping("/staff")
 @Controller
+@RequestMapping("/staff")
 public class StaffController {
 
     @Autowired
@@ -30,6 +30,6 @@ public class StaffController {
         List<StaffResponseDTO> staffs = staffService.findAllByDeleteFlagIsFalse();
         model.addAttribute("staffs", staffs);
 
-        return "001_Staff";
+        return "views/staff/001_Staff";
     }
 }

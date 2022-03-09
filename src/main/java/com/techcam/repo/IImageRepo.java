@@ -1,6 +1,6 @@
 package com.techcam.repo;
 
-import com.techcam.entity.ImageEntity;
+import com.techcam.entity.ImagesEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -12,5 +12,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Project_name : tech-cam
  */
 
-public interface IImageRepo extends JpaRepository<ImageEntity, String> {
+public interface IImageRepo extends JpaRepository<ImagesEntity, String> {
 }

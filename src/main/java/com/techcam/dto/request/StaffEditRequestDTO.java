@@ -23,11 +23,15 @@ public class StaffEditRequestDTO {
 
     private String address;
 
-    private Integer staffCode;
-
     private Date dateOfBirth;
 
+    private Integer staffCode;
+
+    private String identityNumber;
+
     private String role;
+
+    private String username;
 
     private String note;
 }
