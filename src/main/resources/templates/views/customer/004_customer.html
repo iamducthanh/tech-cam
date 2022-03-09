@@ -1,34 +1,28 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layoutout/index}"
->
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/weblayout}"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="utf-8">
     <title>Thêm Khách Hàng</title>
-
 </head>
+
 <body >
-                 data-bsStyle="assets/css/bootstrap-dark.min.css" data-appStyle="assets/css/app-dark.min.css">
-                <label class="form-check-label" for="dark-mode-switch">Dark Mode</label>
-            </div>
-
-        </div>
-
-    </div>
-    <!-- end slimscroll-menu-->
+<div layout:fragment="content" class="container-fluid">
+    <table>
+        <thead>
+            <th>name</th>
+            <th>number</th>
+        </thead>
+        <tbody>
+            <td>Nguyen van a</td>
+            <td>1234</td>
+        </tbody>
+    </table>
 </div>
-<!-- end Right Sidebar -->
 
 <!-- JAVASCRIPT -->
-<script th:src="@{/assets/js/moment.min.js}"></script>
-<script th:src="@{/assets/js/jquery.min.js}"></script>
-<script th:src="@{/assets/js/bootstrap.bundle.min.js}"></script>
-<script th:src="@{/assets/js/metisMenu.min.js}"></script>
-<script th:src="@{/assets/js/simplebar.min.js}"></script>
-<script th:src="@{/assets/js/waves.min.js}"></script>
-
-
-<script type="text/javascript">
+<script layout:fragment="script" >
     $(document).ready(function () {
         $('.roleFilter').chosen();
 
