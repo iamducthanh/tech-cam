@@ -11,10 +11,6 @@ package com.techcam.util;
 
 public interface ConstantsErrorCode {
 
-    String SUCCESS = "Success";
-
-    String ERROR = "Error";
-
     String ERROR_LENGTH = "CM-TC-001";
 
     // lỗi hệ thống
@@ -52,4 +48,8 @@ public interface ConstantsErrorCode {
     String PRODUCT_CODE_DUPLICATE = "TC-006-007";
 
 
+    //Lỗi supplier
+
+    String SUPPLIER_EXIST = "TC-003-001";
+    String SUPPLIER_NOT_EXIST = "TC-003-002";
 }

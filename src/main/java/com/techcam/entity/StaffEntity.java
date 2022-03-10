@@ -1,151 +1,78 @@
 package com.techcam.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.Table;
-import java.time.LocalDate;
+import org.apache.commons.lang3.RandomStringUtils;
 
-@Table(name = "staff")
+import javax.persistence.*;
+import java.util.Date;
+
+/**
+ * @author DucBV
+ * @version 1.0
+ * @since 8.3.2022
+ */
 @Entity
+@Table(name = "staff", schema = "poly_techcam", catalog = "")
 public class StaffEntity extends BaseEntity {
-    @Column(name = "FULL_NAME", nullable = false, length = 200)
+    @Id
+    @Column(name = "ID")
+    private String id = RandomStringUtils.randomNumeric(6);
+    @Basic
+    @Column(name = "FULL_NAME")
     private String fullName;
-
-    @Column(name = "PHONE_NUMBER", nullable = false, length = 20)
+    @Basic
+    @Column(name = "PHONE_NUMBER")
     private String phoneNumber;
-
-    @Column(name = "EMAIL", nullable = false, length = 50)
+    @Basic
+    @Column(name = "EMAIL")
     private String email;
-
-    @Column(name = "ADDRESS", nullable = false, length = 200)
+    @Basic
+    @Column(name = "ADDRESS")
     private String address;
-
-    @Column(name = "DATE_OF_BIRTH", nullable = false)
-    private LocalDate dateOfBirth;
-
-    @Column(name = "STAFF_CODE", nullable = false)
-    private Integer staffCode;
-
-    @Column(name = "IDENTITY_NUMBER", nullable = false, length = 20)
+    @Basic
+    @Column(name = "DATE_OF_BIRTH")
+    private Date dateOfBirth;
+    @Basic
+    @Column(name = "STAFF_CODE")
+    private int staffCode;
+    @Basic
+    @Column(name = "IDENTITY_NUMBER")
     private String identityNumber;
-
-    @Column(name = "AVATAR", nullable = false)
+    @Basic
+    @Column(name = "AVATAR")
     private String avatar;
-
-    @Column(name = "ROLE", nullable = false, length = 20)
+    @Basic
+    @Column(name = "ROLE")
     private String role;
-
-    @Column(name = "USERNAME", nullable = false, length = 20)
+    @Basic
+    @Column(name = "USERNAME")
     private String username;
-
-    @Column(name = "PASSWORD", nullable = false, length = 20)
+    @Basic
+    @Column(name = "PASSWORD")
     private String password;
-
-    @Column(name = "COUNT_LOGIN_FALSE", nullable = false)
-    private Integer countLoginFalse;
-
-    @Column(name = "STATUS", nullable = false, length = 50)
+    @Basic
+    @Column(name = "COUNT_LOGIN_FALSE")
+    private int countLoginFalse;
+    @Basic
+    @Column(name = "STATUS")
     private String status;
-
-    @Lob
+    @Basic
     @Column(name = "NOTE")
     private String note;
 
-    public String getNote() {
-        return note;
+    public String getId() {
+        return id;
     }
 
-    public void setNote(String note) {
-        this.note = note;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getStatus() {
-        return status;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Integer getCountLoginFalse() {
-        return countLoginFalse;
-    }
-
-    public void setCountLoginFalse(Integer countLoginFalse) {
-        this.countLoginFalse = countLoginFalse;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    public String getIdentityNumber() {
-        return identityNumber;
-    }
-
-    public void setIdentityNumber(String identityNumber) {
-        this.identityNumber = identityNumber;
-    }
-
-    public Integer getStaffCode() {
-        return staffCode;
-    }
-
-    public void setStaffCode(Integer staffCode) {
-        this.staffCode = staffCode;
-    }
-
-    public LocalDate getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(LocalDate dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getPhoneNumber() {
@@ -156,11 +83,100 @@ public class StaffEntity extends BaseEntity {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getEmail() {
+        return email;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setEmail(String email) {
+        this.email = email;
     }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public int getStaffCode() {
+        return staffCode;
+    }
+
+    public void setStaffCode(int staffCode) {
+        this.staffCode = staffCode;
+    }
+
+    public String getIdentityNumber() {
+        return identityNumber;
+    }
+
+    public void setIdentityNumber(String identityNumber) {
+        this.identityNumber = identityNumber;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public int getCountLoginFalse() {
+        return countLoginFalse;
+    }
+
+    public void setCountLoginFalse(int countLoginFalse) {
+        this.countLoginFalse = countLoginFalse;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
 }

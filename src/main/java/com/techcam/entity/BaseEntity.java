@@ -3,23 +3,21 @@ package com.techcam.entity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.EntityListeners;
+import javax.persistence.MappedSuperclass;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
- * Description :
- *
- * @author : quang
- * @version : 1.0
- * @since : 1/23/2022 11:27 AM
- * Project_name : tech-cam
+ * @author DucBV
+ * @version 1.0
+ * @since 8.3.2022
  */
 
 @Getter
@@ -29,51 +27,23 @@ import java.util.Date;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
 
-    @Id
-//    @GeneratedValue(generator = "UUID")
-//    @GenericGenerator(
-//            name = "UUID",
-//            strategy = "org.hibernate.id.UUIDGenerator"
-//    )
-    @Column(name = "id", nullable = false, length = 64)
-    private String id;
-
-    /**
-     * ngày tạo bản ghi
-     */
     @CreatedDate
-    @Column(name = "create_date", updatable = false, nullable = false, columnDefinition = "TIMESTAMP")
-    private LocalDateTime createDate;
+    @Column(name = "CREATE_DATE")
+    private Timestamp createDate;
 
-    /**
-     * người tạo bản ghi
-     */
+    @LastModifiedDate
+    @Column(name = "MODIFIER_DATE")
+    private Timestamp modifierDate;
+
+    @CreatedBy
+    @Column(name = "CREATE_BY")
+    private String modifiedBy = "ADMIN";
+
     @LastModifiedBy
-    @Column(name = "create_by", length = 50, nullable = false)
-//    private String modifiedBy;
-    private String createBy = "ADMIN";
-
-    /**
-     * ngày cập nhật bản ghi
-     */
-    @CreatedDate
-    @Column(name = "modifier_date", updatable = false, nullable = false, columnDefinition = "TIMESTAMP")
-    private LocalDateTime modifierDate;
-
-    /**
-     * người cập nhật bản ghi
-     */
-    @LastModifiedBy
-    @Column(name = "modifier_by", length = 50, nullable = false)
-//    private String modifiedBy;
+    @Column(name = "MODIFIER_BY")
     private String modifierBy = "ADMIN";
 
-    /**
-     * trạng thái xoá bản ghi
-     * true là đã xoá
-     * false là chưa bị xoá
-     */
-    @Column(name = "delete_flag", columnDefinition = "bit default 0")
+    @Column(name = "DELETE_FLAG")
     private boolean deleteFlag;
 
 }

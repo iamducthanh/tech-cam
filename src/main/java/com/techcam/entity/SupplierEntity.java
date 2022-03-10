@@ -1,62 +1,69 @@
 package com.techcam.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.sql.Timestamp;
+import java.util.Objects;
 
-@Table(name = "supplier")
+/**
+ * @author DucBV
+ * @version 1.0
+ * @since 8.3.2022
+ */
 @Entity
-public class SupplierEntity extends BaseEntity {
-    @Column(name = "NAME", nullable = false, length = 200)
+@Table(name = "supplier", schema = "poly_techcam", catalog = "")
+public class SupplierEntity {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @Column(name = "ID")
+    private String id;
+    @Basic
+    @Column(name = "NAME")
     private String name;
-
-    @Column(name = "PHONE_NUMBER", nullable = false, length = 20)
+    @Basic
+    @Column(name = "PHONE_NUMBER")
     private String phoneNumber;
-
-    @Column(name = "EMAIL", nullable = false, length = 50)
+    @Basic
+    @Column(name = "EMAIL")
     private String email;
-
-    @Column(name = "ADDRESS", nullable = false, length = 200)
+    @Basic
+    @Column(name = "ADDRESS")
     private String address;
-
-    @Column(name = "STATUS", nullable = false, length = 50)
+    @Basic
+    @Column(name = "STATUS")
     private String status;
-
-    @Lob
+    @Basic
     @Column(name = "NOTE")
     private String note;
+    @Basic
+    @Column(name = "CREATE_DATE")
+    private Timestamp createDate;
+    @Basic
+    @Column(name = "MODIFIER_DATE")
+    private Timestamp modifierDate;
+    @Basic
+    @Column(name = "CREATE_BY")
+    private String createBy;
+    @Basic
+    @Column(name = "MODIFIER_BY")
+    private String modifierBy;
+    @Basic
+    @Column(name = "DELETE_FLAG")
+    private boolean deleteFlag;
 
-    public String getNote() {
-        return note;
+    public String getId() {
+        return id;
     }
 
-    public void setNote(String note) {
-        this.note = note;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getStatus() {
-        return status;
+    public String getName() {
+        return name;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPhoneNumber() {
@@ -67,11 +74,88 @@ public class SupplierEntity extends BaseEntity {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getName() {
-        return name;
+    public String getEmail() {
+        return email;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public Timestamp getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Timestamp createDate) {
+        this.createDate = createDate;
+    }
+
+    public Timestamp getModifierDate() {
+        return modifierDate;
+    }
+
+    public void setModifierDate(Timestamp modifierDate) {
+        this.modifierDate = modifierDate;
+    }
+
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
+    }
+
+    public String getModifierBy() {
+        return modifierBy;
+    }
+
+    public void setModifierBy(String modifierBy) {
+        this.modifierBy = modifierBy;
+    }
+
+    public boolean isDeleteFlag() {
+        return deleteFlag;
+    }
+
+    public void setDeleteFlag(boolean deleteFlag) {
+        this.deleteFlag = deleteFlag;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SupplierEntity that = (SupplierEntity) o;
+        return deleteFlag == that.deleteFlag && Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(phoneNumber, that.phoneNumber) && Objects.equals(email, that.email) && Objects.equals(address, that.address) && Objects.equals(status, that.status) && Objects.equals(note, that.note) && Objects.equals(createDate, that.createDate) && Objects.equals(modifierDate, that.modifierDate) && Objects.equals(createBy, that.createBy) && Objects.equals(modifierBy, that.modifierBy);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, phoneNumber, email, address, status, note, createDate, modifierDate, createBy, modifierBy, deleteFlag);
     }
 }
