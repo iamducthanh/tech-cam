@@ -20,4 +20,5 @@ public interface ICategoryRepo extends JpaRepository<CategoryEntity, String> {
 
     List<CategoryEntity> findAllByDeleteFlagIsFalse();
 
+    CategoryEntity getByIdAndDeleteFlagIsFalse(String categoryId);
 }

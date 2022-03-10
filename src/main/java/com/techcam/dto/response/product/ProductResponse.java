@@ -1,8 +1,7 @@
 package com.techcam.dto.response.product;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import com.techcam.dto.ProductDto;
+import lombok.*;
 
 import java.util.List;
 
@@ -18,16 +17,12 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class ProductResponse {
+@NoArgsConstructor
+@AllArgsConstructor
+public class ProductResponse extends ProductDto {
 
-    private String id;
+    private String productId;
 
-    private String productCode;
-
-    private String productName;
-
-    private String description;
-
-    private List<ProductDetailResponse> details;
+    private List<ProductPropertyResponse> properties;
 
 }

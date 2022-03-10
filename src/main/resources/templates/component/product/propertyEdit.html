@@ -1,0 +1,20 @@
+<div class="mx-3 mb-3 card card-body" xmlns:th="http://www.thymeleaf.org">
+    <div class="card-title mb-3">Thuộc tính sản phẩm:</div>
+    <th:block th:each="property : ${lstProperty}">
+        <div class="mb-3 row">
+            <div class="col-lg-6" th:text="${property.propertyName}"></div>
+            <div class="col-lg-6">
+                <select th:if="${not #lists.isEmpty(property.fixedValue)}"
+                        class="form-control select2 ip-product-color" th:data-id="${property.propertyId}">
+                    <option th:each="value : ${property.fixedValue}" th:value="${value.fixedId}"
+                            th:selected="${property.fixedValueId == value.fixedId}"
+                            th:text="${value.fixedValue}"></option>
+                </select>
+                <input th:unless="${not #lists.isEmpty(property.fixedValue)}" type="text"
+                       th:placeholder="${property.propertyName + '...'}"
+                       th:data-id="${property.propertyId}" th:value="${property.inputValue}"
+                       class="form-control"/>
+            </div>
+        </div>
+    </th:block>
+</div>

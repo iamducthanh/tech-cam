@@ -1,7 +1,10 @@
 package com.techcam.repo;
 
+import com.techcam.entity.AttributeEntity;
 import com.techcam.entity.ProductPropertyEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
 
 /**
  * Description :
@@ -13,4 +16,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 
 public interface IProductPropertyRepo extends JpaRepository<ProductPropertyEntity, String> {
+    List<ProductPropertyEntity> findAllByProductDetailIdAndDeleteFlagIsFalse(String productDetailId);
 }
