@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/weblayout}"
-      xmlns:sec="http://www.w3.org/1999/xhtml">
+>
 <head>
     <meta charset="UTF-8">
     <title>Quản lý sản phẩm - TechCam</title>
@@ -168,32 +168,40 @@
                             <th>Giá bán</th>
                             <th>Tồn kho</th>
                             <th>Trạng thái</th>
-                            <th>Ngày kích hoạt</th>
-                            <th>Ngày thêm</th>
                             <th>Người thêm</th>
+                            <th>Ngày thêm</th>
                             <th>Ngày cập nhật</th>
                             <th>Thao tác</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>STT</td>
-                            <td>Tên sản phẩm</td>
-                            <td>Giá bán</td>
-                            <td>Tồn kho</td>
-                            <td>Trạng thái</td>
-                            <td>Ngày kích hoạt</td>
-                            <td>Ngày thêm</td>
-                            <td>Người thêm</td>
-                            <td>Ngày cập nhật</td>
-                            <td class="text-center">
-                                <a href="#modal-edit-product" data-id="123" data-bs-toggle="modal"
-                                   class="btn btn-primary btn-sm waves-effect waves-light"
-                                   onclick="onClickEditProduct(this)">
-                                    Chỉnh sửa
-                                </a>
-                            </td>
-                        </tr>
+                        <th:block th:each="product, theCount : ${lstProducts}">
+                            <tr>
+                                <td class="text-center" th:text="${theCount.index + 1}">STT</td>
+                                <td th:text="${product.productName}">Tên sản phẩm</td>
+                                <td class="text-end"
+                                    th:text="${#numbers.formatDecimal(product.productPrice, 0, 'COMMA', 2, 'POINT') + 'đ'}">
+                                    Giá bán
+                                </td>
+                                <td class="text-end">Tồn kho</td>
+                                <td class="text-center">
+                                    <span th:if="${product.productStatus}" class="badge bg-success"
+                                          th:text="${product.productName}"></span>
+                                    <span th:unless="${product.productStatus}" class="badge bg-danger"
+                                          th:text="${product.productName}"></span>
+                                </td>
+                                <td>Người thêm</td>
+                                <td>Ngày thêm</td>
+                                <td>Ngày cập nhật</td>
+                                <td class="text-center">
+                                    <a href="#modal-edit-product" data-id="123" data-bs-toggle="modal"
+                                       class="btn btn-primary btn-sm waves-effect waves-light"
+                                       onclick="onClickEditProduct(this)">
+                                        Chỉnh sửa
+                                    </a>
+                                </td>
+                            </tr>
+                        </th:block>
                         </tbody>
                     </table>
                 </div>
@@ -268,11 +276,8 @@
                                         </div>
                                         <div class="col-lg-7">
                                             <select id="ip-add-product-brand" class="form-control select2">
-                                                <option value="ALL-PERSON">
-                                                    HK
-                                                </option>
-                                                <option value="PERSON-BUY-MONEY">
-                                                    Yoosee
+                                                <option th:each="brand : ${lstBrands}" th:value="${brand.brandId}"
+                                                        th:text="${brand.brandName}">
                                                 </option>
                                             </select>
                                         </div>
@@ -296,74 +301,53 @@
                                         <div class="col-lg-7">
                                             <select id="ip-add-product-category" class="form-control select2"
                                                     data-status="add" onchange="onChangeCategory(this)">
-                                                <option value="ALL-PERSON">
-                                                    Camera
-                                                </option>
-                                                <option value="PERSON-BUY-MONEY">
-                                                    Thẻ nhớ
+                                                <option th:each="category : ${lstCategories}"
+                                                        th:value="${category.categoryId}"
+                                                        th:text="${category.categoryName}">
                                                 </option>
                                             </select>
                                         </div>
                                     </div>
-                                    <div id="product-add-property">
-                                        <div class="mx-3 mb-3 card card-body">
-                                            <div class="card-title mb-3">Thuộc tính sản phẩm:</div>
-                                            <div class="mb-3 row">
-                                                <div class="col-lg-6">
-                                                    Độ phân giải
-                                                </div>
-                                                <div class="col-lg-6">
-                                                    <input type="text" placeholder="Mã sản phẩm...."
-                                                           class="form-control"/>
-                                                </div>
-                                            </div>
-                                            <div class="mb-3 row">
-                                                <div class="col-lg-6">
-                                                    Màu sắc
-                                                </div>
-                                                <div class="col-lg-6">
-                                                    <select class="form-control select2 ip-product-color">
-                                                        <option value="ALL-PERSON">
-                                                            Đỏ
-                                                        </option>
-                                                        <option value="PERSON-BUY-MONEY">
-                                                            Cam
-                                                        </option>
-                                                        <option value="PERSON-BUY-MONEY">
-                                                            Xanh
-                                                        </option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="mb-3 row">
-                                                <div class="col-lg-6">
-                                                    Cân nặng
-                                                </div>
-                                                <div class="col-lg-6">
-                                                    <input type="text" placeholder="Mã sản phẩm...."
-                                                           class="form-control"/>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <div id="product-add-property"></div>
                                 </div>
                             </div>
                         </div>
                         <div class="tab-pane p-3" id="description-product" role="tabpanel">
                             <textarea id="productAddDescription" class="form-control"></textarea>
                         </div>
-                        <div class="tab-pane p-3" id="image-product" role="tabpanel">
-                            <form action="#" class="dropzone">
+                        <div class="tab-pane p-3" id="image-product-add" role="tabpanel">
+                            <div class="dropzone mb-3">
                                 <div class="fallback">
-                                    <input name="file" type="file" multiple="multiple">
+                                    <input id="ip-add-product-image" hidden type="file" multiple="multiple">
                                 </div>
-                                <div class="dz-message needsclick">
+                                <div class="dz-message needsclick" onclick="onClickChooseImage()">
                                     <div class="mb-3">
                                         <i class="mdi mdi-cloud-upload display-4 text-muted"></i>
                                     </div>
-                                    <h4>Drop files here or click to upload.</h4>
+                                    <h4>Nhấn để chọn hình ảnh.</h4>
                                 </div>
-                            </form>
+                            </div>
+                            <hr/>
+                            <div class="file_upload">
+                                <div class="bd-example text-center">
+                                    <div class="carousel slide" data-bs-ride="carousel">
+                                        <div class="carousel-indicators" id="carousel-indicators-add">
+                                        </div>
+                                        <div class="carousel-inner" id="previewUpload-add">
+                                        </div>
+                                        <a class="carousel-control-prev " type="button"
+                                           data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Ảnh trước</span>
+                                        </a>
+                                        <a class="carousel-control-next" type="button"
+                                           data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Ảnh sau</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -447,11 +431,8 @@
                                         <div class="col-lg-7">
                                             <select id="ip-edit-product-brand"
                                                     class="form-control select2 ip-voucher-person-apply">
-                                                <option value="ALL-PERSON">
-                                                    HK
-                                                </option>
-                                                <option value="PERSON-BUY-MONEY">
-                                                    Yoosee
+                                                <option th:each="brand : ${lstBrands}" th:value="${brand.brandId}"
+                                                        th:text="${brand.brandName}">
                                                 </option>
                                             </select>
                                         </div>
@@ -475,56 +456,14 @@
                                         <div class="col-lg-7">
                                             <select id="ip-edit-product-category" class="form-control select2"
                                                     data-status="edit" onchange="onChangeCategory(this)">
-                                                <option value="ALL-PERSON">
-                                                    Camera
-                                                </option>
-                                                <option value="PERSON-BUY-MONEY">
-                                                    Thẻ nhớ
+                                                <option th:each="category : ${lstCategories}"
+                                                        th:value="${category.categoryId}"
+                                                        th:text="${category.categoryName}">
                                                 </option>
                                             </select>
                                         </div>
                                     </div>
-                                    <div id="product-edit-property">
-                                        <div class="mx-3 mb-3 card card-body">
-                                            <div class="card-title mb-3">Thuộc tính sản phẩm:</div>
-                                            <div class="mb-3 row">
-                                                <div class="col-lg-6">
-                                                    Độ phân giải
-                                                </div>
-                                                <div class="col-lg-6">
-                                                    <input type="text" placeholder="Mã sản phẩm...."
-                                                           class="form-control"/>
-                                                </div>
-                                            </div>
-                                            <div class="mb-3 row">
-                                                <div class="col-lg-6">
-                                                    Màu sắc
-                                                </div>
-                                                <div class="col-lg-6">
-                                                    <select class="form-control select2 ip-product-color">
-                                                        <option value="ALL-PERSON">
-                                                            Đỏ
-                                                        </option>
-                                                        <option value="PERSON-BUY-MONEY">
-                                                            Cam
-                                                        </option>
-                                                        <option value="PERSON-BUY-MONEY">
-                                                            Xanh
-                                                        </option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="mb-3 row">
-                                                <div class="col-lg-6">
-                                                    Cân nặng
-                                                </div>
-                                                <div class="col-lg-6">
-                                                    <input type="text" placeholder="Mã sản phẩm...."
-                                                           class="form-control"/>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <div id="product-edit-property"></div>
                                 </div>
                             </div>
                         </div>

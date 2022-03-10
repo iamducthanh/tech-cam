@@ -1,7 +1,7 @@
 package com.techcam.service;
 
-import com.techcam.dto.request.VoucherResDto;
-import com.techcam.dto.response.VoucherRespDto;
+import com.techcam.dto.request.voucher.VoucherRequest;
+import com.techcam.dto.response.voucher.VoucherResponse;
 
 import java.util.List;
 
@@ -15,11 +15,11 @@ import java.util.List;
  */
 public interface IVoucherService {
 
-    String createVoucher(VoucherResDto voucherResDto);
+    String createVoucher(VoucherRequest voucherRequest);
 
-    String updateVoucher(VoucherResDto voucherResDto);
+    String updateVoucher(VoucherRequest voucherRequest);
 
     String deleteVoucher(String id);
 
-    List<VoucherRespDto> getAllVoucher();
+    List<VoucherResponse> getAllVoucher();
 }

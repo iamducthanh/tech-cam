@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/weblayout}"
-      xmlns:sec="http://www.w3.org/1999/xhtml">
+>
 <head>
     <meta charset="UTF-8">
     <title>Quản lý mã giảm giá - TechCam</title>
@@ -178,252 +178,270 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>Mã giảm giá</td>
-                            <td>Tên chương trình</td>
-                            <td>Từ ngày</td>
-                            <td>Đến ngày</td>
-                            <td>Số lần sử dụng</td>
-                            <td>Mệnh giá</td>
-                            <td>Trạng thái</td>
-                            <td>Người tạo</td>
-                            <td>Ngày tạo</td>
-                            <td>Ngày cập nhật</td>
-                            <td>
-                                <button class="btn btn-info btn-sm"
-                                        onclick="onClickInfoVoucher(this)">Chi tiết
-                                </button>
-                            </td>
-                        </tr>
-                        <tr class="hidden-info-voucher">
-                            <td colspan="100">
-                                <div class="mx-2 card card-body">
-                                    <ul class="nav nav-tabs nav-tabs-custom nav-justified mb-3"
-                                        role="tablist">
-                                        <li class="nav-item">
-                                            <a class="nav-link active" data-bs-toggle="tab"
-                                               href="#info-voucher" role="tab">
-                                                                <span class="d-none d-md-block">
-                                                                    Thông tin
-                                                                </span>
-                                                <span class="d-block d-md-none">
-                                                                    <i class="mdi mdi-home-variant h5"></i>
-                                                                </span>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" data-bs-toggle="tab" href="#history-use"
-                                               role="tab">
-                                                                <span class="d-none d-md-block">
-                                                                    Lịch sử sử dụng
-                                                                </span><span class="d-block d-md-none">
-                                                                    <i class="mdi mdi-account h5"></i>
-                                                                </span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                    <div class="tab-content">
-                                        <div class="tab-pane active p-3" id="info-voucher"
-                                             role="tabpanel">
-                                            <div class="row">
-                                                <div class="col-lg-5">
-                                                    <div class="mb-3 row">
-                                                        <div class="col-lg-5">
-                                                            Mã giảm giá
-                                                        </div>
-                                                        <div class="col-lg-7">
-                                                            <input type="text"
-                                                                   placeholder="Mã giảm giá tự động"
-                                                                   class="form-control ip-voucher-code"/>
-                                                        </div>
-                                                    </div>
-                                                    <div class="mb-3 row">
-                                                        <div class="col-lg-5">
-                                                            Tên chương trình
-                                                        </div>
-                                                        <div class="col-lg-7">
-                                                            <input type="text"
-                                                                   placeholder="Tên chương trình...."
-                                                                   class="form-control ip-voucher-name"/>
-                                                        </div>
-                                                    </div>
-                                                    <div class="mb-3 row">
-                                                        <div class="col-lg-5">
-                                                            Số lần sử dụng
-                                                        </div>
-                                                        <div class="col-lg-7">
-                                                            <input type="number" min="1" value="1"
-                                                                   placeholder="Nhập số lần sử dụng..."
-                                                                   class="form-control ip-voucher-quantity"/>
-                                                        </div>
-                                                    </div>
-                                                    <div class="mb-3 row">
-                                                        <div class="col-lg-5">
-                                                            Mệnh giá
-                                                        </div>
-                                                        <div class="col-lg-7">
-                                                            <div class="input-group">
-                                                                <input type="text"
-                                                                       class="form-control ip-voucher-discount"
-                                                                       placeholder="Nhập mệnh giá...">
-                                                                <span
-                                                                        class="input-group-text ip-voucher-type-discount"
-                                                                        onclick="onClickChangeTypeDiscount(this)"
-                                                                        style="cursor: pointer;">
-                                                                                    %
-                                                                                </span>
-                                                            </div><!-- input-group -->
-                                                        </div>
-                                                    </div>
-                                                    <div class="mb-3 row">
-                                                        <div class="col-lg-5">
-                                                            Số tiền hàng tối thiểu
-                                                        </div>
-                                                        <div class="col-lg-7">
-                                                            <input type="number" min="0"
-                                                                   placeholder="Nhập số tiền hàng tối thiểu..."
-                                                                   class="form-control ip-voucher-quantity"/>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-7">
-                                                    <div class="mb-3 row">
-                                                        <div class="col-lg-5">
-                                                            Thời gian áp dụng:
-                                                        </div>
-                                                        <div class="col-lg-7">
-                                                            <div class="input-daterange input-group"
-                                                                 id="datepicker6"
-                                                                 data-date-format="dd-mm-yyyy 00:00:00"
-                                                                 data-date-autoclose="true"
-                                                                 data-provide="datepicker"
-                                                                 data-date-container='#datepicker6'>
-                                                                <input type="text" class="form-control"
-                                                                       s placeholder=" Bắt đầu"/>
-                                                                <input type="text" class="form-control"
-                                                                       placeholder="Kết thúc"/>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="mb-3 row">
-                                                        <div class="col-lg-5">
-                                                            Mặt hàng áp dụng
-                                                        </div>
-                                                        <div class="col-lg-7">
-                                                            <select class="form-control select2">
-                                                                <option>Tất cả mặt hàng</option>
-                                                                <option>Thẻ nhớ</option>
-                                                                <option>Camera</option>
-                                                                <option>Camera ngoài trời</option>
-                                                                <option>Camera Wifi</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="mb-3 row">
-                                                        <div class="col-lg-5">
-                                                            Đối tượng áp dụng
-                                                        </div>
-                                                        <div class="col-lg-7">
-                                                            <select
-                                                                    class="form-control select2 ip-voucher-person-apply"
-                                                                    onchange="onChangePersonApply(this)">
-                                                                <option value="ALL-PERSON">Toàn bộ khách
-                                                                    hàng
-                                                                </option>
-                                                                <option value="PERSON-BUY-MONEY">Đã mua
-                                                                    tối thiểu?
-                                                                </option>
-                                                                <option value="CHOOSE-PERSON">Lựa chọn
-                                                                    khách hàng
-                                                                </option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="person-apply">
-                                                        <div class="mb-3 row PERSON-BUY-MONEY">
+                        <th:block th:each="voucher: ${lstVoucher}">
+                            <tr>
+                                <td th:text="${voucher.voucherCode}">Mã giảm giá</td>
+                                <td th:text="${voucher.voucherName}">Tên chương trình</td>
+                                <td class="text-center"
+                                    th:text="${#temporals.format(voucher.voucherStartDate, 'dd-MM-yyyy')}">Từ ngày
+                                </td>
+                                <td class="text-center"
+                                    th:text="${#temporals.format(voucher.voucherEndDate, 'dd-MM-yyyy')}">Đến ngày
+                                </td>
+                                <td class="text-end"
+                                    th:text="${#numbers.formatDecimal(voucher.voucherQuantity, 0, 'COMMA', 0, 'POINT')}">
+                                    Số lần sử dụng
+                                </td>
+                                <td class="text-end"
+                                    th:text="${#numbers.formatDecimal(voucher.voucherDiscount, 0, 'COMMA', 2, 'POINT') + 'đ'}">
+                                    Mệnh giá
+                                </td>
+                                <td class="text-center">
+                                    <span th:unless="${voucher.voucherStatus}" class="badge bg-danger">
+                                        Không sử dụng
+                                    </span>
+                                    <span th:if="${voucher.voucherStatus}" class="badge bg-success">
+                                        Kích hoạt
+                                    </span>
+                                </td>
+                                <td th:text="${voucher.voucherCreateBy}">
+                                    Người tạo
+                                </td>
+                                <td th:text="${#temporals.format(voucher.voucherCreateDate, 'dd-MM-yyyy')}">
+                                    Ngày tạo
+                                </td>
+                                <td th:text="${#temporals.format(voucher.voucherModifiedDate, 'dd-MM-yyyy')}">
+                                    Ngày cập nhật
+                                </td>
+                                <td class="text-center">
+                                    <button class="btn btn-info btn-sm" onclick="onClickInfoVoucher(this)">
+                                        Chi tiết
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="hidden-info-voucher">
+                                <td colspan="100">
+                                    <div class="mx-2 card card-body">
+                                        <ul class="nav nav-tabs nav-tabs-custom nav-justified mb-3"
+                                            role="tablist">
+                                            <li class="nav-item">
+                                                <a class="nav-link active" data-bs-toggle="tab"
+                                                   th:href="${'#info-voucher-' + voucher.voucherId}" role="tab">
+                                                <span class="d-none d-md-block">
+                                                    Thông tin
+                                                </span>
+                                                    <span class="d-block d-md-none">
+                                                    <i class="mdi mdi-home-variant h5"></i>
+                                                </span>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" data-bs-toggle="tab"
+                                                   th:href="${'#history-use-' + voucher.voucherId}" role="tab">
+                                                <span class="d-none d-md-block">
+                                                    Lịch sử sử dụng
+                                                </span>
+                                                    <span class="d-block d-md-none">
+                                                    <i class="mdi mdi-account h5"></i>
+                                                </span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div class="tab-pane active p-3"
+                                                 th:id="${'info-voucher-' + voucher.voucherId}"
+                                                 role="tabpanel">
+                                                <div class="row">
+                                                    <div class="col-lg-5">
+                                                        <div class="mb-3 row">
                                                             <div class="col-lg-5">
-                                                                Nhập số tiền tối thiểu?
+                                                                Mã giảm giá
                                                             </div>
                                                             <div class="col-lg-7">
-                                                                <input type="number" min="1"
-                                                                       placeholder="Nhập số tiền tối thiểu..."
-                                                                       class="form-control ip-type-discount-min"/>
+                                                                <input type="text" placeholder="Mã giảm giá tự động"
+                                                                       class="form-control ip-voucher-code"/>
                                                             </div>
                                                         </div>
-                                                        <div class="mb-3 row CHOOSE-PERSON">
+                                                        <div class="mb-3 row">
                                                             <div class="col-lg-5">
-                                                                Chọn khách hàng
+                                                                Tên chương trình
                                                             </div>
                                                             <div class="col-lg-7">
-                                                                <select
-                                                                        class="select2 form-control select2-multiple"
-                                                                        multiple="multiple"
-                                                                        data-placeholder="Chọn khách hàng...">
-                                                                    <optgroup
-                                                                            label="Alaskan/Hawaiian Time Zone">
-                                                                        <option value="AK">Alaska
-                                                                        </option>
-                                                                        <option value="HI">Hawaii
-                                                                        </option>
-                                                                    </optgroup>
+                                                                <input type="text" placeholder="Tên chương trình...."
+                                                                       class="form-control ip-voucher-name"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="mb-3 row">
+                                                            <div class="col-lg-5">
+                                                                Số lần sử dụng
+                                                            </div>
+                                                            <div class="col-lg-7">
+                                                                <input type="number" min="1" value="1"
+                                                                       placeholder="Nhập số lần sử dụng..."
+                                                                       class="form-control ip-voucher-quantity"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="mb-3 row">
+                                                            <div class="col-lg-5">
+                                                                Mệnh giá
+                                                            </div>
+                                                            <div class="col-lg-7">
+                                                                <div class="input-group">
+                                                                    <input type="text"
+                                                                           class="form-control ip-voucher-discount"
+                                                                           placeholder="Nhập mệnh giá...">
+                                                                    <span class="input-group-text ip-voucher-type-discount"
+                                                                          onclick="onClickChangeTypeDiscount(this)"
+                                                                          style="cursor: pointer;">
+                                                                    %
+                                                                </span>
+                                                                </div><!-- input-group -->
+                                                            </div>
+                                                        </div>
+                                                        <div class="mb-3 row">
+                                                            <div class="col-lg-5">
+                                                                Số tiền hàng tối thiểu
+                                                            </div>
+                                                            <div class="col-lg-7">
+                                                                <input type="number" min="0"
+                                                                       placeholder="Nhập số tiền hàng tối thiểu..."
+                                                                       class="form-control ip-voucher-quantity"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-7">
+                                                        <div class="mb-3 row">
+                                                            <div class="col-lg-5">
+                                                                Thời gian áp dụng:
+                                                            </div>
+                                                            <div class="col-lg-7">
+                                                                <div class="input-daterange input-group"
+                                                                     id="datepicker6"
+                                                                     data-date-format="dd-mm-yyyy 00:00:00"
+                                                                     data-date-autoclose="true"
+                                                                     data-provide="datepicker"
+                                                                     data-date-container='#datepicker6'>
+                                                                    <input type="text" class="form-control"
+                                                                           s placeholder=" Bắt đầu"/>
+                                                                    <input type="text" class="form-control"
+                                                                           placeholder="Kết thúc"/>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="mb-3 row">
+                                                            <div class="col-lg-5">
+                                                                Mặt hàng áp dụng
+                                                            </div>
+                                                            <div class="col-lg-7">
+                                                                <select class="form-control select2">
+                                                                    <option>Tất cả mặt hàng</option>
+                                                                    <option>Thẻ nhớ</option>
+                                                                    <option>Camera</option>
+                                                                    <option>Camera ngoài trời</option>
+                                                                    <option>Camera Wifi</option>
                                                                 </select>
                                                             </div>
                                                         </div>
+                                                        <div class="mb-3 row">
+                                                            <div class="col-lg-5">
+                                                                Đối tượng áp dụng
+                                                            </div>
+                                                            <div class="col-lg-7">
+                                                                <select
+                                                                        class="form-control select2 ip-voucher-person-apply"
+                                                                        onchange="onChangePersonApply(this)">
+                                                                    <option value="ALL-PERSON">
+                                                                        Toàn bộ khách hàng
+                                                                    </option>
+                                                                    <option value="PERSON-BUY-MONEY">
+                                                                        Đã mua tối thiểu?
+                                                                    </option>
+                                                                    <option value="CHOOSE-PERSON">
+                                                                        Lựa chọn khách hàng
+                                                                    </option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="person-apply">
+                                                            <div class="mb-3 row PERSON-BUY-MONEY">
+                                                                <div class="col-lg-5">
+                                                                    Nhập số tiền tối thiểu?
+                                                                </div>
+                                                                <div class="col-lg-7">
+                                                                    <input type="number" min="1"
+                                                                           placeholder="Nhập số tiền tối thiểu..."
+                                                                           class="form-control ip-type-discount-min"/>
+                                                                </div>
+                                                            </div>
+                                                            <div class="mb-3 row CHOOSE-PERSON">
+                                                                <div class="col-lg-5">
+                                                                    Chọn khách hàng
+                                                                </div>
+                                                                <div class="col-lg-7">
+                                                                    <select class="select2 form-control select2-multiple"
+                                                                            multiple="multiple"
+                                                                            data-placeholder="Chọn khách hàng...">
+                                                                        <option th:each="customer : ${lstCustomer}"
+                                                                                th:value="${customer.id}"
+                                                                                th:text="${customer.fullName}"></option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-12">
+                                                    <div class="col-12">
+                                                        <div class="col-12 mb-3">
+                                                            Mô tả chi tiết:
+                                                        </div>
+                                                        <div class="col-12 mb-3">
+                                                            <textarea class="form-control" rows="5"></textarea>
+                                                        </div>
+                                                    </div>
                                                     <div class="col-12 mb-3">
-                                                        Mô tả chi tiết:
-                                                    </div>
-                                                    <div class="col-12 mb-3">
-                                                                        <textarea class="form-control"
-                                                                                  rows="5"></textarea>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 mb-3">
-                                                    <div class="float-end">
-                                                        <button data-id="id"
-                                                                onclick="onClickUpdateVoucher(this)"
-                                                                class="btn btn-success waves-effect waves-light">
-                                                            Cập nhật
-                                                        </button>
+                                                        <div class="float-end">
+                                                            <button data-id="id" onclick="onClickUpdateVoucher(this)"
+                                                                    class="btn btn-success waves-effect waves-light">
+                                                                Cập nhật
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="tab-pane p-3" id="history-use" role="tabpanel">
-                                            <table class="table table-bordered table-hover">
-                                                <thead>
-                                                <tr class="text-center">
-                                                    <th>STT</th>
-                                                    <th>Họ và tên</th>
-                                                    <th>Mã hoá đơn</th>
-                                                    <th>Tổng tiền hoá đơn</th>
-                                                    <th>Ngày sử dụng</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <tr>
-                                                    <td>STT</td>
-                                                    <td>Họ và tên</td>
-                                                    <td>Mã hoá đơn</td>
-                                                    <td>Tổng tiền hoá đơn</td>
-                                                    <td>Ngày sử dụng</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>STT</td>
-                                                    <td>Họ và tên</td>
-                                                    <td>Mã hoá đơn</td>
-                                                    <td>Tổng tiền hoá đơn</td>
-                                                    <td>Ngày sử dụng</td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
+                                            <div class="tab-pane p-3" th:id="${'history-use-' + voucher.voucherId}"
+                                                 role="tabpanel">
+                                                <table class="table table-bordered table-hover">
+                                                    <thead>
+                                                    <tr class="text-center">
+                                                        <th>STT</th>
+                                                        <th>Họ và tên</th>
+                                                        <th>Mã hoá đơn</th>
+                                                        <th>Tổng tiền hoá đơn</th>
+                                                        <th>Ngày sử dụng</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>STT</td>
+                                                        <td>Họ và tên</td>
+                                                        <td>Mã hoá đơn</td>
+                                                        <td>Tổng tiền hoá đơn</td>
+                                                        <td>Ngày sử dụng</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>STT</td>
+                                                        <td>Họ và tên</td>
+                                                        <td>Mã hoá đơn</td>
+                                                        <td>Tổng tiền hoá đơn</td>
+                                                        <td>Ngày sử dụng</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </td>
-                        </tr>
+                                </td>
+                            </tr>
+                        </th:block>
                         </tbody>
                     </table>
                 </div>
@@ -560,14 +578,9 @@
                                         <select class="select2 form-control select2-multiple"
                                                 id="ip-type-discount-person" multiple="multiple"
                                                 data-placeholder="Chọn khách hàng...">
-                                            <optgroup label="Alaskan/Hawaiian Time Zone">
-                                                <option value="AK">
-                                                    Alaska
-                                                </option>
-                                                <option value="HI">
-                                                    Hawaii
-                                                </option>
-                                            </optgroup>
+                                            <option th:each="customer : ${lstCustomer}"
+                                                    th:value="${customer.id}"
+                                                    th:text="${customer.fullName}"></option>
                                         </select>
                                     </div>
                                 </div>

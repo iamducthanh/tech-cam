@@ -24,4 +24,5 @@ public interface IProductRepo extends JpaRepository<ProductEntity, String> {
     List<ProductEntity> findALlByProductCodeAndDeleteFlagIsFalse(String productCode);
 
     ProductEntity getByIdAndDeleteFlagIsFalse(String id);
+
 }

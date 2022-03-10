@@ -1,4 +1,4 @@
-package com.techcam.dto.request;
+package com.techcam.dto.request.voucher;
 
 import com.techcam.util.ConstantsErrorCode;
 import com.techcam.util.ContainsFormat;
@@ -24,7 +24,7 @@ import javax.validation.constraints.Pattern;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class VoucherResDto {
+public class VoucherRequest {
 
     private String id;
 

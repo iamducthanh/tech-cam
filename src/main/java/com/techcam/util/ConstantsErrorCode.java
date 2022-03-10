@@ -49,5 +49,7 @@ public interface ConstantsErrorCode {
 
     String PRODUCT_NOT_EXISTS = "TC-006-006";
 
+    String PRODUCT_CODE_DUPLICATE = "TC-006-007";
+
 
 }

@@ -1,11 +1,11 @@
 package com.techcam.controller;
 
+import com.techcam.dto.response.brand.BrandResponse;
+import com.techcam.dto.response.category.CategoryResponse;
 import com.techcam.dto.response.product.ProductPropertyResponse;
-import com.techcam.dto.response.property.PropertyFixedValue;
-import com.techcam.dto.response.property.PropertyResponse;
 import com.techcam.dto.response.product.ProductResponse;
+import com.techcam.dto.response.property.PropertyResponse;
 import com.techcam.service.IAttributeService;
-import com.techcam.service.IProductDetailService;
 import com.techcam.service.IProductPropertyService;
 import com.techcam.service.IProductService;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +42,11 @@ public class ProductController {
     public String productManager(Model model) {
         List<ProductResponse> lstProducts = null;
         lstProducts = new ArrayList<>();
+        List<BrandResponse> lstBrands = new ArrayList<>();
+        List<CategoryResponse> lstCategories = new ArrayList<>();
         model.addAttribute("lstProducts", lstProducts);
+        model.addAttribute("lstBrands", lstBrands);
+        model.addAttribute("lstCategories", lstCategories);
         return "/views/product/index";
     }
 
