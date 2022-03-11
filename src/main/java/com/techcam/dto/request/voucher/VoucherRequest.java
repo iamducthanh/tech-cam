@@ -1,6 +1,6 @@
 package com.techcam.dto.request.voucher;
 
-import com.techcam.repo.util.ConstantsErrorCode;
+import com.techcam.util.ConstantsErrorCode;
 import com.techcam.repo.util.ContainsFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.util.List;
 
 /**
  * Description :
@@ -26,7 +27,7 @@ import javax.validation.constraints.Pattern;
 @Builder
 public class VoucherRequest {
 
-    private String id;
+    private String voucherId;
 
     @NotNull(message = ConstantsErrorCode.ERROR_DATA_REQUEST)
     @NotBlank(message = ConstantsErrorCode.VOUCHER_CODE_BLANK)
@@ -39,30 +40,38 @@ public class VoucherRequest {
     @NotNull(message = ConstantsErrorCode.ERROR_DATA_REQUEST)
     @NotBlank(message = ConstantsErrorCode.VOUCHER_START_DATE_BLANK)
     @Pattern(regexp = ContainsFormat.REGEX_DATE, message = ConstantsErrorCode.DATE_NOT_FORMAT)
-    private String startDate;
+    private String voucherStartDate;
 
     @NotNull(message = ConstantsErrorCode.ERROR_DATA_REQUEST)
     @NotBlank(message = ConstantsErrorCode.VOUCHER_END_DATE_BLANK)
     @Pattern(regexp = ContainsFormat.REGEX_DATE, message = ConstantsErrorCode.DATE_NOT_FORMAT)
-    private String endDate;
+    private String voucherEndDate;
 
     @NotNull(message = ConstantsErrorCode.ERROR_DATA_REQUEST)
     @NotBlank(message = ConstantsErrorCode.VOUCHER_DISCOUNT_BLANK)
     @Pattern(regexp = ContainsFormat.REGEX_NUMBER)
-    private String discount;
+    private String voucherDiscount;
 
     @Pattern(regexp = ContainsFormat.REGEX_NUMBER)
-    private String minAmount;
+    private String voucherMoneyMin;
 
     @Pattern(regexp = ContainsFormat.REGEX_NUMBER)
-    private String quantity;
+    private String voucherQuantity;
 
-    private String description;
+    private String voucherDescription;
 
-    private String categoryId;
+    private String voucherCategory;
 
-    private String status;
+    private String voucherStatus;
 
     private String note;
+
+    private String voucherPersonApply;
+
+    private String voucherTypeDiscount;
+
+    private List<String> typeDiscountPerson;
+
+    private String typeDiscountMoneyMin;
 
 }

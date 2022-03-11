@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 /**
  * Description :
@@ -33,7 +34,7 @@ public class VoucherApi {
     public ResponseEntity<String> createVoucher(@RequestBody @Validated VoucherRequest voucherRequest, Errors errors) {
         validateVoucher(voucherRequest, errors);
         try {
-            if (Integer.parseInt(voucherRequest.getQuantity()) < 1) {
+            if (Integer.parseInt(voucherRequest.getVoucherQuantity()) < 1) {
                 throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
             }
             if (voucherService.createVoucher(voucherRequest).equals(ConstantsErrorCode.SUCCESS)) {
@@ -49,7 +50,7 @@ public class VoucherApi {
     public ResponseEntity<String> updateVoucher(@RequestBody @Validated VoucherRequest voucherRequest, Errors errors) {
         validateVoucher(voucherRequest, errors);
         try {
-            if (Integer.parseInt(voucherRequest.getQuantity()) < 1) {
+            if (Integer.parseInt(voucherRequest.getVoucherQuantity()) < 1) {
                 throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
             }
             if (voucherService.updateVoucher(voucherRequest).equals(ConstantsErrorCode.SUCCESS)) {
@@ -61,7 +62,20 @@ public class VoucherApi {
         return ResponseEntity.badRequest().body(ConstantsErrorCode.ERROR);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<String> activeVoucher(@PathVariable("id") String id){
+        try {
+            if (voucherService.activeVoucher(id).equals(ConstantsErrorCode.SUCCESS)) {
+                return ResponseEntity.ok(ConstantsErrorCode.SUCCESS);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.badRequest().body(ConstantsErrorCode.ERROR);
+    }
+
     private void validateVoucher(@Validated @RequestBody VoucherRequest voucherRequest, Errors errors) {
+        System.out.println(voucherRequest);
         final String patternDate = "dd-MM-yyyy";
         if (errors.hasErrors()) {
             throw new TechCamExp(errors.getFieldErrors().get(0).getDefaultMessage());
@@ -72,10 +86,10 @@ public class VoucherApi {
         if (checkEqualLength(voucherRequest.getVoucherName(), 10, 255)) {
             throw new TechCamExp(ConstantsErrorCode.ERROR_LENGTH, "Tên chương trình", 10, 255);
         }
-        if (ConvertUtil.get().strToDate(voucherRequest.getStartDate(), patternDate)
-                .compareTo(LocalDate.now()) < 0
-                || ConvertUtil.get().strToDate(voucherRequest.getStartDate(), patternDate)
-                .compareTo(ConvertUtil.get().strToDate(voucherRequest.getEndDate(), patternDate)) > 0) {
+        if (ConvertUtil.get().strToDate(voucherRequest.getVoucherStartDate(), patternDate)
+                .compareTo(new Date()) < 0
+                || ConvertUtil.get().strToDate(voucherRequest.getVoucherStartDate(), patternDate)
+                .compareTo(ConvertUtil.get().strToDate(voucherRequest.getVoucherEndDate(), patternDate)) > 0) {
             throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
         }
     }

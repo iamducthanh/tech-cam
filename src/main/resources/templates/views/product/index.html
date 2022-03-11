@@ -185,10 +185,14 @@
                                 </td>
                                 <td class="text-end">Tồn kho</td>
                                 <td class="text-center">
-                                    <span th:if="${product.productStatus}" class="badge bg-success"
-                                          th:text="${product.productName}"></span>
-                                    <span th:unless="${product.productStatus}" class="badge bg-danger"
-                                          th:text="${product.productName}"></span>
+                                    <span th:if="${product.productStatus != null && product.productStatus == 'ON'}"
+                                          class="badge bg-success">
+                                        Kinh doanh
+                                    </span>
+                                    <span th:unless="${product.productStatus != null && product.productStatus == 'ON'}"
+                                          class="badge bg-danger">
+                                        Ngừng kinh doanh
+                                    </span>
                                 </td>
                                 <td>Người thêm</td>
                                 <td>Ngày thêm</td>
@@ -231,7 +235,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#image-product" role="tab">
+                            <a class="nav-link" data-bs-toggle="tab" href="#image-product-add" role="tab">
                                 <span class="d-none d-md-block">Hình ảnh sản phẩm</span><span
                                     class="d-block d-md-none"><i class="mdi mdi-account h5"></i></span>
                             </a>
@@ -257,7 +261,7 @@
                                             Tên sản phẩm
                                         </div>
                                         <div class="col-lg-7">
-                                            <input type="text" id="ip-add-product-name" placeholder="Mã sản phẩm...."
+                                            <input type="text" id="ip-add-product-name" placeholder="Tên sản phẩm...."
                                                    class="form-control"/>
                                         </div>
                                     </div>
@@ -266,7 +270,7 @@
                                             Giá bán
                                         </div>
                                         <div class="col-lg-7">
-                                            <input type="text" id="ip-add-product-price" placeholder="Mã sản phẩm...."
+                                            <input type="text" id="ip-add-product-price" placeholder="Giá bán...."
                                                    class="form-control"/>
                                         </div>
                                     </div>
@@ -320,7 +324,7 @@
                                 <div class="fallback">
                                     <input id="ip-add-product-image" hidden type="file" multiple="multiple">
                                 </div>
-                                <div class="dz-message needsclick" onclick="onClickChooseImage()">
+                                <div class="dz-message needsclick" onclick="onClickChooseImageAdd()">
                                     <div class="mb-3">
                                         <i class="mdi mdi-cloud-upload display-4 text-muted"></i>
                                     </div>
@@ -330,21 +334,11 @@
                             <hr/>
                             <div class="file_upload">
                                 <div class="bd-example text-center">
-                                    <div class="carousel slide" data-bs-ride="carousel">
+                                    <div id="carouselExampleCaptionsAdd" class="carousel slide" data-bs-ride="carousel">
                                         <div class="carousel-indicators" id="carousel-indicators-add">
                                         </div>
-                                        <div class="carousel-inner" id="previewUpload-add">
+                                        <div class="carousel-inner" id="previewUploadAdd">
                                         </div>
-                                        <a class="carousel-control-prev " type="button"
-                                           data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                            <span class="visually-hidden">Ảnh trước</span>
-                                        </a>
-                                        <a class="carousel-control-next" type="button"
-                                           data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                            <span class="visually-hidden">Ảnh sau</span>
-                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -354,7 +348,8 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Đóng</button>
                     <button type="button" class="btn btn-success waves-effect waves-light"
-                            onclick="onClickSaveProduct()">Lưu
+                            onclick="onClickSaveProduct()">
+                        Lưu
                     </button>
                 </div>
             </div><!-- /.modal-content -->
@@ -411,7 +406,7 @@
                                             Tên sản phẩm
                                         </div>
                                         <div class="col-lg-7">
-                                            <input type="text" id="ip-edit-product-name" placeholder="Mã sản phẩm...."
+                                            <input type="text" id="ip-edit-product-name" placeholder="Tên sản phẩm...."
                                                    class="form-control"/>
                                         </div>
                                     </div>
@@ -420,7 +415,7 @@
                                             Giá bán
                                         </div>
                                         <div class="col-lg-7">
-                                            <input type="text" id="ip-edit-product-price" placeholder="Mã sản phẩm...."
+                                            <input type="text" id="ip-edit-product-price" placeholder="Giá bán...."
                                                    class="form-control"/>
                                         </div>
                                     </div>
@@ -490,16 +485,6 @@
                                         </div>
                                         <div class="carousel-inner" id="previewUpload">
                                         </div>
-                                        <a class="carousel-control-prev " type="button"
-                                           data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                            <span class="visually-hidden">Ảnh trước</span>
-                                        </a>
-                                        <a class="carousel-control-next" type="button"
-                                           data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                            <span class="visually-hidden">Ảnh sau</span>
-                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -521,6 +506,7 @@
     <script>
 
         let dataImageUploadEdit = [];
+        let dataImageUploadAdd = [];
         let sizeImage = 0;
 
         window.onload = function () {
@@ -543,10 +529,53 @@
                     reader.readAsDataURL(f);
                 }
             })
+            $('#ip-add-product-image').change(function () {
+                for (var i = 0, f; (f = this.files[i]); i++) {
+                    if (!f.type.match("image.*")) {
+                        continue;
+                    }
+                    var reader = new FileReader();
+                    reader.onload = (function (theFile) {
+                        return function (e) {
+                            dataImageUploadAdd.push(e.target.result)
+                            addImagePreviewAdd(e.target.result)
+                        };
+                    })(f);
+                    // Read in the image file as a data URL.
+                    reader.readAsDataURL(f);
+                }
+            })
         }
 
         function onClickChooseImage() {
             $('#ip-edit-product-image').click()
+        }
+
+        function onClickChooseImageAdd() {
+            $('#ip-add-product-image').click()
+        }
+
+        function addImagePreviewAdd(image) {
+            let carouselIndicators = document.getElementById('carousel-indicators-add')
+            if (sizeImage === 0) {
+                carouselIndicators.innerHTML +=
+                    '<button type="button" data-bs-target="#carouselExampleCaptionsAdd" data-bs-slide-to="' + sizeImage + '"\n' +
+                    'aria-label="Slide ' + sizeImage + '" class="active" aria-current="true"></button>'
+            } else {
+                carouselIndicators.innerHTML +=
+                    '<button type="button" data-bs-target="#carouselExampleCaptionsAdd" data-bs-slide-to="' + sizeImage + '"\n' +
+                    'aria-label="Slide ' + sizeImage + '"></button>'
+            }
+            let divImage = document.createElement('div')
+            divImage.className = sizeImage == 0 ? 'carousel-item active' : 'carousel-item'
+            divImage.innerHTML = [
+                '<img style="height: 600px;" src="',
+                image,
+                '" title="',
+                '"/>'
+            ].join("");
+            document.getElementById("previewUploadAdd").insertBefore(divImage, null);
+            sizeImage += 1;
         }
 
         function addImagePreview(image) {
@@ -649,7 +678,7 @@
                 getElementProductStatus,
                 getElementProductCategory,
                 productDescription,
-                getElementProductImage,
+                dataImageUploadAdd,
                 getElementProductProperty,
             );
             console.log(objectProduct);
@@ -660,10 +689,15 @@
                     contentType: 'application/json',
                     data: JSON.stringify(objectProduct),
                     success: function (data) {
+                        toastSuccess('Thành công', 'Đã lưu mới sản phẩm')
                         console.log(data);
+                        setTimeout(function () {
+                            location.reload()
+                        }, 2000)
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         console.log(jqXHR);
+                        toastDanger('Lỗi', 'Lưu sản phẩm mới thất bại')
                     }
                 })
             }

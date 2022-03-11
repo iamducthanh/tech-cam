@@ -37,7 +37,7 @@ public abstract class BaseEntity {
 
     @CreatedBy
     @Column(name = "CREATE_BY")
-    private String modifiedBy = "ADMIN";
+    private String createBy = "ADMIN";
 
     @LastModifiedBy
     @Column(name = "MODIFIER_BY")

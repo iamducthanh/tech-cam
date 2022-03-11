@@ -1,6 +1,5 @@
 package com.techcam.util;
 
-import com.techcam.dto.error.ErrorRespDto;
 import com.techcam.exception.TechCamExp;
 
 import java.text.ParseException;
@@ -32,12 +31,12 @@ public class ConvertUtil {
         return convertUtil;
     }
 
-    public LocalDate strToDate(String startDate, String pattern) {
+    public Date strToDate(String startDate, String pattern) {
         try {
-            return new SimpleDateFormat(pattern).parse(startDate).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            return new SimpleDateFormat(pattern).parse(startDate);
         } catch (ParseException e) {
             e.printStackTrace();
-            throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
+            throw new TechCamExp(com.techcam.util.ConstantsErrorCode.ERROR_DATA_REQUEST);
         }
     }
 

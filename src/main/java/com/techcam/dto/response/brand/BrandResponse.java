@@ -1,6 +1,9 @@
 package com.techcam.dto.response.brand;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Description :
@@ -12,6 +15,9 @@ import lombok.Data;
  */
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class BrandResponse {
 
     private String brandId;
