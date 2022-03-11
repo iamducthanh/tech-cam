@@ -3,7 +3,7 @@ package com.techcam.api;
 import com.techcam.dto.request.voucher.VoucherRequest;
 import com.techcam.exception.TechCamExp;
 import com.techcam.service.IVoucherService;
-import com.techcam.util.ConstantsErrorCode;
+import com.techcam.constants.ConstantsErrorCode;
 import com.techcam.util.ConvertUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

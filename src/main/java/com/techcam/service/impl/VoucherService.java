@@ -9,7 +9,7 @@ import com.techcam.repo.ICategoryRepo;
 import com.techcam.repo.IVoucherRepo;
 import com.techcam.repo.VoucherCustomerRepo;
 import com.techcam.service.IVoucherService;
-import com.techcam.util.ConstantsErrorCode;
+import com.techcam.constants.ConstantsErrorCode;
 import com.techcam.util.ConvertUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

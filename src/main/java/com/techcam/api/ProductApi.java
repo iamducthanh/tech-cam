@@ -2,7 +2,6 @@ package com.techcam.api;
 
 import com.techcam.dto.request.product.ProductAddRequest;
 import com.techcam.dto.request.product.ProductEditRequest;
-import com.techcam.dto.request.product.ProductImageRequest;
 import com.techcam.dto.response.product.ProductResponse;
 import com.techcam.exception.TechCamExp;
 import com.techcam.service.IProductService;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Objects;
 
-import static com.techcam.util.ConstantsErrorCode.*;
+import static com.techcam.constants.ConstantsErrorCode.*;
 
 /**
  * Description :

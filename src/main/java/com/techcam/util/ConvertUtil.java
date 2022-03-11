@@ -1,11 +1,10 @@
 package com.techcam.util;
 
+import com.techcam.constants.ConstantsErrorCode;
 import com.techcam.exception.TechCamExp;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Date;
 
 /**
@@ -36,7 +35,7 @@ public class ConvertUtil {
             return new SimpleDateFormat(pattern).parse(startDate);
         } catch (ParseException e) {
             e.printStackTrace();
-            throw new TechCamExp(com.techcam.util.ConstantsErrorCode.ERROR_DATA_REQUEST);
+            throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
         }
     }
 
