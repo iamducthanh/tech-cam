@@ -11,6 +11,9 @@ package com.techcam.util;
 
 public interface ConstantsErrorCode {
 
+    String SUCCESS = "SUCCESS";
+    String ERROR = "ERROR";
+
     String ERROR_LENGTH = "CM-TC-001";
 
     // lỗi hệ thống

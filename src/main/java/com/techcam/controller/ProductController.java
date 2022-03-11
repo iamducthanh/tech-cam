@@ -5,9 +5,7 @@ import com.techcam.dto.response.category.CategoryResponse;
 import com.techcam.dto.response.product.ProductPropertyResponse;
 import com.techcam.dto.response.product.ProductResponse;
 import com.techcam.dto.response.property.PropertyResponse;
-import com.techcam.service.IAttributeService;
-import com.techcam.service.IProductPropertyService;
-import com.techcam.service.IProductService;
+import com.techcam.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,12 +35,18 @@ public class ProductController {
 
     private final IAttributeService attributeService;
 
+    private final IBrandService brandService;
+
+    private final ICategoryService categoryService;
+
     @GetMapping
     public String productManager(Model model) {
-        List<ProductResponse> lstProducts = null;
-        lstProducts = new ArrayList<>();
-        List<BrandResponse> lstBrands = new ArrayList<>();
-        List<CategoryResponse> lstCategories = new ArrayList<>();
+        List<ProductResponse> lstProducts = productService.getAllProduct();
+        for (ProductResponse x : lstProducts) {
+            x.setProperties(productService.findAllPropertyByProductId(x.getProductId()));
+        }
+        List<BrandResponse> lstBrands = brandService.getAllBrand();
+        List<CategoryResponse> lstCategories = categoryService.getAllCategory();
         model.addAttribute("lstProducts", lstProducts);
         model.addAttribute("lstBrands", lstBrands);
         model.addAttribute("lstCategories", lstCategories);
