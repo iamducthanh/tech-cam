@@ -15,7 +15,6 @@ public interface ConstantsErrorCode {
     String ERROR = "ERROR";
 
     String ERROR_LENGTH = "CM-TC-001";
-    String SUCCESS = "";
 
     // lỗi hệ thống
     String ERROR_DATA_REQUEST = "TC-000-001";
