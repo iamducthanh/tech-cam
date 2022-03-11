@@ -1,6 +1,6 @@
 package com.techcam.service.impl;
 
-import com.techcam.dto.response.CategoryRespDto;
+import com.techcam.dto.response.category.CategoryResponse;
 import com.techcam.entity.CategoryEntity;
 import com.techcam.repo.ICategoryRepo;
 import com.techcam.service.ICategoryService;
@@ -25,16 +25,16 @@ public class CategoryService implements ICategoryService {
     private final ICategoryRepo categoryRepo;
 
     @Override
-    public List<CategoryRespDto> getAllCategory() {
+    public List<CategoryResponse> getAllCategory() {
         return categoryRepo.findAllByDeleteFlagIsFalse().stream()
                 .map(this::mapToCategoryResp)
                 .collect(Collectors.toList());
     }
 
-    private <R> CategoryRespDto mapToCategoryResp(CategoryEntity categoryEntity) {
-        if (categoryEntity == null) return new CategoryRespDto();
-        return CategoryRespDto.builder()
-                .id(categoryEntity.getId())
+    private <R> CategoryResponse mapToCategoryResp(CategoryEntity categoryEntity) {
+        if (categoryEntity == null) return new CategoryResponse();
+        return CategoryResponse.builder()
+                .categoryId(categoryEntity.getId())
                 .categoryName(categoryEntity.getName())
                 .build();
     }

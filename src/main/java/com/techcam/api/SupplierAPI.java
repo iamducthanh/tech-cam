@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -22,8 +23,14 @@ public class SupplierAPI {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<SupplierResponseDTO> create(SupplierDTO supplierDTO){
+    public ResponseEntity<SupplierResponseDTO> create(@Valid @RequestBody SupplierDTO supplierDTO){
         SupplierResponseDTO supplierResponseDTO = supplierService.create(supplierDTO);
+        return ResponseEntity.ok(supplierResponseDTO);
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<SupplierResponseDTO> create(@Valid @RequestBody SupplierDTO supplierDTO, @PathVariable("id") String id){
+        SupplierResponseDTO supplierResponseDTO = supplierService.update(supplierDTO, id);
         return ResponseEntity.ok(supplierResponseDTO);
     }
 

@@ -1,5 +1,7 @@
 package com.techcam.entity;
 
+import lombok.Builder;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
@@ -12,7 +14,6 @@ import java.util.Objects;
 @Entity
 @Table(name = "supplier", schema = "poly_techcam", catalog = "")
 public class SupplierEntity {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "ID")
     private String id;

@@ -1,4 +1,4 @@
-package com.techcam.repo.util;
+package com.techcam.util;
 
 /**
  * Description :

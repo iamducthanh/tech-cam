@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import static com.techcam.util.ConstantsErrorCode.*;
+import static com.techcam.util.ContainsFormat.*;
 
 /**
  * Description :

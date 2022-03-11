@@ -52,4 +52,6 @@ public interface ConstantsErrorCode {
 
     String SUPPLIER_EXIST = "TC-003-001";
     String SUPPLIER_NOT_EXIST = "TC-003-002";
+    String SUCCESS = "SUCCESS";
+    String ERROR = "ERROR";
 }
