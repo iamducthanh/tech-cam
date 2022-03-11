@@ -1,9 +1,11 @@
 package com.techcam.config;
 
+import com.techcam.dto.request.StaffAddRequestDTO;
 import com.techcam.entity.StaffEntity;
 import com.techcam.service.impl.StaffDetailsServiceImpl;
 import com.techcam.service.impl.StaffService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,6 +35,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     String falseUrl ="/login?status=login_false";
+        private final ModelMapper modelMapper = new ModelMapper();
+
 
     @Autowired
     private StaffDetailsServiceImpl staffDetailsService;
@@ -84,7 +88,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         System.out.println("Đăng nhập thành công " + username);
                         StaffEntity staffEntity = staffService.getByEmail(username);
                         staffEntity.setCountLoginFalse(0);
-                        staffService.saveStaff(staffEntity);
+                        staffService.addStaff(modelMapper.map(staffEntity, StaffAddRequestDTO.class));
                         response.sendRedirect(request.getContextPath());
                     }
                 })
