@@ -9,7 +9,7 @@ import com.techcam.exception.TechCamExp;
 import com.techcam.service.ICustomerService;
 import com.techcam.type.CommonTypeMethod;
 import com.techcam.type.CustomerStatus;
-import com.techcam.util.ConstantsErrorCode;
+import com.techcam.constants.ConstantsErrorCode;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

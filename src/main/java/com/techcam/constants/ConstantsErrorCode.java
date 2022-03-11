@@ -1,4 +1,4 @@
-package com.techcam.util;
+package com.techcam.constants;
 
 /**
  * Description:
@@ -12,6 +12,7 @@ package com.techcam.util;
 public interface ConstantsErrorCode {
 
     String ERROR_LENGTH = "CM-TC-001";
+    String SUCCESS = "";
 
     // lỗi hệ thống
     String ERROR_DATA_REQUEST = "TC-000-001";
@@ -52,4 +53,5 @@ public interface ConstantsErrorCode {
 
     String SUPPLIER_EXIST = "TC-003-001";
     String SUPPLIER_NOT_EXIST = "TC-003-002";
+
 }

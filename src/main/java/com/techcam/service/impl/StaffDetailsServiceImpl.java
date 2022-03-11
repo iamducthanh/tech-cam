@@ -1,8 +1,8 @@
 package com.techcam.service.impl;
 
 import com.techcam.entity.StaffEntity;
-import com.techcam.repo.util.CookieUtil;
-import com.techcam.repo.util.SessionUtil;
+import com.techcam.util.CookieUtil;
+import com.techcam.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

@@ -1,14 +1,15 @@
 package com.techcam.service.impl;
 
+import com.techcam.constants.ConstantsErrorCode;
 import com.techcam.dto.request.product.ProductAddRequest;
 import com.techcam.dto.request.product.ProductEditRequest;
-import com.techcam.dto.request.product.ProductPropertyRequest;
 import com.techcam.dto.response.product.ProductPropertyResponse;
 import com.techcam.entity.ProductEntity;
-import com.techcam.exception.TechCamExp;
-import com.techcam.repo.*;
+import com.techcam.repo.IAttributeRepo;
+import com.techcam.repo.ICategoryRepo;
+import com.techcam.repo.IProductPropertyRepo;
+import com.techcam.repo.IProductRepo;
 import com.techcam.service.IProductService;
-import com.techcam.util.ConstantsErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
-import static com.techcam.util.ConstantsErrorCode.PRODUCT_NOT_EXISTS;
-import static com.techcam.util.ConstantsErrorCode.SUCCESS;
+import static com.techcam.constants.ConstantsErrorCode.PRODUCT_NOT_EXISTS;
+import static com.techcam.constants.ConstantsErrorCode.SUCCESS;
 
 /**
  * Project_name : SMW_TECHCAM
@@ -36,8 +36,6 @@ public class ProductService implements IProductService {
     private final IProductRepo productRepo;
 
     private final ICategoryRepo categoryRepo;
-
-    private final IProductDetailRepo productDetailRepo;
 
     private final IProductPropertyRepo productPropertyRepo;
 

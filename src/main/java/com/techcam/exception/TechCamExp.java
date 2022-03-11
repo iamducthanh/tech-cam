@@ -1,6 +1,7 @@
 package com.techcam.exception;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.catalina.connector.Response;
@@ -16,6 +17,7 @@ import org.apache.catalina.connector.Response;
  */
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class TechCamExp extends RuntimeException {
 
     private ErrorMessage errorMessage;
