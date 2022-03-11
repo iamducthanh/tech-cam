@@ -1,6 +1,6 @@
 package com.techcam.service;
 
-import com.techcam.dto.response.CategoryRespDto;
+import com.techcam.dto.response.category.CategoryResponse;
 
 import java.util.List;
 
@@ -14,6 +14,6 @@ import java.util.List;
  */
 public interface ICategoryService {
 
-    List<CategoryRespDto> getAllCategory();
+    List<CategoryResponse> getAllCategory();
 
 }
