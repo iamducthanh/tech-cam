@@ -21,7 +21,7 @@ public class DemoController {
 
     @GetMapping("/index")
     public String index1() {
-        return "index";
+        return "views/layout_container";
     }
 
 }

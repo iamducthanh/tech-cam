@@ -55,5 +55,14 @@ public interface ConstantsErrorCode {
 
     String SUPPLIER_EXIST = "TC-003-001";
     String SUPPLIER_NOT_EXIST = "TC-003-002";
+    // lỗi login
+    String LOGIN_DATA_FAIL = "TC-LG-001";
+    String LOGIN_PASS_C_FAIL = "TC-LG-002";
+    String LOGIN_PASS_M_FAIL = "TC-LG-003";
+    String LOGIN_EMAIL_INPUT_NULL = "TC-LG-004";
+    String LOGIN_EMAIL_NOT_EXITS = "TC-LG-005";
+    String LOGIN_PASS_FAIL = "TC-LG-007";
+    String LOGIN_FAIL_FIVE="TC-LG-008";
+
 
 }

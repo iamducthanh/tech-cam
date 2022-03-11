@@ -1,12 +1,15 @@
 package com.techcam.config;
 
+import com.techcam.dto.request.StaffAddRequestDTO;
 import com.techcam.entity.StaffEntity;
 import com.techcam.service.impl.StaffDetailsServiceImpl;
 import com.techcam.service.impl.StaffService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,6 +23,12 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.InMemoryTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.web.filter.CorsFilter;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +40,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     String falseUrl ="/login?status=login_false";
+    private final ModelMapper modelMapper = new ModelMapper();
+
 
     @Autowired
     private StaffDetailsServiceImpl staffDetailsService;
@@ -82,7 +93,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         System.out.println("Đăng nhập thành công " + username);
                         StaffEntity staffEntity = staffService.getByEmail(username);
                         staffEntity.setCountLoginFalse(0);
-                        staffService.saveStaff(staffEntity);
+                        staffService.addStaff(modelMapper.map(staffEntity, StaffAddRequestDTO.class));
                         response.sendRedirect(request.getContextPath());
                     }
                 })
@@ -96,8 +107,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PersistentTokenRepository persistentTokenRepository() {
-        return new InMemoryTokenRepositoryImpl();
+        InMemoryTokenRepositoryImpl memory = new InMemoryTokenRepositoryImpl();
+        return memory;
     }
+
 
     public static void main(String[] args) {
         System.out.println(new BCryptPasswordEncoder().encode("123"));
