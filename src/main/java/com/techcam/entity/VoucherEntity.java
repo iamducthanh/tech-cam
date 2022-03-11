@@ -2,44 +2,78 @@ package com.techcam.entity;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.Table;
-import java.time.Instant;
+import javax.persistence.*;
+import java.util.Date;
+import java.sql.Timestamp;
+import java.util.Objects;
 
-@Getter
-@Setter
-@ToString
-@Table(name = "voucher")
+/**
+ * @author DucBV
+ * @version 1.0
+ * @since 8.3.2022
+ */
 @Entity
+@Table(name = "voucher", schema = "poly_techcam", catalog = "")
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Getter
+@Setter
 public class VoucherEntity extends BaseEntity {
-
-    @Column(name = "name", nullable = false, length = 200)
+    @Id
+    @Column(name = "ID")
+    private String id;
+    @Basic
+    @Column(name = "NAME")
     private String name;
-
-    @Column(name = "voucher_code", nullable = false, length = 50)
-    private String voucherCode;
-
-    @Column(name = "quantity", nullable = false)
-    private Integer quantity;
-
-    @Column(name = "start_date", nullable = false)
-    private Instant startDate;
-
-    @Column(name = "end_date", nullable = false)
-    private Instant endDate;
-
-    @Lob
-    @Column(name = "note")
+    @Basic
+    @Column(name = "CODE")
+    private String code;
+    @Basic
+    @Column(name = "QUANTITY")
+    private int quantity;
+    @Basic
+    @Column(name = "DISCOUNT")
+    private long discount;
+    @Basic
+    @Column(name = "START_DATE")
+    private Date startDate;
+    @Basic
+    @Column(name = "END_DATE")
+    private Date endDate;
+    @Basic
+    @Column(name = "DESCRIPTION")
+    private String description;
+    @Basic
+    @Column(name = "TYPE_DISCOUNT")
+    private String typeDiscount;
+    // số tiền đã dùng tối thiểu của người dùng có thể sử dụng mã giảm giá
+    @Basic
+    @Column(name = "TYPE_DISCOUNT_MONEY_MIN")
+    private Long typeDiscountMoneyMin;
+    @Basic
+    @Column(name = "MIN_AMOUNT")
+    private int minAmount;
+    @Basic
+    @Column(name = "CATEGORY_ID")
+    private String categoryId;
+    @Basic
+    @Column(name = "STATUS")
+    private String status;
+    @Basic
+    @Column(name = "NOTE")
     private String note;
 
-    @Column(name = "status", nullable = false, length = 50)
-    private String status;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        VoucherEntity that = (VoucherEntity) o;
+        return quantity == that.quantity && discount == that.discount && minAmount == that.minAmount && Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(code, that.code) && Objects.equals(startDate, that.startDate) && Objects.equals(endDate, that.endDate) && Objects.equals(description, that.description) && Objects.equals(categoryId, that.categoryId) && Objects.equals(status, that.status) && Objects.equals(note, that.note);
+    }
 
-    @Column(name = "discount", nullable = false)
-    private Long discount;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, code, quantity, discount, startDate, endDate, description, minAmount, categoryId, status, note);
+    }
 }

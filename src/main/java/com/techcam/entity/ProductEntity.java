@@ -1,43 +1,57 @@
 package com.techcam.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.Table;
+import javax.persistence.*;
 
-@Getter
-@Setter
-@ToString
-@Table(name = "product")
+/**
+ * @author DucBV
+ * @version 1.0
+ * @since 8.3.2022
+ */
 @Entity
+@Table(name = "product", schema = "poly_techcam", catalog = "")
+@Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class ProductEntity extends BaseEntity {
-    @Column(name = "name", nullable = false)
+
+    @Id
+    @Column(name = "ID")
+    private String id;
+    @Basic
+    @Column(name = "NAME")
     private String name;
-
-    @Column(name = "category_id", nullable = false, length = 64)
+    @Basic
+    @Column(name = "CATEGORY_ID")
     private String categoryId;
-
-    @Column(name = "category_name", nullable = false, length = 50)
-    private String categoryName;
-
-    @Column(name = "brand_id", nullable = false, length = 64)
+    @Basic
+    @Column(name = "BRAND_ID")
     private String brandId;
-
-    @Column(name = "brand_name", nullable = false, length = 100)
-    private String brandName;
-
-    @Lob
-    @Column(name = "detail", nullable = false)
+    @Basic
+    @Column(name = "PRODUCT_CODE")
+    private String productCode;
+    @Basic
+    @Column(name = "QUANTITY")
+    private int quantity;
+    @Basic
+    @Column(name = "PRICE")
+    private long price;
+    @Basic
+    @Column(name = "DETAIL")
     private String detail;
-
-    @Column(name = "status", nullable = false, length = 50)
+    @Basic
+    @Column(name = "DESCRIPTION")
+    private String description;
+    @Basic
+    @Column(name = "STATUS")
     private String status;
-
-    @Lob
-    @Column(name = "note")
+    @Basic
+    @Column(name = "NOTE")
     private String note;
+
 }

@@ -19,12 +19,9 @@ import java.util.List;
 @Repository
 public interface IVoucherRepo extends JpaRepository<VoucherEntity, String> {
 
-    @Query("select o from VoucherEntity o " +
-            "where o.voucherCode = :voucherCode " +
-            "and o.deleteFlag = false")
-    List<VoucherEntity> findByVoucherCode(String voucherCode);
+    List<VoucherEntity> findAllByCodeAndDeleteFlagIsFalse(String voucherCode);
 
-    @Override
-    @Query("select o from VoucherEntity o where o.deleteFlag = false")
-    VoucherEntity getById(String s);
+    List<VoucherEntity> findAllByDeleteFlagIsFalse();
+
+    VoucherEntity getByIdAndDeleteFlagIsFalse(String id);
 }

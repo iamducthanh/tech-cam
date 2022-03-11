@@ -8,9 +8,9 @@ spring:
     rest:
       base-path: '/api'
   datasource:
-    url: 'jdbc:mysql://localhost:3307/poly_techcam'
+    url: 'jdbc:mysql://localhost:3306/poly_techcam'
     username: root
-    password: 'mrthanh268'
+    password: '123'
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:

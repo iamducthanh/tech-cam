@@ -1,7 +1,7 @@
 package com.techcam.util;
 
-import com.techcam.dto.error.ErrorRespDto;
-import com.techcam.exception.IllegalStateConfig;
+import com.techcam.constants.ConstantsErrorCode;
+import com.techcam.exception.TechCamExp;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,9 +34,9 @@ public class ConvertUtil {
         try {
             return new SimpleDateFormat(pattern).parse(startDate);
         } catch (ParseException e) {
-            throw new IllegalStateConfig(ErrorRespDto.builder()
-                    .message("Thời gian không hợp lệ")
-                    .build());
+            e.printStackTrace();
+            throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
         }
     }
+
 }
