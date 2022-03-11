@@ -183,10 +183,10 @@
                                 <td th:text="${voucher.voucherCode}">Mã giảm giá</td>
                                 <td th:text="${voucher.voucherName}">Tên chương trình</td>
                                 <td class="text-center"
-                                    th:text="${#temporals.format(voucher.voucherStartDate, 'dd-MM-yyyy')}">Từ ngày
+                                    th:text="${#dates.format(voucher.voucherStartDate, 'dd-MM-yyyy')}">Từ ngày
                                 </td>
                                 <td class="text-center"
-                                    th:text="${#temporals.format(voucher.voucherEndDate, 'dd-MM-yyyy')}">Đến ngày
+                                    th:text="${#dates.format(voucher.voucherEndDate, 'dd-MM-yyyy')}">Đến ngày
                                 </td>
                                 <td class="text-end"
                                     th:text="${#numbers.formatDecimal(voucher.voucherQuantity, 0, 'COMMA', 0, 'POINT')}">
@@ -197,25 +197,36 @@
                                     Mệnh giá
                                 </td>
                                 <td class="text-center">
-                                    <span th:unless="${voucher.voucherStatus}" class="badge bg-danger">
+                                    <span th:unless="${voucher.voucherStatus != null && voucher.voucherStatus == 'TRUE'}"
+                                          class="badge bg-danger">
                                         Không sử dụng
                                     </span>
-                                    <span th:if="${voucher.voucherStatus}" class="badge bg-success">
+                                    <span th:if="${voucher.voucherStatus != null && voucher.voucherStatus == 'TRUE'}"
+                                          class="badge bg-success">
                                         Kích hoạt
                                     </span>
                                 </td>
                                 <td th:text="${voucher.voucherCreateBy}">
                                     Người tạo
                                 </td>
-                                <td th:text="${#temporals.format(voucher.voucherCreateDate, 'dd-MM-yyyy')}">
+                                <td th:text="${#dates.format(voucher.voucherCreateDate, 'dd-MM-yyyy')}">
                                     Ngày tạo
                                 </td>
-                                <td th:text="${#temporals.format(voucher.voucherModifiedDate, 'dd-MM-yyyy')}">
+                                <td th:text="${#dates.format(voucher.voucherModifiedDate, 'dd-MM-yyyy')}">
                                     Ngày cập nhật
                                 </td>
                                 <td class="text-center">
+                                    <button th:if="${voucher.voucherStatus != null && voucher.voucherStatus != 'TRUE'}"
+                                            th:data-id="${voucher.voucherId}" class="btn btn-success btn-sm"
+                                            onclick="onClickActiveVoucher(this)">
+                                        Kích hoạt
+                                    </button>
                                     <button class="btn btn-info btn-sm" onclick="onClickInfoVoucher(this)">
                                         Chi tiết
+                                    </button>
+                                    <button th:data-id="${voucher.voucherId}" class="btn btn-danger btn-sm"
+                                            onclick="onClickDeleteVoucher(this)">
+                                        Xoá
                                     </button>
                                 </td>
                             </tr>
@@ -259,7 +270,8 @@
                                                             </div>
                                                             <div class="col-lg-7">
                                                                 <input type="text" placeholder="Mã giảm giá tự động"
-                                                                       class="form-control ip-voucher-code"/>
+                                                                       th:class="${'form-control ip-voucher-code' + voucher.voucherId}"
+                                                                       th:value="${voucher.voucherCode}"/>
                                                             </div>
                                                         </div>
                                                         <div class="mb-3 row">
@@ -268,7 +280,8 @@
                                                             </div>
                                                             <div class="col-lg-7">
                                                                 <input type="text" placeholder="Tên chương trình...."
-                                                                       class="form-control ip-voucher-name"/>
+                                                                       th:class="${'form-control ip-voucher-name' + voucher.voucherId}"
+                                                                       th:value="${voucher.voucherName}"/>
                                                             </div>
                                                         </div>
                                                         <div class="mb-3 row">
@@ -278,7 +291,8 @@
                                                             <div class="col-lg-7">
                                                                 <input type="number" min="1" value="1"
                                                                        placeholder="Nhập số lần sử dụng..."
-                                                                       class="form-control ip-voucher-quantity"/>
+                                                                       th:class="${'form-control ip-voucher-quantity' + voucher.voucherId}"
+                                                                       th:value="${voucher.voucherQuantity}"/>
                                                             </div>
                                                         </div>
                                                         <div class="mb-3 row">
@@ -288,12 +302,13 @@
                                                             <div class="col-lg-7">
                                                                 <div class="input-group">
                                                                     <input type="text"
-                                                                           class="form-control ip-voucher-discount"
-                                                                           placeholder="Nhập mệnh giá...">
+                                                                           th:class="${'form-control ip-voucher-discount' + voucher.voucherId}"
+                                                                           placeholder="Nhập mệnh giá..."
+                                                                           th:value="${voucher.voucherDiscount}">
                                                                     <span class="input-group-text ip-voucher-type-discount"
                                                                           onclick="onClickChangeTypeDiscount(this)"
                                                                           style="cursor: pointer;">
-                                                                    %
+                                                                    [[${voucher.voucherTypeDiscount}]]
                                                                 </span>
                                                                 </div><!-- input-group -->
                                                             </div>
@@ -305,7 +320,8 @@
                                                             <div class="col-lg-7">
                                                                 <input type="number" min="0"
                                                                        placeholder="Nhập số tiền hàng tối thiểu..."
-                                                                       class="form-control ip-voucher-quantity"/>
+                                                                       th:class="${'form-control ip-voucher-money-min' + voucher.voucherId}"
+                                                                       th:value="${voucher.voucherMinAmount}"/>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -321,10 +337,14 @@
                                                                      data-date-autoclose="true"
                                                                      data-provide="datepicker"
                                                                      data-date-container='#datepicker6'>
-                                                                    <input type="text" class="form-control"
-                                                                           s placeholder=" Bắt đầu"/>
-                                                                    <input type="text" class="form-control"
-                                                                           placeholder="Kết thúc"/>
+                                                                    <input type="text"
+                                                                           th:class="${'form-control ip-voucher-start-date' + voucher.voucherId}"
+                                                                           placeholder=" Bắt đầu"
+                                                                           th:value="${#dates.format(voucher.voucherStartDate, 'dd-MM-yyyy 00:00:00')}"/>
+                                                                    <input type="text"
+                                                                           th:class="${'form-control ip-voucher-end-date' + voucher.voucherId}"
+                                                                           placeholder="Kết thúc"
+                                                                           th:value="${#dates.format(voucher.voucherEndDate, 'dd-MM-yyyy 00:00:00')}"/>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -333,12 +353,12 @@
                                                                 Mặt hàng áp dụng
                                                             </div>
                                                             <div class="col-lg-7">
-                                                                <select class="form-control select2">
-                                                                    <option>Tất cả mặt hàng</option>
-                                                                    <option>Thẻ nhớ</option>
-                                                                    <option>Camera</option>
-                                                                    <option>Camera ngoài trời</option>
-                                                                    <option>Camera Wifi</option>
+                                                                <select th:class="${'form-control select2 ip-voucher-category' + voucher.voucherId}">
+                                                                    <option value="">Tất cả mặt hàng</option>
+                                                                    <option th:each="category : ${lstCategory}"
+                                                                            th:selected="${category.categoryId == voucher.categoryId}"
+                                                                            th:value="${category.categoryId}"
+                                                                            th:text="${category.categoryName}"></option>
                                                                 </select>
                                                             </div>
                                                         </div>
@@ -347,16 +367,17 @@
                                                                 Đối tượng áp dụng
                                                             </div>
                                                             <div class="col-lg-7">
-                                                                <select
-                                                                        class="form-control select2 ip-voucher-person-apply"
+                                                                <select th:class="${'form-control select2 ip-voucher-person-apply ip-voucher-person-apply' + voucher.voucherId}"
                                                                         onchange="onChangePersonApply(this)">
                                                                     <option value="ALL-PERSON">
                                                                         Toàn bộ khách hàng
                                                                     </option>
-                                                                    <option value="PERSON-BUY-MONEY">
+                                                                    <option value="PERSON-BUY-MONEY"
+                                                                            th:selected="${voucher.typeDiscountMinAmount != null && voucher.typeDiscountMinAmount > 0}">
                                                                         Đã mua tối thiểu?
                                                                     </option>
-                                                                    <option value="CHOOSE-PERSON">
+                                                                    <option value="CHOOSE-PERSON"
+                                                                            th:selected="${voucher.lstCustomer != null && not #lists.isEmpty(voucher.lstCustomer)}">
                                                                         Lựa chọn khách hàng
                                                                     </option>
                                                                 </select>
@@ -370,7 +391,8 @@
                                                                 <div class="col-lg-7">
                                                                     <input type="number" min="1"
                                                                            placeholder="Nhập số tiền tối thiểu..."
-                                                                           class="form-control ip-type-discount-min"/>
+                                                                           th:class="${'form-control ip-type-discount-money-min' + voucher.voucherId}"
+                                                                           th:value="${voucher.typeDiscountMinAmount}"/>
                                                                 </div>
                                                             </div>
                                                             <div class="mb-3 row CHOOSE-PERSON">
@@ -378,10 +400,11 @@
                                                                     Chọn khách hàng
                                                                 </div>
                                                                 <div class="col-lg-7">
-                                                                    <select class="select2 form-control select2-multiple"
+                                                                    <select th:class="${'select2 form-control select2-multiple ip-type-discount-person' + voucher.voucherId}"
                                                                             multiple="multiple"
                                                                             data-placeholder="Chọn khách hàng...">
                                                                         <option th:each="customer : ${lstCustomer}"
+                                                                                th:selected="${voucher.lstCustomer != null && #lists.contains(voucher.lstCustomer, customer.id)}"
                                                                                 th:value="${customer.id}"
                                                                                 th:text="${customer.fullName}"></option>
                                                                     </select>
@@ -394,12 +417,16 @@
                                                             Mô tả chi tiết:
                                                         </div>
                                                         <div class="col-12 mb-3">
-                                                            <textarea class="form-control" rows="5"></textarea>
+                                                            <textarea
+                                                                    th:class="${'form-control ip-voucher-description' + voucher.voucherId}"
+                                                                    rows="5"
+                                                                    th:text="${voucher.voucherDescription}"></textarea>
                                                         </div>
                                                     </div>
                                                     <div class="col-12 mb-3">
                                                         <div class="float-end">
-                                                            <button data-id="id" onclick="onClickUpdateVoucher(this)"
+                                                            <button th:data-id="${voucher.voucherId}"
+                                                                    onclick="onClickUpdateVoucher(this)"
                                                                     class="btn btn-success waves-effect waves-light">
                                                                 Cập nhật
                                                             </button>
@@ -533,11 +560,10 @@
                                 </div>
                                 <div class="col-lg-7">
                                     <select class="form-control select2" id="ip-voucher-category">
-                                        <option>Tất cả mặt hàng</option>
-                                        <option>Thẻ nhớ</option>
-                                        <option>Camera</option>
-                                        <option>Camera ngoài trời</option>
-                                        <option>Camera Wifi</option>
+                                        <option value="">Tất cả mặt hàng</option>
+                                        <option th:each="category : ${lstCategory}"
+                                                th:value="${category.categoryId}"
+                                                th:text="${category.categoryName}"></option>
                                     </select>
                                 </div>
                             </div>
@@ -599,11 +625,12 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Đóng</button>
                     <button type="button" class="btn btn-success waves-effect waves-light"
-                            onclick="onClickSaveVoucher()">Lưu
+                            onclick="onClickSaveVoucher()">
+                        Lưu
                     </button>
                 </div>
             </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
+        </div><!-- /.modal-dia(log) -->
     </div><!-- /.modal -->
 
     <script type="text/javascript">
@@ -619,6 +646,7 @@
             let getSelectPersonApply = document.getElementsByClassName('ip-voucher-person-apply')
             if (getSelectPersonApply !== null && getSelectPersonApply !== undefined) {
                 for (let index = 0; index < getSelectPersonApply.length; index++) {
+                    console.log(getSelectPersonApply[index])
                     onChangePersonApply(getSelectPersonApply[index])
                 }
             }
@@ -652,6 +680,7 @@
             // get element mô tả chi tiết mã giảm giá
             let getElementVoucherDescription = document.getElementById('ip-type-discount-person');
             let objVoucher = validateObjectVoucher(
+                null,
                 getElementVoucherCode
                 , getElementVoucherName
                 , getElementVoucherQuantity
@@ -675,11 +704,14 @@
                     data: JSON.stringify(objVoucher),
                     success: function (data) {
                         console.log(data);
+                        toastSuccess('Thành công', 'Đã tạo mã giảm giá')
+                        setTimeout(function () {
+                            location.reload()
+                        }, 2000)
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         console.log(jqXHR);
-                        console.log(textStatus);
-                        console.log(errorThrown);
+                        toastDanger('Lỗi', 'Tạo mã giảm giá thất bại')
                     }
                 })
             }
@@ -687,6 +719,7 @@
 
         function onClickUpdateVoucher(e) {
             let id = e.dataset.id;
+            console.log(id)
             // get element mã giảm giá
             let getElementVoucherCode = document.querySelector('.ip-voucher-code' + id);
             // get element tên chương trình
@@ -714,6 +747,7 @@
             // get element mô tả chi tiết mã giảm giá
             let getElementVoucherDescription = document.querySelector('.ip-voucher-description' + id);
             let objVoucher = validateObjectVoucher(
+                id,
                 getElementVoucherCode
                 , getElementVoucherName
                 , getElementVoucherQuantity
@@ -728,7 +762,6 @@
                 , getElementTypeDiscountPerson
                 , getElementVoucherDescription
             );
-            objVoucher['id'] = id
             console.log(objVoucher);
             if (objVoucher !== null && objVoucher !== undefined) {
                 $.ajax({
@@ -738,17 +771,65 @@
                     data: JSON.stringify(objVoucher),
                     success: function (data) {
                         console.log(data);
+                        toastSuccess('Thành công', 'Đã cập nhật mã giảm giá')
+                        setTimeout(function () {
+                            location.reload()
+                        }, 2000)
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         console.log(jqXHR);
-                        console.log(textStatus);
-                        console.log(errorThrown);
+                        toastDanger('Lỗi', 'Cập nhật mã giảm giá thất bại')
+                    }
+                })
+            }
+        }
+
+        function onClickActiveVoucher(e) {
+            let id = e.dataset.id
+            if (id !== null && id !== undefined && id !== '') {
+                $.ajax({
+                    url: '/api/voucher/' + id,
+                    method: 'PUT',
+                    contentType: 'application/json',
+                    success: function (data) {
+                        console.log(data);
+                        toastSuccess('Thành công', 'Đã kích hoạt mã giảm giá')
+                        setTimeout(function () {
+                            location.reload()
+                        }, 2000)
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.log(jqXHR);
+                        toastDanger('Lỗi', 'Kích hoạt mã giảm giá thất bại')
+                    }
+                })
+            }
+        }
+
+        function onClickDeleteVoucher(e) {
+            let id = e.dataset.id
+            if (id !== null && id !== undefined && id !== '') {
+                $.ajax({
+                    url: '/api/voucher/' + id,
+                    method: 'DELETE',
+                    contentType: 'application/json',
+                    success: function (data) {
+                        console.log(data);
+                        toastSuccess('Thành công', 'Đã xoá mã giảm giá')
+                        setTimeout(function () {
+                            location.reload()
+                        }, 2000)
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.log(jqXHR);
+                        toastDanger('Lỗi', 'Xoá mã giảm giá thất bại')
                     }
                 })
             }
         }
 
         function validateObjectVoucher(
+            id,
             getElementVoucherCode
             , getElementVoucherName
             , getElementVoucherQuantity
@@ -817,37 +898,45 @@
             // validate mã giảm giá
             if (voucherCode === null || voucherCode === undefined || voucherCode === '') {
                 console.log('Mã giảm giá không được bỏ trống')
+                toastDanger('Lỗi', 'Vui lòng nhập mã giảm giá')
                 return null;
             }
             if (!/^[a-zA-Z0-9\-]+$/.test(voucherCode)) {
                 console.log('Mã giảm giá không được chứa các ký tự đặc biệt.')
+                toastDanger('Lỗi', 'Mã giảm giá không được chứa các ký tự đặc biệt')
                 return null;
             }
             if (voucherCode.length > 50) {
                 console.log('Mã giảm giá không được quá 50 ký tự.')
+                toastDanger('Lỗi', 'Mã giảm giá không được quá 50 ký tự')
                 return null;
             }
             // validate tên chương trình
             if (voucherName === null || voucherName === undefined || voucherName === '') {
                 console.log('Tên chương trình không được bỏ trống')
+                toastDanger('Lỗi', 'Vui lòng nhập tên chương trình')
                 return null;
             }
             if (voucherName.length > 255) {
                 console.log('Tên chương trình quá dài')
+                toastDanger('Lỗi', 'Tên chương trình quá dài')
                 return null;
             }
             // validate số lần sử dụng
             if (voucherQuantity === null || voucherQuantity === undefined || voucherQuantity === '') {
                 console.log('Số lần sử dụng không được bỏ trống')
+                toastDanger('Lỗi', 'Vui lòng nhập số lần sử dụng')
                 return null;
             }
             // validate mệnh giá
             if (voucherDiscount === null || voucherDiscount === undefined || voucherDiscount === '') {
                 console.log('Mệnh giá không được bỏ trống')
+                toastDanger('Lỗi', 'Vui lòng nhập mệt giá')
                 return null;
             }
             if (!/^[0-9]+$/.test(voucherDiscount)) {
                 console.log('Mệnh giá không đúng')
+                toastDanger('Lỗi', 'Mệnh giá không đúng')
                 return null;
             }
             if (voucherTypeDiscount === null || voucherTypeDiscount === undefined) {
@@ -857,86 +946,104 @@
             if (voucherTypeDiscount === '%') {
                 if (Number(voucherDiscount) < 0 || Number(voucherDiscount) > 100) {
                     console.log('Tỉ lệ giảm không đúng (từ 0% - 100%)');
+                    toastDanger('Lỗi', 'Tỉ lệ không đúng (từ 0% - 100%)')
                     return null;
                 }
                 if (Number(voucherDiscount) === 0) {
                     console.log('Tỉ lệ giảm phải từ 0%');
+                    toastDanger('Lỗi', 'Tỉ lệ giảm phải từ 0%')
                     return null;
                 }
             } else if (voucherTypeDiscount === 'đ') {
                 if (Number(voucherDiscount) < 1) {
                     console.log('Số tiền giảm không đúng (từ 0đ)');
+                    toastDanger('Lỗi', 'Số tiền giảm không đúng (từ 0đ)')
                     return null;
                 }
             } else {
                 console.log('Có lỗi khi nhập mệnh giá giảm');
+                toastDanger('Lỗi', 'Có lỗi khi nhập mệnh giá giảm')
                 return null;
             }
             // validate số tiền hàng tối thiểu
             if (voucherMoneyMin === null || voucherMoneyMin === undefined || voucherMoneyMin === '') {
                 console.log('Vui lòng nhập số tiền hàng mua tối thiểu')
+                toastDanger('Lỗi', 'Vui lòng nhập số tiền hàng mua tối thiểu')
                 return null;
             }
             if (!/^[0-9]+$/.test(voucherMoneyMin)) {
                 console.log('Số tiền hàng mua tối thiểu không đúng')
+                toastDanger('Lỗi', 'Số tiền hàng mua tối thiểu không đúng')
                 return null;
             }
             if (Number(voucherMoneyMin) < 0) {
                 console.log('Số tiền hàng mua tối thiểu phải từ 0đ')
+                toastDanger('Lỗi', 'Số tiền hàng mua tối thiểu phải từ 0đ')
                 return null;
             }
             // validate ngày bắt đầu
             if (voucherStartDate === null || voucherStartDate === undefined || voucherStartDate === '') {
                 console.log('Ngày bắt đầu không được bỏ trống')
+                toastDanger('Lỗi', 'Vui lòng nhập ngày bắt đầu')
                 return null;
             }
             voucherStartDate = voucherStartDate.substring(0, voucherStartDate.indexOf(' '));
             if (!/^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/.test(voucherStartDate)) {
                 console.log('Ngày bắt đầu không đúng (dd-MM-yyyy)')
+                toastDanger('Lỗi', 'Ngày bắt đầu không đúng (dd-MM-yyyy)')
                 return null;
             }
             // validate ngày kêt thúc
             if (voucherEndDate === null || voucherEndDate === undefined || voucherEndDate === '') {
                 console.log('Ngày kết thúc không được bỏ trống')
+                toastDanger('Lỗi', 'Vui lòng nhập ngày kết thúc')
                 return null;
             }
             voucherEndDate = voucherEndDate.substring(0, voucherEndDate.indexOf(' '));
             if (!/^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/.test(voucherEndDate)) {
                 console.log('Ngày kết thúc không đúng (dd-MM-yyyy)')
+                toastDanger('Lỗi', 'Ngày kết thúc không đúng (dd-MM-yyyy)')
                 return null;
             }
             // validate ngày bát đầu và ngày kết thúc trùng nhau
             if (voucherStartDate === voucherEndDate) {
                 console.log('Ngày bắt đầu và ngày kết thúc không thể trúng nhau')
+                toastDanger('Lỗi', 'Ngày bắt đầu và ngày kết thúc không thể trùng nhau')
                 return null;
             }
             // validate loại sản phẩm áp dụng
             if (voucherCategory === null || voucherCategory === undefined) {
                 console.log('Vui lòng chọn loại sản phẩm áp dụng')
+                toastDanger('Lỗi', 'Vui lòng chọn mặt hàng áp dụng')
                 return null;
             }
             // validate đối tượng áp dụng
             if (voucherPersonApply === null || voucherPersonApply === undefined) {
                 console.log('Vui lòng chọn đối tượng áp dụng')
+                toastDanger('Lỗi', 'Vui lòng chọn đối tượng áp dụng')
                 return null;
             }
             if (voucherPersonApply === 'PERSON-BUY-MONEY') {
                 if (typeDiscountMoneyMin === null || typeDiscountMoneyMin === undefined || typeDiscountMoneyMin === '') {
                     console.log('Vui lòng nhập số tiền đã mua tối thiểu của khác hàng áp dụng');
+                    toastDanger('Lỗi', 'Vui lòng nhập số tiền đã mua tối thiểu của khách hàng áp dụng')
                     return null;
                 }
                 if (!/^[0-9]+$/.test(typeDiscountMoneyMin)) {
                     console.log('Số tiền đã mua tối thiểu của khách không đúng')
+                    toastDanger('Lỗi', 'Số tiền đã mua tối thiểu của khách không đúng')
                     return null;
                 }
                 if (Number(typeDiscountMoneyMin) < 0) {
                     console.log('Số tiền đã mua tối thiểu của khách phải từ 0đ')
+                    toastDanger('Lỗi', 'Số tiền đã mua tối thiểu của khách phải từ 0đ')
                     return null;
                 }
                 typeDiscountPerson = null;
             } else if (voucherPersonApply === 'CHOOSE-PERSON') {
                 if (typeDiscountPerson === null || typeDiscountPerson === undefined || typeDiscountPerson.length === 0) {
                     console.log('Vui lòng chọn khách hàng nhận mã giảm giá');
+                    toastDanger('Lỗi', 'Vui lòng chọn khách hàng nhận mã giảm giá')
                     return null;
                 }
                 typeDiscountMoneyMin = null;
@@ -945,6 +1052,7 @@
                 typeDiscountPerson = null;
             }
             return {
+                "voucherId": id,
                 "voucherCode": voucherCode,
                 "voucherName": voucherName,
                 "voucherQuantity": voucherQuantity,
@@ -997,9 +1105,7 @@
         }
 
         function onClickInfoVoucher(e) {
-            console.log(e)
             let getTrNextElement = e.parentElement.parentElement.nextElementSibling
-            console.log(getTrNextElement)
             if (getTrNextElement !== null && getTrNextElement !== undefined) {
                 if (getTrNextElement.hidden) {
                     e.innerHTML = 'Đóng'
@@ -1013,6 +1119,13 @@
         }
 
     </script>
+</div>
+<div layout:fragment="script">
+    <script src="/assets/js/dropzone.min.js"></script>
+    <script th:src="@{/toastr/toa.js}"></script>
+    <script th:src="@{/assets/js/bootstrap-datepicker.min.js}"></script>
+    <script src="/assets/js/form-advanced.init.js"></script>
+    <script src="/assets/js/select2.min.js"></script>
 </div>
 </body>
 </html>

@@ -22,4 +22,8 @@ public interface IVoucherService {
     String deleteVoucher(String id);
 
     List<VoucherResponse> getAllVoucher();
+
+    String activeVoucher(String id);
+
+    List<String> findAllIdCustomerByVoucherId(String voucherId);
 }

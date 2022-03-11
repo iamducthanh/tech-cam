@@ -16,5 +16,4 @@ import java.util.List;
  */
 
 public interface IProductPropertyRepo extends JpaRepository<ProductPropertyEntity, String> {
-    List<ProductPropertyEntity> findAllByProductDetailIdAndDeleteFlagIsFalse(String productDetailId);
 }

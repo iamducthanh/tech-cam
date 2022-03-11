@@ -5,8 +5,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Description :
@@ -29,11 +32,13 @@ public class VoucherResponse {
 
     private String voucherName;
 
-    private LocalDate voucherStartDate;
+    private Date voucherStartDate;
 
-    private LocalDate voucherEndDate;
+    private Date voucherEndDate;
 
     private Long voucherDiscount;
+
+    private String voucherTypeDiscount;
 
     private Integer voucherMinAmount;
 
@@ -43,14 +48,18 @@ public class VoucherResponse {
 
     private String categoryId;
 
-    private Boolean voucherStatus;
+    private String voucherStatus;
 
     private Boolean voucherHidden;
 
-    private LocalDateTime voucherCreateDate;
+    private Timestamp voucherCreateDate;
 
     private String voucherCreateBy;
 
-    private LocalDateTime voucherModifiedDate;
+    private Timestamp voucherModifiedDate;
+
+    private Long typeDiscountMinAmount;
+
+    private List<String> lstCustomer;
 
 }

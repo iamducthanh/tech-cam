@@ -2,19 +2,21 @@ package com.techcam.service.impl;
 
 import com.techcam.dto.request.voucher.VoucherRequest;
 import com.techcam.dto.response.voucher.VoucherResponse;
+import com.techcam.entity.CategoryEntity;
+import com.techcam.entity.VoucherCustomerEntity;
 import com.techcam.entity.VoucherEntity;
 import com.techcam.repo.ICategoryRepo;
 import com.techcam.repo.IVoucherRepo;
+import com.techcam.repo.VoucherCustomerRepo;
 import com.techcam.service.IVoucherService;
 import com.techcam.util.ConstantsErrorCode;
 import com.techcam.util.ConvertUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.sql.Timestamp;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -34,6 +36,8 @@ public class VoucherService implements IVoucherService {
 
     private final ICategoryRepo categoryRepo;
 
+    private final VoucherCustomerRepo voucherCustomerRepo;
+
     @Override
     public List<VoucherResponse> getAllVoucher() {
         return voucherRepo.findAllByDeleteFlagIsFalse().stream()
@@ -41,6 +45,23 @@ public class VoucherService implements IVoucherService {
     }
 
     @Override
+    public String activeVoucher(String id) {
+        VoucherEntity voucherEntity = voucherRepo.getByIdAndDeleteFlagIsFalse(id);
+        if (Objects.isNull(voucherEntity)) {
+            return ConstantsErrorCode.ERROR;
+        }
+        voucherEntity.setStatus("TRUE");
+        voucherRepo.save(voucherEntity);
+        return ConstantsErrorCode.SUCCESS;
+    }
+
+    @Override
+    public List<String> findAllIdCustomerByVoucherId(String voucherId) {
+        return voucherCustomerRepo.findAllByVoucherId(voucherId).stream().map(VoucherCustomerEntity::getCustomerId).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
     public String createVoucher(VoucherRequest voucherRequest) {
         if (Objects.isNull(voucherRequest)) {
             return ConstantsErrorCode.ERROR;
@@ -49,13 +70,23 @@ public class VoucherService implements IVoucherService {
         if (!voucherRepo.findAllByCodeAndDeleteFlagIsFalse(voucherRequest.getVoucherCode()).isEmpty()) {
             return ConstantsErrorCode.ERROR;
         }
-        VoucherEntity voucherEntity = mapToVoucherEntity(voucherRequest);
+        VoucherEntity voucherEntity = mapToVoucherEntity(voucherRequest, new VoucherEntity());
         voucherEntity.setId(UUID.randomUUID().toString());
-        if (Objects.isNull(voucherEntity)) {
-            return ConstantsErrorCode.ERROR;
+        voucherEntity.setStatus("FALSE");
+        List<VoucherCustomerEntity> lstVoucherCustomerEntities = new ArrayList<>();
+        if (Objects.nonNull(voucherRequest.getTypeDiscountPerson())) {
+            for (String x : voucherRequest.getTypeDiscountPerson()) {
+                lstVoucherCustomerEntities.add(VoucherCustomerEntity.builder()
+                        .id(UUID.randomUUID().toString())
+                        .customerId(x)
+                        .voucherId(voucherEntity.getId())
+                        .status("TRUE")
+                        .build());
+            }
         }
         try {
             voucherRepo.save(voucherEntity);
+            voucherCustomerRepo.saveAll(lstVoucherCustomerEntities);
             return ConstantsErrorCode.SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();
@@ -64,11 +95,12 @@ public class VoucherService implements IVoucherService {
     }
 
     @Override
+    @Transactional
     public String updateVoucher(VoucherRequest voucherRequest) {
         if (Objects.isNull(voucherRequest)) {
             return ConstantsErrorCode.ERROR;
         }
-        VoucherEntity voucherEntity = voucherRepo.getByIdAndDeleteFlagIsFalse(voucherRequest.getId());
+        VoucherEntity voucherEntity = voucherRepo.getByIdAndDeleteFlagIsFalse(voucherRequest.getVoucherId());
         if (Objects.isNull(voucherEntity)) {
             return ConstantsErrorCode.ERROR;
         }
@@ -78,10 +110,28 @@ public class VoucherService implements IVoucherService {
         if (!lstFindAllByCode.isEmpty()) {
             return ConstantsErrorCode.ERROR;
         }
-        voucherEntity = mapToVoucherEntity(voucherRequest);
+        Timestamp createDate = voucherEntity.getCreateDate();
+        voucherEntity = mapToVoucherEntity(voucherRequest, voucherEntity);
         voucherEntity.setId(voucherId);
+        voucherEntity.setCreateDate(createDate);
+        List<VoucherCustomerEntity> lstVoucherCustomerEntities = new ArrayList<>();
+        System.out.println(voucherRequest.getTypeDiscountPerson());
+        if (Objects.nonNull(voucherRequest.getTypeDiscountPerson())) {
+            for (String x : voucherRequest.getTypeDiscountPerson()) {
+                lstVoucherCustomerEntities.add(VoucherCustomerEntity.builder()
+                        .id(UUID.randomUUID().toString())
+                        .customerId(x)
+                        .voucherId(voucherEntity.getId())
+                        .status("TRUE")
+                        .build());
+            }
+        }
+        List<VoucherCustomerEntity> lstVoucherCustomerDelete = voucherCustomerRepo.findAllByVoucherId(voucherId);
+        lstVoucherCustomerDelete.forEach(e -> e.setDeleteFlag(true));
+        lstVoucherCustomerEntities.addAll(lstVoucherCustomerDelete);
         try {
             voucherRepo.save(voucherEntity);
+            voucherCustomerRepo.saveAll(lstVoucherCustomerEntities);
             return ConstantsErrorCode.SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();
@@ -97,7 +147,8 @@ public class VoucherService implements IVoucherService {
         }
         // TODO voucher đã được sử dụng cchuwa
         try {
-            voucherRepo.delete(voucherEntity);
+            voucherEntity.setDeleteFlag(true);
+            voucherRepo.save(voucherEntity);
             return ConstantsErrorCode.SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();
@@ -105,41 +156,45 @@ public class VoucherService implements IVoucherService {
         }
     }
 
-    private VoucherEntity mapToVoucherEntity(VoucherRequest voucherRequest) {
-        if (voucherRequest == null) return null;
-        return VoucherEntity.builder()
-                .name(voucherRequest.getVoucherName())
-                .code(voucherRequest.getVoucherCode())
-                .quantity(Integer.parseInt(voucherRequest.getQuantity()))
-                .discount(Long.parseLong(voucherRequest.getDiscount()))
-                .startDate(ConvertUtil.get().strToDate(voucherRequest.getStartDate(), "dd-MM-yyyy"))
-                .endDate(ConvertUtil.get().strToDate(voucherRequest.getEndDate(), "dd-MM-yyyy"))
-                .description(voucherRequest.getDescription())
-                .minAmount(Integer.parseInt(voucherRequest.getMinAmount()))
-                .category(categoryRepo.getByIdAndDeleteFlagIsFalse(voucherRequest.getCategoryId()))
-                .status(voucherRequest.getStatus().equals("true"))
-                .note(voucherRequest.getNote())
+    private VoucherEntity mapToVoucherEntity(VoucherRequest x, VoucherEntity s) {
+        if (x == null) return null;
+        CategoryEntity categoryEntity = categoryRepo.getByIdAndDeleteFlagIsFalse(x.getVoucherCategory());
+        return s.toBuilder()
+                .id(x.getVoucherId())
+                .name(x.getVoucherName())
+                .code(x.getVoucherCode())
+                .quantity(Integer.parseInt(x.getVoucherQuantity()))
+                .discount(Long.parseLong(x.getVoucherDiscount()))
+                .endDate(ConvertUtil.get().strToDate(x.getVoucherEndDate(), "dd-MM-yyyy"))
+                .startDate(ConvertUtil.get().strToDate(x.getVoucherStartDate(), "dd-MM-yyyy"))
+                .description(x.getVoucherDescription())
+                .typeDiscount(x.getVoucherTypeDiscount())
+                .typeDiscountMoneyMin(Objects.isNull(x.getTypeDiscountMoneyMin()) ? 0 : Long.parseLong(x.getTypeDiscountMoneyMin()))
+                .minAmount(Integer.parseInt(x.getVoucherMoneyMin()))
+                .categoryId(Objects.isNull(categoryEntity) ? null : categoryEntity.getId())
                 .build();
     }
 
     private <R> VoucherResponse mapToVoucherDto(VoucherEntity voucherEntity) {
         if (voucherEntity == null) return new VoucherResponse();
         return VoucherResponse.builder()
-                .id(voucherEntity.getId())
+                .voucherId(voucherEntity.getId())
                 .voucherCode(voucherEntity.getCode())
                 .voucherName(voucherEntity.getName())
-                .startDate(voucherEntity.getStartDate())
-                .endDate(voucherEntity.getEndDate())
-                .discount(voucherEntity.getDiscount())
-                .minAmount(voucherEntity.getMinAmount())
-                .quantity(voucherEntity.getQuantity())
-                .description(voucherEntity.getDescription())
-                .categoryId(Objects.isNull(voucherEntity.getCategory()) ? "" : voucherEntity.getCategory().getId())
-                .status(voucherEntity.getStatus())
-                .createDate(voucherEntity.getCreateDate())
-                .createBy(voucherEntity.getCreateBy())
-                .modifiedDate(voucherEntity.getModifierDate())
-                .hidden(voucherEntity.getStartDate().compareTo(LocalDate.now()) < 0)
+                .voucherStartDate(voucherEntity.getStartDate())
+                .voucherEndDate(voucherEntity.getEndDate())
+                .voucherDiscount(voucherEntity.getDiscount())
+                .voucherMinAmount(voucherEntity.getMinAmount())
+                .voucherQuantity(voucherEntity.getQuantity())
+                .voucherDescription(voucherEntity.getDescription())
+                .categoryId(Objects.isNull(voucherEntity.getCategoryId()) ? "" : voucherEntity.getCategoryId())
+                .voucherStatus(voucherEntity.getStatus())
+                .voucherCreateDate(voucherEntity.getCreateDate())
+                .voucherCreateBy(voucherEntity.getCreateBy())
+                .voucherModifiedDate(voucherEntity.getModifierDate())
+                .voucherHidden(voucherEntity.getStartDate().compareTo(new Date()) < 0)
+                .voucherTypeDiscount(voucherEntity.getTypeDiscount())
+                .typeDiscountMinAmount(voucherEntity.getTypeDiscountMoneyMin())
                 .build();
     }
 
