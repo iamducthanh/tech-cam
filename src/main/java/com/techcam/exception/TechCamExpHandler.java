@@ -22,6 +22,6 @@ public class TechCamExpHandler {
     @ExceptionHandler(TechCamExp.class)
     @ResponseBody
     ResponseEntity<?> techCamExpNotFound(TechCamExp e){
-       return new ResponseEntity(e.getErrorMessage(), HttpStatus.NOT_FOUND);
+       return new ResponseEntity(e.getErrorMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
