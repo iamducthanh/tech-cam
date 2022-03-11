@@ -9,7 +9,7 @@ import com.techcam.exception.TechCamExp;
 import com.techcam.service.ICustomerService;
 import com.techcam.type.CommonTypeMethod;
 import com.techcam.type.CustomerStatus;
-import com.techcam.repo.util.ConstantsErrorCode;
+import com.techcam.util.ConstantsErrorCode;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +49,7 @@ public class CustomerApiImpl implements CustomerApi {
 
     @Override
     public CustomerResponse postSaveCustomer(@Valid @RequestBody CustomerRequest customerRequest, BindingResult bindingResult) {
-        CustomerResponse customerResponse = new CustomerResponse().builder().status(CustomerStatus.FAILED.name()).build();
+        CustomerResponse customerResponse = CustomerResponse.builder().status(CustomerStatus.FAILED.name()).build();
         if (bindingResult.hasErrors()) {
             LOGGER.error("Create Customer : Input data is incorrect {}", bindingResult.getFieldErrors());
             throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
