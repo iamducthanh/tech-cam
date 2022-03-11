@@ -25,22 +25,16 @@ public class ProductDto {
 
     @NotNull(message = ERROR_BLANK)
     @NotEmpty(message = ERROR_BLANK)
-    @Pattern(regexp = REGIEX_ENGLISH,
-            message = PRODUCT_CODE_ERROR_REGEX)
     @JsonProperty("productCode")
     private String productCode;
 
     @NotNull(message = ERROR_BLANK)
     @NotEmpty(message = ERROR_BLANK)
-    @Pattern(regexp = REGEX_VIETNAM,
-            message = PRODUCT_NAME_ERROR)
     @JsonProperty("productName")
     private String productName;
 
     @NotNull(message = ERROR_BLANK)
     @NotEmpty(message = ERROR_BLANK)
-    @Pattern(regexp = REGEX_NUMBER,
-            message = PRODUCT_MONEY_ERROR)
     @JsonProperty("productPrice")
     private String productPrice;
 
@@ -63,5 +57,8 @@ public class ProductDto {
     @NotEmpty(message = ERROR_BLANK)
     @JsonProperty("productDescription")
     private String productDescription;
+
+
+
 
 }

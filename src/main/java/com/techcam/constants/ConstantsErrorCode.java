@@ -11,6 +11,9 @@ package com.techcam.constants;
 
 public interface ConstantsErrorCode {
 
+    String SUCCESS = "SUCCESS";
+    String ERROR = "ERROR";
+
     String ERROR_LENGTH = "CM-TC-001";
     String SUCCESS = "";
 

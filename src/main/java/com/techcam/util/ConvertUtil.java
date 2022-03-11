@@ -5,8 +5,7 @@ import com.techcam.exception.TechCamExp;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.util.Date;
 
 /**
  * Description :
@@ -31,9 +30,9 @@ public class ConvertUtil {
         return convertUtil;
     }
 
-    public LocalDate strToDate(String startDate, String pattern) {
+    public Date strToDate(String startDate, String pattern) {
         try {
-            return new SimpleDateFormat(pattern).parse(startDate).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            return new SimpleDateFormat(pattern).parse(startDate);
         } catch (ParseException e) {
             e.printStackTrace();
             throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);

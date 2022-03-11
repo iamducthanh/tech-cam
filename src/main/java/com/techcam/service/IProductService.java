@@ -25,4 +25,6 @@ public interface IProductService {
     String updateProduct(ProductEditRequest productRequest);
 
     String deleteProduct(String productId);
+
+    List<ProductResponse> getAllProduct();
 }
