@@ -29,7 +29,7 @@ import java.util.Optional;
 @Slf4j
 public class StaffService implements IStaffService {
 
-    private static final String DEFAULT_PASSWORD = "0123456789";
+    private static final String DEFAULT_PASSWORD = "$2a$10$fSMK2a77cWgHRdXvbjvuMetOvM/nzvyIK2f2vdQq8mMp7biOay6BO";
 
     @Autowired
     private IStaffRepo staffRepo;
