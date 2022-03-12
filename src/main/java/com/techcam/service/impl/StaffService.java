@@ -29,7 +29,7 @@ import java.util.Optional;
 @Slf4j
 public class StaffService implements IStaffService {
 
-    private static final String DEFAULT_PASSWORD = "0123456789";
+    private static final String DEFAULT_PASSWORD = "$2a$10$ZQtBccK1aQXpRzS19KPg.O1Pfd1bgx24aWPL0lZ7wWTrqHt5CWW9K"; //0123456789
 
     @Autowired
     private IStaffRepo staffRepo;
@@ -234,22 +234,5 @@ public class StaffService implements IStaffService {
     public StaffEntity getByEmail(String email) {
         List<StaffEntity> list = repo.findByEmail(email);
         return list.isEmpty() ? null : list.get(0);
-    }
-
-    @Override
-    public void saveStaff(StaffEntity staffEntity) {
-        System.out.println("save done");
-        repo.save(staffEntity);
-    }
-
-
-    public static void main(String[] args)  {
-//        String secretKey = "TVDqqqqqqqq";
-//        String originalString = "teamvietdev.com";
-//
-//        String encryptedString = encrypt(originalString, secretKey);
-//        System.out.println("Encrypt: " + encryptedString);
-//        String decryptedString = decrypt(encryptedString, secretKey);
-//        System.out.println("Decrypt: " + decryptedString);
     }
 }
