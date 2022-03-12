@@ -1,0 +1,434 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/weblayout}"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Thêm Khách Hàng</title>
+</head>
+
+<body >
+<div layout:fragment="content" class="container-fluid">
+    <table>
+        <thead>
+            <th>name</th>
+            <th>number</th>
+        </thead>
+        <tbody>
+            <td>Nguyen van a</td>
+            <td>1234</td>
+        </tbody>
+    </table>
+</div>
+
+<!-- JAVASCRIPT -->
+<script layout:fragment="script" >
+    $(document).ready(function () {
+        $('.roleFilter').chosen();
+
+        hoverIconLock();
+    });
+
+    function hoverIconLock() {
+        $('.fa-lock-open').hover(function () {
+            $(this).removeClass('fa-lock-open').addClass('fa-lock').css('color', 'red');
+        }, function () {
+            $(this).removeClass('fa-lock').addClass('fa-lock-open').css('color', 'green');
+        })
+
+        $('.fa-lock').hover(function () {
+            $(this).removeClass('fa-lock').addClass('fa-lock-open').css('color', 'green');
+        }, function () {
+            $(this).removeClass('fa-lock-open').addClass('fa-lock').css('color', 'red');
+        })
+    }
+
+    function checkAllJquery(baseId, itemClass) {
+        let baseCheck = $('#' + baseId).is(":checked");
+        $('.' + itemClass).each(function () {
+            if (!$(this).is(':disabled')) {
+                $(this).prop('checked', baseCheck);
+            }
+        });
+    }
+
+    $('.arrow').click(function (e) {
+        $(this).toggleClass('down');
+        $(this).siblings('.expand').toggle();
+    })
+
+    $('.check-item').change(function (e) {
+        const flag = checkSiblings();
+
+        if (flag) {
+            $('#checkAll').prop('checked', true);
+        } else {
+            $('#checkAll').prop('checked', false);
+        }
+
+        function checkSiblings() {
+            const checkboxes = $('.check-item').parent().find('input[type="checkbox"]');
+            let checkFlag = true;
+
+            checkboxes.each(function () {
+                if ($(this).prop("checked") === false) {
+                    checkFlag = false;
+                }
+            });
+            return checkFlag;
+        }
+    });
+
+    // disable mousewheel on a input number field when in focus
+    // (to prevent Chromium browsers change the value when scrolling)
+    $('form').on('focus', 'input[type=number]', function (e) {
+        $(this).on('wheel.disableScroll', function (e) {
+            e.preventDefault()
+        })
+    })
+    $('form').on('blur', 'input[type=number]', function (e) {
+        $(this).off('wheel.disableScroll')
+    })
+</script>
+
+<script>
+    // event filter table by status
+    function onStatusChange(element) {
+        const value = $(element).val();
+        console.log(value);
+        const tagAll = $('#datatable tbody tr');
+        const tag = $('tr td').filter(function() {
+            return $(this).text()===value;
+        });
+        console.log(tag);
+
+        if(value==='Tất cả') {
+            tagAll.show();
+        } else {
+            tagAll.hide();
+            tag.parent().show();
+        }
+    }
+
+    // event reset form
+    function resetForm() {
+        const formInput = $("form :input");
+        formInput.val("");
+        $('#role').prop('selectedIndex', 0);
+        formInput.removeClass('error');
+    }
+
+    // Submit formAdd
+    $('#btnAdd').click(function () {
+        let data = {};
+        let formData = $('#formAdd').serializeArray();
+        $.each(formData, function (i, v) {
+            data["" + v.name + ""] = v.value;
+        });
+
+        if(validateForm('add')) {
+            addStaff(data);
+        } else {
+            console.log("validate fail");
+        }
+    });
+
+    // Event onKeyPress formAdd
+    function onType(element) {
+        const tag = $(element);
+        if(tag.val() === '') {
+            tag.addClass('error');
+        } else {
+            tag.removeClass('error');
+        }
+    }
+
+    // Validation formAdd
+    function validateForm(type) {
+        let errorMessage = '';
+        const fullName = (type==='add') ? $('#fullName') : $('#fullName-edit');
+        let flag = true;
+
+        if (fullName.val() === '') {
+            fullName.addClass('error');
+            flag = false;
+        }
+
+        const email = (type==='add') ? $('#email') : $('#email-edit');
+        const patternEmail = /^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b$/i;
+        if (email.val() === '') {
+            email.addClass('error');
+            flag = false;
+        } else if (!patternEmail.test(email.val())) {
+            email.addClass('error');
+            errorMessage += 'Email không hợp lệ!\n';
+            flag = false;
+        }
+
+        const role = (type==='add') ? $('#role') : $('#role-edit');
+        if (role.val() === null) {
+            role.addClass('error');
+            flag = false;
+        }
+
+        const phoneNumber = (type==='add') ? $('#phoneNumber') : $('#phoneNumber-edit');
+        const patternPhone = /^(84|0[3|5|7|8|9])+([0-9]{8})\b$/i;
+        if (phoneNumber.val() === '') {
+            phoneNumber.addClass('error');
+            flag = false;
+        } else if (!patternPhone.test(phoneNumber.val())) {
+            phoneNumber.addClass('error');
+            errorMessage += 'Số điện thoại không hợp lệ!\n\n';
+            flag = false;
+        }
+
+        const address = (type==='add') ? $('#address') : $('#address-edit');
+        if (address.val() === '') {
+            address.addClass('error');
+            flag = false;
+        }
+        const datepicker = (type==='add') ? $('#datepicker') : $('#birthdate-edit');
+        if (datepicker.val() === '') {
+            datepicker.addClass('error');
+            flag = false;
+        }
+
+        if (flag) {
+            return true
+        }
+        errorMessage += 'Mời nhập lại!'
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        })
+        Toast.fire({
+            icon: 'error',
+            title: errorMessage
+        })
+        return false;
+    }
+
+    //API add Staff
+    function addStaff(data) {
+        $.ajax({
+            url: '/api/staff',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            dataType: 'json',
+            success: function (result) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Thêm thành công'
+                }).then(() => window.location.href = "/staff");
+            },
+            error: function (error) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+                Toast.fire({
+                    icon: 'error',
+                    title: "Email đã tồn tại!"
+                    // title: 'Lỗi khi thêm mới'
+                })
+            }
+        })
+    }
+
+    // Submit formEdit
+    $('#btnEdit').click(function () {
+        let data = {};
+        let formData = $('#formEdit').serializeArray();
+        $.each(formData, function (i, v) {
+            data["" + v.name + ""] = v.value;
+        });
+        data["dateOfBirth"] = moment(formData.dateOfBirth).format('YYYY-MM-DD')
+
+        if(validateForm('edit')) {
+            editStaff(data);
+        } else {
+            console.log("validate fail");
+        }
+    });
+
+    //API edit Staff
+    function editStaff(data) {
+        $.ajax({
+            url: '/api/staff',
+            type: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            dataType: 'json',
+            success: function (result) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Cập nhật thành công'
+                }).then(() => window.location.href = "/staff");
+            },
+            error: function (error) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+                Toast.fire({
+                    icon: 'error',
+                    title: "Lỗi hệ thống!\nVui lòng thử lại sau"
+                })
+            }
+        })
+    }
+
+    function onBtnEdit (element) {
+        const tag = $(element).parent().parent().find('.check-item');
+        $.ajax({
+            url: `/api/staff/${tag.val()}`,
+            type: 'GET',
+            contentType: 'application/json',
+            success: function (result) {
+                $('#id').val(result.id);
+                $('#fullName-edit').val(result.fullName);
+                $('#staffCode-edit').val(result.staffCode);
+                $('#email-edit').val(result.email);
+                $('#role-edit').val(result.role);
+                $('#phoneNumber-edit').val(result.phoneNumber);
+                $('#address-edit').val(result.address);
+                $('#birthdate-edit').val(moment(result.dateOfBirth).format('DD/MM/YYYY'));
+                $('#note-edit').val(result.note);
+
+                $('.modal-edit-staff').modal('show');
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        })
+    }
+
+    function onBtnStatus (element) {
+        const tag = $(element).parent().parent();
+        const lock = $(element).hasClass('fa-lock');
+        const status = lock ? "0" : "1";
+        $.ajax({
+            url: `/api/staff/status/${tag.find('.check-item').val()}/${status}`,
+            type: 'PUT',
+            contentType: 'application/json',
+            success: function (result) {
+                Swal.fire(
+                    lock ? 'Đã khoá tài khoản!' : 'Đã mở khoá tài khoản',
+                    `Mã nhân viên ${tag.children().eq(3).text()}`,
+                    'success'
+                ).then(() => {
+                    if (lock) {
+                        $(element).removeClass('fa-lock-open').addClass('fa-lock').css('color', 'red');
+                        tag.children().eq(12).text("Ngừng hoạt động");
+                    } else {
+                        $(element).removeClass('fa-lock').addClass('fa-lock-open').css('color', 'green');
+                        tag.children().eq(12).text("Đang hoạt động");
+                    }
+
+                    hoverIconLock();
+                })
+            },
+            error: function (error) {
+                console.log(error);
+                Swal.fire(
+                    'Lỗi hệ thống!\nVui lòng thử lại sau!',
+                    'error'
+                )
+            }
+        })
+    }
+
+    function onBtnDelete (element) {
+        const tag = $(element).parent().parent();
+        $.ajax({
+            url: `/api/staff/delete/${tag.find('.check-item').val()}`,
+            type: 'PUT',
+            contentType: 'application/json',
+            success: function (result) {
+                const swalWithBootstrapButtons = Swal.mixin({
+                    customClass: {
+                        confirmButton: 'btn btn-success',
+                        cancelButton: 'btn btn-danger'
+                    },
+                    buttonsStyling: false
+                })
+
+                swalWithBootstrapButtons.fire({
+                    title: `Bạn chắc chắn muốn xoá nhân viên có mã ${tag.children().eq(3).text()} chứ?`,
+                    text: "Chú ý không thể hoàn tác sau khi thực hiện tác vụ này!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Vâng, tôi chắc chắn!',
+                    cancelButtonText: 'Không, huỷ bỏ tác vụ!',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        swalWithBootstrapButtons.fire(
+                            'Đã xoá thành công!',
+                            'Dữ liệu đã bị xoá.',
+                            'success'
+                        ).then(() => window.location.href = "/staff");
+                    } else if (
+                        result.dismiss === Swal.DismissReason.cancel
+                    ) {
+                        swalWithBootstrapButtons.fire(
+                            'Đã huỷ tác vụ',
+                            'Dữ liệu được bảo toàn :)',
+                            'error'
+                        )
+                    }
+                })
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        })
+    }
+</script>
+
+</body>
+</html>
