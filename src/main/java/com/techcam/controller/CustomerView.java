@@ -22,13 +22,15 @@ import java.util.List;
 @Controller
 @RequestMapping("/customer")
 public class CustomerView {
+
     @Autowired
     private ICustomerService customerService;
+
     @GetMapping("")
-    public String customerView(Model model){
+    public String customerView(Model model) {
 //        List<CustomerInfoResponse> customerInfoResponses = customerService.getCustomers();
 //        model.addAttribute("customers",customerInfoResponses);
-        return "views/customer/test";
+        return "views/customer/004_customer";
     }
 
 }

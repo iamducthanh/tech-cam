@@ -1,7 +1,7 @@
 package com.techcam.dto.request.voucher;
 
-import com.techcam.util.ConstantsErrorCode;
-import com.techcam.repo.util.ContainsFormat;
+import com.techcam.constants.ConstantsErrorCode;
+import com.techcam.constants.ContainsFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

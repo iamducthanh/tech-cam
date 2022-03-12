@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Objects;
 
-import static com.techcam.util.ConstantsErrorCode.*;
+import static com.techcam.constants.ConstantsErrorCode.*;
 
 /**
  * Description :

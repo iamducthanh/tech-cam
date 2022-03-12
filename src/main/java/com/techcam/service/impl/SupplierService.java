@@ -1,12 +1,12 @@
 package com.techcam.service.impl;
 
+import com.techcam.constants.ConstantsErrorCode;
 import com.techcam.dto.request.SupplierDTO;
 import com.techcam.dto.response.SupplierResponseDTO;
 import com.techcam.entity.SupplierEntity;
 import com.techcam.exception.SupplierException;
 import com.techcam.repo.ISupplierRepo;
 import com.techcam.service.ISupplierService;
-import com.techcam.util.ConstantsErrorCode;
 import org.apache.logging.log4j.util.Strings;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
@@ -53,8 +53,7 @@ public class SupplierService implements ISupplierService {
         SupplierEntity supplierEntity = modelMapper.map(supplierDTO, SupplierEntity.class);
         supplierEntity.setId(UUID.randomUUID().toString());
         supplierRepository.save(supplierEntity);
-        SupplierResponseDTO supplierResponseDTO = modelMapper.map(supplierEntity, SupplierResponseDTO.class);
-        return supplierResponseDTO;
+        return modelMapper.map(supplierEntity, SupplierResponseDTO.class);
     }
 
     @Override
@@ -73,8 +72,7 @@ public class SupplierService implements ISupplierService {
             throw new SupplierException(ConstantsErrorCode.PHONE_NUMBER_EXIST);
         }
         BeanUtils.copyProperties(supplierDTO, supplierEntity);
-        SupplierResponseDTO supplierResponseDTO = modelMapper.map(supplierEntity, SupplierResponseDTO.class);
-        return supplierResponseDTO;
+        return modelMapper.map(supplierEntity, SupplierResponseDTO.class);
     }
 
     @Override
@@ -83,8 +81,7 @@ public class SupplierService implements ISupplierService {
             throw new SupplierException(ConstantsErrorCode.SUPPLIER_NOT_EXIST);
         }
         SupplierEntity supplierEntity = supplierRepository.findByIdAndDeleteFlagFalse(id).get();
-        SupplierResponseDTO supplierResponseDTO = modelMapper.map(supplierEntity, SupplierResponseDTO.class);
-        return supplierResponseDTO;
+        return modelMapper.map(supplierEntity, SupplierResponseDTO.class);
     }
 
     @Override
