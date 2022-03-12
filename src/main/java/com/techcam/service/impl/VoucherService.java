@@ -61,6 +61,11 @@ public class VoucherService implements IVoucherService {
     }
 
     @Override
+    public VoucherResponse getById(String voucherId) {
+        return mapToVoucherDto(voucherRepo.getByIdAndDeleteFlagIsFalse(voucherId));
+    }
+
+    @Override
     @Transactional
     public String createVoucher(VoucherRequest voucherRequest) {
         if (Objects.isNull(voucherRequest)) {

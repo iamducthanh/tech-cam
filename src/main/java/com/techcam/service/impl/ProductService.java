@@ -152,6 +152,11 @@ public class ProductService implements IProductService {
                 .map(this::mapToResponse).collect(Collectors.toList());
     }
 
+    @Override
+    public ProductResponse getById(String productId) {
+        return mapToResponse(productRepo.getByIdAndDeleteFlagIsFalse(productId));
+    }
+
     private <R> ProductResponse mapToResponse(ProductEntity x) {
         if (Objects.isNull(x)) return new ProductResponse();
         ProductResponse s = new ProductResponse();
@@ -163,6 +168,9 @@ public class ProductService implements IProductService {
         s.setProductStatus(x.getStatus());
         s.setProductCategory(x.getCategoryId());
         s.setProductDescription(x.getDescription());
+        s.setCreateBy(x.getCreateBy());
+        s.setCreateDate(x.getCreateDate());
+        s.setModifierDate(x.getModifierDate());
         return s;
     }
 }

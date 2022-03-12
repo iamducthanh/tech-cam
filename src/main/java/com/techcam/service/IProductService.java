@@ -27,4 +27,6 @@ public interface IProductService {
     String deleteProduct(String productId);
 
     List<ProductResponse> getAllProduct();
+
+    ProductResponse getById(String productId);
 }

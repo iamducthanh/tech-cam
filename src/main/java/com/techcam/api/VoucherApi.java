@@ -1,6 +1,7 @@
 package com.techcam.api;
 
 import com.techcam.dto.request.voucher.VoucherRequest;
+import com.techcam.dto.response.voucher.VoucherResponse;
 import com.techcam.exception.TechCamExp;
 import com.techcam.service.IVoucherService;
 import com.techcam.util.ConstantsErrorCode;
@@ -11,7 +12,6 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -63,7 +63,7 @@ public class VoucherApi {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> activeVoucher(@PathVariable("id") String id){
+    public ResponseEntity<String> activeVoucher(@PathVariable("id") String id) {
         try {
             if (voucherService.activeVoucher(id).equals(ConstantsErrorCode.SUCCESS)) {
                 return ResponseEntity.ok(ConstantsErrorCode.SUCCESS);
@@ -72,6 +72,11 @@ public class VoucherApi {
             e.printStackTrace();
         }
         return ResponseEntity.badRequest().body(ConstantsErrorCode.ERROR);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<VoucherResponse> getById(@PathVariable("id") String id) {
+        return ResponseEntity.ok(voucherService.getById(id));
     }
 
     private void validateVoucher(@Validated @RequestBody VoucherRequest voucherRequest, Errors errors) {

@@ -3,6 +3,7 @@ package com.techcam.dto.response.product;
 import com.techcam.dto.ProductDto;
 import lombok.*;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,6 +23,12 @@ import java.util.List;
 public class ProductResponse extends ProductDto {
 
     private String productId;
+
+    private String createBy;
+
+    private Date createDate;
+
+    private Date modifierDate;
 
     private List<ProductPropertyResponse> properties;
 

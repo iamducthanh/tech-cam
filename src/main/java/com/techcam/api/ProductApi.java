@@ -2,7 +2,6 @@ package com.techcam.api;
 
 import com.techcam.dto.request.product.ProductAddRequest;
 import com.techcam.dto.request.product.ProductEditRequest;
-import com.techcam.dto.request.product.ProductImageRequest;
 import com.techcam.dto.response.product.ProductResponse;
 import com.techcam.exception.TechCamExp;
 import com.techcam.service.IProductService;
@@ -73,7 +72,7 @@ public class ProductApi {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getProductById(@PathVariable("id") String id) {
-        return ResponseEntity.ok(new ProductResponse());
+        return ResponseEntity.ok(productService.getById(id));
     }
 
     private void validateInputProduct(Errors errors, String productName, List<String> productImages) {

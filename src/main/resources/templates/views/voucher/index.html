@@ -6,476 +6,365 @@
 <head>
     <meta charset="UTF-8">
     <title>Quản lý mã giảm giá - TechCam</title>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-<div layout:fragment="content" class="myContainer">
-    <div class="container1 row">
-        <div class="col-lg-3" id="leftKH">
-            <div class="card">
-                <div class="card-body">
-                    <div id="sidebar-menu">
-                        <ul class="list-unstyled" id="side-menu">
-                            <li>
-                                <a class="has-arrow waves-effect waves-light mb-3">
-                                    <strong>Trạng thái: </strong>
-                                </a>
-                                <ul class="sub-menu" style="padding: 0 10px 0 30px;">
-                                    <div class="mb-2">
-                                        <input class="form-check-input" type="radio" name="filter-status"
-                                               checked id="filter-status-all" data-filter="ALL"
-                                               onchange="changeFilterStatus(this)">
-                                        <label for="filter-status-all" class="col-form-label">
-                                            Tất cả
-                                        </label>
-                                    </div>
-                                    <div class="mb-2">
-                                        <input class="form-check-input" type="radio" name="filter-status"
-                                               id="filter-status-true" data-filter="TRUE"
-                                               onchange="changeFilterStatus(this)">
-                                        <label for="filter-status-true" class="col-form-label">
-                                            Kích hoạt
-                                        </label>
-                                    </div>
-                                    <div class="mb-2">
-                                        <input class="form-check-input" type="radio" name="filter-status"
-                                               id="filter-status-false" data-filter="FALSE"
-                                               onchange="changeFilterStatus(this)">
-                                        <label for="filter-status-false" class="col-form-label">
-                                            Chưa áp dụng
-                                        </label>
-                                    </div>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                    <!-- Sidebar -->
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-9">
-            <div class="card">
-                <div class="card-body">
-                    <div class="float-start">
-                        <h1 class="header-title mb-4">
-                            <i class="mdi mdi-menu" style="font-size: 16pt;" onclick="editMenuKH();"></i>
-                            Quản lý mã giảm giá
-                        </h1>
-                    </div>
-                    <div class="float-end">
-                        <div class="d-flex flex-row-reverse">
-                            <div class="dropdown myDropdown myBtn">
-                                <button class="btn btn-primary" id="dropdownMenuButton"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fas fa-filter"></i>
-                                    <i class="mdi mdi-chevron-down"></i>
-                                </button>
-                                <div class="dropdown-menu dropdown-menu-end" style="width: 20vw;">
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3 mx-3">
-                                                <input class="form-check-input mt-2" type="checkbox"
-                                                       id="checked-voucher-code"/>
-                                                <label for="checked-voucher-code" class="col-form-label">
-                                                    Mã giảm giá
-                                                </label>
-                                            </div>
-                                            <div class="mb-3 mx-3">
-                                                <input class="form-check-input mt-2" type="checkbox"
-                                                       id="checked-voucher-name"/>
-                                                <label for="checked-voucher-name" class="col-form-label">
-                                                    Tên chương trình
-                                                </label>
-                                            </div>
-                                            <div class="mb-3 mx-3">
-                                                <input class="form-check-input mt-2" type="checkbox"
-                                                       id="checked-voucher-start-date"/>
-                                                <label for="checked-voucher-start-date"
-                                                       class="col-form-label">
-                                                    Từ ngày
-                                                </label>
-                                            </div>
-                                            <div class="mb-3 mx-3">
-                                                <input class="form-check-input mt-2" type="checkbox"
-                                                       id="checked-voucher-start-end"/>
-                                                <label for="checked-voucher-start-end"
-                                                       class="col-form-label">
-                                                    Đến ngày
-                                                </label>
-                                            </div>
-                                            <div class="mb-3 mx-3">
-                                                <input class="form-check-input mt-2" type="checkbox"
-                                                       id="checked-voucher-start-quantiy"/>
-                                                <label for="checked-voucher-start-quantiy"
-                                                       class="col-form-label">
-                                                    Số lần sử dụng
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3 mx-3">
-                                                <input class="form-check-input mt-2" type="checkbox"
-                                                       id="checked-voucher-discount"/>
-                                                <label for="checked-voucher-discount"
-                                                       class="col-form-label">
-                                                    Mệnh giá
-                                                </label>
-                                            </div>
-                                            <div class="mb-3 mx-3">
-                                                <input class="form-check-input mt-2" type="checkbox"
-                                                       id="checked-voucher-status"/>
-                                                <label for="checked-voucher-status" class="col-form-label">
-                                                    Trạng thái
-                                                </label>
-                                            </div>
-                                            <div class="mb-3 mx-3">
-                                                <input class="form-check-input mt-2" type="checkbox"
-                                                       id="checked-voucher-crete-by"/>
-                                                <label for="checked-voucher-crete-by"
-                                                       class="col-form-label">
-                                                    Người tạo
-                                                </label>
-                                            </div>
-                                            <div class="mb-3 mx-3">
-                                                <input class="form-check-input mt-2" type="checkbox"
-                                                       id="checked-voucher-crete-date"/>
-                                                <label for="checked-voucher-crete-date"
-                                                       class="col-form-label">
-                                                    Ngày tạo
-                                                </label>
-                                            </div>
-                                            <div class="mb-3 mx-3">
-                                                <input class="form-check-input mt-2" type="checkbox"
-                                                       id="checked-voucher-modified-date"/>
-                                                <label for="checked-voucher-modified-date"
-                                                       class="col-form-label">
-                                                    Ngày cập nhật
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <a href="#modal-add-voucher" data-bs-toggle="modal"
-                               class="mx-2 btn btn-primary waves-effect waves-light">
-                                Thêm mã giảm giá
-                            </a>
+<div layout:fragment="content" class="container-fluid">
+    <section class="row main-page">
+        <section class="col-2 mainLeft">
+            <h1 class="heading-page">Mã giảm giá</h1>
+            <div class="filter-report">
+                <div class="card">
+                    <h6 class="mx-2 mt-2 fs-14">Trạng thái</h6>
+                    <div class="mx-2 mb-2">
+                        <div class="form-group form-check">
+                            <input class="form-check-input" type="radio" name="status" id="statusAll" value=""
+                                   onchange="onStatusChange(this)" checked>
+                            <label class="form-check-label" for="statusAll">
+                                Tất cả
+                            </label>
+                        </div>
+                        <div class="form-group form-check">
+                            <input class="form-check-input" type="radio" name="status" id="statusActive"
+                                   value="Kích hoạt" onchange="onStatusChange(this)">
+                            <label class="form-check-label" for="statusActive">
+                                Kích hoạt
+                            </label>
+                        </div>
+                        <div class="form-group form-check">
+                            <input class="form-check-input" type="radio" name="status" id="statusInActive"
+                                   value="Không sử dụng" onchange="onStatusChange(this)">
+                            <label class="form-check-label" for="statusInActive">
+                                Không sử dụng
+                            </label>
                         </div>
                     </div>
-                    <table class="mt-3 table table-bordered">
-                        <thead>
-                        <tr class="text-center">
-                            <th>Mã giảm giá</th>
-                            <th>Tên chương trình</th>
-                            <th>Từ ngày</th>
-                            <th>Đến ngày</th>
-                            <th>Số lần sử dụng</th>
-                            <th>Mệnh giá</th>
-                            <th>Trạng thái</th>
-                            <th>Người tạo</th>
-                            <th>Ngày tạo</th>
-                            <th>Ngày cập nhật</th>
-                            <th>Thao tác</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <th:block th:each="voucher: ${lstVoucher}">
-                            <tr>
-                                <td th:text="${voucher.voucherCode}">Mã giảm giá</td>
-                                <td th:text="${voucher.voucherName}">Tên chương trình</td>
-                                <td class="text-center"
-                                    th:text="${#dates.format(voucher.voucherStartDate, 'dd-MM-yyyy')}">Từ ngày
-                                </td>
-                                <td class="text-center"
-                                    th:text="${#dates.format(voucher.voucherEndDate, 'dd-MM-yyyy')}">Đến ngày
-                                </td>
-                                <td class="text-end"
-                                    th:text="${#numbers.formatDecimal(voucher.voucherQuantity, 0, 'COMMA', 0, 'POINT')}">
-                                    Số lần sử dụng
-                                </td>
-                                <td class="text-end"
-                                    th:text="${#numbers.formatDecimal(voucher.voucherDiscount, 0, 'COMMA', 2, 'POINT') + 'đ'}">
-                                    Mệnh giá
-                                </td>
-                                <td class="text-center">
-                                    <span th:unless="${voucher.voucherStatus != null && voucher.voucherStatus == 'TRUE'}"
-                                          class="badge bg-danger">
-                                        Không sử dụng
-                                    </span>
-                                    <span th:if="${voucher.voucherStatus != null && voucher.voucherStatus == 'TRUE'}"
-                                          class="badge bg-success">
-                                        Kích hoạt
-                                    </span>
-                                </td>
-                                <td th:text="${voucher.voucherCreateBy}">
-                                    Người tạo
-                                </td>
-                                <td th:text="${#dates.format(voucher.voucherCreateDate, 'dd-MM-yyyy')}">
-                                    Ngày tạo
-                                </td>
-                                <td th:text="${#dates.format(voucher.voucherModifiedDate, 'dd-MM-yyyy')}">
-                                    Ngày cập nhật
-                                </td>
-                                <td class="text-center">
-                                    <button th:if="${voucher.voucherStatus != null && voucher.voucherStatus != 'TRUE'}"
-                                            th:data-id="${voucher.voucherId}" class="btn btn-success btn-sm"
-                                            onclick="onClickActiveVoucher(this)">
-                                        Kích hoạt
-                                    </button>
-                                    <button class="btn btn-info btn-sm" onclick="onClickInfoVoucher(this)">
-                                        Chi tiết
-                                    </button>
-                                    <button th:data-id="${voucher.voucherId}" class="btn btn-danger btn-sm"
-                                            onclick="onClickDeleteVoucher(this)">
-                                        Xoá
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr class="hidden-info-voucher">
-                                <td colspan="100">
-                                    <div class="mx-2 card card-body">
-                                        <ul class="nav nav-tabs nav-tabs-custom nav-justified mb-3"
-                                            role="tablist">
-                                            <li class="nav-item">
-                                                <a class="nav-link active" data-bs-toggle="tab"
-                                                   th:href="${'#info-voucher-' + voucher.voucherId}" role="tab">
+                </div>
+            </div>
+        </section>
+        <section class="col-10 mainRight card card-body">
+            <div class="row justify-content-end">
+                <a href="#modal-add-voucher" type="button"
+                   class="btn btn-primary col-auto mb-3 waves-effect waves-light"
+                   data-bs-toggle="modal">
+                    <i class="fas fa-plus me-2"></i>
+                    Mã giảm giá
+                </a>
+            </div>
+
+            <table id="datatable" class="table table-bordered dt-responsive nowrap dataTable no-footer shadow">
+                <thead>
+                <tr class="text-center">
+                    <th>Chức năng</th>
+                    <th>Mã giảm giá</th>
+                    <th>Tên chương trình</th>
+                    <th>Từ ngày</th>
+                    <th>Đến ngày</th>
+                    <th>Số lần sử dụng</th>
+                    <th>Mệnh giá</th>
+                    <th>Trạng thái</th>
+                    <th>Người tạo</th>
+                    <th>Ngày tạo</th>
+                    <th>Ngày cập nhật</th>
+                </tr>
+                </thead>
+                <tbody>
+                <th:block th:each="voucher : ${lstVoucher}">
+                    <tr>
+                        <td class="text-center">
+                            <button th:if="${voucher.voucherStatus != null && voucher.voucherStatus != 'ON'}"
+                                    th:data-id="${voucher.voucherId}" class="btn btn-success btn-sm"
+                                    onclick="onClickActiveVoucher(this)">
+                                Kích hoạt
+                            </button>
+                            <button class="btn btn-info btn-sm" th:data-id="${voucher.voucherId}"
+                                    onclick="onClickInfoVoucher(this)">
+                                Chi tiết
+                            </button>
+                            <button th:data-id="${voucher.voucherId}" class="btn btn-danger btn-sm"
+                                    onclick="onClickDeleteVoucher(this)">
+                                Xoá
+                            </button>
+                        </td>
+                        <td th:text="${voucher.voucherCode}">Mã giảm giá</td>
+                        <td th:text="${voucher.voucherName}">Tên chương trình</td>
+                        <td class="text-center"
+                            th:text="${#dates.format(voucher.voucherStartDate, 'dd-MM-yyyy')}">Từ ngày
+                        </td>
+                        <td class="text-center"
+                            th:text="${#dates.format(voucher.voucherEndDate, 'dd-MM-yyyy')}">Đến ngày
+                        </td>
+                        <td class="text-end"
+                            th:text="${#numbers.formatDecimal(voucher.voucherQuantity, 0, 'COMMA', 0, 'POINT')}">
+                            Số lần sử dụng
+                        </td>
+                        <td class="text-end"
+                            th:text="${#numbers.formatDecimal(voucher.voucherDiscount, 0, 'COMMA', 0, 'POINT') + voucher.voucherTypeDiscount}">
+                            Mệnh giá
+                        </td>
+                        <td class="text-center">
+                            <span th:unless="${voucher.voucherStatus != null && voucher.voucherStatus == 'ON'}"
+                                  class="badge bg-danger">
+                                Không sử dụng
+                            </span>
+                            <span th:if="${voucher.voucherStatus != null && voucher.voucherStatus == 'ON'}"
+                                  class="badge bg-success">
+                                Kích hoạt
+                            </span>
+                        </td>
+                        <td th:text="${voucher.voucherCreateBy}">
+                            Người tạo
+                        </td>
+                        <td th:text="${#dates.format(voucher.voucherCreateDate, 'dd-MM-yyyy')}">
+                            Ngày tạo
+                        </td>
+                        <td th:text="${#dates.format(voucher.voucherModifiedDate, 'dd-MM-yyyy')}">
+                            Ngày cập nhật
+                        </td>
+                    </tr>
+                    <tr th:class="${'hidden-info-voucher hidden-info-voucher-' + voucher.voucherId}">
+                        <td colspan="100">
+                            <div class="mx-2 card card-body">
+                                <ul class="nav nav-tabs nav-tabs-custom nav-justified mb-3"
+                                    role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" data-bs-toggle="tab"
+                                           th:href="${'#info-voucher-' + voucher.voucherId}" role="tab">
                                                 <span class="d-none d-md-block">
                                                     Thông tin
                                                 </span>
-                                                    <span class="d-block d-md-none">
+                                            <span class="d-block d-md-none">
                                                     <i class="mdi mdi-home-variant h5"></i>
                                                 </span>
-                                                </a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" data-bs-toggle="tab"
-                                                   th:href="${'#history-use-' + voucher.voucherId}" role="tab">
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-bs-toggle="tab"
+                                           th:href="${'#history-use-' + voucher.voucherId}" role="tab">
                                                 <span class="d-none d-md-block">
                                                     Lịch sử sử dụng
                                                 </span>
-                                                    <span class="d-block d-md-none">
+                                            <span class="d-block d-md-none">
                                                     <i class="mdi mdi-account h5"></i>
                                                 </span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                        <div class="tab-content">
-                                            <div class="tab-pane active p-3"
-                                                 th:id="${'info-voucher-' + voucher.voucherId}"
-                                                 role="tabpanel">
-                                                <div class="row">
+                                        </a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane active p-3"
+                                         th:id="${'info-voucher-' + voucher.voucherId}"
+                                         role="tabpanel">
+                                        <div class="row">
+                                            <div class="col-lg-5">
+                                                <div class="mb-3 row">
                                                     <div class="col-lg-5">
-                                                        <div class="mb-3 row">
-                                                            <div class="col-lg-5">
-                                                                Mã giảm giá
-                                                            </div>
-                                                            <div class="col-lg-7">
-                                                                <input type="text" placeholder="Mã giảm giá tự động"
-                                                                       th:class="${'form-control ip-voucher-code' + voucher.voucherId}"
-                                                                       th:value="${voucher.voucherCode}"/>
-                                                            </div>
-                                                        </div>
-                                                        <div class="mb-3 row">
-                                                            <div class="col-lg-5">
-                                                                Tên chương trình
-                                                            </div>
-                                                            <div class="col-lg-7">
-                                                                <input type="text" placeholder="Tên chương trình...."
-                                                                       th:class="${'form-control ip-voucher-name' + voucher.voucherId}"
-                                                                       th:value="${voucher.voucherName}"/>
-                                                            </div>
-                                                        </div>
-                                                        <div class="mb-3 row">
-                                                            <div class="col-lg-5">
-                                                                Số lần sử dụng
-                                                            </div>
-                                                            <div class="col-lg-7">
-                                                                <input type="number" min="1" value="1"
-                                                                       placeholder="Nhập số lần sử dụng..."
-                                                                       th:class="${'form-control ip-voucher-quantity' + voucher.voucherId}"
-                                                                       th:value="${voucher.voucherQuantity}"/>
-                                                            </div>
-                                                        </div>
-                                                        <div class="mb-3 row">
-                                                            <div class="col-lg-5">
-                                                                Mệnh giá
-                                                            </div>
-                                                            <div class="col-lg-7">
-                                                                <div class="input-group">
-                                                                    <input type="text"
-                                                                           th:class="${'form-control ip-voucher-discount' + voucher.voucherId}"
-                                                                           placeholder="Nhập mệnh giá..."
-                                                                           th:value="${voucher.voucherDiscount}">
-                                                                    <span class="input-group-text ip-voucher-type-discount"
-                                                                          onclick="onClickChangeTypeDiscount(this)"
-                                                                          style="cursor: pointer;">
-                                                                    [[${voucher.voucherTypeDiscount}]]
-                                                                </span>
-                                                                </div><!-- input-group -->
-                                                            </div>
-                                                        </div>
-                                                        <div class="mb-3 row">
-                                                            <div class="col-lg-5">
-                                                                Số tiền hàng tối thiểu
-                                                            </div>
-                                                            <div class="col-lg-7">
-                                                                <input type="number" min="0"
-                                                                       placeholder="Nhập số tiền hàng tối thiểu..."
-                                                                       th:class="${'form-control ip-voucher-money-min' + voucher.voucherId}"
-                                                                       th:value="${voucher.voucherMinAmount}"/>
-                                                            </div>
-                                                        </div>
+                                                        Mã giảm giá
                                                     </div>
                                                     <div class="col-lg-7">
-                                                        <div class="mb-3 row">
-                                                            <div class="col-lg-5">
-                                                                Thời gian áp dụng:
-                                                            </div>
-                                                            <div class="col-lg-7">
-                                                                <div class="input-daterange input-group"
-                                                                     id="datepicker6"
-                                                                     data-date-format="dd-mm-yyyy 00:00:00"
-                                                                     data-date-autoclose="true"
-                                                                     data-provide="datepicker"
-                                                                     data-date-container='#datepicker6'>
-                                                                    <input type="text"
-                                                                           th:class="${'form-control ip-voucher-start-date' + voucher.voucherId}"
-                                                                           placeholder=" Bắt đầu"
-                                                                           th:value="${#dates.format(voucher.voucherStartDate, 'dd-MM-yyyy 00:00:00')}"/>
-                                                                    <input type="text"
-                                                                           th:class="${'form-control ip-voucher-end-date' + voucher.voucherId}"
-                                                                           placeholder="Kết thúc"
-                                                                           th:value="${#dates.format(voucher.voucherEndDate, 'dd-MM-yyyy 00:00:00')}"/>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="mb-3 row">
-                                                            <div class="col-lg-5">
-                                                                Mặt hàng áp dụng
-                                                            </div>
-                                                            <div class="col-lg-7">
-                                                                <select th:class="${'form-control select2 ip-voucher-category' + voucher.voucherId}">
-                                                                    <option value="">Tất cả mặt hàng</option>
-                                                                    <option th:each="category : ${lstCategory}"
-                                                                            th:selected="${category.categoryId == voucher.categoryId}"
-                                                                            th:value="${category.categoryId}"
-                                                                            th:text="${category.categoryName}"></option>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                        <div class="mb-3 row">
-                                                            <div class="col-lg-5">
-                                                                Đối tượng áp dụng
-                                                            </div>
-                                                            <div class="col-lg-7">
-                                                                <select th:class="${'form-control select2 ip-voucher-person-apply ip-voucher-person-apply' + voucher.voucherId}"
-                                                                        onchange="onChangePersonApply(this)">
-                                                                    <option value="ALL-PERSON">
-                                                                        Toàn bộ khách hàng
-                                                                    </option>
-                                                                    <option value="PERSON-BUY-MONEY"
-                                                                            th:selected="${voucher.typeDiscountMinAmount != null && voucher.typeDiscountMinAmount > 0}">
-                                                                        Đã mua tối thiểu?
-                                                                    </option>
-                                                                    <option value="CHOOSE-PERSON"
-                                                                            th:selected="${voucher.lstCustomer != null && not #lists.isEmpty(voucher.lstCustomer)}">
-                                                                        Lựa chọn khách hàng
-                                                                    </option>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                        <div class="person-apply">
-                                                            <div class="mb-3 row PERSON-BUY-MONEY">
-                                                                <div class="col-lg-5">
-                                                                    Nhập số tiền tối thiểu?
-                                                                </div>
-                                                                <div class="col-lg-7">
-                                                                    <input type="number" min="1"
-                                                                           placeholder="Nhập số tiền tối thiểu..."
-                                                                           th:class="${'form-control ip-type-discount-money-min' + voucher.voucherId}"
-                                                                           th:value="${voucher.typeDiscountMinAmount}"/>
-                                                                </div>
-                                                            </div>
-                                                            <div class="mb-3 row CHOOSE-PERSON">
-                                                                <div class="col-lg-5">
-                                                                    Chọn khách hàng
-                                                                </div>
-                                                                <div class="col-lg-7">
-                                                                    <select th:class="${'select2 form-control select2-multiple ip-type-discount-person' + voucher.voucherId}"
-                                                                            multiple="multiple"
-                                                                            data-placeholder="Chọn khách hàng...">
-                                                                        <option th:each="customer : ${lstCustomer}"
-                                                                                th:selected="${voucher.lstCustomer != null && #lists.contains(voucher.lstCustomer, customer.id)}"
-                                                                                th:value="${customer.id}"
-                                                                                th:text="${customer.fullName}"></option>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
+                                                        <input type="text" placeholder="Mã giảm giá tự động"
+                                                               th:class="${'form-control ip-voucher-code' + voucher.voucherId}"
+                                                               th:value="${voucher.voucherCode}"/>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3 row">
+                                                    <div class="col-lg-5">
+                                                        Tên chương trình
+                                                    </div>
+                                                    <div class="col-lg-7">
+                                                        <input type="text" placeholder="Tên chương trình...."
+                                                               th:class="${'form-control ip-voucher-name' + voucher.voucherId}"
+                                                               th:value="${voucher.voucherName}"/>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3 row">
+                                                    <div class="col-lg-5">
+                                                        Số lần sử dụng
+                                                    </div>
+                                                    <div class="col-lg-7">
+                                                        <input type="number" min="1" value="1"
+                                                               placeholder="Nhập số lần sử dụng..."
+                                                               th:class="${'form-control ip-voucher-quantity' + voucher.voucherId}"
+                                                               th:value="${voucher.voucherQuantity}"/>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3 row">
+                                                    <div class="col-lg-5">
+                                                        Mệnh giá
+                                                    </div>
+                                                    <div class="col-lg-7">
+                                                        <div class="input-group">
+                                                            <input type="text"
+                                                                   th:class="${'form-control ip-voucher-discount' + voucher.voucherId}"
+                                                                   placeholder="Nhập mệnh giá..."
+                                                                   th:value="${voucher.voucherDiscount}">
+                                                            <span class="input-group-text ip-voucher-type-discount"
+                                                                  onclick="onClickChangeTypeDiscount(this)"
+                                                                  style="cursor: pointer;">
+                                                                    [[${voucher.voucherTypeDiscount}]]
+                                                                </span>
+                                                        </div><!-- input-group -->
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3 row">
+                                                    <div class="col-lg-5">
+                                                        Số tiền hàng tối thiểu
+                                                    </div>
+                                                    <div class="col-lg-7">
+                                                        <input type="number" min="0"
+                                                               placeholder="Nhập số tiền hàng tối thiểu..."
+                                                               th:class="${'form-control ip-voucher-money-min' + voucher.voucherId}"
+                                                               th:value="${voucher.voucherMinAmount}"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-7">
+                                                <div class="mb-3 row">
+                                                    <div class="col-lg-5">
+                                                        Thời gian áp dụng:
+                                                    </div>
+                                                    <div class="col-lg-7">
+                                                        <div class="input-daterange input-group"
+                                                             id="datepicker6"
+                                                             data-date-format="dd-mm-yyyy 00:00:00"
+                                                             data-date-autoclose="true"
+                                                             data-provide="datepicker"
+                                                             data-date-container='#datepicker6'>
+                                                            <input type="text"
+                                                                   th:class="${'form-control ip-voucher-start-date' + voucher.voucherId}"
+                                                                   placeholder=" Bắt đầu"
+                                                                   th:value="${#dates.format(voucher.voucherStartDate, 'dd-MM-yyyy 00:00:00')}"/>
+                                                            <input type="text"
+                                                                   th:class="${'form-control ip-voucher-end-date' + voucher.voucherId}"
+                                                                   placeholder="Kết thúc"
+                                                                   th:value="${#dates.format(voucher.voucherEndDate, 'dd-MM-yyyy 00:00:00')}"/>
                                                         </div>
                                                     </div>
-                                                    <div class="col-12">
-                                                        <div class="col-12 mb-3">
-                                                            Mô tả chi tiết:
+                                                </div>
+                                                <div class="mb-3 row">
+                                                    <div class="col-lg-5">
+                                                        Mặt hàng áp dụng
+                                                    </div>
+                                                    <div class="col-lg-7">
+                                                        <select th:class="${'form-control select2 ip-voucher-category' + voucher.voucherId}">
+                                                            <option value="">Tất cả mặt hàng</option>
+                                                            <option th:each="category : ${lstCategory}"
+                                                                    th:selected="${category.categoryId == voucher.categoryId}"
+                                                                    th:value="${category.categoryId}"
+                                                                    th:text="${category.categoryName}"></option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3 row">
+                                                    <div class="col-lg-5">
+                                                        Đối tượng áp dụng
+                                                    </div>
+                                                    <div class="col-lg-7">
+                                                        <select th:class="${'form-control select2 ip-voucher-person-apply ip-voucher-person-apply' + voucher.voucherId}"
+                                                                onchange="onChangePersonApply(this)">
+                                                            <option value="ALL-PERSON">
+                                                                Toàn bộ khách hàng
+                                                            </option>
+                                                            <option value="PERSON-BUY-MONEY"
+                                                                    th:selected="${voucher.typeDiscountMinAmount != null && voucher.typeDiscountMinAmount > 0}">
+                                                                Đã mua tối thiểu?
+                                                            </option>
+                                                            <option value="CHOOSE-PERSON"
+                                                                    th:selected="${voucher.lstCustomer != null && not #lists.isEmpty(voucher.lstCustomer)}">
+                                                                Lựa chọn khách hàng
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="person-apply">
+                                                    <div class="mb-3 row PERSON-BUY-MONEY">
+                                                        <div class="col-lg-5">
+                                                            Nhập số tiền tối thiểu?
                                                         </div>
-                                                        <div class="col-12 mb-3">
-                                                            <textarea
-                                                                    th:class="${'form-control ip-voucher-description' + voucher.voucherId}"
-                                                                    rows="5"
-                                                                    th:text="${voucher.voucherDescription}"></textarea>
+                                                        <div class="col-lg-7">
+                                                            <input type="number" min="1"
+                                                                   placeholder="Nhập số tiền tối thiểu..."
+                                                                   th:class="${'form-control ip-type-discount-money-min' + voucher.voucherId}"
+                                                                   th:value="${voucher.typeDiscountMinAmount}"/>
                                                         </div>
                                                     </div>
-                                                    <div class="col-12 mb-3">
-                                                        <div class="float-end">
-                                                            <button th:data-id="${voucher.voucherId}"
-                                                                    onclick="onClickUpdateVoucher(this)"
-                                                                    class="btn btn-success waves-effect waves-light">
-                                                                Cập nhật
-                                                            </button>
+                                                    <div class="mb-3 row CHOOSE-PERSON">
+                                                        <div class="col-lg-5">
+                                                            Chọn khách hàng
+                                                        </div>
+                                                        <div class="col-lg-7">
+                                                            <select th:class="${'select2 form-control select2-multiple ip-type-discount-person' + voucher.voucherId}"
+                                                                    multiple="multiple"
+                                                                    data-placeholder="Chọn khách hàng...">
+                                                                <option th:each="customer : ${lstCustomer}"
+                                                                        th:selected="${voucher.lstCustomer != null && #lists.contains(voucher.lstCustomer, customer.id)}"
+                                                                        th:value="${customer.id}"
+                                                                        th:text="${customer.fullName}"></option>
+                                                            </select>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="tab-pane p-3" th:id="${'history-use-' + voucher.voucherId}"
-                                                 role="tabpanel">
-                                                <table class="table table-bordered table-hover">
-                                                    <thead>
-                                                    <tr class="text-center">
-                                                        <th>STT</th>
-                                                        <th>Họ và tên</th>
-                                                        <th>Mã hoá đơn</th>
-                                                        <th>Tổng tiền hoá đơn</th>
-                                                        <th>Ngày sử dụng</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    <tr>
-                                                        <td>STT</td>
-                                                        <td>Họ và tên</td>
-                                                        <td>Mã hoá đơn</td>
-                                                        <td>Tổng tiền hoá đơn</td>
-                                                        <td>Ngày sử dụng</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>STT</td>
-                                                        <td>Họ và tên</td>
-                                                        <td>Mã hoá đơn</td>
-                                                        <td>Tổng tiền hoá đơn</td>
-                                                        <td>Ngày sử dụng</td>
-                                                    </tr>
-                                                    </tbody>
-                                                </table>
+                                            <div class="col-12">
+                                                <div class="col-12 mb-3">
+                                                    Mô tả chi tiết:
+                                                </div>
+                                                <div class="col-12 mb-3">
+                                                            <textarea
+                                                                    th:class="${'form-control ip-voucher-description' + voucher.voucherId}"
+                                                                    rows="5"
+                                                                    th:text="${voucher.voucherDescription}"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <div class="float-end">
+                                                    <button th:data-id="${voucher.voucherId}"
+                                                            onclick="onClickUpdateVoucher(this)"
+                                                            class="btn btn-success waves-effect waves-light">
+                                                        Cập nhật
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </td>
-                            </tr>
-                        </th:block>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
+                                    <div class="tab-pane p-3" th:id="${'history-use-' + voucher.voucherId}"
+                                         role="tabpanel">
+                                        <table class="table table-bordered table-hover">
+                                            <thead>
+                                            <tr class="text-center">
+                                                <th>STT</th>
+                                                <th>Họ và tên</th>
+                                                <th>Mã hoá đơn</th>
+                                                <th>Tổng tiền hoá đơn</th>
+                                                <th>Ngày sử dụng</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td>STT</td>
+                                                <td>Họ và tên</td>
+                                                <td>Mã hoá đơn</td>
+                                                <td>Tổng tiền hoá đơn</td>
+                                                <td>Ngày sử dụng</td>
+                                            </tr>
+                                            <tr>
+                                                <td>STT</td>
+                                                <td>Họ và tên</td>
+                                                <td>Mã hoá đơn</td>
+                                                <td>Tổng tiền hoá đơn</td>
+                                                <td>Ngày sử dụng</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
+        </section>
+    </section>
     <div id="modal-add-voucher" class="modal fade show" style="display: block;" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
@@ -487,40 +376,37 @@
                     <div class="row">
                         <div class="col-lg-5">
                             <div class="mb-3 row">
-                                <div class="col-lg-5">
+                                <label class="col-lg-5" for="ip-voucher-code">
                                     Mã giảm giá
-                                </div>
+                                </label>
                                 <div class="col-lg-7">
-                                    <input type="text" placeholder="Mã giảm giá tự động" class="form-control"
-                                           id="ip-voucher-code"/>
+                                    <input type="text" class="form-control" id="ip-voucher-code"/>
                                 </div>
                             </div>
                             <div class="mb-3 row">
-                                <div class="col-lg-5">
+                                <label class="col-lg-5" for="ip-voucher-name">
                                     Tên chương trình
-                                </div>
+                                </label>
                                 <div class="col-lg-7">
-                                    <input type="text" placeholder="Tên chương trình...." class="form-control"
-                                           id="ip-voucher-name"/>
+                                    <input type="text" class="form-control" id="ip-voucher-name"/>
                                 </div>
                             </div>
                             <div class="mb-3 row">
-                                <div class="col-lg-5">
+                                <label class="col-lg-5" for="ip-voucher-quantity">
                                     Số lần sử dụng
-                                </div>
+                                </label>
                                 <div class="col-lg-7">
-                                    <input type="number" min="1" value="1" placeholder="Nhập số lần sử dụng..."
-                                           class="form-control" id="ip-voucher-quantity"/>
+                                    <input type="number" min="1" value="1" class="form-control"
+                                           id="ip-voucher-quantity"/>
                                 </div>
                             </div>
                             <div class="mb-3 row">
-                                <div class="col-lg-5">
+                                <label class="col-lg-5" for="ip-voucher-discount">
                                     Mệnh giá
-                                </div>
+                                </label>
                                 <div class="col-lg-7">
                                     <div class="input-group">
-                                        <input type="text" class="form-control" id="ip-voucher-discount"
-                                               placeholder="Nhập mệnh giá...">
+                                        <input type="text" class="form-control" id="ip-voucher-discount">
                                         <span class="input-group-text" id="ip-voucher-type-discount"
                                               onclick="onClickChangeTypeDiscount(this)" style="cursor: pointer;">
                                             %
@@ -529,35 +415,34 @@
                                 </div>
                             </div>
                             <div class="mb-3 row">
-                                <div class="col-lg-5">
+                                <label class="col-lg-5" for="ip-voucher-money-min">
                                     Số tiền hàng tối thiểu
-                                </div>
+                                </label>
                                 <div class="col-lg-7">
-                                    <input type="number" min="0" placeholder="Nhập số tiền hàng tối thiểu..."
-                                           class="form-control" id="ip-voucher-money-min"/>
+                                    <input type="number" min="0" class="form-control" id="ip-voucher-money-min"/>
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg-7">
                             <div class="mb-3 row">
-                                <div class="col-lg-5">
-                                    Thời gian áp dụng:
-                                </div>
+                                <label class="col-lg-5" for="ip-voucher-start-date">
+                                    Thời gian áp dụng
+                                </label>
                                 <div class="col-lg-7">
                                     <div class="input-daterange input-group" id="date-picker-add-voucher"
                                          data-date-format="dd-mm-yyyy 00:00:00" data-date-autoclose="true"
                                          data-provide="datepicker" data-date-container='#date-picker-add-voucher'>
                                         <input type="text" class="form-control" id="ip-voucher-start-date"
-                                               placeholder=" Bắt đầu"/>
+                                               placeholder="Bắt đầu"/>
                                         <input type="text" class="form-control" id="ip-voucher-end-date"
                                                placeholder="Kết thúc"/>
                                     </div>
                                 </div>
                             </div>
                             <div class="mb-3 row">
-                                <div class="col-lg-5">
+                                <label class="col-lg-5" for="ip-voucher-category">
                                     Mặt hàng áp dụng
-                                </div>
+                                </label>
                                 <div class="col-lg-7">
                                     <select class="form-control select2" id="ip-voucher-category">
                                         <option value="">Tất cả mặt hàng</option>
@@ -568,9 +453,9 @@
                                 </div>
                             </div>
                             <div class="mb-3 row">
-                                <div class="col-lg-5">
-                                    Đối tượng áp dụng
-                                </div>
+                                <label class="col-lg-5" for="ip-voucher-person-apply">
+                                    Đối tượng sử dụng
+                                </label>
                                 <div class="col-lg-7">
                                     <select class="form-control select2 ip-voucher-person-apply"
                                             id="ip-voucher-person-apply" onchange="onChangePersonApply(this)">
@@ -588,18 +473,18 @@
                             </div>
                             <div class="person-apply">
                                 <div class="mb-3 row PERSON-BUY-MONEY">
-                                    <div class="col-lg-5">
-                                        Nhập số tiền tối thiểu?
-                                    </div>
+                                    <label class="col-lg-5" for="ip-type-discount-money-min">
+                                        Số tiền khách đã mua tối thiểu
+                                    </label>
                                     <div class="col-lg-7">
                                         <input type="number" min="1" placeholder="Nhập số tiền tối thiểu..."
                                                class="form-control" id="ip-type-discount-money-min"/>
                                     </div>
                                 </div>
                                 <div class="mb-3 row CHOOSE-PERSON">
-                                    <div class="col-lg-5">
+                                    <label class="col-lg-5" for="ip-type-discount-person">
                                         Chọn khách hàng
-                                    </div>
+                                    </label>
                                     <div class="col-lg-7">
                                         <select class="select2 form-control select2-multiple"
                                                 id="ip-type-discount-person" multiple="multiple"
@@ -613,9 +498,9 @@
                             </div>
                         </div>
                         <div class="col-12">
-                            <div class="col-12 mb-3">
-                                Mô tả chi tiết:
-                            </div>
+                            <label class="col-12 mb-3" for="ip-voucher-description">
+                                Mô tả chi tiết
+                            </label>
                             <div class="col-12 mb-3">
                                 <textarea class="form-control" id="ip-voucher-description" rows="5"></textarea>
                             </div>
@@ -649,6 +534,20 @@
                     console.log(getSelectPersonApply[index])
                     onChangePersonApply(getSelectPersonApply[index])
                 }
+            }
+        }
+
+        function onStatusChange(element) {
+            const value = $(element).val();
+            const tagAll = $('#datatable tbody tr');
+            const tag = $('tbody tr td span').filter(function () {
+                return $(this).text().includes(value);
+            });
+            if (value === '') {
+                tagAll.show();
+            } else {
+                tagAll.hide();
+                tag.parent().parent().show();
             }
         }
 
@@ -809,6 +708,7 @@
         function onClickDeleteVoucher(e) {
             let id = e.dataset.id
             if (id !== null && id !== undefined && id !== '') {
+                // sweetConfirm('Xác nhận', 'Xoá mã giảm giá?', 'Xoá', function () {
                 $.ajax({
                     url: '/api/voucher/' + id,
                     method: 'DELETE',
@@ -825,6 +725,7 @@
                         toastDanger('Lỗi', 'Xoá mã giảm giá thất bại')
                     }
                 })
+                // })
             }
         }
 
@@ -1091,14 +992,9 @@
             let nextElement = e.parentElement.parentElement.nextElementSibling
             if (nextElement !== null && nextElement !== undefined) {
                 let getChildrenElement = nextElement.childNodes;
-                console.log(getChildrenElement)
                 if (getChildrenElement !== null && getChildrenElement !== undefined) {
                     for (let index = 0; index < getChildrenElement.length; index++) {
-                        if ((getChildrenElement[index].className + '').includes(e.value)) {
-                            getChildrenElement[index].hidden = false;
-                        } else {
-                            getChildrenElement[index].hidden = true;
-                        }
+                        getChildrenElement[index].hidden = !(getChildrenElement[index].className + '').includes(e.value);
                     }
                 }
             }
@@ -1121,11 +1017,10 @@
     </script>
 </div>
 <div layout:fragment="script">
-    <script src="/assets/js/dropzone.min.js"></script>
-    <script th:src="@{/toastr/toa.js}"></script>
     <script th:src="@{/assets/js/bootstrap-datepicker.min.js}"></script>
-    <script src="/assets/js/form-advanced.init.js"></script>
     <script src="/assets/js/select2.min.js"></script>
+    <script src="/assets/js/form-advanced.init.js"></script>
+    <script th:src="@{/toastr/toa.js}"></script>
 </div>
 </body>
 </html>
