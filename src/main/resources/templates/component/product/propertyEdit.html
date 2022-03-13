@@ -1,5 +1,5 @@
-<div class="mx-3 mb-3 card card-body" xmlns:th="http://www.thymeleaf.org">
-    <div class="card-title mb-3">Thuộc tính sản phẩm:</div>
+<div th:if="${not #lists.isEmpty(lstProperty)}" class="mx-3 mb-3 card card-body" xmlns:th="http://www.thymeleaf.org">
+    <div class="card-title mb-3 fs-13">Thuộc tính sản phẩm:</div>
     <th:block th:each="property : ${lstProperty}">
         <div class="mb-3 row">
             <div class="col-lg-6" th:text="${property.propertyName}"></div>

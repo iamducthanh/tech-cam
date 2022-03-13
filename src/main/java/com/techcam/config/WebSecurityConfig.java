@@ -39,7 +39,6 @@ import java.io.IOException;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    String falseUrl ="/login?status=login_false";
     private final ModelMapper modelMapper = new ModelMapper();
 
 
@@ -68,7 +67,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/forgot-password/**",
                 "/api/request-forgot-password/**",
                 "/api/change-reset-password/**",
-                "/api/count_login_false/**"
+                "/api/count_login_false/**",
+                "/api/staff/**",
+                "/staff/**",
+                "/api/v1/customer/**"
         ).permitAll();
 
         http.authorizeRequests().antMatchers("/**").access("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')");
@@ -89,11 +91,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
                         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
                         String username = userDetails.getUsername();
-
                         System.out.println("Đăng nhập thành công " + username);
                         StaffEntity staffEntity = staffService.getByEmail(username);
                         staffEntity.setCountLoginFalse(0);
-                        staffService.addStaff(modelMapper.map(staffEntity, StaffAddRequestDTO.class));
+                        staffService.saveStaff(staffEntity);
                         response.sendRedirect(request.getContextPath());
                     }
                 })

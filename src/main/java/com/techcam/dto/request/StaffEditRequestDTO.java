@@ -34,4 +34,6 @@ public class StaffEditRequestDTO {
     private String username;
 
     private String note;
+
+    private int countLoginFalse;
 }

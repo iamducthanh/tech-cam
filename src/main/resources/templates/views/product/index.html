@@ -8,210 +8,101 @@
     <title>Quản lý sản phẩm - TechCam</title>
 </head>
 <body>
-<div layout:fragment="content" class="myContainer">
-    <div class="container1 row">
-        <div class="col-lg-3">
-            <div class="card">
-                <div class="card-body">
-                    <div id="sidebar-menu">
-                        <ul class="list-unstyled" id="side-menu">
-                            <li>
-                                <a class="has-arrow waves-effect waves-light mb-3">
-                                    <strong>Trạng thái: </strong>
-                                </a>
-                                <ul class="sub-menu" style="padding: 0 10px 0 30px;">
-                                    <div class="mb-2">
-                                        <input class="form-check-input" type="radio" name="filter-status"
-                                               checked id="filter-status-all" data-filter="ALL"
-                                               onchange="changeFilterStatus(this)">
-                                        <label for="filter-status-all" class="col-form-label">
-                                            Tất cả
-                                        </label>
-                                    </div>
-                                    <div class="mb-2">
-                                        <input class="form-check-input" type="radio" name="filter-status"
-                                               id="filter-status-true" data-filter="TRUE"
-                                               onchange="changeFilterStatus(this)">
-                                        <label for="filter-status-true" class="col-form-label">
-                                            Kích hoạt
-                                        </label>
-                                    </div>
-                                    <div class="mb-2">
-                                        <input class="form-check-input" type="radio" name="filter-status"
-                                               id="filter-status-false" data-filter="FALSE"
-                                               onchange="changeFilterStatus(this)">
-                                        <label for="filter-status-false" class="col-form-label">
-                                            Chưa áp dụng
-                                        </label>
-                                    </div>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                    <!-- Sidebar -->
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-9">
-            <div class="card">
-                <div class="card-body">
-                    <div class="float-start">
-                        <h1 class="header-title mb-4">
-                            Quản lý mã giảm giá
-                        </h1>
-                    </div>
-                    <div class="float-end">
-                        <div class="d-flex flex-row-reverse">
-                            <div class="dropdown myDropdown myBtn">
-                                <button class="btn btn-primary" id="dropdownMenuButton"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fas fa-filter"></i>
-                                    <i class="mdi mdi-chevron-down"></i>
-                                </button>
-                                <div class="dropdown-menu dropdown-menu-end" style="width: 20vw;">
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3 mx-3">
-                                                <input class="form-check-input mt-2" type="checkbox"
-                                                       id="checked-voucher-code"/>
-                                                <label for="checked-voucher-code" class="col-form-label">
-                                                    Mã giảm giá
-                                                </label>
-                                            </div>
-                                            <div class="mb-3 mx-3">
-                                                <input class="form-check-input mt-2" type="checkbox"
-                                                       id="checked-voucher-name"/>
-                                                <label for="checked-voucher-name" class="col-form-label">
-                                                    Tên chương trình
-                                                </label>
-                                            </div>
-                                            <div class="mb-3 mx-3">
-                                                <input class="form-check-input mt-2" type="checkbox"
-                                                       id="checked-voucher-start-date"/>
-                                                <label for="checked-voucher-start-date"
-                                                       class="col-form-label">
-                                                    Từ ngày
-                                                </label>
-                                            </div>
-                                            <div class="mb-3 mx-3">
-                                                <input class="form-check-input mt-2" type="checkbox"
-                                                       id="checked-voucher-start-end"/>
-                                                <label for="checked-voucher-start-end"
-                                                       class="col-form-label">
-                                                    Đến ngày
-                                                </label>
-                                            </div>
-                                            <div class="mb-3 mx-3">
-                                                <input class="form-check-input mt-2" type="checkbox"
-                                                       id="checked-voucher-start-quantiy"/>
-                                                <label for="checked-voucher-start-quantiy"
-                                                       class="col-form-label">
-                                                    Số lần sử dụng
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3 mx-3">
-                                                <input class="form-check-input mt-2" type="checkbox"
-                                                       id="checked-voucher-discount"/>
-                                                <label for="checked-voucher-discount"
-                                                       class="col-form-label">
-                                                    Mệnh giá
-                                                </label>
-                                            </div>
-                                            <div class="mb-3 mx-3">
-                                                <input class="form-check-input mt-2" type="checkbox"
-                                                       id="checked-voucher-status"/>
-                                                <label for="checked-voucher-status" class="col-form-label">
-                                                    Trạng thái
-                                                </label>
-                                            </div>
-                                            <div class="mb-3 mx-3">
-                                                <input class="form-check-input mt-2" type="checkbox"
-                                                       id="checked-voucher-crete-by"/>
-                                                <label for="checked-voucher-crete-by"
-                                                       class="col-form-label">
-                                                    Người tạo
-                                                </label>
-                                            </div>
-                                            <div class="mb-3 mx-3">
-                                                <input class="form-check-input mt-2" type="checkbox"
-                                                       id="checked-voucher-crete-date"/>
-                                                <label for="checked-voucher-crete-date"
-                                                       class="col-form-label">
-                                                    Ngày tạo
-                                                </label>
-                                            </div>
-                                            <div class="mb-3 mx-3">
-                                                <input class="form-check-input mt-2" type="checkbox"
-                                                       id="checked-voucher-modified-date"/>
-                                                <label for="checked-voucher-modified-date"
-                                                       class="col-form-label">
-                                                    Ngày cập nhật
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <a href="#modal-add-product" data-bs-toggle="modal"
-                               class="mx-2 btn btn-primary waves-effect waves-light">
-                                Thêm sản phẩm
-                            </a>
+<div layout:fragment="content" class="container-fluid">
+    <section class="row main-page">
+        <section class="col-2 mainLeft">
+            <h1 class="heading-page">Mã giảm giá</h1>
+            <div class="filter-report">
+                <div class="card">
+                    <h6 class="mx-2 mt-2 fs-14">Trạng thái</h6>
+                    <div class="mx-2 mb-2">
+                        <div class="form-group form-check">
+                            <input class="form-check-input" type="radio" name="status" id="statusAll" value=""
+                                   onchange="onStatusChange(this)" checked>
+                            <label class="form-check-label" for="statusAll">
+                                Tất cả
+                            </label>
+                        </div>
+                        <div class="form-group form-check">
+                            <input class="form-check-input" type="radio" name="status" id="statusActive"
+                                   value="Kinh doanh" onchange="onStatusChange(this)">
+                            <label class="form-check-label" for="statusActive">
+                                Kinh doanh
+                            </label>
+                        </div>
+                        <div class="form-group form-check">
+                            <input class="form-check-input" type="radio" name="status" id="statusInActive"
+                                   value="Ngừng kinh doanh" onchange="onStatusChange(this)">
+                            <label class="form-check-label" for="statusInActive">
+                                Ngừng kinh doanh
+                            </label>
                         </div>
                     </div>
-                    <table class="mt-3 table table-bordered">
-                        <thead>
-                        <tr class="text-center">
-                            <th>STT</th>
-                            <th>Tên sản phẩm</th>
-                            <th>Giá bán</th>
-                            <th>Tồn kho</th>
-                            <th>Trạng thái</th>
-                            <th>Người thêm</th>
-                            <th>Ngày thêm</th>
-                            <th>Ngày cập nhật</th>
-                            <th>Thao tác</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <th:block th:each="product, theCount : ${lstProducts}">
-                            <tr>
-                                <td class="text-center" th:text="${theCount.index + 1}">STT</td>
-                                <td th:text="${product.productName}">Tên sản phẩm</td>
-                                <td class="text-end"
-                                    th:text="${#numbers.formatDecimal(product.productPrice, 0, 'COMMA', 2, 'POINT') + 'đ'}">
-                                    Giá bán
-                                </td>
-                                <td class="text-end">Tồn kho</td>
-                                <td class="text-center">
-                                    <span th:if="${product.productStatus != null && product.productStatus == 'ON'}"
-                                          class="badge bg-success">
-                                        Kinh doanh
-                                    </span>
-                                    <span th:unless="${product.productStatus != null && product.productStatus == 'ON'}"
-                                          class="badge bg-danger">
-                                        Ngừng kinh doanh
-                                    </span>
-                                </td>
-                                <td>Người thêm</td>
-                                <td>Ngày thêm</td>
-                                <td>Ngày cập nhật</td>
-                                <td class="text-center">
-                                    <a href="#modal-edit-product" data-id="123" data-bs-toggle="modal"
-                                       class="btn btn-primary btn-sm waves-effect waves-light"
-                                       onclick="onClickEditProduct(this)">
-                                        Chỉnh sửa
-                                    </a>
-                                </td>
-                            </tr>
-                        </th:block>
-                        </tbody>
-                    </table>
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
+        <section class="col-10 mainRight card card-body">
+            <div class="row justify-content-end">
+                <a href="#modal-add-product" type="button"
+                   class="btn btn-primary col-auto mb-3 waves-effect waves-light"
+                   data-bs-toggle="modal">
+                    <i class="fas fa-plus me-2"></i>
+                    Sản phẩm
+                </a>
+            </div>
+
+            <table id="datatable" class="table table-bordered dt-responsive nowrap dataTable no-footer shadow">
+                <thead>
+                <tr class="text-center">
+                    <th>STT</th>
+                    <th>Chức năng</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Giá bán</th>
+                    <th>Tồn kho</th>
+                    <th>Trạng thái</th>
+                    <th>Người thêm</th>
+                    <th>Ngày thêm</th>
+                    <th>Ngày cập nhật</th>
+                </tr>
+                </thead>
+                <tbody>
+                <th:block th:each="product, theCount : ${lstProducts}">
+                    <tr>
+                        <td class="text-center" th:text="${theCount.index + 1}">STT</td>
+                        <td class="text-center">
+                            <a href="#modal-edit-product" th:data-id="${product.productId}" data-bs-toggle="modal"
+                               class="btn btn-primary btn-sm waves-effect waves-light"
+                               onclick="onClickEditProduct(this)">
+                                Chỉnh sửa
+                            </a>
+                        </td>
+                        <td th:text="${product.productName}">Tên sản phẩm</td>
+                        <td class="text-end"
+                            th:text="${#numbers.formatDecimal(product.productPrice, 0, 'COMMA', 2, 'POINT') + 'đ'}">
+                            Giá bán
+                        </td>
+                        <td class="text-end">Tồn kho</td>
+                        <td class="text-center">
+                            <span th:if="${product.productStatus != null && product.productStatus == 'ON'}"
+                                  class="badge bg-success">
+                                Kinh doanh
+                            </span>
+                            <span th:unless="${product.productStatus != null && product.productStatus == 'ON'}"
+                                  class="badge bg-danger">
+                                Ngừng kinh doanh
+                            </span>
+                        </td>
+                        <td th:text="${product.createBy}" class="text-center">Người thêm</td>
+                        <td th:text="${#dates.format(product.createDate, 'dd-MM-yyyy')}" class="text-center">
+                        </td>
+                        <td th:text="${#dates.format(product.modifierDate, 'dd-MM-yyyy')}" class="text-center">
+                        </td>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
+        </section>
+    </section>
 
     <div id="modal-add-product" class="modal fade show" style="display: block;" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered">
@@ -339,6 +230,16 @@
                                         </div>
                                         <div class="carousel-inner" id="previewUploadAdd">
                                         </div>
+                                        <a class="carousel-control-prev " type="button" data-bs-target="#carouselExampleCaptionsAdd"
+                                           data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Previous</span>
+                                        </a>
+                                        <a class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptionsAdd"
+                                           data-bs-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Next</span>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -481,10 +382,20 @@
                             <div class="file_upload">
                                 <div class="bd-example text-center">
                                     <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
-                                        <div class="carousel-indicators" id="carousel-indicators">
+                                        <div class="carousel-indicators text-black-50" id="carousel-indicators">
                                         </div>
                                         <div class="carousel-inner" id="previewUpload">
                                         </div>
+                                        <a class="carousel-control-prev " type="button" data-bs-target="#carouselExampleCaptions"
+                                           data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Previous</span>
+                                        </a>
+                                        <a class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
+                                           data-bs-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Next</span>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -620,7 +531,7 @@
             // get element thuộc tính sản phẩm
             let getElementProductProperty = document.getElementById('product-edit-property');
             // get mô tả chi tiết sản phẩm
-            let productDescription = CKEDITOR.instances.productEditDescription.getData();
+            let productDescription = CKEDITOR.instances['productEditDescription'].getData();
             let objectProduct = validateObjectProduct(
                 getElementProductCode,
                 getElementProductName,
@@ -634,7 +545,7 @@
             );
             console.log(objectProduct);
             if (objectProduct !== null && objectProduct !== undefined) {
-                objectProduct["idProduct"] = e.dataset.id
+                objectProduct["productId"] = e.dataset.id
                 $.ajax({
                     url: '/api/product',
                     method: 'PUT',
@@ -642,9 +553,14 @@
                     data: JSON.stringify(objectProduct),
                     success: function (data) {
                         console.log(data);
+                        toastSuccess('Thành công', 'Đã cập nhật sản phẩm')
+                        setTimeout(function () {
+                            location.reload()
+                        }, 2000)
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         console.log(jqXHR);
+                        toastDanger('Lỗi', 'Cập nhật sản phẩm thất bại')
                     }
                 })
             }
@@ -669,7 +585,7 @@
             // get element thuộc tính sản phẩm
             let getElementProductProperty = document.getElementById('product-add-property');
             // get mô tả chi tiết sản phẩm
-            let productDescription = CKEDITOR.instances.productAddDescription.getData();
+            let productDescription = CKEDITOR.instances['productAddDescription'].getData();
             let objectProduct = validateObjectProduct(
                 getElementProductCode,
                 getElementProductName,
@@ -914,6 +830,7 @@
                 url: '/api/product/' + id,
                 method: 'GET',
                 success: function (data) {
+                    console.log(data)
                     if (getElementProductCode !== null) {
                         getElementProductCode.value = data.productCode;
                     }
@@ -927,8 +844,22 @@
                         getElementProduuctBrand.value = data.productBrand;
                     }
                     if (getElementProductStatus !== null) {
-                        getElementProductStatus.checked = data.productStatus;
+                        getElementProductStatus.checked = data.productStatus === 'ON';
                     }
+                    if (data.lstImages !== null && data.lstImages !== undefined) {
+                        dataImageUploadEdit = data.lstImages
+                        sizeImage = 0;
+                        let previewUpload = document.getElementById('previewUpload')
+                        let carouselIndicators = document.getElementById('carousel-indicators')
+                        if (previewUpload !== null && previewUpload !== undefined) {
+                            previewUpload.innerHTML = ''
+                            carouselIndicators.innerHTML = ''
+                        }
+                        for (let i = 0; i < data.lstImages.length; i++) {
+                            addImagePreview(data.lstImages[i])
+                        }
+                    }
+                    CKEDITOR.instances['productEditDescription'].setData(data.productDescription)
                     if (getElementProductCategory !== null) {
                         getElementProductCategory.value = data.productCategory;
                         $.ajax({
@@ -941,7 +872,6 @@
                             }
                         })
                     }
-
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     console.log(jqXHR)
@@ -949,8 +879,29 @@
             })
         }
 
+        function onStatusChange(element) {
+            const value = $(element).val();
+            const tagAll = $('#datatable tbody tr');
+            const tag = $('tbody tr td span').filter(function () {
+                return $(this).text().includes(value);
+            });
+            if (value === '') {
+                tagAll.show();
+            } else {
+                tagAll.hide();
+                tag.parent().parent().show();
+            }
+        }
+
     </script>
 
+</div>
+<div layout:fragment="script">
+    <script src="/assets/js/dropzone.min.js"></script>
+    <script th:src="@{/assets/js/bootstrap-datepicker.min.js}"></script>
+    <script src="/assets/js/select2.min.js"></script>
+    <script src="/assets/js/form-advanced.init.js"></script>
+    <script th:src="@{/toastr/toa.js}"></script>
 </div>
 </body>
 </html>

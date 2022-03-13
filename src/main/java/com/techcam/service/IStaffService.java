@@ -46,5 +46,9 @@ public interface IStaffService {
     // Block/Unblock staff by status
     boolean changeStatusStaff(String id, String status);
 
+    // Get staff by email
     StaffEntity getByEmail(String email);
+
+    // save staff
+    StaffEntity saveStaff(StaffEntity staffEntity);
 }

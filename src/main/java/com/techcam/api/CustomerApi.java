@@ -24,6 +24,9 @@ public interface CustomerApi {
     @GetMapping("find-customers/{keyWord}")
     List<CustomerInfoResponse> findCustomers(@PathVariable String keyWord);
 
+    @GetMapping("find-by-id/{id}")
+    CustomerInfoResponse findCustomerById(@PathVariable String id);
+
     @PostMapping("/registration-customer")
     CustomerResponse postSaveCustomer(@Valid @RequestBody CustomerRequest customerRequest, BindingResult bindingResult);
 
