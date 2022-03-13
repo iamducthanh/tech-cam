@@ -235,21 +235,4 @@ public class StaffService implements IStaffService {
         List<StaffEntity> list = repo.findByEmail(email);
         return list.isEmpty() ? null : list.get(0);
     }
-
-//    @Override
-//    public void saveStaff(StaffEntity staffEntity) {
-//        System.out.println("save done");
-//        repo.save(staffEntity);
-//    }
-
-
-    public static void main(String[] args)  {
-//        String secretKey = "TVDqqqqqqqq";
-//        String originalString = "teamvietdev.com";
-//
-//        String encryptedString = encrypt(originalString, secretKey);
-//        System.out.println("Encrypt: " + encryptedString);
-//        String decryptedString = decrypt(encryptedString, secretKey);
-//        System.out.println("Decrypt: " + decryptedString);
-    }
 }
