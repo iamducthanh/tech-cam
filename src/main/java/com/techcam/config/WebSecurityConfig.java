@@ -68,7 +68,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/forgot-password/**",
                 "/api/request-forgot-password/**",
                 "/api/change-reset-password/**",
-                "/api/count_login_false/**"
+                "/api/count_login_false/**",
+                "/api/staff/**",
+                "/staff/**",
+                "/api/v1/customer/**"
         ).permitAll();
 
         http.authorizeRequests().antMatchers("/**").access("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')");

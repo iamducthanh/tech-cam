@@ -28,8 +28,8 @@ public class CustomerView {
 
     @GetMapping("")
     public String customerView(Model model) {
-//        List<CustomerInfoResponse> customerInfoResponses = customerService.getCustomers();
-//        model.addAttribute("customers",customerInfoResponses);
+        List<CustomerInfoResponse> customerInfoResponses = customerService.getCustomers();
+        model.addAttribute("customers",customerInfoResponses);
         return "views/customer/004_customer";
     }
 
