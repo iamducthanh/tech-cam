@@ -71,7 +71,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/count_login_false/**",
                 "/api/staff/**",
                 "/staff/**",
-                "/api/v1/customer/**"
+                "/api/v1/customer/**",
+                "/customer"
         ).permitAll();
 
         http.authorizeRequests().antMatchers("/**").access("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')");
