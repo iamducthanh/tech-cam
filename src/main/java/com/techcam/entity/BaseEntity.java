@@ -13,6 +13,7 @@ import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * @author DucBV
@@ -28,7 +29,7 @@ import java.sql.Timestamp;
 public abstract class BaseEntity {
 
     @CreatedDate
-    @Column(name = "CREATE_DATE")
+    @Column(name = "create_date")
     private Timestamp createDate;
 
     @LastModifiedDate

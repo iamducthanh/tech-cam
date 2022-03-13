@@ -4,6 +4,7 @@ import com.techcam.dto.request.product.ProductAddRequest;
 import com.techcam.dto.request.product.ProductEditRequest;
 import com.techcam.dto.response.product.ProductResponse;
 import com.techcam.exception.TechCamExp;
+import com.techcam.repo.IImageRepo;
 import com.techcam.service.IProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -72,7 +73,12 @@ public class ProductApi {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getProductById(@PathVariable("id") String id) {
-        return ResponseEntity.ok(productService.getById(id));
+        ProductResponse productResponse = productService.getById(id);
+        if (Objects.nonNull(productResponse)) {
+            productResponse.setLstImages(productService.findAllImagesByProductId(id));
+            return ResponseEntity.ok(productResponse);
+        }
+        return ResponseEntity.badRequest().body(new ProductResponse());
     }
 
     private void validateInputProduct(Errors errors, String productName, List<String> productImages) {

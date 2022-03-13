@@ -29,4 +29,6 @@ public interface IProductService {
     List<ProductResponse> getAllProduct();
 
     ProductResponse getById(String productId);
+
+    List<String> findAllImagesByProductId(String productId);
 }

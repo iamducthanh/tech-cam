@@ -236,13 +236,6 @@ public class StaffService implements IStaffService {
         return list.isEmpty() ? null : list.get(0);
     }
 
-    @Override
-    public void saveStaff(StaffEntity staffEntity) {
-        System.out.println("save done");
-        repo.save(staffEntity);
-    }
-
-
     public static void main(String[] args)  {
 //        String secretKey = "TVDqqqqqqqq";
 //        String originalString = "teamvietdev.com";

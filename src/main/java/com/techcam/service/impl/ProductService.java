@@ -8,16 +8,12 @@ import com.techcam.dto.response.product.ProductPropertyResponse;
 import com.techcam.dto.response.product.ProductResponse;
 import com.techcam.entity.*;
 import com.techcam.repo.*;
-import com.techcam.entity.ProductEntity;
-import com.techcam.repo.IAttributeRepo;
-import com.techcam.repo.ICategoryRepo;
-import com.techcam.repo.IProductPropertyRepo;
-import com.techcam.repo.IProductRepo;
 import com.techcam.service.IProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -71,6 +67,9 @@ public class ProductService implements IProductService {
         }
         ProductEntity productEntity = new ProductEntity();
         productEntity = mapToEntity(productRequest, productEntity);
+        if (Objects.isNull(productEntity)) {
+            return ConstantsErrorCode.ERROR_DATA_REQUEST;
+        }
         productEntity.setId(UUID.randomUUID().toString());
         List<ImagesEntity> lstImage = new ArrayList<>();
         for (String x : productRequest.getProductImages()) {
@@ -111,23 +110,6 @@ public class ProductService implements IProductService {
         return ConstantsErrorCode.ERROR;
     }
 
-    private ProductEntity mapToEntity(ProductAddRequest x, ProductEntity s) {
-        if (Objects.isNull(x)) return null;
-        CategoryEntity categoryEntity = categoryRepo.getByIdAndDeleteFlagIsFalse(x.getProductCategory());
-        BrandEntity brandEntity = brandRepo.getByIdAndDeleteFlagIsFalse(x.getProductBrand());
-        return s.toBuilder()
-                .name(x.getProductName())
-                .categoryId(Objects.isNull(categoryEntity) ? null : categoryEntity.getId())
-                .brandId(Objects.isNull(brandEntity) ? null : brandEntity.getId())
-                .productCode(x.getProductCode())
-                .quantity(0)
-                .price(Long.parseLong(x.getProductPrice()))
-                .detail("")
-                .description(x.getProductDescription())
-                .status(x.getProductStatus().equals("true") ? "ON" : "OFF")
-                .build();
-    }
-
     @Override
     public String updateProduct(ProductEditRequest productRequest) {
         if (Objects.isNull(productRequest)) {
@@ -137,9 +119,66 @@ public class ProductService implements IProductService {
                 .stream().anyMatch(e -> !e.getId().equals(productRequest.getProductId()))) {
             return ConstantsErrorCode.PRODUCT_CODE_DUPLICATE;
         }
-        // TODO thay đổi trạng thái hình ảnh (xoá)
-
-        return null;
+        ProductEntity productEntity = productRepo.getByIdAndDeleteFlagIsFalse(productRequest.getProductId());
+        if (Objects.isNull(productEntity)) {
+            return ConstantsErrorCode.ERROR_DATA_REQUEST;
+        }
+        Timestamp createDate = productEntity.getCreateDate();
+        productEntity = mapToEntity(productRequest, productEntity);
+        if (Objects.isNull(productEntity)) {
+            return ConstantsErrorCode.ERROR_DATA_REQUEST;
+        }
+        productEntity.setId(productRequest.getProductId());
+        productEntity.setCreateDate(createDate);
+        List<ImagesEntity> lstImage = new ArrayList<>();
+        List<ImagesEntity> lstImageDelete = imageRepo.findAllByProductIdAndDeleteFlagIsFalse(productEntity.getId());
+        for (String x : productRequest.getProductImages()) {
+            ImagesEntity imagesEntity = ImagesEntity.builder()
+                    .id(UUID.randomUUID().toString())
+                    .productId(productEntity.getId())
+                    .imagesName(productEntity.getName())
+                    .imagesLink(x)
+                    .status("ON")
+                    .note("")
+                    .build();
+            lstImage.add(imagesEntity);
+        }
+        List<ProductPropertyEntity> findAllByProductId = productPropertyRepo.findAllByProductIdAndDeleteFlagIsFalse(productEntity.getId());
+        List<ProductPropertyEntity> lstProductPropertyEntities = new ArrayList<>();
+        List<String> lstIdDuplicate = new ArrayList<>();
+        for (ProductPropertyRequest x : productRequest.getProductProperties()) {
+            List<ProductPropertyEntity> findByProductIdAndPropertyId = findAllByProductId.stream()
+                    .filter(e -> e.getAttributeId().equals(x.getPropertyId())).collect(Collectors.toList());
+            String id;
+            if (findByProductIdAndPropertyId.isEmpty()) {
+                id = UUID.randomUUID().toString();
+            } else {
+                id = findByProductIdAndPropertyId.get(0).getId();
+                lstIdDuplicate.add(id);
+            }
+            AttributeFixedValueEntity attributeFixedValueEntity = attributeFixedValueRepo.getByIdAndDeleteFlagIsFalse(x.getFixedValueId());
+            ProductPropertyEntity productPropertyEntity = ProductPropertyEntity.builder()
+                    .id(id)
+                    .attributeId(x.getPropertyId())
+                    .productId(productEntity.getId())
+                    .attributeFixedId(Objects.isNull(attributeFixedValueEntity) ? null : attributeFixedValueEntity.getId())
+                    .attributeValue(Objects.isNull(attributeFixedValueEntity) ? x.getInputValue() : null)
+                    .status("ON")
+                    .build();
+            lstProductPropertyEntities.add(productPropertyEntity);
+        }
+        findAllByProductId.stream().filter(e -> !lstIdDuplicate.contains(e.getId())).forEach(e -> e.setDeleteFlag(true));
+        try {
+            productRepo.save(productEntity);
+            productPropertyRepo.saveAll(lstProductPropertyEntities);
+            productPropertyRepo.saveAll(findAllByProductId);
+            imageRepo.saveAll(lstImage);
+            imageRepo.deleteAll(lstImageDelete);
+            return SUCCESS;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ConstantsErrorCode.ERROR;
     }
 
     @Override
@@ -160,6 +199,40 @@ public class ProductService implements IProductService {
     @Override
     public ProductResponse getById(String productId) {
         return mapToResponse(productRepo.getByIdAndDeleteFlagIsFalse(productId));
+    }
+
+    @Override
+    public List<String> findAllImagesByProductId(String productId) {
+        return imageRepo.findAllByProductIdAndDeleteFlagIsFalse(productId).stream()
+                .map(ImagesEntity::getImagesLink).collect(Collectors.toList());
+    }
+
+    private ProductEntity mapToEntity(Object obj, ProductEntity s) {
+        if (Objects.isNull(obj)) return null;
+        if (obj instanceof ProductAddRequest) {
+            ProductAddRequest x = (ProductAddRequest) obj;
+            return mapToEntity(s, x.getProductCategory(), x.getProductBrand(), x.getProductName(), x.getProductCode(), x.getProductPrice(), x.getProductDescription(), x.getProductStatus());
+        } else if (obj instanceof ProductEditRequest) {
+            ProductEditRequest x = (ProductEditRequest) obj;
+            return mapToEntity(s, x.getProductCategory(), x.getProductBrand(), x.getProductName(), x.getProductCode(), x.getProductPrice(), x.getProductDescription(), x.getProductStatus());
+        }
+        return null;
+    }
+
+    private ProductEntity mapToEntity(ProductEntity s, String productCategory, String productBrand, String productName, String productCode, String productPrice, String productDescription, String productStatus) {
+        CategoryEntity categoryEntity = categoryRepo.getByIdAndDeleteFlagIsFalse(productCategory);
+        BrandEntity brandEntity = brandRepo.getByIdAndDeleteFlagIsFalse(productBrand);
+        return s.toBuilder()
+                .name(productName)
+                .categoryId(Objects.isNull(categoryEntity) ? null : categoryEntity.getId())
+                .brandId(Objects.isNull(brandEntity) ? null : brandEntity.getId())
+                .productCode(productCode)
+                .quantity(0)
+                .price(Long.parseLong(productPrice))
+                .detail("")
+                .description(productDescription)
+                .status(productStatus.equals("true") ? "ON" : "OFF")
+                .build();
     }
 
     private <R> ProductResponse mapToResponse(ProductEntity x) {

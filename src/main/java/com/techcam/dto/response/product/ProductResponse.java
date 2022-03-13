@@ -32,4 +32,6 @@ public class ProductResponse extends ProductDto {
 
     private List<ProductPropertyResponse> properties;
 
+    private List<String> lstImages;
+
 }
