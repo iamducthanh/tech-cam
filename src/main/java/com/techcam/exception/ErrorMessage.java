@@ -1,6 +1,8 @@
 package com.techcam.exception;
 
 import lombok.Data;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  * Description:
