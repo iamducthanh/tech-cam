@@ -59,7 +59,7 @@ public class AccountApi {
             throw new TechCamExp(ConstantsErrorCode.LOGIN_PASS_C_FAIL);
         }
         if (!changePasswordDto.getPasswordNew().equals(changePasswordDto.getPasswordComfirm())) {
-            throw new TechCamExp(ConstantsErrorCode.LOGIN_PASS_C_FAIL);
+            throw new TechCamExp(ConstantsErrorCode.LOGIN_PASS_M_FAIL);
         }
 
         String password = pass.encode(changePasswordDto.getPasswordNew());
