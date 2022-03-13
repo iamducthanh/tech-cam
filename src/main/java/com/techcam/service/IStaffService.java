@@ -3,10 +3,9 @@ package com.techcam.service;
 import com.techcam.dto.request.StaffAddRequestDTO;
 import com.techcam.dto.request.StaffEditRequestDTO;
 import com.techcam.dto.response.StaffResponseDTO;
+import com.techcam.entity.StaffEntity;
 
 import java.util.List;
-
-import com.techcam.entity.StaffEntity;
 
 /**
  * Project_name : SMW_TECHCAM
@@ -48,6 +47,4 @@ public interface IStaffService {
     boolean changeStatusStaff(String id, String status);
 
     StaffEntity getByEmail(String email);
-
-    void saveStaff(StaffEntity staffEntity);
 }

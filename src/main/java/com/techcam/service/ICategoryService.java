@@ -1,5 +1,9 @@
 package com.techcam.service;
 
+import com.techcam.dto.response.category.CategoryResponse;
+
+import java.util.List;
+
 /**
  * Project_name : SMW_TECHCAM
  *
@@ -9,4 +13,7 @@ package com.techcam.service;
  * Description :
  */
 public interface ICategoryService {
+
+    List<CategoryResponse> getAllCategory();
+
 }

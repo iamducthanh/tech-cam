@@ -1,46 +1,50 @@
 package com.techcam.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.Table;
-import java.time.Instant;
+import javax.persistence.*;
+import java.sql.Timestamp;
+import java.util.Objects;
 
-@Getter
-@Setter
-@ToString
-@Table(name = "voucher_customer")
+/**
+ * @author DucBV
+ * @version 1.0
+ * @since 8.3.2022
+ */
 @Entity
+@Table(name = "voucher_customer", schema = "poly_techcam", catalog = "")
+@Setter
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class VoucherCustomerEntity extends BaseEntity {
-    @Column(name = "customer_id", nullable = false, length = 64)
+    @Id
+    @Column(name = "ID")
+    private String id;
+    @Basic
+    @Column(name = "CUSTOMER_ID")
     private String customerId;
-
-    @Column(name = "phone_number", nullable = false, length = 20)
-    private String phoneNumber;
-
-    @Column(name = "customer_name", nullable = false, length = 50)
-    private String customerName;
-
-    @Column(name = "voucher_code", nullable = false, length = 50)
-    private String voucherCode;
-
-    @Column(name = "discount", nullable = false)
-    private Long discount;
-
-    @Column(name = "start_date", nullable = false)
-    private Instant startDate;
-
-    @Column(name = "end_date", nullable = false)
-    private Instant endDate;
-
-    @Column(name = "status", nullable = false, length = 50)
+    @Basic
+    @Column(name = "VOUCHER_ID")
+    private String voucherId;
+    @Basic
+    @Column(name = "STATUS")
     private String status;
-
-    @Lob
-    @Column(name = "note")
+    @Basic
+    @Column(name = "NOTE")
     private String note;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        VoucherCustomerEntity that = (VoucherCustomerEntity) o;
+        return Objects.equals(id, that.id) && Objects.equals(customerId, that.customerId) && Objects.equals(voucherId, that.voucherId) && Objects.equals(status, that.status) && Objects.equals(note, that.note);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, customerId, voucherId, status, note);
+    }
 }

@@ -18,12 +18,10 @@ public class DemoController {
     public String index() {
         return "views/layout_container";
     }
-    @GetMapping("/1")
+
+    @GetMapping("/index")
     public String index1() {
-        return "index";
+        return "views/layout_container";
     }
 
-    public static void main(String[] args) {
-
-    }
 }

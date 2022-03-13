@@ -1,5 +1,9 @@
 package com.techcam.service;
 
+import com.techcam.dto.response.brand.BrandResponse;
+
+import java.util.List;
+
 /**
  * Project_name : SMW_TECHCAM
  *
@@ -9,4 +13,5 @@ package com.techcam.service;
  * Description :
  */
 public interface IBrandService {
+    List<BrandResponse> getAllBrand();
 }

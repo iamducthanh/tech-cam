@@ -1,9 +1,10 @@
 package com.techcam.service.impl;
 
+import com.techcam.dto.request.StaffAddRequestDTO;
 import com.techcam.entity.StaffEntity;
 import com.techcam.util.CookieUtil;
 import com.techcam.util.SessionUtil;
-import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,6 +27,7 @@ import java.util.List;
 @Service
 //@RequiredArgsConstructor
 public class StaffDetailsServiceImpl implements UserDetailsService {
+ private final ModelMapper modelMapper = new ModelMapper();
  @Autowired
  private CookieUtil cookieUtil;
  @Autowired
@@ -43,6 +45,11 @@ public class StaffDetailsServiceImpl implements UserDetailsService {
   }
 
   sessionUtil.addObject("STAFF", staff);
+  if(staff.getCountLoginFalse() >= 5){
+   throw new UsernameNotFoundException("Tài khoản " + email + " đã đăng nhập sai quá 5 lần, vui lòng nhấn quên mật khẩu để xác nhận lại tài khoản!");
+  }
+  staff.setCountLoginFalse(staff.getCountLoginFalse() + 1);
+  staffService.addStaff(modelMapper.map(staff, StaffAddRequestDTO.class));
   System.out.println("Found staff: " + staff);
 
   List<String> roleNames = new ArrayList<>();
