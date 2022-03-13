@@ -151,7 +151,7 @@ public class CustomerService implements ICustomerService {
                 customerEntity.setAddress(customerRequest.getAddress());
                 customerEntity.setDateOfBirth(customerRequest.getDateOfBirth());
                 customerEntity.setFullName(customerRequest.getFullName());
-                customerEntity.setModifierDate(new Timestamp(new Date().getTime()));
+//                customerEntity.setModifierDate(new Timestamp(new Date().getTime()));
 
                 // todo còn update time chưa cập nhật người sửa người tạo
             }

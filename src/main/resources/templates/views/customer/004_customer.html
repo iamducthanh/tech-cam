@@ -4,31 +4,225 @@
       layout:decorate="~{layout/weblayout}"
       xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Thêm Khách Hàng</title>
+    <title>Quản lý Khách Hàng- TechCam</title>
+    <!-- SweetAlert2-->
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
-<body >
+<body>
 <div layout:fragment="content" class="container-fluid">
-    <table>
-        <thead>
-            <th>name</th>
-            <th>number</th>
-        </thead>
-        <tbody>
-            <td>Nguyen van a</td>
-            <td>1234</td>
-        </tbody>
-    </table>
+    <section class="row main-page">
+        <section class="col-2 mainLeft">
+            <h1 class="heading-page">Khách Hàng</h1>
+            <div class="filter-report">
+                <div class="boxLeft">
+                </div>
+                <div class="boxLeft">
+                    <h3 class="leftTitle">Trạng thái</h3>
+                    <div class="boxLeftC">
+                        <div class="form-group form-check">
+                            <input class="form-check-input" type="radio" name="status" id="statusAll" value="Tất cả" onchange="onStatusChange(this)" checked>
+                            <label class="form-check-label" for="statusAll">
+                                Tất cả
+                            </label>
+                        </div>
+                        <div class="form-group form-check">
+                            <input class="form-check-input" type="radio" name="status" id="statusActive" value="Đang hoạt động" onchange="onStatusChange(this)">
+                            <label class="form-check-label" for="statusActive">
+                                Đang hoạt động
+                            </label>
+                        </div>
+                        <div class="form-group form-check">
+                            <input class="form-check-input" type="radio" name="status" id="statusInactive" value="Ngừng hoạt động" onchange="onStatusChange(this)">
+                            <label class="form-check-label" for="statusInactive">
+                                Ngừng hoạt động
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="col-10 mainRight">
+            <div class="row justify-content-end">
+                <button type="button" class="btn btn-primary col-auto mb-3 waves-effect waves-light" data-bs-toggle="modal" data-bs-target=".modal-add-staff">
+                    <i class="fas fa-plus me-2"></i>Khách Hàng
+                </button>
+            </div>
+
+            <!-- Modal Add Staff -->
+            <div class="modal fade modal-add-staff" tabindex="-1" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title mt-0">Thêm Khánh Hàng</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form id="formAdd">
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-6 px-4">
+                                        <table class="table-borderless w-100">
+                                            <tr>
+                                                <th style="width: 140px"><label class="form-label" for="fullName">Họ và tên</label><span class="required"> *</span></th>
+                                                <td><input class="form-control" type="text" name="fullName" id="fullName" onblur="onType(this)"></td>
+                                            </tr>
+                                            <tr>
+                                                <th style="width: 140px;"><label for="email" class="form-label">Email</label><span class="required"> *</span></th>
+                                                <td><input type="email" name="email" id="email" class="form-control" onblur="onType(this)" placeholder="abc@email.com"></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-6 px-4">
+                                        <table class="table-borderless w-100">
+                                            <tr>
+                                                <th><label for="phoneNumber" class="form-label">Điện thoại</label><span class="required"> *</span></th>
+                                                <td><input type="number" name="phoneNumber" id="phoneNumber" class="form-control" onblur="onType(this)" placeholder="0323456789"></td>
+                                            </tr>
+                                            <tr>
+                                                <th><label for="address" class="form-label">Địa chỉ</label><span class="required"> *</span></th>
+                                                <td><input type="text" name="address" id="address" class="form-control" onblur="onType(this)"></td>
+                                            </tr>
+                                            <tr>
+                                                <th><label for="birthdate" class="form-label">Ngày sinh</label><span class="required"> *</span></th>
+                                                <td>
+                                                    <div class="input-daterange input-group" id="datepicker-dateOfBirth" data-date-format="dd/mm/yyyy" data-date-autoclose="true" data-provide="datepicker" data-date-container='#datepicker-dateOfBirth'>
+                                                        <input type="text" name="dateOfBirth"  id="birthdate" class="form-control" onblur="onType(this)" placeholder="dd/MM/yyyy" style="text-align:left;">
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="resetForm()">
+                                <i class="fas fa-ban me-2"></i>Đóng
+                            </button>
+                            <button type="button" class="btn btn-success" onclick="resetForm()">
+                                <i class="fa fa-trash me-2"></i>Làm mới
+                            </button>
+                            <button type="button" id="btnAdd" class="btn btn-primary waves-effect waves-light">
+                                <i class="fas fa-save pe-2"></i>Lưu
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!-- End Modal Add Staff -->
+
+            <table id="datatable" class="table table-striped table-hover table-bordered dt-responsive nowrap dataTable no-footer shadow">
+                <thead>
+<!--                <th><input type="checkbox" name="checkAll" id="checkAll" onclick="checkAllJquery('checkAll', 'check-item');"></th>-->
+                <th>Chức năng</th>
+                <th style="display: none">ID</th>
+                <th>Họ tên</th>
+                <th>Ngày sinh</th>
+                <th>Số điện thoại</th>
+                <th>Email</th>
+                <th>Địa chỉ</th>
+                </thead>
+                <tbody>
+                <tr th:each="item,index : ${customers}">
+<!--                    <td><input type="checkbox" class="check-item" th:value="${item.id}"></td>-->
+                    <td class="row" style="width: 100px;">
+                        <i class="col-4 fas fa-edit" style="color: darkblue;" title="Cập nhật" onclick="onBtnEdit(this)"></i>
+<!--                        -->
+<!--                        <i th:case="1" class="col-4 fas fa-lock-open" style="color: green;" title="Khoá " onclick="onBtnStatus(this)"></i>-->
+<!--                        <i class="col-4 fas fa-lock" style="color: red;" title="Mở khoá tài khoản" onclick="onBtnStatus(this)"></i>-->
+                        <i class="col-4 fas fa-user-times" style="color: red;" title="Xoá khách hàng" onclick="onBtnDelete(this)"></i>
+                    </td>
+                    <td style="display: none" th:text="${item.id}">Mã nhân viên</td>
+                    <td th:text="${item.fullName}">Họ tên</td>
+                    <td th:text="${#dates.format(item.dateOfBirth, 'dd/MM/yyyy')}">Ngày Sinh</td>
+                    <td th:text="${item.phoneNumber}">Số điện thoại</td>
+                    <td th:text="${item.email}">Email</td>
+                    <td th:text="${item.address}">Địa chỉ</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <!-- Modal Edit Staff -->
+            <div class="modal fade modal-edit-staff" tabindex="-1" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title mt-0">Cập nhật Khách Hàng</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form id="formEdit">
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-6 px-4">
+                                        <table class="table-borderless w-100">
+                                            <tr>
+                                                <th><label class="form-label" for="fullName-edit">Họ và tên</label><span class="required"> *</span></th>
+                                                <td><input class="form-control" type="text" name="fullName" id="fullName-edit" onblur="onType(this)"></td>
+                                            </tr>
+                                            <tr>
+                                                <th><label for="email-edit" class="form-label">Email</label><span class="required"> *</span></th>
+                                                <td><input type="email" name="email" id="email-edit" class="form-control" title=" sửa email"></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-6 px-4">
+                                        <table class="table-borderless w-100">
+                                            <tr>
+                                                <th><label for="phoneNumber-edit" class="form-label">Điện thoại</label><span class="required"> *</span></th>
+                                                <td><input type="number" name="phoneNumber" id="phoneNumber-edit" class="form-control" onblur="onType(this)" placeholder="0323456789"></td>
+                                            </tr>
+                                            <tr>
+                                                <th><label for="address-edit" class="form-label">Địa chỉ</label><span class="required"> *</span></th>
+                                                <td><input type="text" name="address" id="address-edit" class="form-control" onblur="onType(this)"></td>
+                                            </tr>
+                                            <tr>
+                                                <th><label for="birthdate-edit" class="form-label">Ngày sinh</label><span class="required"> *</span></th>
+                                                <td>
+                                                    <div class="input-daterange input-group" id="datepicker6" data-date-format="dd/mm/yyyy" data-date-autoclose="true" data-provide="datepicker" data-date-container='#datepicker6'>
+                                                        <input type="text" name="dateOfBirth"  id="birthdate-edit" class="form-control" onblur="onType(this)" placeholder="dd/MM/yyyy" style="text-align:left;">
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="id" id="id">
+                        </form>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="resetForm()">
+                                <i class="fas fa-ban me-2"></i>
+                                Đóng
+                            </button>
+                            <button type="button" class="btn btn-success" onclick="resetForm()">
+                                <i class="fa fa-trash me-2"></i>
+                                Làm mới
+                            </button>
+                            <button type="button" id="btnEdit" class="btn btn-primary waves-effect waves-light">
+                                <i class="fas fa-save pe-2"></i>
+                                Lưu
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!-- End Modal Edit Staff -->
+        </section>
+    </section>
 </div>
 
-<!-- JAVASCRIPT -->
 <script layout:fragment="script" >
+
     $(document).ready(function () {
         $('.roleFilter').chosen();
 
         hoverIconLock();
     });
-
+    var idEdit ="";
     function hoverIconLock() {
         $('.fa-lock-open').hover(function () {
             $(this).removeClass('fa-lock-open').addClass('fa-lock').css('color', 'red');
@@ -89,18 +283,14 @@
     $('form').on('blur', 'input[type=number]', function (e) {
         $(this).off('wheel.disableScroll')
     })
-</script>
 
-<script>
     // event filter table by status
     function onStatusChange(element) {
         const value = $(element).val();
-        console.log(value);
         const tagAll = $('#datatable tbody tr');
         const tag = $('tr td').filter(function() {
             return $(this).text()===value;
         });
-        console.log(tag);
 
         if(value==='Tất cả') {
             tagAll.show();
@@ -109,6 +299,7 @@
             tag.parent().show();
         }
     }
+
 
     // event reset form
     function resetForm() {
@@ -120,11 +311,14 @@
 
     // Submit formAdd
     $('#btnAdd').click(function () {
+        alert("aaa")
         let data = {};
         let formData = $('#formAdd').serializeArray();
         $.each(formData, function (i, v) {
             data["" + v.name + ""] = v.value;
         });
+        data["dateOfBirth"] = moment(formData.dateOfBirth).format('YYYY-MM-DD');
+        data["username"] = generateUsername(convertViToEn(data["fullName"])) + moment(formData.dateOfBirth).format('DDMM');
 
         if(validateForm('add')) {
             addStaff(data);
@@ -146,7 +340,7 @@
     // Validation formAdd
     function validateForm(type) {
         let errorMessage = '';
-        const fullName = (type==='add') ? $('#fullName') : $('#fullName-edit');
+        const fullName = (type === 'add') ? $('#fullName') : $('#fullName-edit');
         let flag = true;
 
         if (fullName.val() === '') {
@@ -154,24 +348,15 @@
             flag = false;
         }
 
-        const email = (type==='add') ? $('#email') : $('#email-edit');
+        const email = (type === 'add') ? $('#email') : $('#email-edit');
         const patternEmail = /^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b$/i;
-        if (email.val() === '') {
-            email.addClass('error');
-            flag = false;
-        } else if (!patternEmail.test(email.val())) {
+            if(email.val() != '' && !patternEmail.test(email.val())) {
             email.addClass('error');
             errorMessage += 'Email không hợp lệ!\n';
             flag = false;
         }
 
-        const role = (type==='add') ? $('#role') : $('#role-edit');
-        if (role.val() === null) {
-            role.addClass('error');
-            flag = false;
-        }
-
-        const phoneNumber = (type==='add') ? $('#phoneNumber') : $('#phoneNumber-edit');
+        const phoneNumber = (type === 'add') ? $('#phoneNumber') : $('#phoneNumber-edit');
         const patternPhone = /^(84|0[3|5|7|8|9])+([0-9]{8})\b$/i;
         if (phoneNumber.val() === '') {
             phoneNumber.addClass('error');
@@ -182,14 +367,9 @@
             flag = false;
         }
 
-        const address = (type==='add') ? $('#address') : $('#address-edit');
+        const address = (type === 'add') ? $('#address') : $('#address-edit');
         if (address.val() === '') {
             address.addClass('error');
-            flag = false;
-        }
-        const datepicker = (type==='add') ? $('#datepicker') : $('#birthdate-edit');
-        if (datepicker.val() === '') {
-            datepicker.addClass('error');
             flag = false;
         }
 
@@ -218,7 +398,7 @@
     //API add Staff
     function addStaff(data) {
         $.ajax({
-            url: '/api/staff',
+            url: 'api/v1/customer/registration-customer',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
@@ -238,9 +418,10 @@
                 Toast.fire({
                     icon: 'success',
                     title: 'Thêm thành công'
-                }).then(() => window.location.href = "/staff");
+                }).then(() => window.location.href = "/customer");
             },
             error: function (error) {
+                console.log(error.responseJSON)
                 const Toast = Swal.mixin({
                     toast: true,
                     position: 'top-end',
@@ -254,7 +435,7 @@
                 })
                 Toast.fire({
                     icon: 'error',
-                    title: "Email đã tồn tại!"
+                    title: error.responseJSON.vn,
                     // title: 'Lỗi khi thêm mới'
                 })
             }
@@ -269,6 +450,7 @@
             data["" + v.name + ""] = v.value;
         });
         data["dateOfBirth"] = moment(formData.dateOfBirth).format('YYYY-MM-DD')
+        data["id"]=idEdit;
 
         if(validateForm('edit')) {
             editStaff(data);
@@ -280,8 +462,8 @@
     //API edit Staff
     function editStaff(data) {
         $.ajax({
-            url: '/api/staff',
-            type: 'PUT',
+            url: 'api/v1/customer/update-customer',
+            type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
             dataType: 'json',
@@ -300,9 +482,10 @@
                 Toast.fire({
                     icon: 'success',
                     title: 'Cập nhật thành công'
-                }).then(() => window.location.href = "/staff");
+                }).then(() => window.location.href = "/customer");
             },
             error: function (error) {
+                console.log(error.responseJSON)
                 const Toast = Swal.mixin({
                     toast: true,
                     position: 'top-end',
@@ -316,33 +499,47 @@
                 })
                 Toast.fire({
                     icon: 'error',
-                    title: "Lỗi hệ thống!\nVui lòng thử lại sau"
+                    title: error.responseJSON.vn,
+                    // title: 'Lỗi khi thêm mới'
                 })
             }
         })
     }
 
     function onBtnEdit (element) {
-        const tag = $(element).parent().parent().find('.check-item');
+        const id =element.parentElement.parentElement.children[1].innerText;
         $.ajax({
-            url: `/api/staff/${tag.val()}`,
+            url: `api/v1/customer/find-by-id/${id}`,
             type: 'GET',
             contentType: 'application/json',
             success: function (result) {
-                $('#id').val(result.id);
+                console.log(result);
+                idEdit=result.id
                 $('#fullName-edit').val(result.fullName);
-                $('#staffCode-edit').val(result.staffCode);
                 $('#email-edit').val(result.email);
-                $('#role-edit').val(result.role);
                 $('#phoneNumber-edit').val(result.phoneNumber);
                 $('#address-edit').val(result.address);
                 $('#birthdate-edit').val(moment(result.dateOfBirth).format('DD/MM/YYYY'));
-                $('#note-edit').val(result.note);
-
                 $('.modal-edit-staff').modal('show');
             },
             error: function (error) {
-                console.log(error);
+                console.log(error.responseJSON)
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+                Toast.fire({
+                    icon: 'error',
+                    title: error.responseJSON.vn,
+                    // title: 'Lỗi khi thêm mới'
+                })
             }
         })
     }
@@ -351,6 +548,7 @@
         const tag = $(element).parent().parent();
         const lock = $(element).hasClass('fa-lock');
         const status = lock ? "0" : "1";
+        const length_of_row = $('table#datatable tr td').length;
         $.ajax({
             url: `/api/staff/status/${tag.find('.check-item').val()}/${status}`,
             type: 'PUT',
@@ -363,10 +561,12 @@
                 ).then(() => {
                     if (lock) {
                         $(element).removeClass('fa-lock-open').addClass('fa-lock').css('color', 'red');
-                        tag.children().eq(12).text("Ngừng hoạt động");
+                        tag.children().eq(length_of_row - 1).text("Ngừng hoạt động");
+                        tag.children().eq(length_of_row - 1).css('color', 'red');
                     } else {
                         $(element).removeClass('fa-lock').addClass('fa-lock-open').css('color', 'green');
-                        tag.children().eq(12).text("Đang hoạt động");
+                        tag.children().eq(length_of_row - 1).text("Đang hoạt động");
+                        tag.children().eq(length_of_row - 1).css('color', 'green');
                     }
 
                     hoverIconLock();
@@ -383,50 +583,88 @@
     }
 
     function onBtnDelete (element) {
-        const tag = $(element).parent().parent();
+       if(!window.confirm("Bạn có chắc chắn muốn xóa không!")){
+           return
+       }
+        const id =element.parentElement.parentElement.children[1].innerText;
         $.ajax({
-            url: `/api/staff/delete/${tag.find('.check-item').val()}`,
-            type: 'PUT',
+            url: `api/v1/customer/delete-customer/${id}`,
+            type: 'DELETE',
             contentType: 'application/json',
             success: function (result) {
-                const swalWithBootstrapButtons = Swal.mixin({
-                    customClass: {
-                        confirmButton: 'btn btn-success',
-                        cancelButton: 'btn btn-danger'
-                    },
-                    buttonsStyling: false
-                })
-
-                swalWithBootstrapButtons.fire({
-                    title: `Bạn chắc chắn muốn xoá nhân viên có mã ${tag.children().eq(3).text()} chứ?`,
-                    text: "Chú ý không thể hoàn tác sau khi thực hiện tác vụ này!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Vâng, tôi chắc chắn!',
-                    cancelButtonText: 'Không, huỷ bỏ tác vụ!',
-                    reverseButtons: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        swalWithBootstrapButtons.fire(
-                            'Đã xoá thành công!',
-                            'Dữ liệu đã bị xoá.',
-                            'success'
-                        ).then(() => window.location.href = "/staff");
-                    } else if (
-                        result.dismiss === Swal.DismissReason.cancel
-                    ) {
-                        swalWithBootstrapButtons.fire(
-                            'Đã huỷ tác vụ',
-                            'Dữ liệu được bảo toàn :)',
-                            'error'
-                        )
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
                     }
                 })
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Xóa thành công'
+                }).then(() => window.location.href = "/customer");
+
             },
             error: function (error) {
-                console.log(error);
+                console.log(error.responseJSON)
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+                Toast.fire({
+                    icon: 'error',
+                    title: error.responseJSON.vn,
+                    // title: 'Lỗi khi thêm mới'
+                })
             }
         })
+    }
+
+    // JavaScript: Chuyển tiếng Việt có dấu sang không dấu
+    function convertViToEn(str, toUpperCase = false) {
+        str = str.toLowerCase();
+        str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+        str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+        str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+        str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+        str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+        str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+        str = str.replace(/đ/g, "d");
+        // Some system encode vietnamese combining accent as individual utf-8 characters
+        str = str.replace(/\u0300|\u0301|\u0303|\u0309|\u0323/g, ""); // Huyền sắc hỏi ngã nặng
+        str = str.replace(/\u02C6|\u0306|\u031B/g, ""); // Â, Ê, Ă, Ơ, Ư
+
+        return toUpperCase ? str.toUpperCase() : str;
+    }
+
+    /**
+     * Generate Username from fullname
+     */
+    function generateUsername(str) {
+        //Split to array of words
+        let arr = str.split(' ');
+        let username = arr[arr.length - 1];
+
+        // Remove firstname from array of fullname
+        arr.pop();
+
+        // Get the First Letter of each String
+        arr.forEach(e => username+=e.charAt(0));
+        if (arr.length === 1) {
+            return arr[0];
+        }
+        return username;
     }
 </script>
 

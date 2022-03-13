@@ -1,10 +1,8 @@
 package com.techcam.exception;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.apache.catalina.connector.Response;
+import org.springframework.stereotype.Component;
 
 
 /**
@@ -20,7 +18,7 @@ import org.apache.catalina.connector.Response;
 @EqualsAndHashCode(callSuper = true)
 public class TechCamExp extends RuntimeException {
 
-    private ErrorMessage errorMessage;
+    private final ErrorMessage errorMessage;
 
     public TechCamExp(String errorCode) {
         this.errorMessage = ErrorMessageLoader.getMessage(errorCode);

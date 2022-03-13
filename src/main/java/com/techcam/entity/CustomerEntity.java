@@ -2,70 +2,32 @@ package com.techcam.entity;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.sql.Timestamp;
-import java.util.Objects;
+
 
 /**
- * @author DucBV
- * @version 1.0
- * @since 8.3.2022
+ * Description:
+ *
+ * @author: POLY_DuyDVPH12712
+ * @version: 1.0
+ * @since: 3/11/2022
+ * Project_name: Tech-cam
  */
+
 @Entity
 @Table(name = "customer", schema = "poly_techcam", catalog = "")
 public class CustomerEntity {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Id
-    @Column(name = "ID")
     private String id;
-    @Basic
-    @Column(name = "FULL_NAME")
     private String fullName;
-    @Basic
-    @Column(name = "PHONE_NUMBER")
     private String phoneNumber;
-    @Basic
-    @Column(name = "EMAIL")
     private String email;
-    @Basic
-    @Column(name = "ADDRESS")
     private String address;
-    @Basic
-    @Column(name = "IDENTITY_NUMBER")
-    private String identityNumber;
-    @Basic
-    @Column(name = "AVATAR")
-    private String avatar;
-    @Basic
-    @Column(name = "ROLE")
-    private String role;
-    @Basic
-    @Column(name = "DATE_OF_BIRTH")
     private Date dateOfBirth;
-    @Basic
-    @Column(name = "COUNT_LOGIN_FALSE")
-    private int countLoginFalse;
-    @Basic
-    @Column(name = "STATUS")
     private String status;
-    @Basic
-    @Column(name = "NOTE")
-    private String note;
-    @Basic
-    @Column(name = "CREATE_DATE")
-    private Timestamp createDate;
-    @Basic
-    @Column(name = "MODIFIER_DATE")
-    private Timestamp modifierDate;
-    @Basic
-    @Column(name = "CREATE_BY")
-    private String createBy;
-    @Basic
-    @Column(name = "MODIFIER_BY")
+    private Date createDate;
     private String modifierBy;
-    @Basic
-    @Column(name = "DELETE_FLAG")
-    private boolean deleteFlag;
 
+    @Id
+    @Column(name = "id")
     public String getId() {
         return id;
     }
@@ -74,6 +36,8 @@ public class CustomerEntity {
         this.id = id;
     }
 
+    @Basic
+    @Column(name = "full_name")
     public String getFullName() {
         return fullName;
     }
@@ -82,6 +46,8 @@ public class CustomerEntity {
         this.fullName = fullName;
     }
 
+    @Basic
+    @Column(name = "phone_number")
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -90,6 +56,8 @@ public class CustomerEntity {
         this.phoneNumber = phoneNumber;
     }
 
+    @Basic
+    @Column(name = "email")
     public String getEmail() {
         return email;
     }
@@ -98,6 +66,8 @@ public class CustomerEntity {
         this.email = email;
     }
 
+    @Basic
+    @Column(name = "address")
     public String getAddress() {
         return address;
     }
@@ -106,30 +76,8 @@ public class CustomerEntity {
         this.address = address;
     }
 
-    public String getIdentityNumber() {
-        return identityNumber;
-    }
-
-    public void setIdentityNumber(String identityNumber) {
-        this.identityNumber = identityNumber;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
+    @Basic
+    @Column(name = "date_of_birth")
     public Date getDateOfBirth() {
         return dateOfBirth;
     }
@@ -138,14 +86,8 @@ public class CustomerEntity {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public int getCountLoginFalse() {
-        return countLoginFalse;
-    }
-
-    public void setCountLoginFalse(int countLoginFalse) {
-        this.countLoginFalse = countLoginFalse;
-    }
-
+    @Basic
+    @Column(name = "status")
     public String getStatus() {
         return status;
     }
@@ -154,38 +96,18 @@ public class CustomerEntity {
         this.status = status;
     }
 
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
-    }
-
-    public Timestamp getCreateDate() {
+    @Basic
+    @Column(name = "create_date")
+    public Date getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Timestamp createDate) {
+    public void setCreateDate(Date createDate) {
         this.createDate = createDate;
     }
 
-    public Timestamp getModifierDate() {
-        return modifierDate;
-    }
-
-    public void setModifierDate(Timestamp modifierDate) {
-        this.modifierDate = modifierDate;
-    }
-
-    public String getCreateBy() {
-        return createBy;
-    }
-
-    public void setCreateBy(String createBy) {
-        this.createBy = createBy;
-    }
-
+    @Basic
+    @Column(name = "modifier_by")
     public String getModifierBy() {
         return modifierBy;
     }
@@ -194,24 +116,4 @@ public class CustomerEntity {
         this.modifierBy = modifierBy;
     }
 
-    public boolean isDeleteFlag() {
-        return deleteFlag;
-    }
-
-    public void setDeleteFlag(boolean deleteFlag) {
-        this.deleteFlag = deleteFlag;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        CustomerEntity that = (CustomerEntity) o;
-        return countLoginFalse == that.countLoginFalse && deleteFlag == that.deleteFlag && Objects.equals(id, that.id) && Objects.equals(fullName, that.fullName) && Objects.equals(phoneNumber, that.phoneNumber) && Objects.equals(email, that.email) && Objects.equals(address, that.address) && Objects.equals(identityNumber, that.identityNumber) && Objects.equals(avatar, that.avatar) && Objects.equals(role, that.role) && Objects.equals(dateOfBirth, that.dateOfBirth) && Objects.equals(status, that.status) && Objects.equals(note, that.note) && Objects.equals(createDate, that.createDate) && Objects.equals(modifierDate, that.modifierDate) && Objects.equals(createBy, that.createBy) && Objects.equals(modifierBy, that.modifierBy);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, fullName, phoneNumber, email, address, identityNumber, avatar, role, dateOfBirth, countLoginFalse, status, note, createDate, modifierDate, createBy, modifierBy, deleteFlag);
-    }
 }
