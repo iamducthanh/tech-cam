@@ -99,7 +99,7 @@ function sweetSuccess(title, message) {
     swal(title, message, "success")
 }
 
-function sweetConfirm(title, message, textBtn, titleSuccess, messageSuccess) {
+function sweetConfirm(title, message, textBtn, func) {
     swal({
         title: title,
         text: message,
@@ -108,8 +108,10 @@ function sweetConfirm(title, message, textBtn, titleSuccess, messageSuccess) {
         confirmButtonColor: "#DD6B55",
         confirmButtonText: textBtn,
         closeOnConfirm: !1
-    }, function () {
-        swal(titleSuccess, messageSuccess, "success")
+    }, function (t) {
+        if (t) {
+            func();
+        }
     })
 }
 
