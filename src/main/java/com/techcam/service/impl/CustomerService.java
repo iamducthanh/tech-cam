@@ -110,6 +110,7 @@ public class CustomerService implements ICustomerService {
                 customerEntity = modelMapper.map(customerRequest, CustomerEntity.class);
                 customerEntity.setId(UUID.randomUUID().toString());
                 customerEntity.setStatus(CustomerStatus.ON.name());
+                customerEntity.setCreateDate(new Date());
                 // todo thiếu  tên người thêm lấy sau.
                 customerEntity = customerRepo.save(customerEntity);
                 customerResponse.setSaved(true);
