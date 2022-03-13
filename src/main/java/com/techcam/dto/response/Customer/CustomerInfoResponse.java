@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * Description:
@@ -28,5 +29,5 @@ public class CustomerInfoResponse {
     private String phoneNumber;
     private String email;
     private String address;
-    private LocalDate dateOfBirth;
+    private Date dateOfBirth;
 }
