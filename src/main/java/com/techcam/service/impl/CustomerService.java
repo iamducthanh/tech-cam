@@ -33,9 +33,10 @@ import java.util.*;
 public class CustomerService implements ICustomerService {
     @Autowired
     private ICustomerRepo customerRepo;
-    private final ModelMapper modelMapper = new ModelMapper();
+    private final ModelMapper MODEL_MAPPER = new ModelMapper();
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomerService.class);
     private static final String NUMBER = "[0-9]*";
+
 
     @Override
     public List<CustomerInfoResponse> getCustomers() {
@@ -44,7 +45,20 @@ public class CustomerService implements ICustomerService {
         }.getType();
         List<CustomerEntity> customerEntities = customerRepo.findAllByStatus(CustomerStatus.ON.name());
         if (!CollectionUtils.isEmpty(customerEntities)) {
-            customerInfoResponses = modelMapper.map(customerEntities, customersType);
+            customerInfoResponses = MODEL_MAPPER.map(customerEntities, customersType);
+        }
+        return customerInfoResponses;
+    }
+
+    @Override
+    public List<CustomerInfoResponse> getCustomersByCreateDate(Date startDate, Date endDate) {
+        System.out.println("1111111111111111");
+        List<CustomerInfoResponse> customerInfoResponses = new ArrayList<>();
+        Type customersType = new TypeToken<List<CustomerInfoResponse>>() {
+        }.getType();
+        List<CustomerEntity> customerEntities = customerRepo.findAllByCreateDateBetweenAndStatus(startDate,endDate,CustomerStatus.ON.name());
+        if(!CollectionUtils.isEmpty(customerEntities)){
+            customerInfoResponses = MODEL_MAPPER.map(customerEntities,customersType);
         }
         return customerInfoResponses;
     }
@@ -61,7 +75,7 @@ public class CustomerService implements ICustomerService {
             customerEntities = customerRepo.findAllByPhoneNumberStartsWithAndStatus(keyWord, CustomerStatus.ON.name());
         }
         if (!CollectionUtils.isEmpty(customerEntities)) {
-            customerInfoResponses = modelMapper.map(customerEntities, customersType);
+            customerInfoResponses = MODEL_MAPPER.map(customerEntities, customersType);
         }
         return customerInfoResponses;
     }
@@ -72,7 +86,7 @@ public class CustomerService implements ICustomerService {
         if (Objects.isNull(customerEntity)) {
             return null;
         }
-        return  modelMapper.map(customerEntity, CustomerInfoResponse.class);
+        return  MODEL_MAPPER.map(customerEntity, CustomerInfoResponse.class);
     }
 
     @Override
@@ -81,7 +95,7 @@ public class CustomerService implements ICustomerService {
         if (Objects.isNull(customerEntity)) {
             return null;
         }
-        return  modelMapper.map(customerEntity, CustomerInfoResponse.class);
+        return  MODEL_MAPPER.map(customerEntity, CustomerInfoResponse.class);
     }
 
     @Override
@@ -90,7 +104,7 @@ public class CustomerService implements ICustomerService {
         if (Objects.isNull(customerEntity)) {
             return null;
         }
-        return  modelMapper.map(customerEntity, CustomerInfoResponse.class);
+        return  MODEL_MAPPER.map(customerEntity, CustomerInfoResponse.class);
     }
 
     @Override
@@ -107,7 +121,7 @@ public class CustomerService implements ICustomerService {
             customerResponse.setExisting(true);
         } else {
             try {
-                customerEntity = modelMapper.map(customerRequest, CustomerEntity.class);
+                customerEntity = MODEL_MAPPER.map(customerRequest, CustomerEntity.class);
                 customerEntity.setId(UUID.randomUUID().toString());
                 customerEntity.setStatus(CustomerStatus.ON.name());
                 customerEntity.setCreateDate(new Date());
@@ -115,7 +129,7 @@ public class CustomerService implements ICustomerService {
                 customerEntity = customerRepo.save(customerEntity);
                 customerResponse.setSaved(true);
                 customerResponse.setExisting(false);
-                customerResponse.setCustomerInfoResponse(modelMapper.map(customerEntity, CustomerInfoResponse.class));
+                customerResponse.setCustomerInfoResponse(MODEL_MAPPER.map(customerEntity, CustomerInfoResponse.class));
             } catch (Exception e) {
                 LOGGER.error("Save customer fail Exception {}", e);
             }
@@ -159,7 +173,7 @@ public class CustomerService implements ICustomerService {
             try {
                 customerEntity = customerRepo.save(customerEntity);
                 customerResponse.setSaved(true);
-                customerResponse.setCustomerInfoResponse(modelMapper.map(customerEntity, CustomerInfoResponse.class));
+                customerResponse.setCustomerInfoResponse(MODEL_MAPPER.map(customerEntity, CustomerInfoResponse.class));
             } catch (Exception e) {
                 LOGGER.error("Update Customer fail Exception {} ", e);
             }

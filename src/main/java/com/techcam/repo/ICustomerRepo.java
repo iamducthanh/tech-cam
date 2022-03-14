@@ -2,8 +2,10 @@ package com.techcam.repo;
 
 import com.techcam.entity.CustomerEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,6 +23,8 @@ public interface ICustomerRepo extends JpaRepository<CustomerEntity, String> {
     List<CustomerEntity> findAllByPhoneNumberStartsWithAndStatus(String phoneNumber, String status);
 
     List<CustomerEntity> findAllByFullNameStartingWithAndStatus(String fullName, String status);
+    @Query("select o from CustomerEntity o where o.createDate >= ?1 and o.createDate <= ?2 and o.status = ?3")
+    List<CustomerEntity> findAllByCreateDateBetweenAndStatus(Date startDate, Date endDate, String status);
 
     CustomerEntity findByEmailAndStatus(String email, String status);
 
