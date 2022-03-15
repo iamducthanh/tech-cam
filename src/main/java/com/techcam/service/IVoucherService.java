@@ -26,4 +26,6 @@ public interface IVoucherService {
     String activeVoucher(String id);
 
     List<String> findAllIdCustomerByVoucherId(String voucherId);
+
+    VoucherResponse getById(String voucherId);
 }

@@ -3,6 +3,8 @@ package com.techcam.repo;
 import com.techcam.entity.ImagesEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 /**
  * Description :
  *
@@ -13,4 +15,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 
 public interface IImageRepo extends JpaRepository<ImagesEntity, String> {
+    List<ImagesEntity> findAllByProductIdAndDeleteFlagIsFalse(String productId);
 }
