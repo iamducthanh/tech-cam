@@ -16,8 +16,6 @@
             <h1 class="heading-page">Khách Hàng</h1>
             <div class="filter-report">
                 <div class="boxLeft">
-                </div>
-                <div class="boxLeft">
                     <h3 class="leftTitle">Trạng thái</h3>
                     <div class="boxLeftC">
                         <div class="form-group form-check">
@@ -59,13 +57,14 @@
                                 Tùy chọn
                             </label>
                         </div>
-                        <div class="form-group form-check" id="tuyChon"  th:style="${selectCustomer}==4 ?'display: block' : 'display:none'" >
-                           <input type="date" id="startDate" th:value="${startDate}" >
+                        <div class="form-group form-check" id="tuyChon"
+                             th:style="${selectCustomer}==4 ?'display: block' : 'display:none'">
+                            <input type="date" id="startDate" th:value="${startDate}">
                             <label class="form-check-label" for="startDate">
                                 Ngày bắt Đầu
                             </label>
                             <hr>
-                            <input type="date" id="endDate" th:value="${endDate}" >
+                            <input type="date" id="endDate" th:value="${endDate}">
                             <label class="form-check-label" for="endDate">
                                 Ngày Kết thúc
                             </label>
@@ -164,40 +163,44 @@
                 <!-- /.modal-dialog -->
             </div>
             <!-- End Modal Add Staff -->
-
-            <table id="datatable"
-                   class="table table-striped table-hover table-bordered dt-responsive nowrap dataTable no-footer shadow">
-                <thead>
-                <!--                <th><input type="checkbox" name="checkAll" id="checkAll" onclick="checkAllJquery('checkAll', 'check-item');"></th>-->
-                <th>Chức năng</th>
-                <th style="display: none">ID</th>
-                <th>Họ tên</th>
-                <th>Ngày sinh</th>
-                <th>Số điện thoại</th>
-                <th>Email</th>
-                <th>Địa chỉ</th>
-                </thead>
-                <tbody>
-                <tr th:each="item,index : ${customers}">
-                    <!--                    <td><input type="checkbox" class="check-item" th:value="${item.id}"></td>-->
-                    <td class="row" style="width: 100px;">
-                        <i class="col-4 fas fa-edit" style="color: darkblue;" title="Cập nhật"
-                           onclick="onBtnEdit(this)"></i>
-                        <!--                        -->
-                        <!--                        <i th:case="1" class="col-4 fas fa-lock-open" style="color: green;" title="Khoá " onclick="onBtnStatus(this)"></i>-->
-                        <!--                        <i class="col-4 fas fa-lock" style="color: red;" title="Mở khoá tài khoản" onclick="onBtnStatus(this)"></i>-->
-                        <i class="col-4 fas fa-user-times" style="color: red;" title="Xoá khách hàng"
-                           onclick="onBtnDelete(this)"></i>
-                    </td>
-                    <td style="display: none" th:text="${item.id}">Mã nhân viên</td>
-                    <td th:text="${item.fullName}">Họ tên</td>
-                    <td th:text="${#dates.format(item.dateOfBirth, 'dd/MM/yyyy')}">Ngày Sinh</td>
-                    <td th:text="${item.phoneNumber}">Số điện thoại</td>
-                    <td th:text="${item.email}">Email</td>
-                    <td th:text="${item.address}">Địa chỉ</td>
-                </tr>
-                </tbody>
-            </table>
+            <div class="card">
+                <div class="card-body">
+                    <table id="datatable"
+                           class="table table-striped table-hover table-bordered dt-responsive nowrap dataTable no-footer shadow"
+                           style="width: 100%">
+                        <thead>
+                        <!--                <th><input type="checkbox" name="checkAll" id="checkAll" onclick="checkAllJquery('checkAll', 'check-item');"></th>-->
+                        <th>Chức năng</th>
+                        <th style="display: none">ID</th>
+                        <th>Họ tên</th>
+                        <th>Ngày sinh</th>
+                        <th>Số điện thoại</th>
+                        <th>Email</th>
+                        <th>Địa chỉ</th>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item,index : ${customers}">
+                            <!--                    <td><input type="checkbox" class="check-item" th:value="${item.id}"></td>-->
+                            <td class="row" style="width: 100px;">
+                                <i class="col-4 fas fa-edit" style="color: darkblue;" title="Cập nhật"
+                                   onclick="onBtnEdit(this)"></i>
+                                <!--                        -->
+                                <!--                        <i th:case="1" class="col-4 fas fa-lock-open" style="color: green;" title="Khoá " onclick="onBtnStatus(this)"></i>-->
+                                <!--                        <i class="col-4 fas fa-lock" style="color: red;" title="Mở khoá tài khoản" onclick="onBtnStatus(this)"></i>-->
+                                <i class="col-4 fas fa-user-times" style="color: red;" title="Xoá khách hàng"
+                                   onclick="onBtnDelete(this)"></i>
+                            </td>
+                            <td style="display: none" th:text="${item.id}">Mã nhân viên</td>
+                            <td th:text="${item.fullName}">Họ tên</td>
+                            <td th:text="${#dates.format(item.dateOfBirth, 'dd/MM/yyyy')}">Ngày Sinh</td>
+                            <td th:text="${item.phoneNumber}">Số điện thoại</td>
+                            <td th:text="${item.email}">Email</td>
+                            <td th:text="${item.address}">Địa chỉ</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
             <!-- Modal Edit Staff -->
             <div class="modal fade modal-edit-staff" tabindex="-1" style="display: none;" aria-hidden="true">
@@ -363,15 +366,15 @@
         }
         var endDate = new Date();
         var startDate = new Date();
-        if (value==4){
-            startDate= document.getElementById("startDate").value
-            endDate=document.getElementById("endDate").value
+        if (value == 4) {
+            startDate = document.getElementById("startDate").value
+            endDate = document.getElementById("endDate").value
             window.location.href = "/customer/search?startDate=" +
                 startDate + "&&endDate=" + endDate +
                 "&&selectCustomer=" + value;
         }
         window.location.href = "/customer/search?startDate=" +
-            GetFormattedDate(startDate,value,0) + "&&endDate=" + GetFormattedDate(endDate,value,1) +
+            GetFormattedDate(startDate, value, 0) + "&&endDate=" + GetFormattedDate(endDate, value, 1) +
             "&&selectCustomer=" + value;
     }
 
@@ -379,17 +382,17 @@
         var month = 0;
         var year = 0;
         var day = 0;
-        if (value == 2 && field ==0) {
+        if (value == 2 && field == 0) {
             month = todayTime.getUTCMonth();
         } else {
             month = todayTime.getUTCMonth() + 1;
         }
-        if (value == 1 && field ==0) {
+        if (value == 1 && field == 0) {
             day = todayTime.getUTCDate() - 7;
         } else {
             day = todayTime.getUTCDate();
         }
-        if (value == 3 && field ==0) {
+        if (value == 3 && field == 0) {
             var year = todayTime.getUTCFullYear() - 1;
         } else {
             var year = todayTime.getUTCFullYear();
@@ -493,7 +496,7 @@
     //API add Staff
     function addStaff(data) {
         $.ajax({
-            url: 'api/v1/customer/registration-customer',
+            url: 'http://localhost:8080/api/v1/customer/registration-customer',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
@@ -557,7 +560,7 @@
     //API edit Staff
     function editStaff(data) {
         $.ajax({
-            url: 'api/v1/customer/update-customer',
+            url: 'http://localhost:8080/api/v1/customer/update-customer',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
@@ -603,8 +606,9 @@
 
     function onBtnEdit(element) {
         const id = element.parentElement.parentElement.children[1].innerText;
+        var url = "http://localhost:8080/api/v1/customer/find-by-id/" + id;
         $.ajax({
-            url: `api/v1/customer/find-by-id/${id}`,
+            url: url,
             type: 'GET',
             contentType: 'application/json',
             success: function (result) {
@@ -678,57 +682,86 @@
     }
 
     function onBtnDelete(element) {
-        if (!window.confirm("Bạn có chắc chắn muốn xóa không!")) {
-            return
-        }
-        const id = element.parentElement.parentElement.children[1].innerText;
-        $.ajax({
-            url: `api/v1/customer/delete-customer/${id}`,
-            type: 'DELETE',
-            contentType: 'application/json',
-            success: function (result) {
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                    }
-                })
-                Toast.fire({
-                    icon: 'success',
-                    title: 'Xóa thành công'
-                }).then(() => window.location.href = "/customer");
-
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
             },
-            error: function (error) {
-                console.log(error.responseJSON)
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+            buttonsStyling: false
+        })
+
+        swalWithBootstrapButtons.fire({
+            title: 'Bạn chắc chắn muốn xoá khách hàng chứ?',
+            text: "Chú ý không thể hoàn tác sau khi thực hiện tác vụ này!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Vâng, tôi chắc chắn!',
+            cancelButtonText: 'Không, huỷ bỏ tác vụ!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const id = element.parentElement.parentElement.children[1].innerText;
+                var url = "http://localhost:8080/api/v1/customer/delete-customer/" + id;
+                $.ajax({
+                    url: url,
+                    type: 'DELETE',
+                    contentType: 'application/json',
+                    success: function (result) {
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        })
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Xóa thành công'
+                        }).then(() => window.location.href = "/customer");
+
+                    },
+                    error: function (error) {
+                        console.log(error.responseJSON)
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        })
+                        Toast.fire({
+                            icon: 'error',
+                            title: error.responseJSON.vn,
+                            // title: 'Lỗi khi thêm mới'
+                        })
                     }
                 })
-                Toast.fire({
-                    icon: 'error',
-                    title: error.responseJSON.vn,
-                    // title: 'Lỗi khi thêm mới'
-                })
+            } else if (
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Đã huỷ tác vụ',
+                    'Dữ liệu được bảo toàn :)',
+                    'error'
+                )
             }
         })
-    }
-    function onStatusTuyChon(){
 
-        document.getElementById("tuyChon").style.display="block";
     }
+
+    function onStatusTuyChon() {
+
+        document.getElementById("tuyChon").style.display = "block";
+    }
+
     // JavaScript: Chuyển tiếng Việt có dấu sang không dấu
     function convertViToEn(str, toUpperCase = false) {
         str = str.toLowerCase();
