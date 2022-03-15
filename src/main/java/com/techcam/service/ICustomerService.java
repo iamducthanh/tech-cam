@@ -4,6 +4,7 @@ import com.techcam.dto.request.Customer.CustomerRequest;
 import com.techcam.dto.response.Customer.CustomerInfoResponse;
 import com.techcam.dto.response.Customer.CustomerServiceResponse;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -16,6 +17,8 @@ import java.util.List;
  */
 public interface ICustomerService {
     List<CustomerInfoResponse> getCustomers();
+
+    List<CustomerInfoResponse> getCustomersByCreateDate(Date startDate, Date endDate);
 
     List<CustomerInfoResponse> findCustomers(String keyWord);
 
