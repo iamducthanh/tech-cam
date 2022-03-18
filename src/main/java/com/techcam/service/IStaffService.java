@@ -46,6 +46,12 @@ public interface IStaffService {
     // Block/Unblock staff by status
     boolean changeStatusStaff(String id, String status);
 
+    // Find by email
+    Integer findByEmail(String email);
+
+    // Find by phone number
+    Integer findByPhone(String phoneNumber);
+
     // Get staff by email
     StaffEntity getByEmail(String email);
 

@@ -1,8 +1,10 @@
 package com.techcam.entity;
 
+import lombok.ToString;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -10,9 +12,10 @@ import java.util.Date;
  * @version 1.0
  * @since 8.3.2022
  */
+@ToString
 @Entity
 @Table(name = "staff", schema = "poly_techcam", catalog = "")
-public class StaffEntity extends BaseEntity {
+public class StaffEntity extends BaseEntity implements Serializable {
     @Id
     @Column(name = "ID")
     private String id = RandomStringUtils.randomNumeric(6);

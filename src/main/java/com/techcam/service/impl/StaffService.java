@@ -29,7 +29,7 @@ import java.util.Optional;
 @Slf4j
 public class StaffService implements IStaffService {
 
-    private static final String DEFAULT_PASSWORD = "0123456789";
+    private static final String DEFAULT_PASSWORD = "$2a$10$VvjMsczCmbmSM3L7usA85.e1pmfaeJERrSY1swgFBqe6h.sN3EKqa"; // default 0123456789
 
     @Autowired
     private IStaffRepo staffRepo;
@@ -206,6 +206,20 @@ public class StaffService implements IStaffService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public Integer findByEmail(String email) {
+        List<StaffEntity> list = staffRepo.findByEmail(email);
+        if (list.isEmpty()) return 0;
+        else return list.size();
+    }
+
+    @Override
+    public Integer findByPhone(String phoneNumber) {
+        List<StaffEntity> list = staffRepo.findByPhoneNumber(phoneNumber);
+        if (list.isEmpty()) return 0;
+        else return list.size();
     }
 
     // Convert Staff from Entity to DTO

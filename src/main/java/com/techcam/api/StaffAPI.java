@@ -29,6 +29,16 @@ public class StaffAPI {
         return staffService.findById(id);
     }
 
+    @GetMapping("/find/email/{value}")
+    public Integer findByEmail(@PathVariable("value") String value) {
+        return staffService.findByEmail(value);
+    }
+
+    @GetMapping("/find/phone/{value}")
+    public Integer findByPhone(@PathVariable("value") String value) {
+        return staffService.findByPhone(value);
+    }
+
     @PostMapping
     public ResponseEntity addStaff(@RequestBody StaffAddRequestDTO staff) {
         String status = staffService.addStaff(staff);
