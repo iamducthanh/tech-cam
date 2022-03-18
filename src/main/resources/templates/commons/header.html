@@ -197,9 +197,9 @@
         <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <img class="rounded-circle header-profile-user" src="assets/img/avatar-6.jpg" alt="Header Avatar">
           <span class="d-none d-md-inline-block ms-1">
-                            VDB
-                            <i class="mdi mdi-chevron-down"></i>
-                        </span>
+            <span th:text="${#session.getAttribute('currentUserName')}"></span>
+            <i class="mdi mdi-chevron-down"></i>
+          </span>
         </button>
         <div class="dropdown-menu dropdown-menu-end">
           <!-- item-->
@@ -316,7 +316,10 @@
                   <div class="arrow-down"></div>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="topnav-user-Interface">
-                  <a href="/customer" class="dropdown-item">
+                  <a href="/staff" class="dropdown-item">
+                    <i class="fas fa-user-secret me-2"></i>Nhân viên
+                  </a>
+                  <a href="#" class="dropdown-item">
                     <i class="fas fa-user-alt me-2"></i>Khách hàng
                   </a>
                   <a href="#" class="dropdown-item">
