@@ -151,3 +151,7 @@ ul {
     border-radius: 5px;
     border: 1px solid #80808061;
 }
+
+.required {
+    color: red;
+}

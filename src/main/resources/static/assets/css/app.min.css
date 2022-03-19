@@ -1,7 +1,5 @@
-@import url(css2-family=Nunito-wght@400;600;700&display=swap.css)
-/*tpa=https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap*/
+@import url(https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap);
 
-;
 .page-title-box {
     padding-bottom: 1.25rem
 }
@@ -5019,6 +5017,3 @@ pre[class*=language-] {
 .ex-page-content h1 .error-icon {
     text-shadow: rgba(109, 90, 227, .3) 1px 1px, rgba(109, 90, 227, .2) 2px 2px, rgba(109, 90, 227, .3) 3px 3px
 }
-
-
-/*# sourceMappingURL=app.min.css.map */

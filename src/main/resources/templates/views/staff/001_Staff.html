@@ -140,7 +140,7 @@
 
             <div class="card">
                 <div class="card-body">
-                    <table id="datatable" class="table table-striped table-hover table-bordered dt-responsive nowrap dataTable no-footer shadow">
+                    <table id="datatable" class="table table-striped table-hover table-bordered nowrap dataTable no-footer shadow">
                         <thead class="text-center">
                             <th></th>
                             <th>Chức năng</th>
@@ -162,7 +162,7 @@
                                 <td class="text-end">
 <!--                                    <span th:text="${iterator.index + 1}"></span>-->
                                 </td>
-                                <td class="row" style="width: 100px;" th:switch="${staff.getStatus()}">
+                                <td class="row" th:switch="${staff.getStatus()}">
                                     <i class="col-4 fas fa-edit" style="color: darkblue;" title="Cập nhật" onclick="onBtnEdit(this)"></i>
                                     <i th:case="1" class="col-4 fas fa-lock-open" style="color: green;" title="Khoá tài khoản" onclick="onBtnStatus(this)"></i>
                                     <i th:case="0" class="col-4 fas fa-lock" style="color: red;" title="Mở khoá tài khoản" onclick="onBtnStatus(this)"></i>
@@ -180,14 +180,14 @@
                                 <td th:text="${staff.getAddress()}">Địa chỉ</td>
                                 <td th:text="${staff.getAvatar()}">Ảnh</td>
                                 <td th:switch="${staff.getRole()}">
-                                    <span th:case="ROLE_ADMIN">Quản trị viên</span>
-                                    <span th:case="ROLE_USER">Nhân viên</span>
+                                    <span th:case="ROLE_ADMIN" class="role">Quản trị viên</span>
+                                    <span th:case="ROLE_USER" class="role">Nhân viên</span>
                                 </td>
                                 <td th:text="${staff.getIdentityNumber()}">CMND/CCCD</td>
                                 <td th:text="${#dates.format(staff.getCreateDate(), 'dd/MM/yyyy HH:mm:ss')}">Ngày bắt đầu</td>
                                 <td th:switch="${staff.getStatus()}">
-                                    <span th:case="1" class="badge bg-success fs-6">Đang hoạt động</span>
-                                    <span th:case="0" class="badge bg-danger fs-6">Ngừng hoạt động</span>
+                                    <span th:case="1" class="status badge bg-success fs-6">Đang hoạt động</span>
+                                    <span th:case="0" class="status badge bg-danger fs-6">Ngừng hoạt động</span>
                                 </td>
                             </tr>
                         </tbody>
@@ -299,7 +299,8 @@
         hoverIconLock();
 
         // Disable click of current user logged in
-        $('table#datatable>tbody').find('tr:has(td:contains("[[${#session.getAttribute('currentUserEmail')}]]"))').children().eq(1).html("<i class=\"fas fa-user-alt text-success text-center fs-3\" title=\"Thông tin\" onclick=\"onBtnEdit(this)\"></i>");
+        const currentUserEmail = "[[${#session.getAttribute('currentUserEmail')}]]";
+        $('table#datatable>tbody').find(`tr:has(td:contains(${currentUserEmail}))`).children().eq(1).html("<i class=\"fas fa-user-alt text-success text-center fs-3\" title=\"Thông tin\" onclick=\"onBtnEdit(this)\"></i>");
     });
 
     function hoverIconLock() {
@@ -356,33 +357,27 @@
 
     // event filter table by status
     function onStatusChange(element) {
-        const value = $(element).val();
-        const tagAll = $('#datatable tbody tr');
-        const tag = $('tr td').filter(function() {
-            return $(this).text()===value;
-        });
+        const status = $(element).val();
+        const rows = $('table#datatable tr');
 
-        if(value==='Tất cả') {
-            tagAll.show();
+        if(status === 'Tất cả') {
+            rows.show();
         } else {
-            tagAll.hide();
-            tag.parent().show();
+            rows.hide();
+            rows.find(`.status:contains(${status})`).parent().parent().show();
         }
     }
 
     // event filter table by role
     function onRoleChange() {
-        const tagAll = $('#datatable tbody tr');
         const role = $('select.roleFilter').val();
-        const tag = $('tr td span').filter(function() {
-            return $(this).text() === role[0];
-        });
+        const rows = $('table#datatable tr');
 
         if (role.length === 0 || role.length >=2) {
-            tagAll.show();
+            rows.show();
         } else {
-            tagAll.hide();
-            tag.parent().parent().show();
+            rows.hide();
+            rows.find(`.role:contains(${role[0]})`).parent().parent().show();
         }
     }
 
