@@ -34,4 +34,7 @@ public interface IStaffRepo extends JpaRepository<StaffEntity, String> {
 
     // Find staff by email
     List<StaffEntity> findByEmail(String email);
+
+    // Find staff by phoneNumber
+    List<StaffEntity> findByPhoneNumber(String phoneNumber);
 }

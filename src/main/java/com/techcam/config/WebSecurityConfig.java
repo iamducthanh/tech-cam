@@ -39,7 +39,6 @@ import java.io.IOException;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    String falseUrl ="/login?status=login_false";
     private final ModelMapper modelMapper = new ModelMapper();
 
 
@@ -69,6 +68,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/request-forgot-password/**",
                 "/api/change-reset-password/**",
                 "/api/count_login_false/**"
+//                "/api/staff/**",
+//                "/staff/**",
+//                "/api/v1/customer/**",
+//                "/customer/**"
         ).permitAll();
 
         http.authorizeRequests().antMatchers("/**").access("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')");
@@ -89,11 +92,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
                         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
                         String username = userDetails.getUsername();
-
                         System.out.println("Đăng nhập thành công " + username);
                         StaffEntity staffEntity = staffService.getByEmail(username);
                         staffEntity.setCountLoginFalse(0);
-                        staffService.addStaff(modelMapper.map(staffEntity, StaffAddRequestDTO.class));
+                        staffService.saveStaff(staffEntity);
                         response.sendRedirect(request.getContextPath());
                     }
                 })
@@ -107,13 +109,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PersistentTokenRepository persistentTokenRepository() {
-        InMemoryTokenRepositoryImpl memory = new InMemoryTokenRepositoryImpl();
-        return memory;
+        return new InMemoryTokenRepositoryImpl();
     }
 
 
     public static void main(String[] args) {
-        System.out.println(new BCryptPasswordEncoder().encode("123"));
+        System.out.println(new BCryptPasswordEncoder().encode("0123456789"));
     }
 
 }

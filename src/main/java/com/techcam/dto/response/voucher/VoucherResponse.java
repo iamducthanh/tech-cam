@@ -52,11 +52,11 @@ public class VoucherResponse {
 
     private Boolean voucherHidden;
 
-    private Timestamp voucherCreateDate;
+    private Date voucherCreateDate;
 
     private String voucherCreateBy;
 
-    private Timestamp voucherModifiedDate;
+    private Date voucherModifiedDate;
 
     private Long typeDiscountMinAmount;
 

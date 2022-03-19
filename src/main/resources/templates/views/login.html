@@ -99,7 +99,7 @@
                 console.log(errors)
                 let error_login = $('#error_login')[0]
                 error_login.style.display = 'unset';
-                error_login.innerHTML = errors.responseText
+                error_login.innerHTML = errors.responseJSON.vn
             },
             success: function (dataOut) {
                 console.log(document.getElementById('btnLoginReal'))

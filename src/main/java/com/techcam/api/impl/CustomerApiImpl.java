@@ -15,11 +15,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,12 +39,18 @@ public class CustomerApiImpl implements CustomerApi {
 
     @Override
     public List<CustomerInfoResponse> findCustomers(String keyWord) {
-        List<CustomerInfoResponse> customerInfoResponses = new ArrayList<>();
+        List<CustomerInfoResponse> customerInfoResponses;
         if (StringUtils.isBlank(keyWord)){
             customerInfoResponses= customerService.getCustomers();
         }
         customerInfoResponses= customerService.findCustomers(keyWord);
        return customerInfoResponses;
+    }
+
+    @Override
+    public CustomerInfoResponse findCustomerById(@PathVariable  String id) {
+        System.out.println(customerService.getCustomerById(id));
+        return customerService.getCustomerById(id);
     }
 
     @Override

@@ -1,18 +1,19 @@
 package com.techcam.service.impl;
 
-import com.techcam.dto.request.StaffAddRequestDTO;
 import com.techcam.entity.StaffEntity;
-import com.techcam.util.CookieUtil;
 import com.techcam.util.SessionUtil;
-import org.modelmapper.ModelMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,45 +25,45 @@ import java.util.List;
  * @since 1/24/2022 10:50 PM
  */
 
+@Slf4j
 @Service
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 public class StaffDetailsServiceImpl implements UserDetailsService {
- private final ModelMapper modelMapper = new ModelMapper();
- @Autowired
- private CookieUtil cookieUtil;
- @Autowired
- private SessionUtil sessionUtil;
- @Autowired
- private StaffService staffService;
 
- @Override
- public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-  StaffEntity staff = staffService.getByEmail(email);
-  if (staff == null) {
-   System.out.println("User not found! " + email);
-   sessionUtil.addObject("emailLogin", email);
-   throw new UsernameNotFoundException("User " + email + " was not found in the database");
-  }
+    private final SessionUtil sessionUtil;
+    private final StaffService staffService;
 
-  sessionUtil.addObject("STAFF", staff);
-  if(staff.getCountLoginFalse() >= 5){
-   throw new UsernameNotFoundException("Tài khoản " + email + " đã đăng nhập sai quá 5 lần, vui lòng nhấn quên mật khẩu để xác nhận lại tài khoản!");
-  }
-  staff.setCountLoginFalse(staff.getCountLoginFalse() + 1);
-  staffService.addStaff(modelMapper.map(staff, StaffAddRequestDTO.class));
-  System.out.println("Found staff: " + staff);
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        StaffEntity staff = staffService.getByEmail(email);
+        if (staff == null) {
+            log.error("User not found! " + email);
+            sessionUtil.addObject("emailLogin", email);
+            throw new UsernameNotFoundException("User " + email + " was not found in the database");
+        }
 
-  List<String> roleNames = new ArrayList<>();
-  roleNames.add(staff.getRole());
+        if (staff.getCountLoginFalse() >= 5) {
+            throw new UsernameNotFoundException("Tài khoản " + email + " đã đăng nhập sai quá 5 lần, vui lòng nhấn quên mật khẩu để xác nhận lại tài khoản!");
+        }
+        staff.setCountLoginFalse(staff.getCountLoginFalse() + 1);
+        staff = staffService.saveStaff(staff);
 
-  List<GrantedAuthority> grantList = new ArrayList<>();
-  if (roleNames != null) {
-   for (String role : roleNames) {
-    GrantedAuthority authority = new SimpleGrantedAuthority(role);
-    grantList.add(authority);
-   }
-  }
-  UserDetails userDetails = (UserDetails) new org.springframework.security.core.userdetails.User(staff.getEmail(), staff.getPassword(), grantList);
-  return userDetails;
- }
+        // Add info logged user to Session
+        log.info("Logged: " + staff);
+        sessionUtil.addObject("currentUserEmail", staff.getEmail());
+        sessionUtil.addObject("currentUserName", staff.getFullName());
+
+        List<String> roleNames = new ArrayList<>();
+        assert staff != null;
+        roleNames.add(staff.getRole());
+
+        List<GrantedAuthority> grantList = new ArrayList<>();
+        if (roleNames != null) {
+            for (String role : roleNames) {
+                GrantedAuthority authority = new SimpleGrantedAuthority(role);
+                grantList.add(authority);
+            }
+        }
+        return new User(staff.getEmail(), staff.getPassword(), grantList);
+    }
 }
