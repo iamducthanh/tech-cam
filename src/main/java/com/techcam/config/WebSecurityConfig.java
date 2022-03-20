@@ -1,46 +1,31 @@
 package com.techcam.config;
 
-import com.techcam.dto.request.StaffAddRequestDTO;
 import com.techcam.entity.StaffEntity;
 import com.techcam.service.impl.StaffDetailsServiceImpl;
 import com.techcam.service.impl.StaffService;
+import com.techcam.util.CookieUtil;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.InMemoryTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
-import org.springframework.web.filter.CorsFilter;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@Slf4j
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    private final ModelMapper modelMapper = new ModelMapper();
 
+    private final CookieUtil cookieUtil;
 
     @Autowired
     private StaffDetailsServiceImpl staffDetailsService;
@@ -87,17 +72,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .failureUrl("/login?status=login_false")
                 .usernameParameter("username")
                 .passwordParameter("password")
-                .successHandler(new AuthenticationSuccessHandler() {
-                    @Override
-                    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-                        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                        String username = userDetails.getUsername();
-                        System.out.println("Đăng nhập thành công " + username);
-                        StaffEntity staffEntity = staffService.getByEmail(username);
-                        staffEntity.setCountLoginFalse(0);
-                        staffService.saveStaff(staffEntity);
-                        response.sendRedirect(request.getContextPath());
-                    }
+                .successHandler((request, response, authentication) -> {
+                    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+                    String username = userDetails.getUsername();
+                    log.info("Login to " + username + " account successfully!");
+                    StaffEntity staffEntity = staffService.getByEmail(username);
+                    staffEntity.setCountLoginFalse(0);
+                    staffService.saveStaff(staffEntity);
+                    response.sendRedirect(request.getContextPath());
+                    cookieUtil.add("username", username, 168); //7 days
                 })
                 .and().logout().logoutUrl("/logout").logoutSuccessUrl("/login?status=logout");
 

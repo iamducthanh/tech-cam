@@ -197,7 +197,7 @@
         <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <img class="rounded-circle header-profile-user" src="assets/img/avatar-6.jpg" alt="Header Avatar">
           <span class="d-none d-md-inline-block ms-1">
-            <span th:text="${#session.getAttribute('currentUserName')}"></span>
+            <span th:text="${session.user.fullName}"></span>
             <i class="mdi mdi-chevron-down"></i>
           </span>
         </button>
@@ -221,7 +221,7 @@
             Lock screen
           </a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">
+          <a class="dropdown-item" href="/logout">
             <i class="dripicons-exit font-size-16 align-middle me-2 text-muted"></i>
             Logout
           </a>
