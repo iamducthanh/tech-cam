@@ -8,9 +8,9 @@ spring:
     rest:
       base-path: '/api'
   datasource:
-    url: 'jdbc:mysql://0.tcp.ngrok.io:17286/poly_techcam'
-    username: root
-    password: root
+    url: 'jdbc:mysql://localhost:3306/poly_techcam'
+    username: abc
+    password: abc
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -21,8 +21,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: iamducthanh01@gmail.com
-    password: adgjadgj
+    username: techcam.poly@gmail.com
+    password: motsaumot0mot@
     properties:
       mail:
         smpt:

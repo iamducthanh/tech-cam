@@ -63,6 +63,6 @@ public interface ConstantsErrorCode {
     String LOGIN_EMAIL_NOT_EXITS = "TC-LG-005";
     String LOGIN_PASS_FAIL = "TC-LG-007";
     String LOGIN_FAIL_FIVE="TC-LG-008";
-
+    String LOGIN_RESET_BY_EMAIL_SUCCESS="TC-LG-009";
 
 }
