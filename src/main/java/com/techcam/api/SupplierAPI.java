@@ -2,6 +2,7 @@ package com.techcam.api;
 
 import com.techcam.dto.request.SupplierDTO;
 import com.techcam.dto.response.SupplierResponseDTO;
+import com.techcam.service.ISupplierService;
 import com.techcam.service.impl.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +14,7 @@ import java.util.List;
 @RequestMapping("/api/supplier")
 public class SupplierAPI {
     @Autowired
-    SupplierService supplierService;
+    ISupplierService supplierService;
 
     @GetMapping("/get-all")
     public ResponseEntity<List<SupplierResponseDTO>> getAll(){
