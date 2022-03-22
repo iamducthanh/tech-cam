@@ -1,8 +1,7 @@
 package com.techcam.entity;
 
 import javax.persistence.*;
-import javax.persistence.criteria.Order;
-import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * Description:
@@ -19,20 +18,31 @@ public class OrderdetailEntity {
     private String id;
     private String imei;
     private String status;
-    private Timestamp createDate;
+    private Date createDate;
     private String note;
     private String createBy;
     private String modifierBy;
-    private Timestamp modifierDate;
+    private Date modifierDate;
     private Boolean deleteFlag;
-    private String promotionId;
-    @ManyToOne @JoinColumn(name = "Order_ID")
+    private int discount;
+    private int quantity;
     private OrdersEntity orders;
+    private ProductEntity product;
+
 
     @Id
     @Column(name = "ID")
     public String getId() {
         return id;
+    }
+    @Basic
+    @Column(name = "quantity")
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public void setId(String id) {
@@ -61,11 +71,11 @@ public class OrderdetailEntity {
 
     @Basic
     @Column(name = "CREATE_DATE")
-    public Timestamp getCreateDate() {
+    public Date getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Timestamp createDate) {
+    public void setCreateDate(Date createDate) {
         this.createDate = createDate;
     }
 
@@ -101,11 +111,11 @@ public class OrderdetailEntity {
 
     @Basic
     @Column(name = "MODIFIER_DATE")
-    public Timestamp getModifierDate() {
+    public Date getModifierDate() {
         return modifierDate;
     }
 
-    public void setModifierDate(Timestamp modifierDate) {
+    public void setModifierDate(Date modifierDate) {
         this.modifierDate = modifierDate;
     }
 
@@ -118,50 +128,33 @@ public class OrderdetailEntity {
     public void setDeleteFlag(Boolean deleteFlag) {
         this.deleteFlag = deleteFlag;
     }
-
     @Basic
-    @Column(name = "promotion_id")
-    public String getPromotionId() {
-        return promotionId;
+    @Column(name = "discount")
+    public int getDiscount() {
+        return discount;
     }
 
-    public void setPromotionId(String promotionId) {
-        this.promotionId = promotionId;
+    public void setDiscount(int discount) {
+        this.discount = discount;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        OrderdetailEntity that = (OrderdetailEntity) o;
-
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (imei != null ? !imei.equals(that.imei) : that.imei != null) return false;
-        if (status != null ? !status.equals(that.status) : that.status != null) return false;
-        if (createDate != null ? !createDate.equals(that.createDate) : that.createDate != null) return false;
-        if (note != null ? !note.equals(that.note) : that.note != null) return false;
-        if (createBy != null ? !createBy.equals(that.createBy) : that.createBy != null) return false;
-        if (modifierBy != null ? !modifierBy.equals(that.modifierBy) : that.modifierBy != null) return false;
-        if (modifierDate != null ? !modifierDate.equals(that.modifierDate) : that.modifierDate != null) return false;
-        if (deleteFlag != null ? !deleteFlag.equals(that.deleteFlag) : that.deleteFlag != null) return false;
-        if (promotionId != null ? !promotionId.equals(that.promotionId) : that.promotionId != null) return false;
-
-        return true;
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    public OrdersEntity getOrders() {
+        return orders;
     }
 
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (imei != null ? imei.hashCode() : 0);
-        result = 31 * result + (status != null ? status.hashCode() : 0);
-        result = 31 * result + (createDate != null ? createDate.hashCode() : 0);
-        result = 31 * result + (note != null ? note.hashCode() : 0);
-        result = 31 * result + (createBy != null ? createBy.hashCode() : 0);
-        result = 31 * result + (modifierBy != null ? modifierBy.hashCode() : 0);
-        result = 31 * result + (modifierDate != null ? modifierDate.hashCode() : 0);
-        result = 31 * result + (deleteFlag != null ? deleteFlag.hashCode() : 0);
-        result = 31 * result + (promotionId != null ? promotionId.hashCode() : 0);
-        return result;
+    public void setOrders(OrdersEntity orders) {
+        this.orders = orders;
     }
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    public ProductEntity getProduct() {
+        return product;
+    }
+
+    public void setProduct(ProductEntity product) {
+        this.product = product;
+    }
+
 }

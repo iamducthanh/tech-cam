@@ -3,8 +3,9 @@ package com.techcam.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Date;
-import java.sql.Timestamp;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -64,6 +65,9 @@ public class VoucherEntity extends BaseEntity {
     @Column(name = "NOTE")
     private String note;
 
+    @OneToMany(mappedBy = "voucher",fetch = FetchType.EAGER)
+    private List<OrdersEntity> orders;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -76,4 +80,5 @@ public class VoucherEntity extends BaseEntity {
     public int hashCode() {
         return Objects.hash(id, name, code, quantity, discount, startDate, endDate, description, minAmount, categoryId, status, note);
     }
+
 }

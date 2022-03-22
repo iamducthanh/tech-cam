@@ -1,51 +1,78 @@
 package com.techcam.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Description:
  *
  * @author: POLY_DuyDVPH12712
  * @version: 1.0
- * @since: 3/20/2022
+ * @since: 3/21/2022
  * Project_name: Tech-cam
  */
-
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "orders", schema = "poly_techcam", catalog = "")
 public class OrdersEntity {
     private String id;
     private Date orderDate;
-    private int tax;
+    private Integer tax;
     private String transactionStatus;
     private Date paymentDate;
     private Integer itemQuantity;
-    private int totalAmount;
+    private Integer totalAmount;
     private String orderType;
-    private String stockkeeper;
+    private String stockKeeper;
     private String recipientName;
     private String recipientPhone;
     private String paymentMethod;
     private String recipientAddress;
     private String shipmentStatus;
-    private String salesperson;
+    private String salesPerson;
     private String accounting;
     private String shipmentId;
     private String status;
     private String note;
-    private Timestamp createDate;
-    private Timestamp modifierDate;
+    private Date createDate;
+    private Date modifierDate;
     private String createBy;
     private String modifierBy;
-    private boolean deleteFlag;
-    @OneToMany(mappedBy = "orders", fetch = FetchType.LAZY)
-    private List<OrdersEntity> ordersEntities;
+    private Boolean deleteFlag;
+    private String ipAddress;
+    private CustomerEntity customer;
+    private VoucherEntity voucher;
+    private List<OrderdetailEntity> ordersEntities;
 
+    @OneToMany(mappedBy = "orders", fetch = FetchType.LAZY)
+    public List<OrderdetailEntity> getOrdersEntities() {
+        return ordersEntities;
+    }
+
+    public void setOrdersEntities(List<OrderdetailEntity> ordersEntities) {
+        this.ordersEntities = ordersEntities;
+    }
+    @ManyToOne
+    @JoinColumn(name = "voucher_customer_id")
+    public VoucherEntity getVoucher() {
+        return voucher;
+    }
+
+    public void setVoucher(VoucherEntity voucher) {
+        this.voucher = voucher;
+    }
     @Id
-    @Column(name = "ID")
+    @Column(name = "id")
     public String getId() {
         return id;
     }
@@ -55,7 +82,7 @@ public class OrdersEntity {
     }
 
     @Basic
-    @Column(name = "OrderDate")
+    @Column(name = "order_date")
     public Date getOrderDate() {
         return orderDate;
     }
@@ -65,17 +92,17 @@ public class OrdersEntity {
     }
 
     @Basic
-    @Column(name = "Tax")
-    public int getTax() {
+    @Column(name = "tax")
+    public Integer getTax() {
         return tax;
     }
 
-    public void setTax(int tax) {
+    public void setTax(Integer tax) {
         this.tax = tax;
     }
 
     @Basic
-    @Column(name = "TransactionStatus")
+    @Column(name = "transaction_status")
     public String getTransactionStatus() {
         return transactionStatus;
     }
@@ -85,7 +112,7 @@ public class OrdersEntity {
     }
 
     @Basic
-    @Column(name = "PaymentDate")
+    @Column(name = "payment_date")
     public Date getPaymentDate() {
         return paymentDate;
     }
@@ -95,7 +122,7 @@ public class OrdersEntity {
     }
 
     @Basic
-    @Column(name = "ItemQuantity")
+    @Column(name = "item_quantity")
     public Integer getItemQuantity() {
         return itemQuantity;
     }
@@ -105,12 +132,12 @@ public class OrdersEntity {
     }
 
     @Basic
-    @Column(name = "TotalAmount")
-    public int getTotalAmount() {
+    @Column(name = "total_amount")
+    public Integer getTotalAmount() {
         return totalAmount;
     }
 
-    public void setTotalAmount(int totalAmount) {
+    public void setTotalAmount(Integer totalAmount) {
         this.totalAmount = totalAmount;
     }
 
@@ -125,13 +152,13 @@ public class OrdersEntity {
     }
 
     @Basic
-    @Column(name = "Stockkeeper")
-    public String getStockkeeper() {
-        return stockkeeper;
+    @Column(name = "stock_keeper")
+    public String getStockKeeper() {
+        return stockKeeper;
     }
 
-    public void setStockkeeper(String stockkeeper) {
-        this.stockkeeper = stockkeeper;
+    public void setStockKeeper(String stockKeeper) {
+        this.stockKeeper = stockKeeper;
     }
 
     @Basic
@@ -185,13 +212,13 @@ public class OrdersEntity {
     }
 
     @Basic
-    @Column(name = "salesperson")
-    public String getSalesperson() {
-        return salesperson;
+    @Column(name = "sales_person")
+    public String getSalesPerson() {
+        return salesPerson;
     }
 
-    public void setSalesperson(String salesperson) {
-        this.salesperson = salesperson;
+    public void setSalesPerson(String salesPerson) {
+        this.salesPerson = salesPerson;
     }
 
     @Basic
@@ -236,21 +263,21 @@ public class OrdersEntity {
 
     @Basic
     @Column(name = "CREATE_DATE")
-    public Timestamp getCreateDate() {
+    public Date getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Timestamp createDate) {
+    public void setCreateDate(Date createDate) {
         this.createDate = createDate;
     }
 
     @Basic
     @Column(name = "MODIFIER_DATE")
-    public Timestamp getModifierDate() {
+    public Date getModifierDate() {
         return modifierDate;
     }
 
-    public void setModifierDate(Timestamp modifierDate) {
+    public void setModifierDate(Date modifierDate) {
         this.modifierDate = modifierDate;
     }
 
@@ -276,81 +303,43 @@ public class OrdersEntity {
 
     @Basic
     @Column(name = "DELETE_FLAG")
-    public boolean isDeleteFlag() {
+    public Boolean getDeleteFlag() {
         return deleteFlag;
     }
 
-    public void setDeleteFlag(boolean deleteFlag) {
+    public void setDeleteFlag(Boolean deleteFlag) {
         this.deleteFlag = deleteFlag;
+    }
+
+    @Basic
+    @Column(name = "IP_ADDRESS")
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    public CustomerEntity getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(CustomerEntity customer) {
+        this.customer = customer;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
-        OrdersEntity that = (OrdersEntity) o;
-
-        if (tax != that.tax) return false;
-        if (totalAmount != that.totalAmount) return false;
-        if (deleteFlag != that.deleteFlag) return false;
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (orderDate != null ? !orderDate.equals(that.orderDate) : that.orderDate != null) return false;
-        if (transactionStatus != null ? !transactionStatus.equals(that.transactionStatus) : that.transactionStatus != null)
-            return false;
-        if (paymentDate != null ? !paymentDate.equals(that.paymentDate) : that.paymentDate != null) return false;
-        if (itemQuantity != null ? !itemQuantity.equals(that.itemQuantity) : that.itemQuantity != null) return false;
-        if (orderType != null ? !orderType.equals(that.orderType) : that.orderType != null) return false;
-        if (stockkeeper != null ? !stockkeeper.equals(that.stockkeeper) : that.stockkeeper != null) return false;
-        if (recipientName != null ? !recipientName.equals(that.recipientName) : that.recipientName != null)
-            return false;
-        if (recipientPhone != null ? !recipientPhone.equals(that.recipientPhone) : that.recipientPhone != null)
-            return false;
-        if (paymentMethod != null ? !paymentMethod.equals(that.paymentMethod) : that.paymentMethod != null)
-            return false;
-        if (recipientAddress != null ? !recipientAddress.equals(that.recipientAddress) : that.recipientAddress != null)
-            return false;
-        if (shipmentStatus != null ? !shipmentStatus.equals(that.shipmentStatus) : that.shipmentStatus != null)
-            return false;
-        if (salesperson != null ? !salesperson.equals(that.salesperson) : that.salesperson != null) return false;
-        if (accounting != null ? !accounting.equals(that.accounting) : that.accounting != null) return false;
-        if (shipmentId != null ? !shipmentId.equals(that.shipmentId) : that.shipmentId != null) return false;
-        if (status != null ? !status.equals(that.status) : that.status != null) return false;
-        if (note != null ? !note.equals(that.note) : that.note != null) return false;
-        if (createDate != null ? !createDate.equals(that.createDate) : that.createDate != null) return false;
-        if (modifierDate != null ? !modifierDate.equals(that.modifierDate) : that.modifierDate != null) return false;
-        if (createBy != null ? !createBy.equals(that.createBy) : that.createBy != null) return false;
-        if (modifierBy != null ? !modifierBy.equals(that.modifierBy) : that.modifierBy != null) return false;
-
-        return true;
+        OrdersEntity orders = (OrdersEntity) o;
+        return Objects.equals(id, orders.id) && Objects.equals(recipientName, orders.recipientName) && Objects.equals(recipientPhone, orders.recipientPhone) && Objects.equals(recipientAddress, orders.recipientAddress) && Objects.equals(note, orders.note);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (orderDate != null ? orderDate.hashCode() : 0);
-        result = 31 * result + tax;
-        result = 31 * result + (transactionStatus != null ? transactionStatus.hashCode() : 0);
-        result = 31 * result + (paymentDate != null ? paymentDate.hashCode() : 0);
-        result = 31 * result + (itemQuantity != null ? itemQuantity.hashCode() : 0);
-        result = 31 * result + totalAmount;
-        result = 31 * result + (orderType != null ? orderType.hashCode() : 0);
-        result = 31 * result + (stockkeeper != null ? stockkeeper.hashCode() : 0);
-        result = 31 * result + (recipientName != null ? recipientName.hashCode() : 0);
-        result = 31 * result + (recipientPhone != null ? recipientPhone.hashCode() : 0);
-        result = 31 * result + (paymentMethod != null ? paymentMethod.hashCode() : 0);
-        result = 31 * result + (recipientAddress != null ? recipientAddress.hashCode() : 0);
-        result = 31 * result + (shipmentStatus != null ? shipmentStatus.hashCode() : 0);
-        result = 31 * result + (salesperson != null ? salesperson.hashCode() : 0);
-        result = 31 * result + (accounting != null ? accounting.hashCode() : 0);
-        result = 31 * result + (shipmentId != null ? shipmentId.hashCode() : 0);
-        result = 31 * result + (status != null ? status.hashCode() : 0);
-        result = 31 * result + (note != null ? note.hashCode() : 0);
-        result = 31 * result + (createDate != null ? createDate.hashCode() : 0);
-        result = 31 * result + (modifierDate != null ? modifierDate.hashCode() : 0);
-        result = 31 * result + (createBy != null ? createBy.hashCode() : 0);
-        result = 31 * result + (modifierBy != null ? modifierBy.hashCode() : 0);
-        result = 31 * result + (deleteFlag ? 1 : 0);
-        return result;
+        return Objects.hash(id, recipientName, recipientPhone, recipientAddress, note);
     }
 }

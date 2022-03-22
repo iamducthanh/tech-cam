@@ -1,41 +1,62 @@
-package com.techcam.controller;
+package com.techcam.api;
 
+import com.techcam.constants.ConstantsErrorCode;
+import com.techcam.dto.request.order.EditOrderDetailRequest;
+import com.techcam.dto.request.order.OrderRequest;
+import com.techcam.dto.response.order.OrderResponse;
+import com.techcam.exception.TechCamExp;
 import com.techcam.service.IOrderService;
+import com.techcam.type.OrderType;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Objects;
 
 /**
- * Project_name : SMW_TECHCAM
+ * Description:
  *
- * @author : XuShiTa
- * @version : 1.0
- * @since : 23.1.2022
- * Description :
+ * @author: POLY_DuyDVPH12712
+ * @version: 1.0
+ * @since: 3/20/2022
+ * Project_name: Tech-cam
  */
-@Controller
-public class DemoController {
+
+@RestController
+@RequestMapping("/api/v1/orders")
+public class OrdersApi {
     private final String LOCALHOST_IPV4 = "127.0.0.1";
     private final String LOCALHOST_IPV6 = "0:0:0:0:0:0:0:1";
     @Autowired
     private IOrderService orderService;
-    @GetMapping("/")
-    public String index() {
-        return "views/layout_container";
+    @PostMapping
+    public OrderResponse registrationOrder(@Valid @RequestBody OrderRequest orderRequest, HttpServletRequest request){
+
+        if(orderRequest.getOrderType().equals(OrderType.ONLINE.name())) {
+            String ipAddress = getDevice(request);
+            orderRequest.setIpAddress(ipAddress);
+            System.out.println("IP của máy là : "+ ipAddress);
+        }
+        return orderService.resgistrationOrder(orderRequest) ;
+    }
+    @PostMapping("/edit-order-details")
+    public OrderResponse editOrderDetails(@Valid @RequestBody EditOrderDetailRequest request){
+        if(Objects.isNull(request.getOrderId())){
+            throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
+        }
+        return orderService.editOrderDetails(request);
     }
 
-    @GetMapping("/index")
-    public String index1(HttpServletRequest request) {
-        System.out.println(getDevice(request));
-        System.out.println(orderService.findAllOrdersDetailsById("39f49e48-3d80-4065-ab06-79a26c22a3a3").size());
-        return "views/layout_container";
-    }
+
+
+
     public String getDevice(HttpServletRequest request){
         String ipAddress = request.getHeader("X-Forwarded-For");
         if(StringUtils.isEmpty(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {
@@ -63,5 +84,4 @@ public class DemoController {
         }
         return ipAddress;
     }
-
 }
