@@ -64,5 +64,9 @@ public interface ConstantsErrorCode {
     String LOGIN_PASS_FAIL = "TC-LG-007";
     String LOGIN_FAIL_FIVE="TC-LG-008";
 
+    String ORDER_PRODUCT_OUT_OF_STOCK= "TC-007-001";
+    String CUST_ORDER_TOO_MUCH="TC-007-001";
+    String VOUCHER_ERROR="TC-007-003";
+
 
 }

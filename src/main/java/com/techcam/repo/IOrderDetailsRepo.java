@@ -25,5 +25,5 @@ public interface IOrderDetailsRepo extends JpaRepository<OrderdetailEntity, Stri
 
     List<OrderdetailEntity> findAllByIdInAndOrdersIdAndDeleteFlagFalse(List<String> ids, String id);
 
-    OrderdetailEntity findByOrdersIdAndProductI(String orderId, String productId);
+    OrderdetailEntity findByOrdersIdAndProductId(String orderId, String productId);
 }

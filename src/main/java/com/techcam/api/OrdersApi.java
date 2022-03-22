@@ -1,8 +1,7 @@
 package com.techcam.api;
 
 import com.techcam.constants.ConstantsErrorCode;
-import com.techcam.dto.request.order.EditOrderDetailRequest;
-import com.techcam.dto.request.order.OrderRequest;
+import com.techcam.dto.request.order.*;
 import com.techcam.dto.response.order.OrderResponse;
 import com.techcam.exception.TechCamExp;
 import com.techcam.service.IOrderService;
@@ -53,9 +52,26 @@ public class OrdersApi {
         }
         return orderService.editOrderDetails(request);
     }
+    @PostMapping("/confirm-order-sale-person")
+    public OrderResponse confirmOrderSalePerson(@Valid @RequestBody ConfirmSalePersonRequest request){
+        return orderService.confirmOrderSalePerson(request);
+    }
+    @PostMapping("/confirm-Export-order")
+    public OrderResponse confirmExportOrder(@Valid @RequestBody ConfirmExportOrderRequest request){
+        return orderService.confirmExportOrder(request);
+    }
 
-
-
+    @PostMapping("/edit-order-details-confirm")
+    public OrderResponse  editOrderDetailsConfirm(@Valid @RequestBody EditOrderDetailsConfirmRequest request){
+        return orderService.editOrderDetailsConfirm(request);
+    }
+    @PostMapping("/cancel-order")
+    public OrderResponse  cancelOrder(@Valid @RequestBody CancelOrderRequest request){
+        if(Objects.isNull(request) || StringUtils.isBlank(request.getId())){
+            throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
+        }
+        return orderService.cancelOrder(request.getId());
+    }
 
     public String getDevice(HttpServletRequest request){
         String ipAddress = request.getHeader("X-Forwarded-For");

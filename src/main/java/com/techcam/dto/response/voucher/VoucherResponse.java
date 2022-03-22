@@ -62,4 +62,6 @@ public class VoucherResponse {
 
     private List<String> lstCustomer;
 
+    private String voucherKey;
+
 }

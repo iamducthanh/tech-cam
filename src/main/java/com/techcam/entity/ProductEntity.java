@@ -54,7 +54,6 @@ public class ProductEntity extends BaseEntity {
     @Basic
     @Column(name = "NOTE")
     private String note;
-
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private List<OrderdetailEntity> orderdetailEntities;
 
