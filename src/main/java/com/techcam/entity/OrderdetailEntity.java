@@ -1,68 +1,56 @@
 package com.techcam.entity;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
-import java.util.Objects;
+import java.util.Date;
 
 /**
- * @author Dev
- * @version 1.0
- * @since 13.3.2022
+ * Description:
+ *
+ * @author: POLY_DuyDVPH12712
+ * @version: 1.0
+ * @since: 3/20/2022
+ * Project_name: Tech-cam
  */
+
 @Entity
 @Table(name = "orderdetail", schema = "poly_techcam", catalog = "")
-@IdClass(OrderdetailEntityPK.class)
 public class OrderdetailEntity {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Id
-    @Column(name = "Order_ID", nullable = false, length = 64)
-    private String orderId;
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Id
-    @Column(name = "Product_ID", nullable = false, length = 64)
-    private String productId;
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Id
-    @Column(name = "Imei", nullable = false, length = 64)
+    private String id;
     private String imei;
-    @Basic
-    @Column(name = "STATUS", nullable = false, length = 50)
     private String status;
-    @Basic
-    @Column(name = "NOTE", nullable = true, length = -1)
+    private Date createDate;
     private String note;
-    @Basic
-    @Column(name = "CREATE_DATE", nullable = false)
-    private Timestamp createDate;
-    @Basic
-    @Column(name = "MODIFIER_DATE", nullable = false)
-    private Timestamp modifierDate;
-    @Basic
-    @Column(name = "CREATE_BY", nullable = false, length = 64)
     private String createBy;
-    @Basic
-    @Column(name = "MODIFIER_BY", nullable = false, length = 64)
     private String modifierBy;
+    private Date modifierDate;
+    private Boolean deleteFlag;
+    private int discount;
+    private int quantity;
+    private OrdersEntity orders;
+    private ProductEntity product;
+
+
+    @Id
+    @Column(name = "ID")
+    public String getId() {
+        return id;
+    }
     @Basic
-    @Column(name = "DELETE_FLAG", nullable = false)
-    private boolean deleteFlag;
-
-    public String getOrderId() {
-        return orderId;
+    @Column(name = "quantity")
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
-    public String getProductId() {
-        return productId;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public void setProductId(String productId) {
-        this.productId = productId;
-    }
-
+    @Basic
+    @Column(name = "IMEI")
     public String getImei() {
         return imei;
     }
@@ -71,6 +59,8 @@ public class OrderdetailEntity {
         this.imei = imei;
     }
 
+    @Basic
+    @Column(name = "Status")
     public String getStatus() {
         return status;
     }
@@ -79,6 +69,18 @@ public class OrderdetailEntity {
         this.status = status;
     }
 
+    @Basic
+    @Column(name = "CREATE_DATE")
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    @Basic
+    @Column(name = "NOTE")
     public String getNote() {
         return note;
     }
@@ -87,22 +89,8 @@ public class OrderdetailEntity {
         this.note = note;
     }
 
-    public Timestamp getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Timestamp createDate) {
-        this.createDate = createDate;
-    }
-
-    public Timestamp getModifierDate() {
-        return modifierDate;
-    }
-
-    public void setModifierDate(Timestamp modifierDate) {
-        this.modifierDate = modifierDate;
-    }
-
+    @Basic
+    @Column(name = "CREATE_BY")
     public String getCreateBy() {
         return createBy;
     }
@@ -111,6 +99,8 @@ public class OrderdetailEntity {
         this.createBy = createBy;
     }
 
+    @Basic
+    @Column(name = "MODIFIER_BY")
     public String getModifierBy() {
         return modifierBy;
     }
@@ -119,24 +109,52 @@ public class OrderdetailEntity {
         this.modifierBy = modifierBy;
     }
 
-    public boolean isDeleteFlag() {
+    @Basic
+    @Column(name = "MODIFIER_DATE")
+    public Date getModifierDate() {
+        return modifierDate;
+    }
+
+    public void setModifierDate(Date modifierDate) {
+        this.modifierDate = modifierDate;
+    }
+
+    @Basic
+    @Column(name = "DELETE_FLAG")
+    public Boolean getDeleteFlag() {
         return deleteFlag;
     }
 
-    public void setDeleteFlag(boolean deleteFlag) {
+    public void setDeleteFlag(Boolean deleteFlag) {
         this.deleteFlag = deleteFlag;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        OrderdetailEntity that = (OrderdetailEntity) o;
-        return deleteFlag == that.deleteFlag && Objects.equals(orderId, that.orderId) && Objects.equals(productId, that.productId) && Objects.equals(imei, that.imei) && Objects.equals(status, that.status) && Objects.equals(note, that.note) && Objects.equals(createDate, that.createDate) && Objects.equals(modifierDate, that.modifierDate) && Objects.equals(createBy, that.createBy) && Objects.equals(modifierBy, that.modifierBy);
+    @Basic
+    @Column(name = "discount")
+    public int getDiscount() {
+        return discount;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(orderId, productId, imei, status, note, createDate, modifierDate, createBy, modifierBy, deleteFlag);
+    public void setDiscount(int discount) {
+        this.discount = discount;
     }
+
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    public OrdersEntity getOrders() {
+        return orders;
+    }
+
+    public void setOrders(OrdersEntity orders) {
+        this.orders = orders;
+    }
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    public ProductEntity getProduct() {
+        return product;
+    }
+
+    public void setProduct(ProductEntity product) {
+        this.product = product;
+    }
+
 }

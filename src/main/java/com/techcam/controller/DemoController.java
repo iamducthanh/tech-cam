@@ -1,6 +1,8 @@
 package com.techcam.controller;
 
+import com.techcam.service.IOrderService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -21,6 +23,8 @@ import java.util.Objects;
 public class DemoController {
     private final String LOCALHOST_IPV4 = "127.0.0.1";
     private final String LOCALHOST_IPV6 = "0:0:0:0:0:0:0:1";
+    @Autowired
+    private IOrderService orderService;
     @GetMapping("/")
     public String index() {
         return "views/layout_container";
@@ -28,6 +32,11 @@ public class DemoController {
 
     @GetMapping("/index")
     public String index1(HttpServletRequest request) {
+        System.out.println(getDevice(request));
+        System.out.println(orderService.findAllOrdersDetailsById("39f49e48-3d80-4065-ab06-79a26c22a3a3").size());
+        return "views/layout_container";
+    }
+    public String getDevice(HttpServletRequest request){
         String ipAddress = request.getHeader("X-Forwarded-For");
         if(StringUtils.isEmpty(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {
             ipAddress = request.getHeader("Proxy-Client-IP");
@@ -52,8 +61,7 @@ public class DemoController {
                 && ipAddress.indexOf(",") > 0) {
             ipAddress = ipAddress.substring(0, ipAddress.indexOf(","));
         }
-        System.out.println(ipAddress);
-        return "views/layout_container";
+        return ipAddress;
     }
 
 }

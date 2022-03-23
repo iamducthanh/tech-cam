@@ -1,7 +1,13 @@
 package com.techcam.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -12,7 +18,10 @@ import java.util.Date;
  * @since: 3/11/2022
  * Project_name: Tech-cam
  */
-
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "customer", schema = "poly_techcam", catalog = "")
 public class CustomerEntity {
@@ -25,6 +34,17 @@ public class CustomerEntity {
     private String status;
     private Date createDate;
     private String modifierBy;
+    private List<OrdersEntityA> ordersEntities;
+    private List<ReceiptVoucherEntity> receiptVoucherEntities;
+
+    @OneToMany(mappedBy = "customer")
+    public List<OrdersEntityA> getOrdersEntities() {
+        return ordersEntities;
+    }
+
+    public void setOrdersEntities(List<OrdersEntityA> ordersEntities) {
+        this.ordersEntities = ordersEntities;
+    }
 
     @Id
     @Column(name = "id")

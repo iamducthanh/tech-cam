@@ -1,68 +1,88 @@
 package com.techcam.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 /**
- * @author Dev
- * @version 1.0
- * @since 13.3.2022
+ * Description:
+ *
+ * @author: POLY_DuyDVPH12712
+ * @version: 1.0
+ * @since: 3/21/2022
+ * Project_name: Tech-cam
  */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "orders", schema = "poly_techcam", catalog = "")
 public class OrdersEntity {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Id
-    @Column(name = "ID", nullable = false, length = 64)
     private String id;
-    @Basic
-    @Column(name = "Customer_ID", nullable = false, length = 64)
-    private String customerId;
-    @Basic
-    @Column(name = "OrderDate", nullable = false)
     private Date orderDate;
-    @Basic
-    @Column(name = "Tax", nullable = false, precision = 0)
-    private int tax;
-    @Basic
-    @Column(name = "TransactionStatus", nullable = false, length = 50)
+    private Integer tax;
     private String transactionStatus;
-    @Basic
-    @Column(name = "PaymentDate", nullable = false)
     private Date paymentDate;
-    @Basic
-    @Column(name = "ItemQuantity", nullable = false)
-    private int itemQuantity;
-    @Basic
-    @Column(name = "TotalAmount", nullable = false, precision = 0)
-    private int totalAmount;
-    @Basic
-    @Column(name = "VOUCHER_CUST_ID", nullable = false, length = 64)
-    private String voucherCustId;
-    @Basic
-    @Column(name = "STATUS", nullable = false, length = 50)
+    private Integer itemQuantity;
+    private Integer totalAmount;
+    private String orderType;
+    private String stockKeeper;
+    private String recipientName;
+    private String recipientPhone;
+    private String paymentMethod;
+    private String recipientAddress;
+    private String shipmentStatus;
+    private String salesPerson;
+    private String accounting;
+    private String shipmentId;
     private String status;
-    @Basic
-    @Column(name = "NOTE", nullable = true, length = -1)
     private String note;
-    @Basic
-    @Column(name = "CREATE_DATE", nullable = false)
-    private Timestamp createDate;
-    @Basic
-    @Column(name = "MODIFIER_DATE", nullable = false)
-    private Timestamp modifierDate;
-    @Basic
-    @Column(name = "CREATE_BY", nullable = false, length = 64)
+    private Date createDate;
+    private Date modifierDate;
     private String createBy;
-    @Basic
-    @Column(name = "MODIFIER_BY", nullable = false, length = 64)
     private String modifierBy;
-    @Basic
-    @Column(name = "DELETE_FLAG", nullable = false)
-    private boolean deleteFlag;
+    private Boolean deleteFlag;
+    private String ipAddress;
+    private Date deliveryDate;
+    private CustomerEntity customer;
+    private VoucherEntity voucher;
+    private List<OrderdetailEntity> ordersEntities;
+    private List<ReceiptVoucherEntity> orReceiptVoucherEntities;
+    @OneToMany(mappedBy = "orders")
+    public List<ReceiptVoucherEntity> getOrReceiptVoucherEntities() {
+        return orReceiptVoucherEntities;
+    }
 
+    public void setOrReceiptVoucherEntities(List<ReceiptVoucherEntity> orReceiptVoucherEntities) {
+        this.orReceiptVoucherEntities = orReceiptVoucherEntities;
+    }
+
+    @OneToMany(mappedBy = "orders", fetch = FetchType.LAZY)
+    public List<OrderdetailEntity> getOrdersEntities() {
+        return ordersEntities;
+    }
+
+    public void setOrdersEntities(List<OrderdetailEntity> ordersEntities) {
+        this.ordersEntities = ordersEntities;
+    }
+    @ManyToOne
+    @JoinColumn(name = "voucher_customer_id")
+    public VoucherEntity getVoucher() {
+        return voucher;
+    }
+
+    public void setVoucher(VoucherEntity voucher) {
+        this.voucher = voucher;
+    }
+    @Id
+    @Column(name = "id")
     public String getId() {
         return id;
     }
@@ -71,14 +91,8 @@ public class OrdersEntity {
         this.id = id;
     }
 
-    public String getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(String customerId) {
-        this.customerId = customerId;
-    }
-
+    @Basic
+    @Column(name = "order_date")
     public Date getOrderDate() {
         return orderDate;
     }
@@ -86,15 +100,28 @@ public class OrdersEntity {
     public void setOrderDate(Date orderDate) {
         this.orderDate = orderDate;
     }
+    @Basic
+    @Column(name = "delivery_date")
+    public Date getDeliveryDate() {
+        return deliveryDate;
+    }
 
-    public int getTax() {
+    public void setDeliveryDate(Date deliveryDate) {
+        this.deliveryDate = deliveryDate;
+    }
+
+    @Basic
+    @Column(name = "tax")
+    public Integer getTax() {
         return tax;
     }
 
-    public void setTax(int tax) {
+    public void setTax(Integer tax) {
         this.tax = tax;
     }
 
+    @Basic
+    @Column(name = "transaction_status")
     public String getTransactionStatus() {
         return transactionStatus;
     }
@@ -103,6 +130,8 @@ public class OrdersEntity {
         this.transactionStatus = transactionStatus;
     }
 
+    @Basic
+    @Column(name = "payment_date")
     public Date getPaymentDate() {
         return paymentDate;
     }
@@ -111,30 +140,128 @@ public class OrdersEntity {
         this.paymentDate = paymentDate;
     }
 
-    public int getItemQuantity() {
+    @Basic
+    @Column(name = "item_quantity")
+    public Integer getItemQuantity() {
         return itemQuantity;
     }
 
-    public void setItemQuantity(int itemQuantity) {
+    public void setItemQuantity(Integer itemQuantity) {
         this.itemQuantity = itemQuantity;
     }
 
-    public int getTotalAmount() {
+    @Basic
+    @Column(name = "total_amount")
+    public Integer getTotalAmount() {
         return totalAmount;
     }
 
-    public void setTotalAmount(int totalAmount) {
+    public void setTotalAmount(Integer totalAmount) {
         this.totalAmount = totalAmount;
     }
 
-    public String getVoucherCustId() {
-        return voucherCustId;
+    @Basic
+    @Column(name = "order_type")
+    public String getOrderType() {
+        return orderType;
     }
 
-    public void setVoucherCustId(String voucherCustId) {
-        this.voucherCustId = voucherCustId;
+    public void setOrderType(String orderType) {
+        this.orderType = orderType;
     }
 
+    @Basic
+    @Column(name = "stock_keeper")
+    public String getStockKeeper() {
+        return stockKeeper;
+    }
+
+    public void setStockKeeper(String stockKeeper) {
+        this.stockKeeper = stockKeeper;
+    }
+
+    @Basic
+    @Column(name = "recipient_name")
+    public String getRecipientName() {
+        return recipientName;
+    }
+
+    public void setRecipientName(String recipientName) {
+        this.recipientName = recipientName;
+    }
+
+    @Basic
+    @Column(name = "recipient_phone")
+    public String getRecipientPhone() {
+        return recipientPhone;
+    }
+
+    public void setRecipientPhone(String recipientPhone) {
+        this.recipientPhone = recipientPhone;
+    }
+
+    @Basic
+    @Column(name = "payment_method")
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    @Basic
+    @Column(name = "recipient_address")
+    public String getRecipientAddress() {
+        return recipientAddress;
+    }
+
+    public void setRecipientAddress(String recipientAddress) {
+        this.recipientAddress = recipientAddress;
+    }
+
+    @Basic
+    @Column(name = "shipment_status")
+    public String getShipmentStatus() {
+        return shipmentStatus;
+    }
+
+    public void setShipmentStatus(String shipmentStatus) {
+        this.shipmentStatus = shipmentStatus;
+    }
+
+    @Basic
+    @Column(name = "sales_person")
+    public String getSalesPerson() {
+        return salesPerson;
+    }
+
+    public void setSalesPerson(String salesPerson) {
+        this.salesPerson = salesPerson;
+    }
+
+    @Basic
+    @Column(name = "accounting")
+    public String getAccounting() {
+        return accounting;
+    }
+
+    public void setAccounting(String accounting) {
+        this.accounting = accounting;
+    }
+
+    @Basic
+    @Column(name = "shipment_id")
+    public String getShipmentId() {
+        return shipmentId;
+    }
+
+    public void setShipmentId(String shipmentId) {
+        this.shipmentId = shipmentId;
+    }
+
+    @Basic
+    @Column(name = "STATUS")
     public String getStatus() {
         return status;
     }
@@ -143,6 +270,8 @@ public class OrdersEntity {
         this.status = status;
     }
 
+    @Basic
+    @Column(name = "NOTE")
     public String getNote() {
         return note;
     }
@@ -151,22 +280,28 @@ public class OrdersEntity {
         this.note = note;
     }
 
-    public Timestamp getCreateDate() {
+    @Basic
+    @Column(name = "CREATE_DATE")
+    public Date getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Timestamp createDate) {
+    public void setCreateDate(Date createDate) {
         this.createDate = createDate;
     }
 
-    public Timestamp getModifierDate() {
+    @Basic
+    @Column(name = "MODIFIER_DATE")
+    public Date getModifierDate() {
         return modifierDate;
     }
 
-    public void setModifierDate(Timestamp modifierDate) {
+    public void setModifierDate(Date modifierDate) {
         this.modifierDate = modifierDate;
     }
 
+    @Basic
+    @Column(name = "CREATE_BY")
     public String getCreateBy() {
         return createBy;
     }
@@ -175,6 +310,8 @@ public class OrdersEntity {
         this.createBy = createBy;
     }
 
+    @Basic
+    @Column(name = "MODIFIER_BY")
     public String getModifierBy() {
         return modifierBy;
     }
@@ -183,24 +320,45 @@ public class OrdersEntity {
         this.modifierBy = modifierBy;
     }
 
-    public boolean isDeleteFlag() {
+    @Basic
+    @Column(name = "DELETE_FLAG")
+    public Boolean getDeleteFlag() {
         return deleteFlag;
     }
 
-    public void setDeleteFlag(boolean deleteFlag) {
+    public void setDeleteFlag(Boolean deleteFlag) {
         this.deleteFlag = deleteFlag;
+    }
+
+    @Basic
+    @Column(name = "IP_ADDRESS")
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    public CustomerEntity getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(CustomerEntity customer) {
+        this.customer = customer;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        OrdersEntity that = (OrdersEntity) o;
-        return tax == that.tax && itemQuantity == that.itemQuantity && totalAmount == that.totalAmount && deleteFlag == that.deleteFlag && Objects.equals(id, that.id) && Objects.equals(customerId, that.customerId) && Objects.equals(orderDate, that.orderDate) && Objects.equals(transactionStatus, that.transactionStatus) && Objects.equals(paymentDate, that.paymentDate) && Objects.equals(voucherCustId, that.voucherCustId) && Objects.equals(status, that.status) && Objects.equals(note, that.note) && Objects.equals(createDate, that.createDate) && Objects.equals(modifierDate, that.modifierDate) && Objects.equals(createBy, that.createBy) && Objects.equals(modifierBy, that.modifierBy);
+        OrdersEntity orders = (OrdersEntity) o;
+        return Objects.equals(id, orders.id) && Objects.equals(recipientName, orders.recipientName) && Objects.equals(recipientPhone, orders.recipientPhone) && Objects.equals(recipientAddress, orders.recipientAddress);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, customerId, orderDate, tax, transactionStatus, paymentDate, itemQuantity, totalAmount, voucherCustId, status, note, createDate, modifierDate, createBy, modifierBy, deleteFlag);
+        return Objects.hash(id, recipientName, recipientPhone, recipientAddress);
     }
 }
