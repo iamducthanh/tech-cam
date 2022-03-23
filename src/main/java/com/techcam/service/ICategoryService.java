@@ -1,5 +1,6 @@
 package com.techcam.service;
 
+import com.techcam.dto.request.CategoryReqDto;
 import com.techcam.dto.response.CategoryDto;
 import com.techcam.dto.response.category.CategoryResponse;
 import com.techcam.entity.CategoryEntity;
@@ -20,5 +21,5 @@ public interface ICategoryService {
     CategoryEntity findById(String id);
     List<CategoryDto> findAll();
     List<CategoryEntity> findCategoryByParent(String parentId);
-
+    void saveCategory(CategoryReqDto categoryDto);
 }

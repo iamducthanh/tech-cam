@@ -21,6 +21,8 @@ public interface ConstantsErrorCode {
     String INTERNAL_SERVER_ERROR = "TC-000-002";
     String EMAIL_EXIST = "TC-000-004";
     String PHONE_NUMBER_EXIST = "TC-000-003";
+    String CATEGORY_NAME_EXIST = "TC-LG-011";
+    String CATEGORY_NAME = "TC-LG-010";
 
 
     // lỗi customer
