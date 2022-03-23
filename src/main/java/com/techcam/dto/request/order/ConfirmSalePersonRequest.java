@@ -23,4 +23,5 @@ public class ConfirmSalePersonRequest {
     private String recipientName;
     private String recipientPhone;
     private String recipientAddress;
+    private String note;
 }

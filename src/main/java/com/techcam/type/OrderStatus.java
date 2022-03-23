@@ -13,5 +13,6 @@ public enum OrderStatus {
     VERIFY,
     CONFIRM,
     PAID,
-    DONE
+    DONE,
+    SHIPPING
 }

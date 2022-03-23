@@ -65,8 +65,9 @@ public interface ConstantsErrorCode {
     String LOGIN_FAIL_FIVE="TC-LG-008";
 
     String ORDER_PRODUCT_OUT_OF_STOCK= "TC-007-001";
-    String CUST_ORDER_TOO_MUCH="TC-007-001";
+    String CUST_ORDER_TOO_MUCH="TC-007-002";
     String VOUCHER_ERROR="TC-007-003";
+    String IMEI_DUPLICATE="TC-007-004";
 
 
 }

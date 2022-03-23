@@ -20,6 +20,7 @@ import com.techcam.service.ICustomerService;
 import com.techcam.service.IOrderService;
 import com.techcam.service.IVoucherService;
 import com.techcam.type.*;
+import com.techcam.util.MessageUtil;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,7 +114,7 @@ public class OrderServiceImpl implements IOrderService {
                 e.printStackTrace();
             }
             System.out.println(countRequest);
-            if (countRequest > 5) {
+            if (countRequest >= 5) {
                 throw new TechCamExp(ConstantsErrorCode.CUST_ORDER_TOO_MUCH);
             }
         }
@@ -123,14 +124,14 @@ public class OrderServiceImpl implements IOrderService {
         OrderProductRequest orderRequestProduct = getTotalProduct(productEntities, request.getProductDetails());
         int totalDiscount = 0;
         if (Objects.nonNull(voucherResponse)) {
-            if( voucherResponse.getVoucherKey().equals(VoucherKey.UNUSED.name())){
-                if(checkPermissionVoucher(productEntities)){
+            if (voucherResponse.getVoucherKey().equals(VoucherKey.UNUSED.name())) {
+                if (checkPermissionVoucher(productEntities)) {
                     throw new TechCamExp(ConstantsErrorCode.VOUCHER_ERROR);
-                }else {
-                    totalDiscount = valueVoucher(voucherResponse,orderRequestProduct.getTotalAmount());
+                } else {
+                    totalDiscount = valueVoucher(voucherResponse, orderRequestProduct.getTotalAmount());
                 }
-            }else {
-                totalDiscount =valueVoucher(voucherResponse,orderRequestProduct.getTotalAmount()) + orderRequestProduct.getTotalDiscount();
+            } else {
+                totalDiscount = valueVoucher(voucherResponse, orderRequestProduct.getTotalAmount()) + orderRequestProduct.getTotalDiscount();
             }
         } else {
             totalDiscount = orderRequestProduct.getTotalDiscount();
@@ -140,7 +141,7 @@ public class OrderServiceImpl implements IOrderService {
             productEntities.stream().filter(productEntity -> {
                 request.getProductDetails().stream().filter(orderEntity -> {
                     if (orderEntity.getProductId().equals(productEntity.getId())) {
-                        System.out.println(orderEntity.getQuantity() +"-----"+ productEntity.getQuantity());
+                        System.out.println(orderEntity.getQuantity() + "-----" + productEntity.getQuantity());
                         if (orderEntity.getQuantity() > productEntity.getQuantity()) {
                             throw new TechCamExp(ConstantsErrorCode.ORDER_PRODUCT_OUT_OF_STOCK);
                         } else {
@@ -152,7 +153,10 @@ public class OrderServiceImpl implements IOrderService {
                 return false;
             }).collect(Collectors.toList());
             orderStratus = OrderStatus.PAID.name();
-        } else {
+        }else if(request.getOrderType().equals(OrderType.COUNTER.name())){
+            orderStratus = OrderStatus.CONFIRM.name();
+        }
+        else {
             orderStratus = OrderStatus.VERIFY.name();
         }
         // lưu hóa đơn.
@@ -162,9 +166,9 @@ public class OrderServiceImpl implements IOrderService {
                 .voucher(Objects.isNull(voucherResponse) ? null : MODEL_MAPPER.map(voucherResponse, VoucherEntity.class))
                 .ipAddress(request.getIpAddress())
                 .orderType(request.getOrderType())
-                .recipientName(Objects.nonNull(request.getRecipientName()) ? request.getCustomer().getFullName() : request.getRecipientName())
-                .recipientPhone(Objects.nonNull(request.getRecipientPhone()) ? request.getCustomer().getPhoneNumber() : request.getRecipientPhone())
-                .recipientAddress(Objects.nonNull(request.getRecipientAddress()) ? request.getCustomer().getAddress() : request.getRecipientAddress())
+                .recipientName(Objects.nonNull(request.getRecipientName()) ? request.getRecipientName() : request.getCustomer().getFullName())
+                .recipientPhone(Objects.nonNull(request.getRecipientPhone()) ? request.getRecipientPhone() : request.getCustomer().getPhoneNumber())
+                .recipientAddress(Objects.nonNull(request.getRecipientAddress()) ? request.getRecipientAddress() : request.getCustomer().getAddress())
                 .totalAmount(totalDiscount)
                 .itemQuantity(itemQuantity)
                 .tax(orderRequestProduct.getTotalAmount())
@@ -209,15 +213,15 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     private int valueVoucher(VoucherResponse voucherResponse, int sumMoney) {
-        if(voucherResponse.getVoucherTypeDiscount().equals("%")){
-            return (int) (sumMoney*voucherResponse.getVoucherDiscount());
+        if (voucherResponse.getVoucherTypeDiscount().equals("%")) {
+            return (int) (sumMoney * voucherResponse.getVoucherDiscount());
         }
         return voucherResponse.getVoucherDiscount().intValue();
     }
 
-    private boolean checkPermissionVoucher( List<ProductEntity> productEntities) {
+    private boolean checkPermissionVoucher(List<ProductEntity> productEntities) {
         //todo đợi service khuyến mại kiểm tra nếu tồn tại khuyến mại sản phẩm
-        Optional<ProductEntity> optionalProduct = productEntities.stream().filter(item-> item.getQuantity()==1000).findFirst();
+        Optional<ProductEntity> optionalProduct = productEntities.stream().filter(item -> item.getQuantity() == 1000).findFirst();
         return optionalProduct.isPresent();
     }
 
@@ -301,48 +305,51 @@ public class OrderServiceImpl implements IOrderService {
     @Override
     public OrderResponse confirmOrderSalePerson(ConfirmSalePersonRequest request) {
         OrderResponse response = new OrderResponse().builder().status(CommonStatus.SUCCESS.name()).build();
-        OrdersEntity orders = ordersRepo.findByIdAndDeleteFlagFalse(request.getId());
-        if (Objects.nonNull(orders)) {
+        List<ProductEntity> productEntities = new ArrayList<>();
+        OrdersEntity orders = ordersRepo.findByIdAndTransactionStatusAndDeleteFlagFalse(request.getId(), OrderStatus.VERIFY.name());
+        if (Objects.isNull(orders)) {
             throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
         }
         // lấy danh sách order details
-        try {
-            if (OrderMethod.CASH.name().equals(orders.getOrderType())) {
-                List<OrderdetailEntity> orderDetailEntities = orderDetailsRepo.findAllByOrdersIdAndDeleteFlag(request.getId(), false);
-                // kiểm tra xem danh sách sản phẩm có tồn tại không
-                List<String> productId = orderDetailEntities.stream().map(item -> item.getProduct().getId()).collect(Collectors.toList());
-                List<ProductEntity> productEntities = productRepo.findAllByIdInAndDeleteFlagFalse(productId);
-                if (CollectionUtils.isEmpty(productEntities) || productEntities.size() != orderDetailEntities.size()) {
-                    throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
-                }
-                // kiểm tra số lượng trong kho có tồn tại không.
-                // todo bắn messga ra sau
-                productEntities.stream().filter(productEntity -> {
-                    orderDetailEntities.stream().filter(orderEntity -> {
-                        if (orderEntity.getId().equals(productEntity.getId())) {
-                            if (orderEntity.getQuantity() > productEntity.getQuantity()) {
-                                throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
-                            } else {
-                                productEntity.setQuantity(productEntity.getQuantity() - orderEntity.getQuantity());
-                            }
+        if (OrderMethod.CASH.name().equalsIgnoreCase(orders.getPaymentMethod())) {
+            List<OrderdetailEntity> orderDetailEntities = orderDetailsRepo.findAllByOrdersIdAndDeleteFlag(request.getId(), false);
+            // kiểm tra xem danh sách sản phẩm có tồn tại không
+            List<String> productId = orderDetailEntities.stream().map(item -> item.getProduct().getId()).collect(Collectors.toList());
+            productEntities = productRepo.findAllByIdInAndDeleteFlagFalse(productId);
+            if (CollectionUtils.isEmpty(productEntities) || productEntities.size() != orderDetailEntities.size()) {
+                throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
+            }
+            // kiểm tra số lượng trong kho có tồn tại không.
+            // todo bắn messga ra sau
+            productEntities.stream().filter(productEntity -> {
+                orderDetailEntities.stream().filter(orderEntity -> {
+                    if (orderEntity.getProduct().getId().equals(productEntity.getId())) {
+                        if (orderEntity.getQuantity() > productEntity.getQuantity()) {
+                            throw new TechCamExp(ConstantsErrorCode.ORDER_PRODUCT_OUT_OF_STOCK);
+                        } else {
+                            productEntity.setQuantity(productEntity.getQuantity() - orderEntity.getQuantity());
                         }
-                        return false;
-                    }).collect(Collectors.toList());
+                    }
                     return false;
                 }).collect(Collectors.toList());
-                productRepo.saveAll(productEntities);
-            }
-            // kiểm tra xem người dùng có thay đổi người nhận hàng không thiếu ngày nhận hàng
-            if (!orders.equals(request)) {
-                orders.setRecipientName(request.getRecipientName());
-                orders.setRecipientPhone(request.getRecipientPhone());
-                orders.setRecipientAddress(request.getRecipientAddress());
-            }
-            orders.setSalesPerson("Quang");
-            orders.setTransactionStatus(OrderStatus.CONFIRM.name());
-            orders.setModifierDate(new Date());
+                return false;
+            }).collect(Collectors.toList());
+        }
+        // kiểm tra xem người dùng có thay đổi người nhận hàng không thiếu ngày nhận hàng
+
+        orders.setRecipientName(request.getRecipientName());
+        orders.setRecipientPhone(request.getRecipientPhone());
+        orders.setRecipientAddress(request.getRecipientAddress());
+
+        orders.setSalesPerson("Quang");
+        orders.setNote(request.getNote());
+        orders.setTransactionStatus(OrderStatus.CONFIRM.name());
+        orders.setModifierDate(new Date());
+        try {
+            productRepo.saveAll(productEntities);
             ordersRepo.save(orders);
         } catch (Exception e) {
+            e.printStackTrace();
             response.setStatus(CommonStatus.FAIL.name());
         }
 
@@ -352,11 +359,12 @@ public class OrderServiceImpl implements IOrderService {
     @Override
     public OrderResponse confirmExportOrder(ConfirmExportOrderRequest request) {
         OrderResponse orderResponse = new OrderResponse().builder().status(CommonStatus.SUCCESS.name()).build();
-        OrdersEntity orders = ordersRepo.findByIdAndDeleteFlagFalse(request.getId());
+        OrdersEntity orders = ordersRepo.findByIdAndTransactionStatusAndDeleteFlagFalse(request.getId(),OrderStatus.CONFIRM.name());
         if (Objects.isNull(orders)) {
             throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
         }
-        List<String> ids = request.getProductDetailsRequests().stream().map(OrderProductDetailsRequest::getProductId).collect(Collectors.toList());
+        validateImei(request);
+        List<String> ids = request.getProductDetailsRequests().stream().map(OrderProductDetailsRequest::getId).collect(Collectors.toList());
         List<OrderdetailEntity> orderDetails = orderDetailsRepo.findAllByIdInAndOrdersIdAndDeleteFlagFalse(ids, request.getId());
         // kiểm tra xem có đúng id product truyền vào không
         if (orderDetails.size() != request.getProductDetailsRequests().size()) {
@@ -380,11 +388,22 @@ public class OrderServiceImpl implements IOrderService {
             }).collect(Collectors.toList());
             orderDetailsRepo.saveAll(orderDetails);
             orders.setStockKeeper("Quang");
+            orders.setTransactionStatus(OrderStatus.SHIPPING.name());
             orders.setModifierDate(new Date());
         } catch (Exception e) {
             orderResponse.setStatus(CommonStatus.FAIL.name());
         }
         return orderResponse;
+    }
+
+    private void validateImei(ConfirmExportOrderRequest request) {
+        request.getProductDetailsRequests().stream().filter(item->{
+            List<String> imei = item.getImei().stream().distinct().collect(Collectors.toList());
+            if(imei.size()!= item.getImei().size()){
+                throw new TechCamExp(ConstantsErrorCode.IMEI_DUPLICATE);
+            }
+            return false;
+        }).collect(Collectors.toList());
     }
 
     public OrderResponse payTheBill(CustomerPayTheBillRequest request) {
@@ -415,19 +434,37 @@ public class OrderServiceImpl implements IOrderService {
         if (Objects.isNull(orders)) {
             throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
         }
+        List<String> validateImeiDuplicate = request.getImei().stream().distinct().collect(Collectors.toList());
+        if(validateImeiDuplicate.size() != request.getImei().size()){
+            throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
+        }
         OrderdetailEntity orderdetailEntity = orderDetailsRepo.findByOrdersIdAndProductId(request.getOrderId(), request.getProductId());
         if (Objects.isNull(orderdetailEntity)) {
             throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
         }
+        ProductEntity productEntity = productRepo.getByIdAndDeleteFlagIsFalse(request.getProductId());
+        if(Objects.isNull(productEntity)){
+            throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
+        }
         List<String> imeiList = convertToListImei(orderdetailEntity.getImei());
+        List<String> finalImeiList = imeiList;
+        request.getImei().stream().filter(item->{
+            if(!checkImei(item, finalImeiList)) throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
+            return false;
+        }).collect(Collectors.toList());
         if (imeiList.size() < request.getImei().size()) {
             throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
         }
         imeiList = imeiList.stream().filter(item -> !checkImei(item, request.getImei())).collect(Collectors.toList());
         orderdetailEntity.setImei(mapperImei(imeiList));
         orderdetailEntity.setQuantity(orderdetailEntity.getQuantity() - request.getImei().size());
+        String noteImei = request.getImei().stream().map(String::toString).collect(Collectors.joining(", "));
+        orderdetailEntity.setNote(request.getNote() +String.format(MessageUtil.NOTE_EDIT_ORDER_DETAILS,noteImei));
         try {
             orderDetailsRepo.save(orderdetailEntity);
+            productEntity.setQuantity(productEntity.getQuantity()+request.getImei().size());
+            productRepo.save(productEntity);
+            // todo chưa có cái trường lưu sản phẩm lỗi
             List<OrderdetailEntity> orderdetailEntities = orderDetailsRepo.findAllByOrdersIdAndDeleteFlag(request.getOrderId(), false);
             editOrderEntity(orderdetailEntities, orders);
             orders.setModifierDate(new Date());

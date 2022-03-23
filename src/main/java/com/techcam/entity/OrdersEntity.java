@@ -335,11 +335,11 @@ public class OrdersEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrdersEntity orders = (OrdersEntity) o;
-        return Objects.equals(id, orders.id) && Objects.equals(recipientName, orders.recipientName) && Objects.equals(recipientPhone, orders.recipientPhone) && Objects.equals(recipientAddress, orders.recipientAddress) && Objects.equals(note, orders.note);
+        return Objects.equals(id, orders.id) && Objects.equals(recipientName, orders.recipientName) && Objects.equals(recipientPhone, orders.recipientPhone) && Objects.equals(recipientAddress, orders.recipientAddress);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, recipientName, recipientPhone, recipientAddress, note);
+        return Objects.hash(id, recipientName, recipientPhone, recipientAddress);
     }
 }

@@ -56,7 +56,7 @@ public class OrdersApi {
     public OrderResponse confirmOrderSalePerson(@Valid @RequestBody ConfirmSalePersonRequest request){
         return orderService.confirmOrderSalePerson(request);
     }
-    @PostMapping("/confirm-Export-order")
+    @PostMapping("/confirm-export-order")
     public OrderResponse confirmExportOrder(@Valid @RequestBody ConfirmExportOrderRequest request){
         return orderService.confirmExportOrder(request);
     }
