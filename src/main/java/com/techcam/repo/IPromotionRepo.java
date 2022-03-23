@@ -12,5 +12,5 @@ public interface IPromotionRepo extends JpaRepository<PromotionEntity, Long> {
 
     List<PromotionEntity> findAllByDeleteFlagFalse();
 
-    List<PromotionEntity> findByStartDateGreaterThanOrEqualToAndEndDateLessThanOrEqualTo(Date startDate, Date endDate);
+//    List<PromotionEntity> findByStartDateGreaterThanOrEqualToAndEndDateLessThanOrEqualTo(Date startDate, Date endDate);
 }

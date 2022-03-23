@@ -81,6 +81,9 @@ public class ProductService implements IProductService {
                     .status("ON")
                     .note("")
                     .build();
+            if (Objects.isNull(productEntity.getThumbnail())) {
+                productEntity.setThumbnail(x);
+            }
             lstImage.add(imagesEntity);
         }
         List<ProductPropertyEntity> lstProductPropertyEntities = new ArrayList<>();
@@ -141,6 +144,9 @@ public class ProductService implements IProductService {
                     .status("ON")
                     .note("")
                     .build();
+            if (Objects.isNull(productEntity.getThumbnail())) {
+                productEntity.setThumbnail(x);
+            }
             lstImage.add(imagesEntity);
         }
         List<ProductPropertyEntity> findAllByProductId = productPropertyRepo.findAllByProductIdAndDeleteFlagIsFalse(productEntity.getId());
@@ -249,6 +255,7 @@ public class ProductService implements IProductService {
         s.setCreateBy(x.getCreateBy());
         s.setCreateDate(x.getCreateDate());
         s.setModifierDate(x.getModifierDate());
+        s.setThumbnail(x.getThumbnail());
         return s;
     }
 }

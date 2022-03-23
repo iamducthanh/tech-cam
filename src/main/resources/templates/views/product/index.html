@@ -6,6 +6,21 @@
 <head>
     <meta charset="UTF-8">
     <title>Quản lý sản phẩm - TechCam</title>
+    <style>
+        div.click-to-top .card {
+            display: none;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #333;
+            color: #fff;
+        }
+
+        div.click-to-top:hover .card {
+            display: block;
+        }
+    </style>
 </head>
 <body>
 <div layout:fragment="content" class="container-fluid">
@@ -50,11 +65,12 @@
                     Sản phẩm
                 </a>
             </div>
-
-            <table id="datatable" class="table table-bordered dt-responsive nowrap dataTable no-footer shadow">
+            <table id="datatable"
+                   class="table table-responsive table-hover table-bordered nowrap dataTable no-footer shadow">
                 <thead>
                 <tr class="text-center">
                     <th>STT</th>
+                    <th>Thumbnail</th>
                     <th>Chức năng</th>
                     <th>Tên sản phẩm</th>
                     <th>Giá bán</th>
@@ -69,6 +85,14 @@
                 <th:block th:each="product, theCount : ${lstProducts}">
                     <tr>
                         <td class="text-center" th:text="${theCount.index + 1}">STT</td>
+                        <td class="text-center">
+                            <div class="click-to-top">
+                                <div class="card card-body">
+                                    <img th:src="${product.thumbnail}" th:title="${product.productName}" height="25vh"/>
+                                </div>
+                                <span>Tooltip text</span>
+                            </div>
+                        </td>
                         <td class="text-center">
                             <a href="#modal-edit-product" th:data-id="${product.productId}" data-bs-toggle="modal"
                                class="btn btn-primary btn-sm waves-effect waves-light"
@@ -230,12 +254,14 @@
                                         </div>
                                         <div class="carousel-inner" id="previewUploadAdd">
                                         </div>
-                                        <a class="carousel-control-prev " type="button" data-bs-target="#carouselExampleCaptionsAdd"
+                                        <a class="carousel-control-prev " type="button"
+                                           data-bs-target="#carouselExampleCaptionsAdd"
                                            data-bs-slide="prev">
                                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                             <span class="visually-hidden">Previous</span>
                                         </a>
-                                        <a class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptionsAdd"
+                                        <a class="carousel-control-next" type="button"
+                                           data-bs-target="#carouselExampleCaptionsAdd"
                                            data-bs-slide="next">
                                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                             <span class="visually-hidden">Next</span>
@@ -386,12 +412,14 @@
                                         </div>
                                         <div class="carousel-inner" id="previewUpload">
                                         </div>
-                                        <a class="carousel-control-prev " type="button" data-bs-target="#carouselExampleCaptions"
+                                        <a class="carousel-control-prev " type="button"
+                                           data-bs-target="#carouselExampleCaptions"
                                            data-bs-slide="prev">
                                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                             <span class="visually-hidden">Previous</span>
                                         </a>
-                                        <a class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
+                                        <a class="carousel-control-next" type="button"
+                                           data-bs-target="#carouselExampleCaptions"
                                            data-bs-slide="next">
                                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                             <span class="visually-hidden">Next</span>
