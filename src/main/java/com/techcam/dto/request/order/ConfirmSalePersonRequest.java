@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 /**
  * Description:
  *
@@ -23,5 +25,6 @@ public class ConfirmSalePersonRequest {
     private String recipientName;
     private String recipientPhone;
     private String recipientAddress;
+    private Date deliveryDate;
     private String note;
 }

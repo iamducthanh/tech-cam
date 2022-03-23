@@ -23,4 +23,7 @@ public class CustomerPayTheBillRequest {
     private String id;
     private BigInteger customerMoney;
     private String paymentMethod;
+    private Integer givenMoney;
+    private Integer returnMoney;
+    private Integer receiptValue;
 }

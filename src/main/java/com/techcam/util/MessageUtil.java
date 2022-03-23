@@ -11,4 +11,6 @@ package com.techcam.util;
 
 public interface MessageUtil {
     String NOTE_EDIT_ORDER_DETAILS= " ( Có IMEI Là : %s )";
+    String SAVE_ORDER_CUSTOMER_DONE= "Khách hàng thanh toán hóa đơn : %s";
+    String RECEIPT_NAME_ORDER="Thanh toán hóa đơn mua hàng";
 }

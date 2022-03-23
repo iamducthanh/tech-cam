@@ -16,6 +16,7 @@ import com.techcam.exception.TechCamExp;
 import com.techcam.repo.IOrderDetailsRepo;
 import com.techcam.repo.IOrderRepo;
 import com.techcam.repo.IProductRepo;
+import com.techcam.repo.IReceiptVoucherRepo;
 import com.techcam.service.ICustomerService;
 import com.techcam.service.IOrderService;
 import com.techcam.service.IVoucherService;
@@ -55,6 +56,8 @@ public class OrderServiceImpl implements IOrderService {
     private IVoucherService voucherService;
     @Autowired
     private ICustomerService customerService;
+    @Autowired
+    private IReceiptVoucherRepo receiptVoucherRepo;
     private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     private static final ModelMapper MODEL_MAPPER = new ModelMapper();
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -340,7 +343,7 @@ public class OrderServiceImpl implements IOrderService {
         orders.setRecipientName(request.getRecipientName());
         orders.setRecipientPhone(request.getRecipientPhone());
         orders.setRecipientAddress(request.getRecipientAddress());
-
+        orders.setDeliveryDate(request.getDeliveryDate());
         orders.setSalesPerson("Quang");
         orders.setNote(request.getNote());
         orders.setTransactionStatus(OrderStatus.CONFIRM.name());
@@ -407,7 +410,6 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     public OrderResponse payTheBill(CustomerPayTheBillRequest request) {
-        // todo viết tiếp chưa đủ
         OrderResponse orderResponse = new OrderResponse().builder().status(CommonStatus.SUCCESS.name()).build();
         OrdersEntity orders = ordersRepo.findByIdAndDeleteFlagFalse(request.getId());
         if (Objects.isNull(orders)) {
@@ -416,12 +418,26 @@ public class OrderServiceImpl implements IOrderService {
         orders.setAccounting("quang");
         orders.setModifierDate(new Date());
         orders.setTransactionStatus(OrderStatus.DONE.name());
+        ReceiptVoucherEntity receiptVoucherEntity = new ReceiptVoucherEntity();
+        receiptVoucherEntity.setId(UUID.randomUUID().toString());
+        receiptVoucherEntity.setCreateDate(new Date());
+        receiptVoucherEntity.setModifierDate(new Date());
+        receiptVoucherEntity.setReceiptValue(orders.getTax()-orders.getTotalAmount());
+        receiptVoucherEntity.setDeleteFlag(false);
+        receiptVoucherEntity.setPayer(orders.getCustomer().getFullName());
+        receiptVoucherEntity.setPayerPhone(orders.getCustomer().getPhoneNumber());
+        receiptVoucherEntity.setReceiptName(MessageUtil.RECEIPT_NAME_ORDER);
+        receiptVoucherEntity.setDescription(String.format(MessageUtil.SAVE_ORDER_CUSTOMER_DONE, orders.getId()));
+        receiptVoucherEntity.setGivenMoney(request.getGivenMoney());
+        receiptVoucherEntity.setReturnMoney(request.getGivenMoney()-receiptVoucherEntity.getReceiptValue());
+        receiptVoucherEntity.setOrders(orders);
         try {
-
+            ordersRepo.save(orders);
+            receiptVoucherRepo.save(receiptVoucherEntity);
         } catch (Exception e) {
-
+            orderResponse.setStatus(CommonStatus.FAIL.name());
         }
-        return null;
+        return orderResponse;
     }
 
     @Override
@@ -506,15 +522,18 @@ public class OrderServiceImpl implements IOrderService {
     public OrderResponse cancelOrder(String id) {
         OrderResponse orderResponse = new OrderResponse().builder().status(CommonStatus.SUCCESS.name()).build();
         OrdersEntity orders = ordersRepo.findByIdAndDeleteFlagFalse(id);
+        if (Objects.isNull(orders)) {
+            throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
+        }
         try {
-            if (!(OrderMethod.CASH.name().equals(orders.getPaymentMethod()) && OrderType.ONLINE.name().equals(orders.getOrderType()))) {
+            if (!orders.getTransactionStatus().equals(OrderStatus.VERIFY.name())) {
                 List<ProductEntity> productEntitiesSave = new ArrayList<>();
                 List<OrderdetailEntity> orderDetailEntities = orderDetailsRepo.findAllByOrdersIdAndDeleteFlag(orders.getId(), false);
-                List<String> ids = orderDetailEntities.stream().map(item -> item.getId()).collect(Collectors.toList());
+                List<String> ids = orderDetailEntities.stream().map(item -> item.getProduct().getId()).collect(Collectors.toList());
                 List<ProductEntity> productEntities = productRepo.findAllByIdInAndDeleteFlagFalse(ids);
                 productEntities.stream().filter(product -> {
                     orderDetailEntities.stream().filter(orderDetailEntity -> {
-                        if (orderDetailEntity.getId().equals(product.getId())) {
+                        if (orderDetailEntity.getProduct().getId().equals(product.getId())) {
                             product.setQuantity(product.getQuantity() + orderDetailEntity.getQuantity());
                             productEntitiesSave.add(product);
                         }
@@ -523,9 +542,6 @@ public class OrderServiceImpl implements IOrderService {
                     return false;
                 }).collect(Collectors.toList());
                 productRepo.saveAll(productEntitiesSave);
-            }
-            if (Objects.isNull(orders)) {
-                throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
             }
             orders.setDeleteFlag(true);
             orders.setModifierDate(new Date());

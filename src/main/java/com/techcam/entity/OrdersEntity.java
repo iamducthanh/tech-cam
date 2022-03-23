@@ -50,9 +50,19 @@ public class OrdersEntity {
     private String modifierBy;
     private Boolean deleteFlag;
     private String ipAddress;
+    private Date deliveryDate;
     private CustomerEntity customer;
     private VoucherEntity voucher;
     private List<OrderdetailEntity> ordersEntities;
+    private List<ReceiptVoucherEntity> orReceiptVoucherEntities;
+    @OneToMany(mappedBy = "orders")
+    public List<ReceiptVoucherEntity> getOrReceiptVoucherEntities() {
+        return orReceiptVoucherEntities;
+    }
+
+    public void setOrReceiptVoucherEntities(List<ReceiptVoucherEntity> orReceiptVoucherEntities) {
+        this.orReceiptVoucherEntities = orReceiptVoucherEntities;
+    }
 
     @OneToMany(mappedBy = "orders", fetch = FetchType.LAZY)
     public List<OrderdetailEntity> getOrdersEntities() {
@@ -89,6 +99,15 @@ public class OrdersEntity {
 
     public void setOrderDate(Date orderDate) {
         this.orderDate = orderDate;
+    }
+    @Basic
+    @Column(name = "delivery_date")
+    public Date getDeliveryDate() {
+        return deliveryDate;
+    }
+
+    public void setDeliveryDate(Date deliveryDate) {
+        this.deliveryDate = deliveryDate;
     }
 
     @Basic

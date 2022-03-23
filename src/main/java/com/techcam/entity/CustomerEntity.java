@@ -35,6 +35,8 @@ public class CustomerEntity {
     private Date createDate;
     private String modifierBy;
     private List<OrdersEntityA> ordersEntities;
+    private List<ReceiptVoucherEntity> receiptVoucherEntities;
+
     @OneToMany(mappedBy = "customer")
     public List<OrdersEntityA> getOrdersEntities() {
         return ordersEntities;
