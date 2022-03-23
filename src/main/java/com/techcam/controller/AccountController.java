@@ -7,6 +7,7 @@ import com.techcam.dto.request.ForgotPasswordDto;
 import com.techcam.util.EncodeUtil;
 import com.techcam.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class AccountController {
     private final EncodeUtil encodeUtil;
     private final SessionUtil sessionUtil;
@@ -42,21 +44,19 @@ public class AccountController {
 
     @GetMapping("/reset-password")
     public String resetPasswordPage(@RequestParam("token") String token, Model model) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        String view = "";
+        log.warn("Request reset password " + RequestForgotPasswordConstant.requests.size());
+
         String tokenDecoded = encodeUtil.decrypt(token.replace(" ", "+"));
-        ForgotPasswordDto forgotPasswordDto = objectMapper.readValue(tokenDecoded, ForgotPasswordDto.class);
-        System.out.println("size req " + RequestForgotPasswordConstant.requests.size());
-        System.out.println(RequestForgotPasswordConstant.requests.get(forgotPasswordDto.getEmail()));
-        String codeConst = RequestForgotPasswordConstant.requests.get(forgotPasswordDto.getEmail());
-        if(codeConst == null || !codeConst.equals(forgotPasswordDto.getCode())){
+        ForgotPasswordDto forgotPasswordDto = new ObjectMapper().readValue(tokenDecoded, ForgotPasswordDto.class);
+        String resetPassToken = RequestForgotPasswordConstant.requests.get(forgotPasswordDto.getEmail());
+        log.warn("Reset password token = " + resetPassToken);
+        if(resetPassToken == null || !resetPassToken.equals(forgotPasswordDto.getCode())){
             model.addAttribute("message","Yêu cầu đã hết hạn vui lòng gửi lại!");
-            view = "forward:/forgot-password";
+            return "forward:/forgot-password";
         } else {
             sessionUtil.addObject("resetPass", forgotPasswordDto.getEmail());
-            view = "views/resetpassword";
+            return "views/resetpassword";
         }
-        return view;
     }
 
 }

@@ -1,13 +1,12 @@
 package com.techcam.service.impl;
 
 import com.techcam.entity.StaffEntity;
-import com.techcam.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -30,15 +29,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StaffDetailsServiceImpl implements UserDetailsService {
 
-    private final SessionUtil sessionUtil;
     private final StaffService staffService;
+
+    @Autowired
+    private final HttpSession session;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         StaffEntity staff = staffService.getByEmail(email);
         if (staff == null) {
             log.error("User not found! " + email);
-            sessionUtil.addObject("emailLogin", email);
+            session.setAttribute("emailLogin", email);
             throw new UsernameNotFoundException("User " + email + " was not found in the database");
         }
 
@@ -50,8 +51,7 @@ public class StaffDetailsServiceImpl implements UserDetailsService {
 
         // Add info logged user to Session
         log.info("Logged: " + staff);
-        sessionUtil.addObject("currentUserEmail", staff.getEmail());
-        sessionUtil.addObject("currentUserName", staff.getFullName());
+        session.setAttribute("user", staff);
 
         List<String> roleNames = new ArrayList<>();
         assert staff != null;

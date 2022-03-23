@@ -1,5 +1,6 @@
 package com.techcam.exception;
 
+import com.techcam.util.Utf8ResourceBundle;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.*;
@@ -19,7 +20,7 @@ public class ErrorMessageLoader {
     private static Map<String, ErrorMessage> errorMessageMap = new HashMap<>();
 
     public ErrorMessageLoader() {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("message_vn");
+        ResourceBundle resourceBundle = Utf8ResourceBundle.getBundle("message_vn");
         Enumeration massageKeys = resourceBundle.getKeys();
         while (massageKeys.hasMoreElements()) {
             String key = (String) massageKeys.nextElement();
