@@ -82,13 +82,21 @@ public class OrderServiceImpl implements IOrderService {
     @Override
     public OrderResponse checkOutBank(String bankStatus, String bankTransaction){
         OrderResponse response = new OrderResponse().builder().status(CommonStatus.SUCCESS.name()).build();
+        OrdersEntity orders = ordersRepo.findByBankTransaction(bankTransaction);
+        if(Objects.isNull(orders)){
+            response.setStatus(CommonStatus.FAIL.name());
+        }
         if(!StringUtils.equalsIgnoreCase(bankStatus,"00")){
             response.setStatus(CommonStatus.FAIL.name());
+            List<OrderdetailEntity> orderdetailEntities = orderDetailsRepo.findAllByOrdersIdAndDeleteFlag(orders.getId(),false);
+            List<ProductEntity> productEntities = new ArrayList<>();
+            orderdetailEntities.stream().filter(item-> {
+                item.getProduct().setQuantity(item.getProduct().getQuantity()+item.getQuantity());
+                productEntities.add(item.getProduct());
+                return false;
+            }).collect(Collectors.toList());
+            productRepo.saveAll(productEntities);
         }{
-            OrdersEntity orders = ordersRepo.findByBankTransaction(bankTransaction);
-            if(Objects.isNull(orders)){
-               response.setStatus(CommonStatus.FAIL.name());
-            }
             orders.setStatus(OrderStatus.PAID.name());
             orders.setDeleteFlag(false);
             ordersRepo.save(orders);
@@ -166,21 +174,8 @@ public class OrderServiceImpl implements IOrderService {
             totalDiscount = orderRequestProduct.getTotalDiscount();
         }
         String orderStratus = "";
-        if ( request.getOrderType().equals(OrderType.COUNTER.name())) {
-            productEntities.stream().filter(productEntity -> {
-                request.getProductDetails().stream().filter(orderEntity -> {
-                    if (orderEntity.getProductId().equals(productEntity.getId())) {
-                        System.out.println(orderEntity.getQuantity() + "-----" + productEntity.getQuantity());
-                        if (orderEntity.getQuantity() > productEntity.getQuantity()) {
-                            throw new TechCamExp(ConstantsErrorCode.ORDER_PRODUCT_OUT_OF_STOCK);
-                        } else {
-                            productEntity.setQuantity(productEntity.getQuantity() - orderEntity.getQuantity());
-                        }
-                    }
-                    return false;
-                }).collect(Collectors.toList());
-                return false;
-            }).collect(Collectors.toList());
+        if ( request.getOrderType().equals(OrderType.COUNTER.name()) || request.getPaymentMethod().equals(OrderMethod.PAYMENT.name())) {
+            setQuantityProductOrder(request, productEntities);
             orderStratus = OrderStatus.CONFIRM.name();
         }
 //        else if(request.getOrderType().equals(OrderType.COUNTER.name())){
@@ -238,7 +233,7 @@ public class OrderServiceImpl implements IOrderService {
         ).collect(Collectors.toList());
         try {
             orderDetailsRepo.saveAll(orderdetailEntities);
-            if ( request.getOrderType().equals(OrderType.COUNTER.name())) {
+            if ( request.getOrderType().equals(OrderType.COUNTER.name()) || request.getPaymentMethod().equals(OrderMethod.PAYMENT.name())) {
                 productRepo.saveAll(productEntities);
             }
             if(request.getOrderType().equals(OrderType.ONLINE.name()) && request.getPaymentMethod().equalsIgnoreCase(OrderMethod.PAYMENT.name())) {
@@ -251,6 +246,23 @@ public class OrderServiceImpl implements IOrderService {
         }
 
         return response;
+    }
+
+    private void setQuantityProductOrder(OrderRequest request, List<ProductEntity> productEntities) {
+        productEntities.stream().filter(productEntity -> {
+            request.getProductDetails().stream().filter(orderEntity -> {
+                if (orderEntity.getProductId().equals(productEntity.getId())) {
+                    System.out.println(orderEntity.getQuantity() + "-----" + productEntity.getQuantity());
+                    if (orderEntity.getQuantity() > productEntity.getQuantity()) {
+                        throw new TechCamExp(ConstantsErrorCode.ORDER_PRODUCT_OUT_OF_STOCK);
+                    } else {
+                        productEntity.setQuantity(productEntity.getQuantity() - orderEntity.getQuantity());
+                    }
+                }
+                return false;
+            }).collect(Collectors.toList());
+            return false;
+        }).collect(Collectors.toList());
     }
 
     private int valueVoucher(VoucherResponse voucherResponse, int sumMoney) {
