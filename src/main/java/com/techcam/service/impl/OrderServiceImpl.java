@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.techcam.config.Config;
 import com.techcam.constants.ConstantsErrorCode;
 import com.techcam.dto.request.Customer.CustomerRequest;
+import com.techcam.dto.request.MailDto;
 import com.techcam.dto.request.order.*;
 import com.techcam.dto.response.Customer.CustomerInfoResponse;
 import com.techcam.dto.response.order.GetInfoOrder;
@@ -22,7 +23,10 @@ import com.techcam.service.ICustomerService;
 import com.techcam.service.IOrderService;
 import com.techcam.service.IVoucherService;
 import com.techcam.type.*;
+import com.techcam.util.ConvertDateUtil;
+import com.techcam.util.MailerUtil;
 import com.techcam.util.MessageUtil;
+import com.techcam.util.SessionUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -31,6 +35,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Type;
 import java.text.ParseException;
@@ -61,13 +66,18 @@ public class OrderServiceImpl implements IOrderService {
     private ICustomerService customerService;
     @Autowired
     private IReceiptVoucherRepo receiptVoucherRepo;
+    @Autowired
+    private MailerUtil mailerUtil;
     private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     private static final ModelMapper MODEL_MAPPER = new ModelMapper();
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    @Autowired
+    private SessionUtil sessionUtil;
+
 
     @Override
     public List<GetInfoOrder> getAllOrder() {
-        List<OrdersEntity> ordersEntityList = ordersRepo.findAll();
+        List<OrdersEntity> ordersEntityList = ordersRepo.findAllByOrderByCreateDateDesc();
         Type listType = new TypeToken<List<GetInfoOrder>>() {
         }.getType();
         return MODEL_MAPPER.map(ordersEntityList, listType);
@@ -105,7 +115,7 @@ public class OrderServiceImpl implements IOrderService {
     }
     @Override
     public List<GetInfoOrder> getAllOrderByStatus(String status) {
-        List<OrdersEntity> ordersEntityList = ordersRepo.findAllByStatusAndDeleteFlagFalse(status);
+        List<OrdersEntity> ordersEntityList = ordersRepo.findAllByStatusAndDeleteFlagFalseOrderByCreateDateDesc(status);
         Type listType = new TypeToken<List<GetInfoOrder>>() {
         }.getType();
         return MODEL_MAPPER.map(ordersEntityList, listType);
@@ -113,7 +123,7 @@ public class OrderServiceImpl implements IOrderService {
 
     @Override
     public List<GetInfoOrder> getAllOrderByDeleteFlag() {
-        List<OrdersEntity> ordersEntityList = ordersRepo.findAllByDeleteFlagFalse();
+        List<OrdersEntity> ordersEntityList = ordersRepo.findAllByDeleteFlagFalseOrderByCreateDateDesc();
         Type listType = new TypeToken<List<GetInfoOrder>>() {
         }.getType();
         return MODEL_MAPPER.map(ordersEntityList, listType);
@@ -197,14 +207,14 @@ public class OrderServiceImpl implements IOrderService {
                 .totalAmount(totalDiscount)
                 .itemQuantity(itemQuantity)
                 .tax(orderRequestProduct.getTotalAmount())
-                .createBy("Quang")
+                .createBy(request.getCustomer().getFullName())
                 .paymentMethod(request.getPaymentMethod())
                 .createDate(new Date())
                 .modifierDate(new Date())
                 .orderDate(new Date())
                 .note(request.getNote())
                 .deleteFlag(false)
-                .salesPerson(request.getOrderType().equals(OrderType.COUNTER.name()) ? "Quang" : null)
+//                .salesPerson(request.getOrderType().equals(OrderType.COUNTER.name()) ? "Quang" : null)
                 .status(OrderStatus.UNPAID.name())
                 .transactionStatus(orderStratus)
                 .build();
@@ -236,9 +246,15 @@ public class OrderServiceImpl implements IOrderService {
             if ( request.getOrderType().equals(OrderType.COUNTER.name()) || request.getPaymentMethod().equals(OrderMethod.PAYMENT.name())) {
                 productRepo.saveAll(productEntities);
             }
-            if(request.getOrderType().equals(OrderType.ONLINE.name()) && request.getPaymentMethod().equalsIgnoreCase(OrderMethod.PAYMENT.name())) {
-                String vnpay = VNPAYService.payments(ordersEntity.getTax() - ordersEntity.getTotalAmount(), vnp_ref, httpServletRequest);
-                response.setVnpay(vnpay);
+            if(request.getOrderType().equals(OrderType.ONLINE.name())) {
+                if(request.getPaymentMethod().equalsIgnoreCase(OrderMethod.PAYMENT.name())) {
+                    String vnpay = VNPAYService.payments(ordersEntity.getTax() - ordersEntity.getTotalAmount(), vnp_ref, httpServletRequest);
+                    response.setVnpay(vnpay);
+                }
+                if(Objects.isNull(customerInfoResponse.getEmail())){
+                    sendMail(String.format(MessageUtil.MAIL_ORDER_REGISTRATION_ONLINE, orderSave.getId()), customerInfoResponse.getEmail(),
+                            MessageUtil.SUBJECT_MAIL_ORDER,MessageUtil.FROM_MAIL);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -246,6 +262,15 @@ public class OrderServiceImpl implements IOrderService {
         }
 
         return response;
+    }
+
+    private void sendMail(String body, String toMail,String subject,String fromMail) throws MessagingException {
+        MailDto mailDto = new MailDto();
+        mailDto.setBody(body);
+        mailDto.setTo(toMail);
+        mailDto.setSubject(subject);
+        mailDto.setFrom(fromMail);
+        mailerUtil.send(mailDto);
     }
 
     private void setQuantityProductOrder(OrderRequest request, List<ProductEntity> productEntities) {
@@ -345,7 +370,7 @@ public class OrderServiceImpl implements IOrderService {
         orders.setItemQuantity(0);
         orders.setTax(0);
         orders.setTotalAmount(0);
-        orders.setModifierBy("Quang");
+        orders.setModifierBy(getInfoStaff());
         orderDetailsSaveALl.stream().filter(item -> {
             orders.setItemQuantity(orders.getItemQuantity() + item.getQuantity());
             orders.setTax((int) (orders.getTax() + (item.getQuantity() * item.getProduct().getPrice())));
@@ -394,13 +419,17 @@ public class OrderServiceImpl implements IOrderService {
         orders.setRecipientPhone(request.getRecipientPhone());
         orders.setRecipientAddress(request.getRecipientAddress());
         orders.setDeliveryDate(request.getDeliveryDate());
-        orders.setSalesPerson("Quang");
+        orders.setSalesPerson(getInfoStaff());
         orders.setNote(request.getNote());
         orders.setTransactionStatus(OrderStatus.CONFIRM.name());
         orders.setModifierDate(new Date());
         try {
             productRepo.saveAll(productEntities);
             ordersRepo.save(orders);
+            if(Objects.isNull(orders.getCustomer().getEmail())) {
+                sendMail(String.format(MessageUtil.MAIL_CONFIRM_ORDER, orders.getId(), ConvertDateUtil.convertDateTime(orders.getDeliveryDate())), orders.getCustomer().getEmail(),
+                        MessageUtil.SUBJECT_MAIL_ORDER,MessageUtil.FROM_MAIL);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(CommonStatus.FAIL.name());
@@ -440,7 +469,7 @@ public class OrderServiceImpl implements IOrderService {
                 return false;
             }).collect(Collectors.toList());
             orderDetailsRepo.saveAll(orderDetails);
-            orders.setStockKeeper("Quang");
+            orders.setStockKeeper(getInfoStaff());
             orders.setTransactionStatus(OrderStatus.SHIPPING.name());
             orders.setModifierDate(new Date());
         } catch (Exception e) {
@@ -459,15 +488,17 @@ public class OrderServiceImpl implements IOrderService {
         }).collect(Collectors.toList());
     }
 
+    @Override
     public OrderResponse payTheBill(CustomerPayTheBillRequest request) {
         OrderResponse orderResponse = new OrderResponse().builder().status(CommonStatus.SUCCESS.name()).build();
         OrdersEntity orders = ordersRepo.findByIdAndDeleteFlagFalse(request.getId());
         if (Objects.isNull(orders)) {
             throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
         }
-        orders.setAccounting("quang");
+        orders.setAccounting(getInfoStaff());
         orders.setModifierDate(new Date());
         orders.setTransactionStatus(OrderStatus.DONE.name());
+        orders.setStatus(OrderStatus.PAID.name());
         ReceiptVoucherEntity receiptVoucherEntity = new ReceiptVoucherEntity();
         receiptVoucherEntity.setId(UUID.randomUUID().toString());
         receiptVoucherEntity.setCreateDate(new Date());
@@ -484,6 +515,10 @@ public class OrderServiceImpl implements IOrderService {
         try {
             ordersRepo.save(orders);
             receiptVoucherRepo.save(receiptVoucherEntity);
+            if(Objects.isNull(orders.getCustomer().getEmail())) {
+                sendMail(MessageUtil.MAIL_CUSTOMER_ORDER_DONE, orders.getCustomer().getEmail(),
+                        MessageUtil.SUBJECT_MAIL_ORDER,MessageUtil.FROM_MAIL);
+            }
         } catch (Exception e) {
             orderResponse.setStatus(CommonStatus.FAIL.name());
         }
@@ -534,7 +569,7 @@ public class OrderServiceImpl implements IOrderService {
             List<OrderdetailEntity> orderdetailEntities = orderDetailsRepo.findAllByOrdersIdAndDeleteFlag(request.getOrderId(), false);
             editOrderEntity(orderdetailEntities, orders);
             orders.setModifierDate(new Date());
-            orders.setModifierBy("Quang");
+            orders.setModifierBy(getInfoStaff());
             ordersRepo.save(orders);
         } catch (Exception e) {
             e.printStackTrace();
@@ -595,7 +630,7 @@ public class OrderServiceImpl implements IOrderService {
             }
             orders.setDeleteFlag(true);
             orders.setModifierDate(new Date());
-            orders.setModifierBy("Quang");
+            orders.setModifierBy(getInfoStaff());
 
             ordersRepo.save(orders);
         } catch (Exception e) {
@@ -614,7 +649,6 @@ public class OrderServiceImpl implements IOrderService {
         productEntities.forEach(e -> {
             productDetails.stream().filter(item -> {
                         if (item.getProductId().equals(e.getId())) {
-                            //todo check voucher hay khuyến mại tiền mặt ở đây
                             item.setDiscount((int) (e.getPrice() * item.getQuantity() * 0.1));
                             orderRequest.setTotalDiscount((int) (orderRequest.getTotalDiscount() + item.getDiscount()));
                             orderRequest.setTotalAmount((int) (orderRequest.getTotalAmount() + e.getPrice() * item.getQuantity()));
@@ -655,5 +689,12 @@ public class OrderServiceImpl implements IOrderService {
             return new ArrayList<>();
         }
         return productEntities;
+    }
+    private String getInfoStaff(){
+        StaffEntity staffEntity = (StaffEntity) sessionUtil.getObject("STAFF");
+        if(Objects.isNull(staffEntity)){
+            throw new TechCamExp(ConstantsErrorCode.INTERNAL_SERVER_ERROR);
+        }
+        return staffEntity.getFullName();
     }
 }

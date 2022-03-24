@@ -87,7 +87,10 @@ public class OrdersApi {
         }
         return orderService.cancelOrder(request.getId());
     }
-
+    @PostMapping("/pay-the-bill")
+    public OrderResponse payTheBill(@Valid @RequestBody CustomerPayTheBillRequest request){
+        return orderService.payTheBill(request);
+    }
     public String getDevice(HttpServletRequest request){
         String ipAddress = request.getHeader("X-Forwarded-For");
         if(StringUtils.isEmpty(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {

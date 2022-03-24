@@ -184,7 +184,7 @@ public class ReceiptVoucherEntity {
 
     @Basic
     @Column(name = "return_money")
-    public Integer getReturnMoney(int i) {
+    public Integer getReturnMoney() {
         return returnMoney;
     }
 

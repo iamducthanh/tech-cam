@@ -38,6 +38,8 @@ public interface IOrderService {
 
     OrderResponse confirmExportOrder(ConfirmExportOrderRequest request);
 
+    OrderResponse payTheBill(CustomerPayTheBillRequest request);
+
     OrderResponse editOrderDetailsConfirm(EditOrderDetailsConfirmRequest request);
 
     OrderResponse cancelOrder(String id);
