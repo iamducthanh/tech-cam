@@ -1,9 +1,6 @@
 package com.techcam.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -21,6 +18,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@ToString
 public class CategoryEntity {
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id

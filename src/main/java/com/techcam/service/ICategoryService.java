@@ -22,4 +22,5 @@ public interface ICategoryService {
     List<CategoryDto> findAll();
     List<CategoryEntity> findCategoryByParent(String parentId);
     void saveCategory(CategoryReqDto categoryDto);
+    void deleteCategory(CategoryEntity categoryEntity);
 }

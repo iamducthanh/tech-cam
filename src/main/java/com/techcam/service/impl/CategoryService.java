@@ -120,6 +120,13 @@ public class CategoryService implements ICategoryService {
                 .modifierBy((String) sessionUtil.getObject("username"))
                 .deleteFlag(false)
                 .build();
+
+        System.out.println(categoryEntity.toString());
+        categoryRepo.save(categoryEntity);
+    }
+
+    @Override
+    public void deleteCategory(CategoryEntity categoryEntity) {
         categoryRepo.save(categoryEntity);
     }
 

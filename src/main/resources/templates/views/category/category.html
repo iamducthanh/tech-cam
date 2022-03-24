@@ -48,24 +48,24 @@
                                         <tr class="lv1">
                                             <td style="font-size: 11pt" class="text-left">[[${category.categoryName}]]</td>
                                             <td><i style="color: #655be6" level="2" th:parentId="${category.categoryId}" onclick="onAdd(this)"  class="bi bi-plus-square"></i>
-                                                <i class="fas fa-edit" level="1" th:parentId="null" th:categoryId="category.categoryId" onclick="onEdit(this)" style="color: #655be6; margin-left: 10px" title="Cập nhật"></i>
-                                                <i style="color: #655be6; margin-left: 10px" class="bi bi-trash"></i>
+                                                <i class="fas fa-edit" level="1" parentId="" th:categoryId="${category.categoryId}" onclick="onEdit(this)" style="color: #655be6; margin-left: 10px" title="Cập nhật"></i>
+                                                <i style="color: #655be6; margin-left: 10px" onclick="onRemove(this)" th:categoryId="${category.categoryId}" class="bi bi-trash"></i>
                                             </td>
                                         </tr>
                                         <th:block th:each="categoryChild1 : ${category.categoryChild}">
                                             <tr class="lv2">
                                                 <td style="font-size: 11pt" class="text-left">[[${categoryChild1.categoryName}]]</td>
                                                 <td><i style="color: #655be6" level="3" th:parentId="${categoryChild1.categoryId}" onclick="onAdd(this)" class="bi bi-plus-square"></i>
-                                                    <i class="fas fa-edit" level="2" th:parentId="${category.categoryId}" th:categoryId="category.categoryId" onclick="onEdit(this)" style="color: #655be6; margin-left: 10px" title="Cập nhật"></i>
-                                                    <i style="color: #655be6; margin-left: 10px" class="bi bi-trash"></i>
+                                                    <i class="fas fa-edit" level="2" th:parentId="${category.categoryId}" th:categoryId="${categoryChild1.categoryId}" onclick="onEdit(this)" style="color: #655be6; margin-left: 10px" title="Cập nhật"></i>
+                                                    <i style="color: #655be6; margin-left: 10px" onclick="onRemove(this)" th:categoryId="${categoryChild1.categoryId}" class="bi bi-trash"></i>
                                                 </td>
                                             </tr>
                                             <th:block th:each="categoryChild2 : ${categoryChild1.categoryChild}">
                                                 <tr class="lv3">
                                                     <td style="font-size: 11pt" class="text-left">[[${categoryChild2.categoryName}]]</td>
                                                     <td>
-                                                        <i class="fas fa-edit" level="3" th:parentId="${categoryChild1.categoryId}" th:categoryId="category.categoryId" onclick="onEdit(this)" style="color: #655be6; margin-left: 10px" title="Cập nhật"></i>
-                                                        <i style="color: #655be6; margin-left: 10px" class="bi bi-trash"></i>
+                                                        <i class="fas fa-edit" level="3" th:parentId="${categoryChild1.categoryId}" th:categoryId="${categoryChild2.categoryId}" onclick="onEdit(this)" style="color: #655be6; margin-left: 10px" title="Cập nhật"></i>
+                                                        <i style="color: #655be6; margin-left: 10px" onclick="onRemove(this)" th:categoryId="${categoryChild2.categoryId}" class="bi bi-trash"></i>
                                                     </td>
                                                 </tr>
                                             </th:block>
