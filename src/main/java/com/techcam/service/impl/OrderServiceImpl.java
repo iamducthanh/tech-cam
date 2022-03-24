@@ -3,6 +3,7 @@ package com.techcam.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.techcam.config.Config;
 import com.techcam.constants.ConstantsErrorCode;
 import com.techcam.dto.request.Customer.CustomerRequest;
 import com.techcam.dto.request.order.*;
@@ -22,6 +23,7 @@ import com.techcam.service.IOrderService;
 import com.techcam.service.IVoucherService;
 import com.techcam.type.*;
 import com.techcam.util.MessageUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -71,6 +74,28 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     @Override
+    public GetInfoOrder getInfoOrderByBankTransaction(String bankTransaction){
+        OrdersEntity orders = ordersRepo.findByBankTransaction(bankTransaction);
+        return Objects.isNull(orders) ? null : MODEL_MAPPER.map(orders,GetInfoOrder.class);
+    }
+
+    @Override
+    public OrderResponse checkOutBank(String bankStatus, String bankTransaction){
+        OrderResponse response = new OrderResponse().builder().status(CommonStatus.SUCCESS.name()).build();
+        if(!StringUtils.equalsIgnoreCase(bankStatus,"00")){
+            response.setStatus(CommonStatus.FAIL.name());
+        }{
+            OrdersEntity orders = ordersRepo.findByBankTransaction(bankTransaction);
+            if(Objects.isNull(orders)){
+               response.setStatus(CommonStatus.FAIL.name());
+            }
+            orders.setStatus(OrderStatus.PAID.name());
+            orders.setDeleteFlag(false);
+            ordersRepo.save(orders);
+        }
+        return response;
+    }
+    @Override
     public List<GetInfoOrder> getAllOrderByStatus(String status) {
         List<OrdersEntity> ordersEntityList = ordersRepo.findAllByStatusAndDeleteFlagFalse(status);
         Type listType = new TypeToken<List<GetInfoOrder>>() {
@@ -95,8 +120,9 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     @Override
-    public OrderResponse resgistrationOrder(OrderRequest request) {
+    public OrderResponse resgistrationOrder(OrderRequest request, HttpServletRequest httpServletRequest) {
         OrderResponse response = new OrderResponse().builder().status(CommonStatus.SUCCESS.name()).build();
+        String vnp_ref = "";
         VoucherResponse voucherResponse = null;
         List<ProductEntity> productEntities = getInfoProducts(request.getProductDetails());
         if (Objects.nonNull(request.getVoucherId())) {
@@ -140,7 +166,7 @@ public class OrderServiceImpl implements IOrderService {
             totalDiscount = orderRequestProduct.getTotalDiscount();
         }
         String orderStratus = "";
-        if (request.getOrderMethod().equals(OrderMethod.PAYMENT.name()) || request.getOrderType().equals(OrderType.COUNTER.name())) {
+        if ( request.getOrderType().equals(OrderType.COUNTER.name())) {
             productEntities.stream().filter(productEntity -> {
                 request.getProductDetails().stream().filter(orderEntity -> {
                     if (orderEntity.getProductId().equals(productEntity.getId())) {
@@ -155,10 +181,11 @@ public class OrderServiceImpl implements IOrderService {
                 }).collect(Collectors.toList());
                 return false;
             }).collect(Collectors.toList());
-            orderStratus = OrderStatus.PAID.name();
-        }else if(request.getOrderType().equals(OrderType.COUNTER.name())){
             orderStratus = OrderStatus.CONFIRM.name();
         }
+//        else if(request.getOrderType().equals(OrderType.COUNTER.name())){
+//            orderStratus = OrderStatus.CONFIRM.name();
+//        }
         else {
             orderStratus = OrderStatus.VERIFY.name();
         }
@@ -183,9 +210,14 @@ public class OrderServiceImpl implements IOrderService {
                 .note(request.getNote())
                 .deleteFlag(false)
                 .salesPerson(request.getOrderType().equals(OrderType.COUNTER.name()) ? "Quang" : null)
-                .status(OrderShipping.NOTSHIPPED.name())
+                .status(OrderStatus.UNPAID.name())
                 .transactionStatus(orderStratus)
                 .build();
+        if(StringUtils.equalsIgnoreCase(request.getPaymentMethod(),OrderMethod.PAYMENT.name())){
+            vnp_ref= Config.getRandomNumber(8);
+            ordersEntity.setBankTransaction(vnp_ref);
+            ordersEntity.setDeleteFlag(true);
+        }
         System.out.println(ordersEntity);
         OrdersEntity orderSave = ordersRepo.save(ordersEntity);
         List<OrderdetailEntity> orderdetailEntities = new ArrayList<>();
@@ -206,7 +238,13 @@ public class OrderServiceImpl implements IOrderService {
         ).collect(Collectors.toList());
         try {
             orderDetailsRepo.saveAll(orderdetailEntities);
-            productRepo.saveAll(productEntities);
+            if ( request.getOrderType().equals(OrderType.COUNTER.name())) {
+                productRepo.saveAll(productEntities);
+            }
+            if(request.getOrderType().equals(OrderType.ONLINE.name()) && request.getPaymentMethod().equalsIgnoreCase(OrderMethod.PAYMENT.name())) {
+                String vnpay = VNPAYService.payments(ordersEntity.getTax() - ordersEntity.getTotalAmount(), vnp_ref, httpServletRequest);
+                response.setVnpay(vnpay);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(CommonStatus.FAIL.name());
@@ -430,7 +468,7 @@ public class OrderServiceImpl implements IOrderService {
         receiptVoucherEntity.setDescription(String.format(MessageUtil.SAVE_ORDER_CUSTOMER_DONE, orders.getId()));
         receiptVoucherEntity.setGivenMoney(request.getGivenMoney());
         receiptVoucherEntity.setReturnMoney(request.getGivenMoney()-receiptVoucherEntity.getReceiptValue());
-        receiptVoucherEntity.setOrders(orders);
+//        receiptVoucherEntity.setOrders(orders);
         try {
             ordersRepo.save(orders);
             receiptVoucherRepo.save(receiptVoucherEntity);

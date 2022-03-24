@@ -5,6 +5,7 @@ import com.techcam.dto.response.order.GetInfoOrder;
 import com.techcam.dto.response.order.GetInfoOrderDetails;
 import com.techcam.dto.response.order.OrderResponse;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -19,13 +20,17 @@ import java.util.List;
 public interface IOrderService {
     List<GetInfoOrder> getAllOrder();
 
+    GetInfoOrder getInfoOrderByBankTransaction(String bankTransaction);
+
+    OrderResponse checkOutBank(String bankStatus, String bankTransaction);
+
     List<GetInfoOrder> getAllOrderByStatus(String status);
 
     List<GetInfoOrder> getAllOrderByDeleteFlag();
 
     List<GetInfoOrderDetails> findAllOrdersDetailsById(String id);
 
-    OrderResponse resgistrationOrder(OrderRequest request);
+    OrderResponse resgistrationOrder(OrderRequest request, HttpServletRequest httpServletRequest);
 
     OrderResponse editOrderDetails(EditOrderDetailRequest requests);
 

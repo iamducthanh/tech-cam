@@ -31,7 +31,7 @@ public class ReceiptVoucherEntity {
     private boolean deleteFlag;
     private Integer givenMoney;
     private Integer returnMoney;
-    private OrdersEntity orders;
+//    private OrdersEntity orders;
 
     @Id
     @Column(name = "ID")
@@ -43,14 +43,14 @@ public class ReceiptVoucherEntity {
         this.id = id;
     }
 
-    @ManyToOne @JoinColumn(name = "order_id")
-    public OrdersEntity getOrders() {
-        return orders;
-    }
-
-    public void setOrders(OrdersEntity orders) {
-        this.orders = orders;
-    }
+//    @ManyToOne @JoinColumn(name = "order_id")
+//    public OrdersEntity getOrders() {
+//        return orders;
+//    }
+//
+//    public void setOrders(OrdersEntity orders) {
+//        this.orders = orders;
+//    }
 
     @Basic
     @Column(name = "payer")

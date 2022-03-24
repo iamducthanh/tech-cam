@@ -23,4 +23,5 @@ public interface IOrderRepo extends JpaRepository<OrdersEntity,String> {
     OrdersEntity findByIdAndTransactionStatusAndDeleteFlagFalse(String id,String status);
     @Query("select count(o) from OrdersEntity o where o.orderDate=?1 and o.customer.phoneNumber=?2 and o.ipAddress=?3")
     int countByPhoneNumberCustomer(Date date, String phoneNumber, String ipAddress);
+    OrdersEntity findByBankTransaction(String bankTransaction);
 }

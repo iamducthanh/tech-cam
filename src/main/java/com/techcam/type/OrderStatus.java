@@ -12,7 +12,9 @@ package com.techcam.type;
 public enum OrderStatus {
     VERIFY,
     CONFIRM,
-    PAID,
+    PAID,// đã thanh toán
+    UNPAID, // chưa thanh toán
     DONE,
-    SHIPPING
+    SHIPPING,
+
 }
