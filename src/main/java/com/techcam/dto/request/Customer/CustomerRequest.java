@@ -36,5 +36,5 @@ public class CustomerRequest {
     @NotBlank
     private String address;
 //    @NotNull
-    private Date dateOfBirth;
+    private String dateOfBirth;
 }
