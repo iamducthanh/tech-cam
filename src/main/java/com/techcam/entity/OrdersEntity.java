@@ -53,15 +53,25 @@ public class OrdersEntity {
     private Date deliveryDate;
     private CustomerEntity customer;
     private VoucherEntity voucher;
+    private String bankTransaction;
     private List<OrderdetailEntity> ordersEntities;
-    private List<ReceiptVoucherEntity> orReceiptVoucherEntities;
-    @OneToMany(mappedBy = "orders")
-    public List<ReceiptVoucherEntity> getOrReceiptVoucherEntities() {
-        return orReceiptVoucherEntities;
+//    private List<ReceiptVoucherEntity> orReceiptVoucherEntities;
+//    @OneToMany(mappedBy = "orders")
+//    public List<ReceiptVoucherEntity> getOrReceiptVoucherEntities() {
+//        return orReceiptVoucherEntities;
+//    }
+//
+//    public void setOrReceiptVoucherEntities(List<ReceiptVoucherEntity> orReceiptVoucherEntities) {
+//        this.orReceiptVoucherEntities = orReceiptVoucherEntities;
+//    }
+    @Basic
+    @Column(name = "bank_transaction")
+    public String getBankTransaction() {
+        return bankTransaction;
     }
 
-    public void setOrReceiptVoucherEntities(List<ReceiptVoucherEntity> orReceiptVoucherEntities) {
-        this.orReceiptVoucherEntities = orReceiptVoucherEntities;
+    public void setBankTransaction(String bankTransaction) {
+        this.bankTransaction = bankTransaction;
     }
 
     @OneToMany(mappedBy = "orders", fetch = FetchType.LAZY)

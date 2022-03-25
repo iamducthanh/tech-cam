@@ -8,6 +8,7 @@ import com.techcam.repo.ICustomerRepo;
 import com.techcam.service.ICustomerService;
 import com.techcam.type.CommonTypeMethod;
 import com.techcam.type.CustomerStatus;
+import com.techcam.util.ConvertUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -114,17 +115,21 @@ public class CustomerService implements ICustomerService {
                 .existing(false)
                 .build();
         new CustomerEntity();
-        CustomerEntity customerEntity;
+        CustomerEntity customerEntity = new CustomerEntity();
         if (Objects.nonNull(getCustomerByEmail(customerRequest.getEmail()))
                 || Objects.nonNull(getCustomerByPhoneNumber(customerRequest.getPhoneNumber()))) {
             customerResponse.setExisting(true);
         } else {
             try {
-                customerEntity = MODEL_MAPPER.map(customerRequest, CustomerEntity.class);
+//                customerEntity = MODEL_MAPPER.map(customerRequest, CustomerEntity.class);
+                customerEntity.setAddress(customerRequest.getAddress());
+                customerEntity.setEmail(customerRequest.getEmail());
+                customerEntity.setPhoneNumber(customerRequest.getPhoneNumber());
+                customerEntity.setDateOfBirth(ConvertUtil.get().strToDate(customerRequest.getDateOfBirth(),"yyyy-MM-dd"));
+                customerEntity.setFullName(customerRequest.getFullName());
                 customerEntity.setId(UUID.randomUUID().toString());
                 customerEntity.setStatus(CustomerStatus.ON.name());
                 customerEntity.setCreateDate(new Date());
-                // todo thiếu  tên người thêm lấy sau.
                 customerEntity = customerRepo.save(customerEntity);
                 customerResponse.setSaved(true);
                 customerResponse.setExisting(false);
@@ -163,7 +168,7 @@ public class CustomerService implements ICustomerService {
                 customerEntity.setPhoneNumber(customerRequest.getPhoneNumber());
                 customerEntity.setEmail(customerRequest.getEmail());
                 customerEntity.setAddress(customerRequest.getAddress());
-                customerEntity.setDateOfBirth(customerRequest.getDateOfBirth());
+                customerEntity.setDateOfBirth(ConvertUtil.get().strToDate(customerRequest.getDateOfBirth(),"yyyy-MM-dd"));
                 customerEntity.setFullName(customerRequest.getFullName());
 //                customerEntity.setModifierDate(new Timestamp(new Date().getTime()));
 

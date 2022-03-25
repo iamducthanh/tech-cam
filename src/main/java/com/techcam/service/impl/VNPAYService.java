@@ -22,12 +22,12 @@ import java.util.*;
  */
 
 public class VNPAYService {
-    public static String payments(int SumMoney, HttpServletRequest request) throws IOException {
+    public static String payments(int SumMoney,String vnp_TxnRef, HttpServletRequest request) throws IOException {
         String vnp_Version = "2.0.0";
         String vnp_Command = "pay";
         String vnp_OrderInfo = "Thanh toan don hang test";
         String orderType = "billpayment";
-        String vnp_TxnRef = Config.getRandomNumber(8);
+//        String vnp_TxnRef = Config.getRandomNumber(8);
         String vnp_IpAddr = Config.getIpAddress(request);
 
         String vnp_TmnCode = Config.vnp_TmnCode;

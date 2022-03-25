@@ -60,6 +60,7 @@ public class CustomerApiImpl implements CustomerApi {
             LOGGER.error("Create Customer : Input data is incorrect {}", bindingResult.getFieldErrors());
             throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
         }
+        System.out.println(customerRequest.getDateOfBirth());
         CustomerServiceResponse customerServiceResponse = customerService.saveCustomer(customerRequest);
         if (customerServiceResponse.getExisting()) {
             LOGGER.error("Create Customer : Customer exist in Tech-Cam");
