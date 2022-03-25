@@ -11,6 +11,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -36,8 +38,12 @@ public class SendBirthDay {
   private String fromMail;
     @Scheduled(cron = "${techcam.schedule.birthday.cron}")
   public void sendMailBirthDay(){
-        List<CustomerEntity> customerEntities = customerRepo.findAllByStatus(CustomerStatus.ON.name());
+        Date date =new Date();
+        List<CustomerEntity> customerEntities = customerRepo.findAllBySendBirthDay(CustomerStatus.ON.name(),
+                new SimpleDateFormat("MM").format(date),new SimpleDateFormat("dd").format(date));
+        System.out.println(customerEntities.size());
         if(customerEntities.isEmpty()){
+            System.out.println("danh sách rỗng");
             return;
         }
         System.out.println("đã chạy send mail birthday");
