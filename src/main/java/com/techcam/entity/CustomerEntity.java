@@ -34,14 +34,15 @@ public class CustomerEntity {
     private String status;
     private Date createDate;
     private String modifierBy;
-    private List<OrdersEntity> ordersEntities;
+    private List<OrdersEntityA> ordersEntities;
+//    private List<ReceiptVoucherEntity> receiptVoucherEntities;
 
     @OneToMany(mappedBy = "customer")
-    public List<OrdersEntity> getOrdersEntities() {
+    public List<OrdersEntityA> getOrdersEntities() {
         return ordersEntities;
     }
 
-    public void setOrdersEntities(List<OrdersEntity> ordersEntities) {
+    public void setOrdersEntities(List<OrdersEntityA> ordersEntities) {
         this.ordersEntities = ordersEntities;
     }
 

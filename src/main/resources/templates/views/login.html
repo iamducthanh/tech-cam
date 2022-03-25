@@ -112,6 +112,7 @@
                 $('form').submit();
             },
             error: function (data) {
+                console.log(data)
                 message.addClass("alert alert-danger").html(`<i class="fas fa-times-circle fs-5 me-2"></i><span>${data.responseText}</span>`).show();
             }
         });
