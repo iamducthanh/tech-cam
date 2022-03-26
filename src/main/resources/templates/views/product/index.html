@@ -6,6 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Quản lý sản phẩm - TechCam</title>
+    <link rel="stylesheet" th:href="@{/assets/css/select2.min.css}">
 </head>
 <body>
 <div layout:fragment="content" class="container-fluid">
@@ -216,11 +217,11 @@
                             <textarea id="productAddDescription" class="form-control"></textarea>
                         </div>
                         <div class="tab-pane p-3" id="image-product-add" role="tabpanel">
-                            <div class="dropzone mb-3">
+                            <div class="dropzone mb-3 text-center">
                                 <div class="fallback">
                                     <input id="ip-add-product-image" hidden type="file" multiple="multiple">
                                 </div>
-                                <div class="dz-message needsclick" onclick="onClickChooseImageAdd()">
+                                <div class="dz-message needsclick mt-5" onclick="onClickChooseImageAdd()">
                                     <div class="mb-3">
                                         <i class="mdi mdi-cloud-upload display-4 text-muted"></i>
                                     </div>
@@ -811,8 +812,14 @@
             // TODO hiển thị danh sách thuộc tính sản phẩm
             let categoryId = e.value
             let status = e.dataset.status
+            let url;
+            if (status === 'edit') {
+                url = '/product/property/edit?category=' + categoryId + '&product=' + e.dataset.id
+            } else {
+                url = '/product/property/add?category=' + categoryId
+            }
             $.ajax({
-                url: '/product/property/add?category=' + categoryId,
+                url: url,
                 method: 'GET',
                 success: function (html) {
                     let getElementProductProperty = document.getElementById('product-' + status + '-property');
@@ -892,6 +899,7 @@
                     CKEDITOR.instances['productEditDescription'].setData(data.productDescription)
                     if (getElementProductCategory !== null) {
                         getElementProductCategory.value = data.productCategory;
+                        getElementProductCategory.dataset.id = id
                         $.ajax({
                             url: '/product/property/edit?category=' + data.productCategory + '&product=' + id,
                             method: 'GET',

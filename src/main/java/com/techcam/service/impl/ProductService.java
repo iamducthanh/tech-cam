@@ -49,11 +49,25 @@ public class ProductService implements IProductService {
 
     private final IBrandRepo brandRepo;
 
-
     @Override
     public List<ProductPropertyResponse> findAllPropertyByProductId(String productId) {
         // TODO trả về list thuộc tính sản phẩm
-        return new ArrayList<>();
+        return productPropertyRepo.findAllByProductIdAndDeleteFlagIsFalse(productId).stream()
+                .map(this::mapToProductPropertyResponse).collect(Collectors.toList());
+    }
+
+    private <R> ProductPropertyResponse mapToProductPropertyResponse(ProductPropertyEntity x) {
+        if (Objects.isNull(x)) return new ProductPropertyResponse();
+        AttributeEntity a = attributeRepo.getByIdAndDeleteFlagIsFalse(x.getAttributeId());
+        if (Objects.isNull(a)) return new ProductPropertyResponse();
+        ProductPropertyResponse s = new ProductPropertyResponse();
+        s.setPropertyId(x.getAttributeId());
+        s.setPropertyName(a.getAttributeName());
+        s.setProductPropertyId(x.getId());
+        s.setFixedValueId(x.getAttributeFixedId());
+        s.setInputValue(x.getAttributeValue());
+
+        return s;
     }
 
     @Override
