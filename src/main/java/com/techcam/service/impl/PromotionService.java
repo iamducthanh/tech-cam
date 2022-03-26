@@ -11,10 +11,9 @@
 //@Service
 //public class PromotionService implements IPromotionService {
 //
-////    @Autowired
-////    IPromotionRepo promotionRepository;
+//    @Autowired
+//    IPromotionRepo promotionRepository;
 //
-////    public List<PromotionResponseDTO> findAll(){
-////
-////    }
-//}
+//    public List<PromotionResponseDTO> findAll() {
+//
+//    }
