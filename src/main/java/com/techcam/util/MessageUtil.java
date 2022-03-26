@@ -21,4 +21,5 @@ public interface MessageUtil {
             " Xin cảm ơn và chúc quý khách nhiều sức khỏe !";
     String MAIL_CONFIRM_ORDER="Tech Cam xác nhận đơn hàng %s của bạn.<br><br> Sản phẩm sẽ được giao đến bạn vào %s.<br><br> Mọi thắc mắc xin liên hệ : 0978825572";
     String MAIL_ORDER_REGISTRATION_ONLINE="Chúc Mừng quý khách đã đặt hàng thành công tại TechCam.<br><br> Mã đơn hàng là : %s. <br><br> Chúng tôi sẽ liên hệ sớm nhất đến quý khách <br><br> Hoặc liên hệ với chúng tôi qua Hotline : 0978825572";
+    String VOUCHER_DESCRIPTION_SEND_BIRTHDAY= "Voucher gửi tặng sinh nhật khách hàng";
 }
