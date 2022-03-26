@@ -1,8 +1,7 @@
 package com.techcam.dto.response.product;
 
 import com.techcam.dto.response.property.PropertyResponse;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 /**
  * Description :

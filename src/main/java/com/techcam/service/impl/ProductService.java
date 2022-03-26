@@ -14,10 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.techcam.constants.ConstantsErrorCode.PRODUCT_NOT_EXISTS;
@@ -49,11 +46,25 @@ public class ProductService implements IProductService {
 
     private final IBrandRepo brandRepo;
 
-
     @Override
     public List<ProductPropertyResponse> findAllPropertyByProductId(String productId) {
         // TODO trả về list thuộc tính sản phẩm
-        return new ArrayList<>();
+        return productPropertyRepo.findAllByProductIdAndDeleteFlagIsFalse(productId).stream()
+                .map(this::mapToProductPropertyResponse).collect(Collectors.toList());
+    }
+
+    private <R> ProductPropertyResponse mapToProductPropertyResponse(ProductPropertyEntity x) {
+        if (Objects.isNull(x)) return new ProductPropertyResponse();
+        AttributeEntity a = attributeRepo.getByIdAndDeleteFlagIsFalse(x.getAttributeId());
+        if (Objects.isNull(a)) return new ProductPropertyResponse();
+        ProductPropertyResponse s = new ProductPropertyResponse();
+        s.setPropertyId(x.getAttributeId());
+        s.setPropertyName(a.getAttributeName());
+        s.setProductPropertyId(x.getId());
+        s.setFixedValueId(x.getAttributeFixedId());
+        s.setInputValue(x.getAttributeValue());
+
+        return s;
     }
 
     @Override
@@ -81,6 +92,9 @@ public class ProductService implements IProductService {
                     .status("ON")
                     .note("")
                     .build();
+            if (Objects.isNull(productEntity.getThumbnail())) {
+                productEntity.setThumbnail(x);
+            }
             lstImage.add(imagesEntity);
         }
         List<ProductPropertyEntity> lstProductPropertyEntities = new ArrayList<>();
@@ -141,6 +155,10 @@ public class ProductService implements IProductService {
                     .status("ON")
                     .note("")
                     .build();
+            if (Objects.isNull(productEntity.getThumbnail())) {
+                productEntity.setThumbnail(x);
+            }
+            imagesEntity.setCreateDate(new Timestamp(new Date().getTime()));
             lstImage.add(imagesEntity);
         }
         List<ProductPropertyEntity> findAllByProductId = productPropertyRepo.findAllByProductIdAndDeleteFlagIsFalse(productEntity.getId());
@@ -165,6 +183,7 @@ public class ProductService implements IProductService {
                     .attributeValue(Objects.isNull(attributeFixedValueEntity) ? x.getInputValue() : null)
                     .status("ON")
                     .build();
+            productPropertyEntity.setCreateDate(new Timestamp(new Date().getTime()));
             lstProductPropertyEntities.add(productPropertyEntity);
         }
         findAllByProductId.stream().filter(e -> !lstIdDuplicate.contains(e.getId())).forEach(e -> e.setDeleteFlag(true));
@@ -249,6 +268,7 @@ public class ProductService implements IProductService {
         s.setCreateBy(x.getCreateBy());
         s.setCreateDate(x.getCreateDate());
         s.setModifierDate(x.getModifierDate());
+        s.setThumbnail(x.getThumbnail());
         return s;
     }
 }

@@ -1,5 +1,6 @@
 package com.techcam.service.impl;
 
+import com.techcam.constants.ConstantsErrorCode;
 import com.techcam.dto.request.voucher.VoucherRequest;
 import com.techcam.dto.response.voucher.VoucherResponse;
 import com.techcam.entity.CategoryEntity;
@@ -9,7 +10,6 @@ import com.techcam.repo.ICategoryRepo;
 import com.techcam.repo.IVoucherRepo;
 import com.techcam.repo.VoucherCustomerRepo;
 import com.techcam.service.IVoucherService;
-import com.techcam.constants.ConstantsErrorCode;
 import com.techcam.util.ConvertUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.apache.commons.lang3.BooleanUtils.*;
 
 /**
  * Description :
@@ -50,7 +52,7 @@ public class VoucherService implements IVoucherService {
         if (Objects.isNull(voucherEntity)) {
             return ConstantsErrorCode.ERROR;
         }
-        voucherEntity.setStatus("TRUE");
+        voucherEntity.setStatus(ON.toUpperCase());
         voucherRepo.save(voucherEntity);
         return ConstantsErrorCode.SUCCESS;
     }
@@ -77,7 +79,7 @@ public class VoucherService implements IVoucherService {
         }
         VoucherEntity voucherEntity = mapToVoucherEntity(voucherRequest, new VoucherEntity());
         voucherEntity.setId(UUID.randomUUID().toString());
-        voucherEntity.setStatus("FALSE");
+        voucherEntity.setStatus(ON.toUpperCase());
         List<VoucherCustomerEntity> lstVoucherCustomerEntities = new ArrayList<>();
         if (Objects.nonNull(voucherRequest.getTypeDiscountPerson())) {
             for (String x : voucherRequest.getTypeDiscountPerson()) {
@@ -85,7 +87,10 @@ public class VoucherService implements IVoucherService {
                         .id(UUID.randomUUID().toString())
                         .customerId(x)
                         .voucherId(voucherEntity.getId())
-                        .status("TRUE")
+                        .status(OFF.toUpperCase())
+                        .discount(voucherEntity.getDiscount())
+                        .startDatte(voucherEntity.getStartDate())
+                        .endDate(voucherEntity.getEndDate())
                         .build());
             }
         }
