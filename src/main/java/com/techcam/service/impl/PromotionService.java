@@ -14,7 +14,7 @@ public class PromotionService implements IPromotionService {
     @Autowired
     IPromotionRepo promotionRepository;
 
-//    public List<PromotionResponseDTO> findAll(){
-//
-//    }
+    public List<PromotionResponseDTO> findAll() {
+        return null; // ô Huy thêm chưa có return không chạy được (NgocNQ -- bổ sung return null tạm)
+    }
 }

@@ -30,6 +30,8 @@ public class ProductResponse extends ProductDto {
 
     private Date modifierDate;
 
+    private String thumbnail;
+
     private List<ProductPropertyResponse> properties;
 
     private List<String> lstImages;
