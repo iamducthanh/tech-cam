@@ -10,9 +10,8 @@ import java.util.Date;
 @Data
 public class PromotionEntity extends BaseEntity{
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Long id;
+    private String id;
 
     @Column(name = "NAME")
     private String name;
@@ -38,11 +37,4 @@ public class PromotionEntity extends BaseEntity{
     @Column(name = "NOTE")
     private String note;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 }

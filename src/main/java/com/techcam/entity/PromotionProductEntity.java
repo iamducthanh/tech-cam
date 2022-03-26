@@ -9,15 +9,12 @@ import javax.persistence.*;
 @Data
 public class PromotionProductEntity extends BaseEntity{
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Long id;
+    private String id;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    ProductEntity product;
+    @Column(name = "promotion_id", nullable = false)
+    private String promotionId;
 
-    @ManyToOne
-    @JoinColumn(name = "promotion_id")
-    PromotionEntity promotion;
+    @Column(name = "product_id", nullable = false)
+    private String product_id;
 }
