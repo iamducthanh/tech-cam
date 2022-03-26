@@ -14,10 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.techcam.constants.ConstantsErrorCode.PRODUCT_NOT_EXISTS;
@@ -161,6 +158,7 @@ public class ProductService implements IProductService {
             if (Objects.isNull(productEntity.getThumbnail())) {
                 productEntity.setThumbnail(x);
             }
+            imagesEntity.setCreateDate(new Timestamp(new Date().getTime()));
             lstImage.add(imagesEntity);
         }
         List<ProductPropertyEntity> findAllByProductId = productPropertyRepo.findAllByProductIdAndDeleteFlagIsFalse(productEntity.getId());
@@ -185,6 +183,7 @@ public class ProductService implements IProductService {
                     .attributeValue(Objects.isNull(attributeFixedValueEntity) ? x.getInputValue() : null)
                     .status("ON")
                     .build();
+            productPropertyEntity.setCreateDate(new Timestamp(new Date().getTime()));
             lstProductPropertyEntities.add(productPropertyEntity);
         }
         findAllByProductId.stream().filter(e -> !lstIdDuplicate.contains(e.getId())).forEach(e -> e.setDeleteFlag(true));

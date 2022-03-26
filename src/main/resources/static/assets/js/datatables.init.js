@@ -3,27 +3,27 @@ $(document).ready(function() {
         paging: false,
         lengthChange: !1,
         buttons:    [{
-            extend : 'copy',
-            text : '<i class="fas fa-copy"></i>',
-            titleAttr : 'Sao chép'
-        },
-            {
-                extend : 'excel',
-                text : '<i class="fas fa-file-excel"></i>',
-                titleAttr : 'Excel'
-            },
-            {
-                extend : 'pdfHtml5',
-                orientation : 'landscape',
-                pageSize : 'LEGAL',
-                text : '<i class="fas fa-file-pdf"></i>',
-                titleAttr : 'PDF'
-            },
-            {
-                extend : 'colvis',
-                text : '<i class="fas fa-filter"></i>',
-                titleAttr : 'Hiển thị tuỳ chỉnh'
-            }],
+                        extend : 'copy',
+                        text : '<i class="fas fa-copy"></i>',
+                        titleAttr : 'Sao chép'
+                    },
+                    {
+                        extend : 'excel',
+                        text : '<i class="fas fa-file-excel"></i>',
+                        titleAttr : 'Excel'
+                    },
+                    {
+                        extend : 'pdfHtml5',
+                        orientation : 'landscape',
+                        pageSize : 'LEGAL',
+                        text : '<i class="fas fa-file-pdf"></i>',
+                        titleAttr : 'PDF'
+                    },
+                    {
+                        extend : 'colvis',
+                        text : '<i class="fas fa-filter"></i>',
+                        titleAttr : 'Hiển thị tuỳ chỉnh'
+                    }],
 
         scrollY: "300px",
         scrollX: true,

@@ -16,10 +16,10 @@
             barColors: r,
         });
     }),
-        (t.prototype.createDonutChart = function(e, t, a) {
-            Morris.Donut({ element: e, data: t, resize: !0, colors: a });
-        }),
-        e(".peity-pie").each(function() {
+    (t.prototype.createDonutChart = function(e, t, a) {
+        Morris.Donut({ element: e, data: t, resize: !0, colors: a });
+    }),
+    e(".peity-pie").each(function() {
             e(this).peity("pie", e(this).data());
         }),
         e(".peity-donut").each(function() {
@@ -56,7 +56,7 @@
         (e.Dashboard = new t()),
         (e.Dashboard.Constructor = t);
 })(window.jQuery),
-    (function() {
-        "use strict";
-        window.jQuery.Dashboard.init();
-    })();
+(function() {
+    "use strict";
+    window.jQuery.Dashboard.init();
+})();
