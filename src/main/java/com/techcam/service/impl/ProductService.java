@@ -18,7 +18,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.techcam.constants.ConstantsErrorCode.PRODUCT_NOT_EXISTS;
-import static com.techcam.constants.ConstantsErrorCode.SUCCESS;
+import static com.techcam.type.CustomerStatus.FAILED;
+import static com.techcam.type.CustomerStatus.SUCCESS;
 
 /**
  * Project_name : SMW_TECHCAM
@@ -117,11 +118,11 @@ public class ProductService implements IProductService {
                 Thread.sleep(500);
                 imageRepo.save(x);
             }
-            return SUCCESS;
+            return SUCCESS.name();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ConstantsErrorCode.ERROR;
+        return FAILED.name();
     }
 
     @Override
@@ -193,11 +194,11 @@ public class ProductService implements IProductService {
             productPropertyRepo.saveAll(findAllByProductId);
             imageRepo.saveAll(lstImage);
             imageRepo.deleteAll(lstImageDelete);
-            return SUCCESS;
+            return SUCCESS.name();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ConstantsErrorCode.ERROR;
+        return FAILED.name();
     }
 
     @Override
@@ -206,7 +207,7 @@ public class ProductService implements IProductService {
         if (Objects.isNull(x)) {
             return PRODUCT_NOT_EXISTS;
         }
-        return SUCCESS;
+        return SUCCESS.name();
     }
 
     @Override
