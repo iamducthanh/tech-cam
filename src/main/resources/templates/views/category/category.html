@@ -30,10 +30,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="lever_tab" style="float: right">
-                                        <button level="1" parentId="NULL" onclick="onAdd(this)" class="btn btn-primary">Thêm cấp độ 1</button>
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-                                            Launch demo modal
-                                        </button>
+                                        <button level="1" parentId="" onclick="onAdd(this)" class="btn btn-primary">Thêm cấp độ 1</button>
                                     </div>
                                 </div>
 
@@ -51,24 +48,24 @@
                                         <tr class="lv1">
                                             <td style="font-size: 11pt" class="text-left">[[${category.categoryName}]]</td>
                                             <td><i style="color: #655be6" level="2" th:parentId="${category.categoryId}" onclick="onAdd(this)"  class="bi bi-plus-square"></i>
-                                                <i class="fas fa-edit" style="color: #655be6; margin-left: 10px" title="Cập nhật"></i>
-                                                <i style="color: #655be6; margin-left: 10px" class="bi bi-trash"></i>
+                                                <i class="fas fa-edit" level="1" parentId="" th:categoryId="${category.categoryId}" onclick="onEdit(this)" style="color: #655be6; margin-left: 10px" title="Cập nhật"></i>
+                                                <i style="color: #655be6; margin-left: 10px" onclick="onRemove(this)" th:categoryId="${category.categoryId}" class="bi bi-trash"></i>
                                             </td>
                                         </tr>
                                         <th:block th:each="categoryChild1 : ${category.categoryChild}">
                                             <tr class="lv2">
                                                 <td style="font-size: 11pt" class="text-left">[[${categoryChild1.categoryName}]]</td>
                                                 <td><i style="color: #655be6" level="3" th:parentId="${categoryChild1.categoryId}" onclick="onAdd(this)" class="bi bi-plus-square"></i>
-                                                    <i class="fas fa-edit" style="color: #655be6; margin-left: 10px" title="Cập nhật"></i>
-                                                    <i style="color: #655be6; margin-left: 10px" class="bi bi-trash"></i>
+                                                    <i class="fas fa-edit" level="2" th:parentId="${category.categoryId}" th:categoryId="${categoryChild1.categoryId}" onclick="onEdit(this)" style="color: #655be6; margin-left: 10px" title="Cập nhật"></i>
+                                                    <i style="color: #655be6; margin-left: 10px" onclick="onRemove(this)" th:categoryId="${categoryChild1.categoryId}" class="bi bi-trash"></i>
                                                 </td>
                                             </tr>
                                             <th:block th:each="categoryChild2 : ${categoryChild1.categoryChild}">
                                                 <tr class="lv3">
                                                     <td style="font-size: 11pt" class="text-left">[[${categoryChild2.categoryName}]]</td>
                                                     <td>
-                                                        <i class="fas fa-edit" style="color: #655be6; margin-left: 10px" title="Cập nhật"></i>
-                                                        <i style="color: #655be6; margin-left: 10px" class="bi bi-trash"></i>
+                                                        <i class="fas fa-edit" level="3" th:parentId="${categoryChild1.categoryId}" th:categoryId="${categoryChild2.categoryId}" onclick="onEdit(this)" style="color: #655be6; margin-left: 10px" title="Cập nhật"></i>
+                                                        <i style="color: #655be6; margin-left: 10px" onclick="onRemove(this)" th:categoryId="${categoryChild2.categoryId}" class="bi bi-trash"></i>
                                                     </td>
                                                 </tr>
                                             </th:block>
@@ -87,27 +84,33 @@
         </div>
     </section>
     <!-- Modal -->
-    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal fade" id="editCategory" style="display: none; opacity: 100" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                    <h5 class="modal-title" id="modalTitle">Modal title</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                        <span aria-hidden="true" onclick="closeModalCategory()">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    ...
+                    <p style="color: red;display: none" id="error">Hello</p>
+                    <input class="form-control" id="categoryName" placeholder="Nhập tiêu đề">
+                    <input class="form-control" type="hidden" id="parentId">
+                    <input class="form-control" type="hidden" id="categoryId">
+                    <input class="form-control" type="hidden" id="levelCategory">
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeModalCategory()">Đóng</button>
+                    <button type="button" class="btn btn-primary" onclick="saveCategory()">Lưu</button>
                 </div>
             </div>
         </div>
     </div>
     <script th:src="@{/assets/js/lib.js}"></script>
     <script th:src="@{/assets/js/category.js}"></script>
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <script th:inline="javascript">
         let categories = [[${categories}]]
         console.log(categories)

@@ -30,3 +30,10 @@ spring:
         smtp:
           starttls:
             enable: true
+techcam:
+  schedule:
+    birthday:
+      cron: ${CU_SCHEDULE_BIRTHDAY_CRON:0 0 8 * * *}
+      message: ${CU_MESSAGE_BRITHDAY:Hôm nay là sinh nhật của quý khách. TechCam xin chúc quý khách một ngày sinh nhật vui vẻ hạnh phúc!.<br> Rất mong quý khách sẽ tiếp tục sử dụng dịch vụ của chúng tôi}
+      subject: ${CU_SUBJECT_BRITHDAY:Chúc Mừng Sinh Nhật Quý Khách}
+      frommail: ${CU_FROM_MAIL_BRTHDAY:techcam.poly@gmail.com}

@@ -3,6 +3,7 @@ package com.techcam.repo;
 import com.techcam.entity.CustomerEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -19,6 +20,10 @@ import java.util.List;
 @Repository
 public interface ICustomerRepo extends JpaRepository<CustomerEntity, String> {
     List<CustomerEntity> findAllByStatus(String status);
+    @Query(value = "select o.* from Customer o where o.status=:status and month(o.DATE_OF_BIRTH)= :month and day (o.DATE_OF_BIRTH)= :day ", nativeQuery = true)
+    List<CustomerEntity> findAllBySendBirthDay(@Param("status") String status, @Param("month") String month , @Param("day") String day);
+
+//    List<CustomerEntity> findAllBy(String status, int dateOfBirth_day);
 
     List<CustomerEntity> findAllByPhoneNumberStartsWithAndStatus(String phoneNumber, String status);
 
