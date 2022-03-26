@@ -62,7 +62,7 @@ public class VoucherApi {
         return ResponseEntity.badRequest().body(ConstantsErrorCode.ERROR);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/active/{id}")
     public ResponseEntity<String> activeVoucher(@PathVariable("id") String id) {
         try {
             if (voucherService.activeVoucher(id).equals(ConstantsErrorCode.SUCCESS)) {

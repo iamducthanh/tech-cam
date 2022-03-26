@@ -19,4 +19,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class OrderResponse {
     private String status;
+    private String vnpay;
 }

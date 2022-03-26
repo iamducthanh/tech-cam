@@ -49,4 +49,5 @@ public class GetInfoOrder {
     private String ipAddress;
     private CustomerEntity customer;
     private VoucherEntity voucher;
+    private String bankTransaction;
 }

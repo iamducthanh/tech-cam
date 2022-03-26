@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -82,6 +83,9 @@ public class ProductController {
                 z.setFixedValue(x.getFixedValue());
                 lstProductPropertyResponses.add(z);
             }
+        }
+        if (lstFindAllByCategoryId.isEmpty()) {
+            lstProductPropertyResponses = new ArrayList<>();
         }
         model.addAttribute("lstProperty", lstProductPropertyResponses);
         return "/component/product/propertyEdit";
