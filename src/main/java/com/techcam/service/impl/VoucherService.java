@@ -19,6 +19,8 @@ import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.apache.commons.lang3.BooleanUtils.ON;
+
 /**
  * Description :
  *
@@ -50,7 +52,7 @@ public class VoucherService implements IVoucherService {
         if (Objects.isNull(voucherEntity)) {
             return ConstantsErrorCode.ERROR;
         }
-        voucherEntity.setStatus("TRUE");
+        voucherEntity.setStatus(ON.toUpperCase());
         voucherRepo.save(voucherEntity);
         return ConstantsErrorCode.SUCCESS;
     }

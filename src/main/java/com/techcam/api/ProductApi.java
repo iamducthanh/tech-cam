@@ -4,7 +4,6 @@ import com.techcam.dto.request.product.ProductAddRequest;
 import com.techcam.dto.request.product.ProductEditRequest;
 import com.techcam.dto.response.product.ProductResponse;
 import com.techcam.exception.TechCamExp;
-import com.techcam.repo.IImageRepo;
 import com.techcam.service.IProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
