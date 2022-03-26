@@ -80,7 +80,6 @@ public class VoucherApi {
     }
 
     private void validateVoucher(@Validated @RequestBody VoucherRequest voucherRequest, Errors errors) {
-        System.out.println(voucherRequest);
         final String patternDate = "dd-MM-yyyy";
         if (errors.hasErrors()) {
             throw new TechCamExp(errors.getFieldErrors().get(0).getDefaultMessage());
