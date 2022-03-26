@@ -6,27 +6,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Quản lý sản phẩm - TechCam</title>
-    <style>
-        div.click-to-top .card {
-            display: none;
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #333;
-            color: #fff;
-        }
-
-        div.click-to-top:hover .card {
-            display: block;
-        }
-    </style>
 </head>
 <body>
 <div layout:fragment="content" class="container-fluid">
     <section class="row main-page">
         <section class="col-2 mainLeft">
-            <h1 class="heading-page">Mã giảm giá</h1>
+            <h1 class="heading-page">Quản lý sản phẩm</h1>
             <div class="filter-report">
                 <div class="card">
                     <h6 class="mx-2 mt-2 fs-14">Trạng thái</h6>
@@ -86,12 +71,8 @@
                     <tr>
                         <td class="text-center" th:text="${theCount.index + 1}">STT</td>
                         <td class="text-center">
-                            <div class="click-to-top">
-                                <div class="card card-body">
-                                    <img th:src="${product.thumbnail}" th:title="${product.productName}" height="25vh"/>
-                                </div>
-                                <span>Tooltip text</span>
-                            </div>
+                            <img th:src="${product.thumbnail}" th:title="${product.productName}" height="25px"
+                                 style="cursor: pointer" onclick="zoomImageProduct(this)"/>
                         </td>
                         <td class="text-center">
                             <a href="#modal-edit-product" th:data-id="${product.productId}" data-bs-toggle="modal"
@@ -440,6 +421,17 @@
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 
+    <div class="modal fade" id="modal-zoom-image" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <img id="img-zoom-image" src=""/>
+            </div>
+        </div>
+    </div>
+
     <script th:src="@{'/assets/ckeditor/ckeditor.js'}"></script>
 
     <script>
@@ -484,6 +476,16 @@
                     reader.readAsDataURL(f);
                 }
             })
+        }
+
+        function zoomImageProduct(e) {
+            let srcImg = e.src
+            console.log(srcImg)
+            $('#modal-zoom-image').modal('show');
+            let imgZoomImage = document.getElementById('img-zoom-image')
+            if (imgZoomImage !== null && imgZoomImage !== undefined) {
+                imgZoomImage.src = srcImg
+            }
         }
 
         function onClickChooseImage() {
