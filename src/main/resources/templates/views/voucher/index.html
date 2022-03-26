@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/weblayout}"
->
+      layout:decorate="~{layout/weblayout}">
 <head>
     <meta charset="UTF-8">
     <title>Quản lý mã giảm giá - TechCam</title>
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" th:href="@{/assets/css/spectrum.min.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/select2.min.css}">
 </head>
 <body>
 <div layout:fragment="content" class="container-fluid">
@@ -687,7 +687,7 @@
             let id = e.dataset.id
             if (id !== null && id !== undefined && id !== '') {
                 $.ajax({
-                    url: '/api/voucher/' + id,
+                    url: '/api/voucher/active/' + id,
                     method: 'PUT',
                     contentType: 'application/json',
                     success: function (data) {
@@ -975,7 +975,7 @@
             var options = select && select.options;
             var opt;
 
-            for (var i = 0, iLen = options.length; i < iLen; i++) {
+            for (let i = 0, iLen = options.length; i < iLen; i++) {
                 opt = options[i];
                 if (opt.selected) {
                     result.push(opt.value || opt.text);
@@ -1017,10 +1017,11 @@
     </script>
 </div>
 <div layout:fragment="script">
-    <script th:src="@{/assets/js/bootstrap-datepicker.min.js}"></script>
+    <script src="/assets/js/spectrum.min.js"></script>
+    <script src="/assets/js/bootstrap-maxlength.min.js"></script>
+    <script src="/assets/js/jquery.bootstrap-touchspin.min.js"></script>
     <script src="/assets/js/select2.min.js"></script>
     <script src="/assets/js/form-advanced.init.js"></script>
-    <script th:src="@{/toastr/toa.js}"></script>
 </div>
 </body>
 </html>
