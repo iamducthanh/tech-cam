@@ -13,7 +13,8 @@ import java.util.Date;
  */
 
 public class ConvertDateUtil {
-    private final static String DATE_TIME="dd-M-yyyy hh:mm:ss";
+    private final static String DATE_TIME="dd-MM-yyyy hh:mm:ss";
+//    private final static String DATE_UTIL="yyyy"
     public static String convertDateTime(Date date){
         SimpleDateFormat format = new SimpleDateFormat(DATE_TIME);
         return format.format(date);
