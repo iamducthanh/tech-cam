@@ -1,5 +1,9 @@
 package com.techcam.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
@@ -11,6 +15,9 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "goodsreceipt", schema = "poly_techcam", catalog = "")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class GoodsreceiptEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id

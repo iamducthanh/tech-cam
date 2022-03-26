@@ -328,29 +328,21 @@
                                     </div>
                                     <div class="tab-pane p-3" th:id="${'history-use-' + voucher.voucherId}"
                                          role="tabpanel">
-                                        <table class="table table-bordered table-hover">
+                                        <table class="table table-bordered table-hover voucher-used"
+                                               th:data-id="${voucher.voucherId}">
                                             <thead>
                                             <tr class="text-center">
                                                 <th>STT</th>
                                                 <th>Họ và tên</th>
-                                                <th>Mã hoá đơn</th>
                                                 <th>Tổng tiền hoá đơn</th>
                                                 <th>Ngày sử dụng</th>
                                             </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody class="voucher-used-content">
                                             <tr>
-                                                <td>STT</td>
+                                                <td class="text-center">1</td>
                                                 <td>Họ và tên</td>
-                                                <td>Mã hoá đơn</td>
-                                                <td>Tổng tiền hoá đơn</td>
-                                                <td>Ngày sử dụng</td>
-                                            </tr>
-                                            <tr>
-                                                <td>STT</td>
-                                                <td>Họ và tên</td>
-                                                <td>Mã hoá đơn</td>
-                                                <td>Tổng tiền hoá đơn</td>
+                                                <td class="text-end">Tổng tiền hoá đơn</td>
                                                 <td>Ngày sử dụng</td>
                                             </tr>
                                             </tbody>
@@ -535,6 +527,30 @@
                     onChangePersonApply(getSelectPersonApply[index])
                 }
             }
+            loadUsedByVoucherId();
+        }
+
+        function loadUsedByVoucherId() {
+            $('.voucher-used').each(function () {
+                console.log()
+                $.ajax({
+                    url: '/api/voucher/' + $(this).attr('data-id') + '/used',
+                    success: function (data) {
+                        console.log(data)
+                        let html = '';
+                        for (let i = 0; i < data.length; i++) {
+                            html += '<tr>\n' +
+                                '    <td class="text-center">' + (i + 1) + '</td>\n' +
+                                '    <td>' + data[i].fullName + '</td>\n' +
+                                '    <td class="text-end">' + data[i].totalMoney + '</td>\n' +
+                                '    <td>' + data[i].dateUsed + '</td>\n' +
+                                '</tr>'
+                        }
+                        $(this).children('body').html(html);
+                    }
+                })
+                // console.log($(this).children('.voucher-used-content'))
+            });
         }
 
         function onStatusChange(element) {
@@ -610,7 +626,7 @@
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         console.log(jqXHR);
-                        toastDanger('Lỗi', 'Tạo mã giảm giá thất bại')
+                        toastDanger('Lỗi', jqXHR.responseJSON.vn);
                     }
                 })
             }
@@ -677,7 +693,8 @@
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         console.log(jqXHR);
-                        toastDanger('Lỗi', 'Cập nhật mã giảm giá thất bại')
+
+                        toastDanger('Lỗi', jqXHR.responseJSON.vn);
                     }
                 })
             }
@@ -699,7 +716,7 @@
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         console.log(jqXHR);
-                        toastDanger('Lỗi', 'Kích hoạt mã giảm giá thất bại')
+                        toastDanger('Lỗi', jqXHR.responseJSON.vn);
                     }
                 })
             }
@@ -722,7 +739,7 @@
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         console.log(jqXHR);
-                        toastDanger('Lỗi', 'Xoá mã giảm giá thất bại')
+                        toastDanger('Lỗi', jqXHR.responseJSON.vn);
                     }
                 })
                 // })
