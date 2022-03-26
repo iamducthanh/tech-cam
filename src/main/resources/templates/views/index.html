@@ -2,13 +2,14 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/weblayout}"
-      xmlns:sec="http://www.w3.org/1999/xhtml"><head>
-    <meta charset="UTF-8">
-    <title>Demo container layout</title>
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Trang chủ</title>
 </head>
+
 <body>
 <div layout:fragment="content" class="myContainer">
-    <div class="row container1">
+    <div class="row">
         <div class="col-lg-3 h-100" id="leftKH">
             <div class="card" id="formLeft">
                 <div class="h-100 w-100">
@@ -99,7 +100,6 @@
                     <!-- Sidebar -->
                 </div>
                 <div class="card-body">
-
                     <div id="morris-donut-example" class="dash-chart morris-charts text-center"></div>
                 </div>
             </div>
@@ -108,12 +108,11 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-lg-4">
-                            <h1 class="header-title mb-4"><i class="mdi mdi-menu"
-                                                             style="font-size: 16pt;" onclick="editMenuKH();"></i> &ensp;Đối tác giao hàng</h1>
-                        </div>
-                        <div class="col-lg-8">
-                            <div class="dropdown myDropdown myBtn">
+                        <h1 class="header-title mb-4">
+                            <i class="mdi mdi-menu" style="font-size: 16pt;" onclick="editMenuKH();"></i> &ensp;Đối tác giao hàng
+                        </h1>
+                        <div class="row gap-2">
+                            <div class="col-auto p-0 dropdown myDropdown myBtn" style="margin-left: 30px;">
                                 <button class="btn btn-primary" id="dropdownMenuButton"
                                         data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fas fa-filter"></i>
@@ -162,9 +161,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <button class="btn btn-primary myBtn"><i class="fas fa-file-export"></i> Export</button>
-                            <button class="btn btn-primary myBtn"><i class="fas fa-file-import"></i> Import</button>
-                            <button class="btn btn-primary myBtn" onclick="onModalAddDTGH()"><b>+ Thêm đối tác</b></button>
+                            <button class="col-auto btn btn-primary myBtn"><i class="fas fa-file-export"></i> Export</button>
+                            <button class="col-auto btn btn-primary myBtn"><i class="fas fa-file-import"></i> Import</button>
+                            <button class="col-auto btn btn-primary myBtn" onclick="onModalAddDTGH()"><b>+ Thêm đối tác</b></button>
                         </div>
                     </div>
                     <div class="row">
@@ -196,11 +195,9 @@
                                             <td>61</td>
                                             <td>2011/04/25</td>
                                             <td>$320,800</td>
-
                                         </tr>
                                         </tbody>
                                     </table>
-
                                 </div>
                             </div>
                         </div>
@@ -210,7 +207,6 @@
             </div>
         </div>
     </div>
-
 </div>
 </body>
 </html>

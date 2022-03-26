@@ -5,10 +5,10 @@
     <div class="d-flex">
       <!-- LOGO -->
       <div class="navbar-brand-box d-block d-lg-none">
-        <a href="index.html" class="logo logo-light">
-                            <span class="logo-sm">
-                                <img src="https://cdn-icons-png.flaticon.com/512/809/809052.png" alt="" height="22">
-                            </span>
+        <a href="/" class="logo logo-light">
+          <span class="logo-sm">
+            <img th:src="@{/assets/img/logo.png}" alt="" height="30" style="margin: -5px -18px 0 0;">
+          </span>
         </a>
       </div>
 
@@ -108,9 +108,9 @@
             <a href="" class="text-reset notification-item">
               <div class="d-flex">
                 <div class="avatar-xs me-3">
-                                            <span class="avatar-title bg-success rounded-circle font-size-16">
-                                                <i class="mdi mdi-cart-outline"></i>
-                                            </span>
+                  <span class="avatar-title bg-success rounded-circle font-size-16">
+                    <i class="mdi mdi-cart-outline"></i>
+                  </span>
                 </div>
                 <div class="flex-1">
                   <h6 class="mt-0 font-size-15 mb-1">Your order is placed</h6>
@@ -124,9 +124,9 @@
             <a href="" class="text-reset notification-item">
               <div class="d-flex">
                 <div class="avatar-xs me-3">
-                                            <span class="avatar-title bg-danger rounded-circle font-size-16">
-                                                <i class="mdi mdi-message-text-outline"></i>
-                                            </span>
+                  <span class="avatar-title bg-danger rounded-circle font-size-16">
+                    <i class="mdi mdi-message-text-outline"></i>
+                  </span>
                 </div>
                 <div class="flex-1">
                   <h6 class="mt-0 font-size-15 mb-1">New Message received</h6>
@@ -140,9 +140,9 @@
             <a href="" class="text-reset notification-item">
               <div class="d-flex">
                 <div class="avatar-xs me-3">
-                                            <span class="avatar-title bg-info rounded-circle font-size-16">
-                                                <i class="mdi mdi-glass-cocktail"></i>
-                                            </span>
+                  <span class="avatar-title bg-info rounded-circle font-size-16">
+                    <i class="mdi mdi-glass-cocktail"></i>
+                  </span>
                 </div>
                 <div class="flex-1">
                   <h6 class="mt-0 font-size-15 mb-1">Your item is shipped</h6>
@@ -155,9 +155,9 @@
             <a href="" class="text-reset notification-item">
               <div class="d-flex">
                 <div class="avatar-xs me-3">
-                                            <span class="avatar-title bg-success rounded-circle font-size-16">
-                                                <i class="mdi mdi-message-text-outline"></i>
-                                            </span>
+                  <span class="avatar-title bg-success rounded-circle font-size-16">
+                    <i class="mdi mdi-message-text-outline"></i>
+                  </span>
                 </div>
                 <div class="flex-1">
                   <h6 class="mt-0 font-size-15 mb-1">New Message received</h6>
@@ -171,9 +171,9 @@
             <a href="" class="text-reset notification-item">
               <div class="d-flex">
                 <div class="avatar-xs me-3">
-                                            <span class="avatar-title bg-warning rounded-circle font-size-16">
-                                                <i class="mdi mdi-cart-outline"></i>
-                                            </span>
+                  <span class="avatar-title bg-warning rounded-circle font-size-16">
+                    <i class="mdi mdi-cart-outline"></i>
+                  </span>
                 </div>
                 <div class="flex-1">
                   <h6 class="mt-0 font-size-15 mb-1">Your order is placed</h6>
@@ -195,7 +195,7 @@
 
       <div class="dropdown d-inline-block ms-2">
         <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <img class="rounded-circle header-profile-user" src="assets/img/avatar-6.jpg" alt="Header Avatar">
+          <img class="rounded-circle header-profile-user" th:src="${session.user.avatar}" alt="Header Avatar">
           <span class="d-none d-md-inline-block ms-1">
             <span th:text="${session.user.fullName}"></span>
             <i class="mdi mdi-chevron-down"></i>
@@ -240,16 +240,12 @@
     <div class="container-fluid">
       <div class="d-flex">
         <!-- LOGO -->
-        <div class="navbar-brand-box d-none d-lg-block">
-          <a href="index.html" class="logo logo-light">
-                            <span class="logo-sm">
-                                <img src="https://cdn-icons-png.flaticon.com/512/809/809052.png" alt="" height="32">
-                                <span style="font-size: 27px; color: yellow;">FShop</span>
-                            </span>
+        <div class="navbar-brand-box d-none d-lg-block mx-5">
+          <a href="/" class="logo logo-light">
             <span class="logo-lg">
-                                <img src="https://cdn-icons-png.flaticon.com/512/809/809052.png" alt="" height="40">
-                                <span style="font-size: 27px; color: yellow;">FShop</span>
-                            </span>
+              <img th:src="@{/assets/img/logo.png}" alt="logo" height="40" style="margin: -15px 10px 0 0;">
+              <span style="font-size: 27px; color: yellow; font-weight: bold;">FShop</span>
+            </span>
           </a>
         </div>
 
@@ -335,7 +331,7 @@
               </li>
 
               <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-layout" role="button">
+                <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-report" role="button">
                   <i class="fas fa-signal me-2"></i>Báo cáo
                   <div class="arrow-down"></div>
                 </a>
@@ -353,7 +349,7 @@
               </li>
 
               <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-layout" role="button">
+                <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-selling" role="button">
                   <i class="bi bi-bag"></i>&ensp;Bán hàng
                   <div class="arrow-down"></div>
                 </a>
