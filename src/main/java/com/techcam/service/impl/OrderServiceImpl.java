@@ -8,6 +8,7 @@ import com.techcam.constants.ConstantsErrorCode;
 import com.techcam.dto.request.Customer.CustomerRequest;
 import com.techcam.dto.request.MailDto;
 import com.techcam.dto.request.order.*;
+import com.techcam.dto.request.voucher.VoucherRequest;
 import com.techcam.dto.response.Customer.CustomerInfoResponse;
 import com.techcam.dto.response.order.GetInfoOrder;
 import com.techcam.dto.response.order.GetInfoOrderDetails;
@@ -15,10 +16,7 @@ import com.techcam.dto.response.order.OrderResponse;
 import com.techcam.dto.response.voucher.VoucherResponse;
 import com.techcam.entity.*;
 import com.techcam.exception.TechCamExp;
-import com.techcam.repo.IOrderDetailsRepo;
-import com.techcam.repo.IOrderRepo;
-import com.techcam.repo.IProductRepo;
-import com.techcam.repo.IReceiptVoucherRepo;
+import com.techcam.repo.*;
 import com.techcam.service.ICustomerService;
 import com.techcam.service.IOrderService;
 import com.techcam.service.IVoucherService;
@@ -33,6 +31,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.servlet.ModelAndView;
 
 
 import javax.mail.MessagingException;
@@ -68,6 +67,8 @@ public class OrderServiceImpl implements IOrderService {
     private IReceiptVoucherRepo receiptVoucherRepo;
     @Autowired
     private MailerUtil mailerUtil;
+    @Autowired
+    private IVoucherRepo voucherRepo;
     private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     private static final ModelMapper MODEL_MAPPER = new ModelMapper();
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -245,6 +246,12 @@ public class OrderServiceImpl implements IOrderService {
             orderDetailsRepo.saveAll(orderdetailEntities);
             if ( request.getOrderType().equals(OrderType.COUNTER.name()) || request.getPaymentMethod().equals(OrderMethod.PAYMENT.name())) {
                 productRepo.saveAll(productEntities);
+            }
+            if(Objects.nonNull(voucherResponse)){
+                // todo lưu ý hỏi ngọc save voucher thế này được không
+                voucherResponse.setVoucherQuantity(voucherResponse.getVoucherQuantity()-1);
+                VoucherRequest voucherRequest = MODEL_MAPPER.map(voucherResponse,VoucherRequest.class);
+                voucherService.createVoucher(voucherRequest);
             }
             if(request.getOrderType().equals(OrderType.ONLINE.name())) {
                 if(request.getPaymentMethod().equalsIgnoreCase(OrderMethod.PAYMENT.name())) {
@@ -631,8 +638,13 @@ public class OrderServiceImpl implements IOrderService {
             orders.setDeleteFlag(true);
             orders.setModifierDate(new Date());
             orders.setModifierBy(getInfoStaff());
-
             ordersRepo.save(orders);
+            // mới thêm để cộng lại voucher
+            if(Objects.nonNull(orders.getVoucher())){
+                VoucherEntity voucherEntity = orders.getVoucher();
+                voucherEntity.setQuantity(voucherEntity.getQuantity()+1);
+                voucherRepo.save(voucherEntity);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             orderResponse.setStatus(CommonStatus.FAIL.name());
