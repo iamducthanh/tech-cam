@@ -1,8 +1,9 @@
 package com.techcam.service;
 
-import com.techcam.dto.request.StaffAddRequestDTO;
-import com.techcam.dto.request.StaffEditRequestDTO;
-import com.techcam.dto.response.StaffResponseDTO;
+import com.techcam.dto.request.staff.StaffAddRequestDTO;
+import com.techcam.dto.request.staff.StaffChangePassRequestDTO;
+import com.techcam.dto.request.staff.StaffEditRequestDTO;
+import com.techcam.dto.response.staff.StaffResponseDTO;
 import com.techcam.entity.StaffEntity;
 
 import java.util.List;
@@ -39,6 +40,9 @@ public interface IStaffService {
 
     // Edit staff
     String editStaff(StaffEditRequestDTO staff);
+
+    // Change password staff
+    String changePasswordStaff(StaffChangePassRequestDTO staff);
 
     // Delete staff
     boolean deleteStaff(String id);

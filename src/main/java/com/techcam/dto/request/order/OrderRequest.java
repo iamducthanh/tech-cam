@@ -29,9 +29,9 @@ public class OrderRequest {
     private CustomerRequest customer;
     private String voucherId;
     private List<OrderProductDetailsRequest> productDetails;
-    @NotBlank
+
     private String paymentMethod;
-    @NotBlank
+
     private String orderMethod;
     private String note;
     private int tax;

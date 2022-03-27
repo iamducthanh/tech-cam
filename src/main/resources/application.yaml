@@ -33,7 +33,7 @@ spring:
 techcam:
   schedule:
     birthday:
-      cron: ${CU_SCHEDULE_BIRTHDAY_CRON:0 0 8 * * *}
+      cron: ${CU_SCHEDULE_BIRTHDAY_CRON:0 54 20 * * *}
       message: ${CU_MESSAGE_BRITHDAY:Hôm nay là sinh nhật của quý khách. TechCam xin chúc quý khách một ngày sinh nhật vui vẻ hạnh phúc!.<br>TechCam xin gửi tặng bạn voucher có mã là %s , hạn sử dụng  đến %s
        <br> Rất mong quý khách sẽ tiếp tục sử dụng dịch vụ của chúng tôi. <br> Lưu ý:khuyến mại sử dụng trên tổng hóa đơn thanh toán. Được phép sử dụng nhiều khuyến mại cùng một lúc}
       subject: ${CU_SUBJECT_BRITHDAY:Chúc Mừng Sinh Nhật Quý Khách}

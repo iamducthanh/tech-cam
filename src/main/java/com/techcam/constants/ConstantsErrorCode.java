@@ -11,10 +11,10 @@ package com.techcam.constants;
 
 public interface ConstantsErrorCode {
 
-    String SUCCESS = "SUCCESS";
-    String ERROR = "ERROR";
-
     String ERROR_LENGTH = "CM-TC-001";
+    String ERROR_MIN_MONEY = "CM-TC-003";
+    String ERROR_EXISTS = "CM-TC-004";
+    String ERROR_NOT_EXISTS = "CM-TC-005";
 
     // lỗi hệ thống
     String ERROR_DATA_REQUEST = "TC-000-001";
@@ -35,6 +35,9 @@ public interface ConstantsErrorCode {
     String VOUCHER_START_DATE_BLANK = "TC-005-004";
     String VOUCHER_END_DATE_BLANK = "TC-005-005";
     String VOUCHER_DISCOUNT_BLANK = "TC-005-006";
+    String VOUCHER_NOT_EXISTS = "TC-005-007";
+    String VOUCHER_END_USED = "TC-005-008";
+    String VOUCHER_MAX_USED = "TC-005-009";
 
     String ERROR_BLANK = "CM-TC-002";
 
@@ -63,14 +66,17 @@ public interface ConstantsErrorCode {
     String LOGIN_PASS_M_FAIL = "TC-LG-003";
     String LOGIN_EMAIL_INPUT_NULL = "TC-LG-004";
     String LOGIN_EMAIL_NOT_EXITS = "TC-LG-005";
+    String LOGIN_CHANGE_PASS_SUCCESS = "TC-LG-006";
     String LOGIN_PASS_FAIL = "TC-LG-007";
-    String LOGIN_FAIL_FIVE="TC-LG-008";
-    String LOGIN_RESET_BY_EMAIL_SUCCESS="TC-LG-009";
+    String LOGIN_FAIL_FIVE = "TC-LG-008";
+    String LOGIN_RESET_BY_EMAIL_SUCCESS = "TC-LG-009";
+    String LOGIN_ACCOUNT_BLOCKED = "TC-LG-012";
 
-    String ORDER_PRODUCT_OUT_OF_STOCK= "TC-007-001";
-    String CUST_ORDER_TOO_MUCH="TC-007-002";
-    String VOUCHER_ERROR="TC-007-003";
-    String IMEI_DUPLICATE="TC-007-004";
+    String ORDER_PRODUCT_OUT_OF_STOCK = "TC-007-001";
+    String CUST_ORDER_TOO_MUCH = "TC-007-002";
+    String VOUCHER_ERROR = "TC-007-003";
+    String IMEI_DUPLICATE = "TC-007-004";
 
+    String INVOICE_NOT_DETAIL = "TC-008-001";
 
 }
