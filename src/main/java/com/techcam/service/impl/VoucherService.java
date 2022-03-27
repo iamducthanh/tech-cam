@@ -70,6 +70,12 @@ public class VoucherService implements IVoucherService {
     }
 
     @Override
+    public List<VoucherResponse> findAllByCode(String code) {
+        return voucherRepo.findAllByCodeAndDeleteFlagIsFalse(code).stream()
+                .map(this::mapToVoucherDto).collect(Collectors.toList());
+    }
+
+    @Override
     @Transactional
     public String createVoucher(VoucherRequest voucherRequest) {
         if (Objects.isNull(voucherRequest)) {
