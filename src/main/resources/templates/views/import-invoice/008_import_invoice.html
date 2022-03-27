@@ -128,49 +128,35 @@
                 <div class="modal-body">
                     <!-- Tab panes -->
                     <div class="row">
-                        <div class="col-lg-6 mb-3 row">
-                            <div class="col-lg-5">
-                                <label for="ip-add-invoice-code">
-                                    Mã nhập hàng hàng
-                                </label>
-                            </div>
-                            <div class="col-lg-7">
-                                <input type="text" id="ip-add-invoice-code" placeholder="Mã nhập hàng...."
-                                       class="form-control"/>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 mb-3 row">
-                            <div class="col-lg-5">
-                                <label for="ip-add-order-code">
-                                    Mã đặt hàng
-                                </label>
-                            </div>
-                            <div class="col-lg-7">
-                                <select id="ip-add-order-code" class="form-control select2">
-                                    <option value="">Chưa đặt</option>
-                                    <option th:each="invoiceOrder : ${lstInvoiceOrder}"
-                                            th:value="${invoiceOrder.invoiceOrderId}"
-                                            th:text="${invoiceOrder.invoiceOrderCode}">
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                        <div id="invoice-detail" class="row">
-                            <div class="col-lg-6 mb-3 row">
+                        <div class="col-lg-6">
+                            <div class="mb-3 row">
                                 <div class="col-lg-5">
-                                    <label for="ip-add-product1">
-                                        Sản phẩm 1
+                                    <label for="ip-add-invoice-code">
+                                        Mã nhập hàng hàng
                                     </label>
                                 </div>
                                 <div class="col-lg-7">
-                                    <input type="text" id="ip-add-product1" data-id="idSanPham"
-                                           placeholder="Số lượng...."
-                                           class="form-control add-product-quantity-invoice"/>
+                                    <input type="text" id="ip-add-invoice-code" placeholder="Mã nhập hàng...."
+                                           class="form-control"/>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6 mb-3 row">
+                            <div class="mb-3 row">
+                                <div class="col-lg-5">
+                                    <label for="ip-add-order-code">
+                                        Mã đặt hàng
+                                    </label>
+                                </div>
+                                <div class="col-lg-7">
+                                    <select id="ip-add-order-code" class="form-control select2">
+                                        <option value="">Chưa đặt</option>
+                                        <option th:each="invoiceOrder : ${lstInvoiceOrder}"
+                                                th:value="${invoiceOrder.invoiceOrderId}"
+                                                th:text="${invoiceOrder.invoiceOrderCode}">
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
                                 <div class="col-lg-5">
                                     <label for="ip-add-supplier">
                                         Nhà cung cấp
@@ -178,14 +164,13 @@
                                 </div>
                                 <div class="col-lg-7">
                                     <select id="ip-add-supplier" class="form-control select2">
-                                        <option th:each="supplier : ${lstSupplier}"
-                                                th:value="${supplier.id}"
+                                        <option th:each="supplier : ${lstSupplier}" th:value="${supplier.id}"
                                                 th:text="${supplier.name}">
                                         </option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-lg-6 mb-3 row">
+                            <div class="mb-3 row">
                                 <div class="col-lg-5">
                                     <label for="ip-add-invoice-discount">
                                         Giảm giá
@@ -196,9 +181,7 @@
                                            class="form-control"/>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6 mb-3 row">
+                            <div class="mb-3 row">
                                 <div class="col-lg-5"></div>
                                 <div class="col-lg-7">
                                     <input class="form-check-input mt-2" type="checkbox"
@@ -206,6 +189,42 @@
                                     <label for="ip-add-invoice-status" class="col-form-label">
                                         Đã nhập hàng
                                     </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3 row">
+                                <label class="col-lg-5" for="ip-add-product">
+                                    Sản phẩm nhập
+                                </label>
+                                <div class="col-lg-7">
+                                    <select id="ip-add-product" class="form-control select2" multiple
+                                            onchange="onChangeAddProduct(this)">
+                                        <option>a</option>
+                                        <option>b</option>
+                                        <option>c</option>
+                                        <option>d</option>
+                                        <option>d</option>
+                                        <option>d</option>
+                                        <option>d</option>
+                                        <option>d</option>
+                                        <option>d</option>
+                                        <option th:each="supplier : ${lstSupplier}" th:value="${supplier.id}"
+                                                th:text="${supplier.name}">
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="invoice-detail">
+                                <div class="mb-3 row">
+                                    <label class="col-lg-5" for="ip-add-product1">
+                                        Sản phẩm 1
+                                    </label>
+                                    <div class="col-lg-7">
+                                        <input type="text" id="ip-add-product1" data-id="idSanPham"
+                                               placeholder="Số lượng...."
+                                               class="form-control add-product-quantity-invoice"/>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -223,6 +242,25 @@
     </div><!-- /.modal -->
 
     <script>
+
+        function onChangeAddProduct(e) {
+            console.log(getSelectValues(e))
+        }
+
+        function getSelectValues(select) {
+            let result = [];
+            let options = select && select.options;
+            let opt;
+
+            for (let i = 0, iLen = options.length; i < iLen; i++) {
+                opt = options[i];
+                if (opt.selected) {
+                    result.push(opt.value || opt.text);
+                }
+            }
+            return result;
+        }
+
         function onClickAddInvoice(e) {
             let getInvoiceCode = document.getElementById('ip-add-invoice-code');
             let getInvoiceOrderCode = document.getElementById('ip-add-order-code');
