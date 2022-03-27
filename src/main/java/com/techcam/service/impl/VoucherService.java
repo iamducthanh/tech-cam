@@ -3,11 +3,13 @@ package com.techcam.service.impl;
 import com.techcam.dto.request.voucher.VoucherRequest;
 import com.techcam.dto.response.voucher.VoucherResponse;
 import com.techcam.entity.CategoryEntity;
+import com.techcam.entity.OrdersEntity;
 import com.techcam.entity.VoucherCustomerEntity;
 import com.techcam.entity.VoucherEntity;
 import com.techcam.repo.ICategoryRepo;
+import com.techcam.repo.IOrderRepo;
+import com.techcam.repo.IVoucherCustomerRepo;
 import com.techcam.repo.IVoucherRepo;
-import com.techcam.repo.VoucherCustomerRepo;
 import com.techcam.service.IVoucherService;
 import com.techcam.util.ConvertUtil;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +42,9 @@ public class VoucherService implements IVoucherService {
 
     private final ICategoryRepo categoryRepo;
 
-    private final VoucherCustomerRepo voucherCustomerRepo;
+    private final IVoucherCustomerRepo voucherCustomerRepo;
+
+    private final IOrderRepo orderRepo;
 
     @Override
     public List<VoucherResponse> getAllVoucher() {
@@ -73,6 +77,21 @@ public class VoucherService implements IVoucherService {
     public List<VoucherResponse> findAllByCode(String code) {
         return voucherRepo.findAllByCodeAndDeleteFlagIsFalse(code).stream()
                 .map(this::mapToVoucherDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public VoucherResponse findFistByCode(String code) {
+        List<VoucherResponse> lstVoucher = findAllByCode(code);
+        VoucherResponse response = null;
+        for (VoucherResponse x : lstVoucher) {
+            List<OrdersEntity> lstUsedByVoucherId = orderRepo.findAllByVoucherIdAndDeleteFlagIsFalse(x.getVoucherId());
+            if (x.getVoucherEndDate().compareTo(new Date()) <= 0
+                    && x.getVoucherQuantity() > lstUsedByVoucherId.size()) {
+                response = x;
+                break;
+            }
+        }
+        return response;
     }
 
     @Override

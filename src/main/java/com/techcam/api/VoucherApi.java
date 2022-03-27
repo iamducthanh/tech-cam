@@ -115,6 +115,7 @@ public class VoucherApi {
             if (x.getVoucherEndDate().compareTo(new Date()) <= 0
                     && x.getVoucherQuantity() > lstUsedByVoucherId.size()) {
                 response = x;
+                break;
             }
         }
         if (Objects.isNull(response)) {

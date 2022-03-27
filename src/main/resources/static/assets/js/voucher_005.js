@@ -32,7 +32,7 @@ function loadUsedByVoucherId() {
                         '    <td>' + data[i].dateUsed + '</td>\n' +
                         '</tr>'
                 }
-                $(this).children('body').html(html);
+                $('.voucher-used-content').html(html);
             }
         })
         // console.log($(this).children('.voucher-used-content'))

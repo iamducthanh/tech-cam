@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
  *
  * @author : quang
  * @version : 1.0
- * @since : 3/27/2022 10:31 AM
+ * @since : 3/27/2022 8:56 PM
  * Project_name : tech-cam
  */
 
@@ -18,12 +18,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class InvoiceOrderResponse {
+public class InvoiceOrderDetailResponse {
 
-    private String invoiceOrderId;
+    private String productId;
 
-    private String invoiceOrderCode;
-
-    private String invoiceSupplierId;
+    private int productQuantity;
 
 }
