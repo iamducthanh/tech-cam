@@ -1,6 +1,9 @@
 package com.techcam.service;
 
+import com.techcam.dto.request.CategoryReqDto;
+import com.techcam.dto.response.CategoryDto;
 import com.techcam.dto.response.category.CategoryResponse;
+import com.techcam.entity.CategoryEntity;
 
 import java.util.List;
 
@@ -15,5 +18,9 @@ import java.util.List;
 public interface ICategoryService {
 
     List<CategoryResponse> getAllCategory();
-
+    CategoryEntity findById(String id);
+    List<CategoryDto> findAll();
+    List<CategoryEntity> findCategoryByParent(String parentId);
+    void saveCategory(CategoryReqDto categoryDto);
+    void deleteCategory(CategoryEntity categoryEntity);
 }

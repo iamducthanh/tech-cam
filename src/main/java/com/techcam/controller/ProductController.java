@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -56,6 +57,9 @@ public class ProductController {
     @GetMapping(value = "/property/add", params = "category")
     public String productProperty(Model model, @RequestParam("category") String categoryId) {
         List<PropertyResponse> lstPropertyResponses = attributeService.findAllByCategoryId(categoryId);
+        for (PropertyResponse x : lstPropertyResponses) {
+            x.setFixedValue(attributeService.findAllFixedValueByPropertyId(x.getPropertyId()));
+        }
         model.addAttribute("lstProperty", lstPropertyResponses);
         return "/component/product/property";
     }
@@ -82,6 +86,12 @@ public class ProductController {
                 z.setFixedValue(x.getFixedValue());
                 lstProductPropertyResponses.add(z);
             }
+        }
+        if (lstFindAllByCategoryId.isEmpty()) {
+            lstProductPropertyResponses = new ArrayList<>();
+        }
+        for (ProductPropertyResponse x : lstProductPropertyResponses) {
+            x.setFixedValue(attributeService.findAllFixedValueByPropertyId(x.getPropertyId()));
         }
         model.addAttribute("lstProperty", lstProductPropertyResponses);
         return "/component/product/propertyEdit";

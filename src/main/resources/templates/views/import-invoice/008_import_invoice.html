@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/weblayout}"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý nhập hàng - TechCam</title>
+    <link rel="stylesheet" th:href="@{/assets/css/select2.min.css}">
+</head>
+<body>
+<div layout:fragment="content" class="container-fluid" style="max-width: 98%">
+    <div class="row container1">
+        <div class="col-lg-2 h-100" id="leftKH">
+            <h1 class="heading-page">Quản lý sản phẩm</h1>
+            <div class="filter-report">
+                <div class="card" style="padding-left: 15px; padding-top: 15px">
+                    <h6 class="mx-2 mt-2 fs-14">Trạng thái</h6>
+                    <div class="mx-2 mb-2">
+                        <div class="form-group form-check">
+                            <input class="form-check-input" type="radio" name="status" id="statusAll" value=""
+                                   onchange="onStatusChange(this)" checked>
+                            <label class="form-check-label" for="statusAll">
+                                Tất cả
+                            </label>
+                        </div>
+                        <div class="form-group form-check">
+                            <input class="form-check-input" type="radio" name="status" id="statusActive"
+                                   value="Kinh doanh" onchange="onStatusChange(this)">
+                            <label class="form-check-label" for="statusActive">
+                                Kinh doanh
+                            </label>
+                        </div>
+                        <div class="form-group form-check">
+                            <input class="form-check-input" type="radio" name="status" id="statusInActive"
+                                   value="Ngừng kinh doanh" onchange="onStatusChange(this)">
+                            <label class="form-check-label" for="statusInActive">
+                                Ngừng kinh doanh
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-10" id="rightKH" style="height: 100%">
+            <div class="row justify-content-end">
+                <a href="#modal-add-invoice" type="button"
+                   class="btn btn-primary col-auto mb-3 waves-effect waves-light"
+                   data-bs-toggle="modal">
+                    <i class="fas fa-plus me-2"></i>
+                    Nhập hàng
+                </a>
+            </div>
+            <div class="card">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card-body overflow-auto">
+                            <table id="datatable"
+                                   class="table table-responsive table-hover table-bordered nowrap dataTable no-footer shadow"
+                                   style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                <thead>
+                                <tr class="text-center">
+                                    <th>STT</th>
+                                    <th>Chức năng</th>
+                                    <th>NCC</th>
+                                    <th>Mã đặt hàng</th>
+                                    <th>Mã phiếu nhập</th>
+                                    <th>Tổng tiền</th>
+                                    <th>Giảm giá</th>
+                                    <th>Đã thanh toán</th>
+                                    <th>Phải trả NCC</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="invoice : ${lstInvoice}">
+                                    <td></td>
+                                    <td class="text-center">
+                                        <a href="#" class="btn btn-info btn-sm" data-bs-toggle="modal">
+                                            Chi tiết
+                                        </a>
+                                    </td>
+                                    <td th:text="${invoice.supplierName}">NCC</td>
+                                    <td th:text="${invoice.orderInvoiceCode}">Mã đặt hàng</td>
+                                    <td th:text="${invoice.invoiceCode}">Mã phiếu nhập</td>
+                                    <td class="text-end"
+                                        th:text="${#numbers.formatDecimal(invoice.totalMoney, 0, 'COMMA', 0, 'POINT') + 'đ'}">
+                                        Tổng tiền
+                                    </td>
+                                    <td class="text-end"
+                                        th:text="${#numbers.formatDecimal(invoice.discount, 0, 'COMMA', 0, 'POINT') + 'đ'}">
+                                        Giảm giá
+                                    </td>
+                                    <td class="text-end"
+                                        th:text="${#numbers.formatDecimal(invoice.paid, 0, 'COMMA', 0, 'POINT') + 'đ'}">
+                                        Đã thanh toán
+                                    </td>
+                                    <td class="text-end"
+                                        th:text="${#numbers.formatDecimal(invoice.totalMoney - invoice.discount - invoice.paid, 0, 'COMMA', 0, 'POINT') + 'đ'}">
+                                        Phải trả NCC
+                                    </td>
+                                    <td class="text-center">
+                                        <span th:if="${invoice.status == 'ON'}" class="badge bg-success">
+                                            Đã nhập
+                                        </span>
+                                        <span th:unless="${invoice.status == 'ON'}" class="badge bg-success">
+                                            Đã huỷ
+                                        </span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- <div id="morris-bar-stacked" class="morris-chart-height morris-charts"></div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-add-invoice" class="modal fade show" style="display: block;" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title mt-0">Thêm nhập hàng</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Tab panes -->
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="mb-3 row">
+                                <div class="col-lg-5">
+                                    <label for="ip-add-invoice-code">
+                                        Mã nhập hàng hàng
+                                    </label>
+                                </div>
+                                <div class="col-lg-7">
+                                    <input type="text" id="ip-add-invoice-code" placeholder="Mã nhập hàng...."
+                                           class="form-control"/>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col-lg-5">
+                                    <label for="ip-add-order-code">
+                                        Mã đặt hàng
+                                    </label>
+                                </div>
+                                <div class="col-lg-7">
+                                    <select id="ip-add-order-code" class="form-control select2"
+                                            onchange="onChangeInvoiceOrder(this)">
+                                        <option value="">Chưa đặt</option>
+                                        <option th:each="invoiceOrder : ${lstInvoiceOrder}"
+                                                th:value="${invoiceOrder.invoiceOrderId + '@' + invoiceOrder.invoiceSupplierId}"
+                                                th:text="${invoiceOrder.invoiceOrderCode}">
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col-lg-5">
+                                    <label for="ip-add-supplier">
+                                        Nhà cung cấp
+                                    </label>
+                                </div>
+                                <div class="col-lg-7">
+                                    <select id="ip-add-supplier" class="form-control select2">
+                                        <option th:each="supplier : ${lstSupplier}" th:value="${supplier.id}"
+                                                th:text="${supplier.name}">
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col-lg-5">
+                                    <label>
+                                        Tổng tiền
+                                    </label>
+                                </div>
+                                <div class="col-lg-7 text-end">
+                                    <label>
+                                        100đ
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col-lg-5">
+                                    <label for="ip-add-invoice-discount">
+                                        Giảm giá
+                                    </label>
+                                </div>
+                                <div class="col-lg-7">
+                                    <input type="number" value="0" min="0" id="ip-add-invoice-discount"
+                                           placeholder="Số tiền NCC giảm...." class="form-control"/>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col-lg-5">
+                                    <label for="ip-add-invoice-paid">
+                                        Trả NCC
+                                    </label>
+                                </div>
+                                <div class="col-lg-7">
+                                    <input type="number" value="0" min="0" id="ip-add-invoice-paid"
+                                           placeholder="Số tiền trả NCC...." class="form-control"/>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col-lg-5"></div>
+                                <div class="col-lg-7">
+                                    <input class="form-check-input mt-2" type="checkbox"
+                                           id="ip-add-invoice-status"/>
+                                    <label for="ip-add-invoice-status" class="col-form-label">
+                                        Đã nhập hàng
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col-lg-5">
+                                    <label for="ip-add-invoice-note">
+                                        Ghi chú
+                                    </label>
+                                </div>
+                                <div class="col-lg-7">
+                                    <input type="text" id="ip-add-invoice-note" placeholder="Ghi chú...."
+                                           class="form-control"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="mb-3 row">
+                                <label class="col-lg-4" for="ip-add-product">
+                                    Sản phẩm nhập
+                                </label>
+                                <div class="col-lg-8">
+                                    <select id="ip-add-product" class="form-control select2" multiple
+                                            onchange="onChangeAddProduct(this)">
+                                        <option th:each="product : ${lstProduct}" th:value="${product.productId}"
+                                                th:text="${product.productName}">
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="invoice-detail"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-success waves-effect waves-light"
+                            onclick="onClickAddInvoice()">
+                        Lưu
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <div id="modal-edit-invoice" class="modal fade show" style="display: block;" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title mt-0">Sửa nhập hàng</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Tab panes -->
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="mb-3 row">
+                                <div class="col-lg-5">
+                                    <label for="ip-edit-invoice-code">
+                                        Mã nhập hàng hàng
+                                    </label>
+                                </div>
+                                <div class="col-lg-7">
+                                    <input type="text" id="ip-edit-invoice-code" placeholder="Mã nhập hàng...."
+                                           class="form-control"/>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col-lg-5">
+                                    <label for="ip-edit-order-code">
+                                        Mã đặt hàng
+                                    </label>
+                                </div>
+                                <div class="col-lg-7">
+                                    <select id="ip-edit-order-code" class="form-control select2"
+                                            onchange="onChangeInvoiceOrder(this)">
+                                        <option value="">Chưa đặt</option>
+                                        <option th:each="invoiceOrder : ${lstInvoiceOrder}"
+                                                th:value="${invoiceOrder.invoiceOrderId + '@' + invoiceOrder.invoiceSupplierId}"
+                                                th:text="${invoiceOrder.invoiceOrderCode}">
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col-lg-5">
+                                    <label for="ip-edit-supplier">
+                                        Nhà cung cấp
+                                    </label>
+                                </div>
+                                <div class="col-lg-7">
+                                    <select id="ip-edit-supplier" class="form-control select2">
+                                        <option th:each="supplier : ${lstSupplier}" th:value="${supplier.id}"
+                                                th:text="${supplier.name}">
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col-lg-5">
+                                    <label>
+                                        Tổng tiền
+                                    </label>
+                                </div>
+                                <div class="col-lg-7 text-end">
+                                    <label>
+                                        100đ
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col-lg-5">
+                                    <label for="ip-edit-invoice-discount">
+                                        Giảm giá
+                                    </label>
+                                </div>
+                                <div class="col-lg-7">
+                                    <input type="number" value="0" min="0" id="ip-edit-invoice-discount"
+                                           placeholder="Số tiền NCC giảm...." class="form-control"/>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col-lg-5">
+                                    <label for="ip-edit-invoice-paid">
+                                        Trả NCC
+                                    </label>
+                                </div>
+                                <div class="col-lg-7">
+                                    <input type="number" value="0" min="0" id="ip-edit-invoice-paid"
+                                           placeholder="Số tiền trả NCC...." class="form-control"/>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col-lg-5"></div>
+                                <div class="col-lg-7">
+                                    <input class="form-check-input mt-2" type="checkbox"
+                                           id="ip-edit-invoice-status"/>
+                                    <label for="ip-edit-invoice-status" class="col-form-label">
+                                        Đã nhập hàng
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col-lg-5">
+                                    <label for="ip-edit-invoice-note">
+                                        Ghi chú
+                                    </label>
+                                </div>
+                                <div class="col-lg-7">
+                                    <input type="text" id="ip-edit-invoice-note" placeholder="Ghi chú...."
+                                           class="form-control"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="mb-3 row">
+                                <label class="col-lg-4" for="ip-edit-product">
+                                    Sản phẩm nhập
+                                </label>
+                                <div class="col-lg-8">
+                                    <select id="ip-edit-product" class="form-control select2" multiple
+                                            onchange="onChangeAddProduct(this)">
+                                        <option th:each="product : ${lstProduct}" th:value="${product.productId}"
+                                                th:text="${product.productName}">
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="invoice-detail-edit"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-success waves-effect waves-light"
+                            onclick="onClickAddInvoice()">
+                        Cập nhật
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <script>
+
+        function onChangeInvoiceOrder(e) {
+            let value = e.value + '';
+            let id, supplierId;
+            if (value !== null && value !== undefined && value !== '') {
+                id = value.substring(0, value.indexOf('@'));
+                supplierId = value.substring(value.includes('@') + 1)
+            } else {
+                return;
+            }
+            $('#ip-add-supplier option[value=' + supplierId + ']').attr('selected', true).change();
+            $.ajax({
+                url: '/api/invoice?orderId=' + id,
+                method: 'GET',
+                success: function (data) {
+                    console.log(data)
+                    $("#ip-add-product option:selected").attr('selected', false).change();
+                    $(data).each((index, obj) => {
+                        $('#ip-add-product option[value=' + obj.productId + ']').attr('selected', true)
+                        $('#ip-add-product').change();
+                        $('#ip-add-product-quantity-' + obj.productId).val(obj.productQuantity)
+                    })
+                },
+                error: function (error) {
+
+                }
+            })
+        }
+
+        function onChangeAddProduct(e) {
+            let arrSelect = getSelectValues(e);
+            $(arrSelect).each((index, data) => {
+                let invoiceDetail = $('#invoice-detail');
+                if (invoiceDetail.children('#' + data.id).length === 0) {
+                    invoiceDetail.append('<div class="row" id="' + data.id + '">\n' +
+                        '    <div class="col-lg-4 mb-3">\n' +
+                        '        <label for="ip-add-product-quantity-' + data.id + '">\n' +
+                        data.name +
+                        '        </label>\n' +
+                        '    </div>\n' +
+                        '    <div class="col-lg-4 mb-3">\n' +
+                        '        <input type="number" min="1" value="1" id="ip-add-product-quantity-' + data.id + '" data-id="' + data.id + '"\n' +
+                        '               placeholder="Số lượng...."\n' +
+                        '               class="form-control add-product-quantity-invoice"/>\n' +
+                        '    </div>\n' +
+                        '    <div class="col-lg-4 mb-3">\n' +
+                        '        <input type="number" min="0" value="0" id="ip-add-product-price-' + data.id + '" data-id="' + data.id + '"\n' +
+                        '               placeholder="Giá nhập...."\n' +
+                        '               class="form-control add-product-price-invoice"/>\n' +
+                        '    </div>\n' +
+                        '</div>'
+                    )
+                }
+            })
+            $('#invoice-detail .row').each((index, data) => {
+                let flag = false;
+                for (let i = 0; i < arrSelect.length; i++) {
+                    if (arrSelect[i].id === data.id) {
+                        flag = true;
+                        break;
+                    }
+                }
+                if (!flag) {
+                    $(data).prop('outerHTML', '')
+                }
+            })
+
+        }
+
+        function getSelectValues(select) {
+            let result = [];
+            let options = select && select.options;
+            let opt;
+            for (let i = 0, iLen = options.length; i < iLen; i++) {
+                opt = options[i];
+                if (opt.selected) {
+                    result.push({"id": opt.value, "name": opt.text});
+                }
+            }
+            return result;
+        }
+
+        function onClickAddInvoice() {
+            let getInvoiceCode = document.getElementById('ip-add-invoice-code');
+            let getInvoiceOrderCode = document.getElementById('ip-add-order-code');
+            let getSupplier = document.getElementById('ip-add-supplier');
+            let getInvoiceDiscount = document.getElementById('ip-add-invoice-discount');
+            let getInvoicePaid = document.getElementById('ip-add-invoice-paid');
+            let getInvoiceStatus = document.getElementById('ip-add-invoice-status');
+            let getInvoiceNote = document.getElementById('ip-add-invoice-note');
+            let getAllQuantityProduct = document.getElementsByClassName('add-product-quantity-invoice');
+            let getAllPriceProduct = document.getElementsByClassName('add-product-price-invoice');
+            let obj = valueDateInvoice(
+                '',
+                getInvoiceCode,
+                getInvoiceOrderCode,
+                getSupplier,
+                getInvoiceDiscount,
+                getInvoicePaid,
+                getInvoiceStatus,
+                getInvoiceNote,
+                getAllQuantityProduct,
+                getAllPriceProduct
+            )
+            console.log(obj)
+            if (obj !== null && obj !== undefined) {
+                $.ajax({
+                    url: '/api/invoice',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(obj),
+                    success: function (data) {
+                        console.log(data)
+                    },
+                    error: function (error) {
+
+                    }
+                })
+            }
+        }
+
+        function valueDateInvoice(
+            id,
+            getInvoiceCode,
+            getInvoiceOrderCode,
+            getSupplier,
+            getInvoiceDiscount,
+            getInvoicePaid,
+            getInvoiceStatus,
+            getInvoiceNote,
+            getAllQuantityProduct,
+            getAllPriceProduct
+        ) {
+            if (getInvoiceCode === null || getInvoiceCode === undefined || getInvoiceCode.value === '') {
+                toastDanger('Lỗi', 'Vui lòng nhập mã nhập hàng');
+                return;
+            }
+            if (getInvoiceCode.value.length < 10 || getInvoiceCode.value.length > 50) {
+                toastDanger('Lỗi', 'Mã nhập hàng phải từ 10 đến 50 ký tự');
+                return;
+            }
+            if (getSupplier === null || getSupplier === undefined || getSupplier.value === '') {
+                toastDanger('Lỗi', 'Vui lòng chọn nhà cung cấp');
+                return;
+            }
+            if (getInvoiceDiscount.value === null || getInvoiceDiscount.value === undefined) {
+                getInvoiceDiscount.value = 0
+            }
+            if (Number(getInvoiceDiscount.value)) {
+                if (Number(getInvoiceDiscount.value) < 0) {
+                    toastDanger('Lỗi', 'Số tiền giảm giá phải từ 0đ')
+                    return;
+                }
+            } else {
+                toastDanger('Lỗi', 'Số tiền giảm giá phải là một số nguyên')
+                return;
+            }
+            if (getInvoicePaid.value === null || getInvoicePaid.value === undefined) {
+                getInvoicePaid.value = 0
+            }
+            if (Number(getInvoicePaid.value)) {
+                if (Number(getInvoicePaid.value) < 0) {
+                    toastDanger('Lỗi', 'Số tiền trả NCC phải từ 0đ')
+                    return;
+                }
+            } else {
+                toastDanger('Lỗi', 'Số tiền trả NCC phải là một số nguyên')
+                return;
+            }
+
+            let detail = [];
+            if (getAllQuantityProduct !== null && getAllQuantityProduct !== undefined) {
+                for (let i = 0; i < getAllQuantityProduct.length; i++) {
+                    let quantity = getAllQuantityProduct[i].value;
+                    let price = getAllPriceProduct[i].value;
+                    if (Number(quantity)) {
+                        if (Number(quantity) < 1) {
+                            toastDanger('Lỗi', 'Số lượng nhập phải từ 1')
+                            return;
+                        }
+                    } else {
+                        toastDanger('Lỗi', 'Số lượng nhập phải là một số nguyên')
+                        return;
+                    }
+                    if (Number(price)) {
+                        if (Number(quantity) < 0) {
+                            toastDanger('Lỗi', 'Số tiền phải từ 0đ')
+                            return;
+                        }
+                    } else {
+                        toastDanger('Lỗi', 'Số tiền phải là một số nguyên')
+                        return;
+                    }
+                    detail.push({
+                        "productId": getAllQuantityProduct[i].dataset.id,
+                        "quantity": getAllQuantityProduct[i].value,
+                        "price": getAllPriceProduct[i].value
+                    })
+                }
+            }
+            if (detail.length === 0) {
+                toastDanger('Lỗi', 'Vui lòng chọn sản phẩm nhập');
+                return;
+            }
+            return {
+                "invoiceId": id,
+                "invoiceCode": getInvoiceCode.value,
+                "invoiceOrderId": getInvoiceOrderCode.value,
+                "supplierId": getSupplier.value,
+                "discount": getInvoiceDiscount.value,
+                "status": getInvoiceStatus.checked,
+                "paid": getInvoicePaid.value,
+                "note": getInvoiceNote.value,
+                "details": detail
+            }
+        }
+
+    </script>
+
+</div>
+<div layout:fragment="script">
+    <script th:src="@{/assets/js/spectrum.min.js}"></script>
+    <script th:src="@{/assets/js/bootstrap-maxlength.min.js}"></script>
+    <script th:src="@{/assets/js/jquery.bootstrap-touchspin.min.js}"></script>
+    <script th:src="@{/assets/js/select2.min.js}"></script>
+    <script th:src="@{/assets/js/form-advanced.init.js}"></script>
+</div>
+</body>
+</html>

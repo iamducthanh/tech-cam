@@ -531,8 +531,8 @@ body[data-layout=horizontal] .page-title-box {
         height: 50px
     }
     body[data-layout=horizontal] .navbar-header .header-profile-user {
-        height: 30px;
-        width: 30px
+        height: 35px;
+        width: 35px
     }
     body[data-layout=horizontal] .navbar-header .header-item {
         height: 50px

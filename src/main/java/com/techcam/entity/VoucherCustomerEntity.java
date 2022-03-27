@@ -3,7 +3,7 @@ package com.techcam.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -23,11 +23,21 @@ public class VoucherCustomerEntity extends BaseEntity {
     @Column(name = "ID")
     private String id;
     @Basic
-    @Column(name = "CUSTOMER_ID")
-    private String customerId;
-    @Basic
     @Column(name = "VOUCHER_ID")
     private String voucherId;
+    @Basic
+    @Column(name = "CUSTOMER_ID")
+    private String customerId;
+    // không biết ông nào yêu cầu thêm 3 trường dưới đây vào db luôn??
+    @Basic
+    @Column(name = "DISCOUNT")
+    private long discount;
+    @Basic
+    @Column(name = "START_DT")
+    private Date startDatte;
+    @Basic
+    @Column(name = "END_DT")
+    private Date endDate;
     @Basic
     @Column(name = "STATUS")
     private String status;

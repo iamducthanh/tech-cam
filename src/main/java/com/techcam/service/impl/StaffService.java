@@ -1,8 +1,9 @@
 package com.techcam.service.impl;
 
-import com.techcam.dto.request.StaffAddRequestDTO;
-import com.techcam.dto.request.StaffEditRequestDTO;
-import com.techcam.dto.response.StaffResponseDTO;
+import com.techcam.dto.request.staff.StaffAddRequestDTO;
+import com.techcam.dto.request.staff.StaffChangePassRequestDTO;
+import com.techcam.dto.request.staff.StaffEditRequestDTO;
+import com.techcam.dto.response.staff.StaffResponseDTO;
 import com.techcam.entity.StaffEntity;
 import com.techcam.repo.IStaffRepo;
 import com.techcam.service.IStaffService;
@@ -12,6 +13,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +35,9 @@ public class StaffService implements IStaffService {
 
     @Autowired
     private IStaffRepo staffRepo;
+
+    @Autowired
+    private final HttpSession session;
 
     @Override
     public List<StaffResponseDTO> findAll() {
@@ -128,9 +133,7 @@ public class StaffService implements IStaffService {
         entity.setRole(staff.getRole());
         entity.setPhoneNumber(staff.getPhoneNumber());
         entity.setAddress(staff.getAddress());
-        if (staff.getAvatar() == null) {
-            entity.setAvatar("none");
-        }
+        entity.setAvatar(staff.getAvatar());
 
         // Generate random StaffCode
         int staffCode;
@@ -162,6 +165,7 @@ public class StaffService implements IStaffService {
         entity.setRole(staff.getRole());
         entity.setPhoneNumber(staff.getPhoneNumber());
         entity.setAddress(staff.getAddress());
+        entity.setAvatar(staff.getAvatar());
         entity.setStaffCode(staff.getStaffCode());
         entity.setDateOfBirth(staff.getDateOfBirth());
         entity.setIdentityNumber(staff.getIdentityNumber());
@@ -169,10 +173,26 @@ public class StaffService implements IStaffService {
         entity.setNote(staff.getNote());
 
         try {
-            staffRepo.save(entity);
+            entity = staffRepo.save(entity);
+            session.setAttribute("user", entity);
         } catch (Exception e) {
             log.error(e.getMessage());
         }
+        return "ok";
+    }
+
+    @Override
+    public String changePasswordStaff(StaffChangePassRequestDTO staff) {
+        StaffEntity entity = staffRepo.getById(staff.getId());
+        entity.setPassword(staff.getPassword());
+
+        try {
+            entity = staffRepo.save(entity);
+            session.setAttribute("user", entity);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+
         return "ok";
     }
 

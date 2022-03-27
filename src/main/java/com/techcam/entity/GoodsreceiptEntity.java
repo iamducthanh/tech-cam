@@ -1,172 +1,63 @@
 package com.techcam.entity;
 
+import lombok.*;
+import org.hibernate.Hibernate;
+
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.math.BigDecimal;
 import java.util.Objects;
 
-/**
- * @author Dev
- * @version 1.0
- * @since 13.3.2022
- */
 @Entity
-@Table(name = "goodsreceipt", schema = "poly_techcam", catalog = "")
-public class GoodsreceiptEntity {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@Table(name = "goodsreceipt")
+@Getter
+@Setter
+@ToString
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class GoodsreceiptEntity extends BaseEntity {
     @Id
     @Column(name = "ID", nullable = false, length = 64)
     private String id;
-    @Basic
-    @Column(name = "Product_ID", nullable = false, length = 64)
-    private String productId;
-    @Basic
-    @Column(name = "TotalQuantity", nullable = false)
-    private int totalQuantity;
-    @Basic
-    @Column(name = "TotalAmount", nullable = false, precision = 0)
-    private int totalAmount;
-    @Basic
-    @Column(name = "Supplier_ID", nullable = false, length = 64)
+
+    @Column(name = "Supplier_ID", nullable = false)
     private String supplierId;
-    @Basic
-    @Column(name = "ReceiptStatus", nullable = false, length = 50)
-    private String receiptStatus;
-    @Basic
+
     @Column(name = "STATUS", nullable = false, length = 50)
     private String status;
-    @Basic
-    @Column(name = "NOTE", nullable = true, length = -1)
+
+    @Lob
+    @Column(name = "NOTE")
     private String note;
-    @Basic
-    @Column(name = "CREATE_DATE", nullable = false)
-    private Timestamp createDate;
-    @Basic
-    @Column(name = "MODIFIER_DATE", nullable = false)
-    private Timestamp modifierDate;
-    @Basic
-    @Column(name = "CREATE_BY", nullable = false, length = 64)
-    private String createBy;
-    @Basic
-    @Column(name = "MODIFIER_BY", nullable = false, length = 64)
-    private String modifierBy;
-    @Basic
-    @Column(name = "DELETE_FLAG", nullable = false)
-    private boolean deleteFlag;
 
-    public String getId() {
-        return id;
-    }
+    @Column(name = "discount", precision = 10)
+    private BigDecimal discount;
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    @Column(name = "total_amount", nullable = false)
+    private Integer totalAmount;
 
-    public String getProductId() {
-        return productId;
-    }
+    @Column(name = "total_quantity", nullable = false)
+    private Integer totalQuantity;
 
-    public void setProductId(String productId) {
-        this.productId = productId;
-    }
+    @Column(name = "receipt_status", length = 50)
+    private String receiptStatus;
 
-    public int getTotalQuantity() {
-        return totalQuantity;
-    }
+    @Column(name = "order_id")
+    private String orderId;
 
-    public void setTotalQuantity(int totalQuantity) {
-        this.totalQuantity = totalQuantity;
-    }
-
-    public int getTotalAmount() {
-        return totalAmount;
-    }
-
-    public void setTotalAmount(int totalAmount) {
-        this.totalAmount = totalAmount;
-    }
-
-    public String getSupplierId() {
-        return supplierId;
-    }
-
-    public void setSupplierId(String supplierId) {
-        this.supplierId = supplierId;
-    }
-
-    public String getReceiptStatus() {
-        return receiptStatus;
-    }
-
-    public void setReceiptStatus(String receiptStatus) {
-        this.receiptStatus = receiptStatus;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
-    }
-
-    public Timestamp getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Timestamp createDate) {
-        this.createDate = createDate;
-    }
-
-    public Timestamp getModifierDate() {
-        return modifierDate;
-    }
-
-    public void setModifierDate(Timestamp modifierDate) {
-        this.modifierDate = modifierDate;
-    }
-
-    public String getCreateBy() {
-        return createBy;
-    }
-
-    public void setCreateBy(String createBy) {
-        this.createBy = createBy;
-    }
-
-    public String getModifierBy() {
-        return modifierBy;
-    }
-
-    public void setModifierBy(String modifierBy) {
-        this.modifierBy = modifierBy;
-    }
-
-    public boolean isDeleteFlag() {
-        return deleteFlag;
-    }
-
-    public void setDeleteFlag(boolean deleteFlag) {
-        this.deleteFlag = deleteFlag;
-    }
+    @Column(name = "receipt_id", length = 64)
+    private String receiptId;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         GoodsreceiptEntity that = (GoodsreceiptEntity) o;
-        return totalQuantity == that.totalQuantity && totalAmount == that.totalAmount && deleteFlag == that.deleteFlag && Objects.equals(id, that.id) && Objects.equals(productId, that.productId) && Objects.equals(supplierId, that.supplierId) && Objects.equals(receiptStatus, that.receiptStatus) && Objects.equals(status, that.status) && Objects.equals(note, that.note) && Objects.equals(createDate, that.createDate) && Objects.equals(modifierDate, that.modifierDate) && Objects.equals(createBy, that.createBy) && Objects.equals(modifierBy, that.modifierBy);
+        return id != null && Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, productId, totalQuantity, totalAmount, supplierId, receiptStatus, status, note, createDate, modifierDate, createBy, modifierBy, deleteFlag);
+        return getClass().hashCode();
     }
 }

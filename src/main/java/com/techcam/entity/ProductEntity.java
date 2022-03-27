@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * @author DucBV
@@ -53,5 +54,10 @@ public class ProductEntity extends BaseEntity {
     @Basic
     @Column(name = "NOTE")
     private String note;
+    @Basic
+    @Column(name = "THUMBNAIL")
+    private String thumbnail;
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    private List<OrderdetailEntity> orderdetailEntities;
 
 }

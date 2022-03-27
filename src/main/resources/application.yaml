@@ -9,8 +9,8 @@ spring:
       base-path: '/api'
   datasource:
     url: 'jdbc:mysql://localhost:3306/poly_techcam'
-    username: abc
-    password: abc
+    username: root
+    password: Anhyeu12345@
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -30,3 +30,11 @@ spring:
         smtp:
           starttls:
             enable: true
+techcam:
+  schedule:
+    birthday:
+      cron: ${CU_SCHEDULE_BIRTHDAY_CRON:0 54 20 * * *}
+      message: ${CU_MESSAGE_BRITHDAY:Hôm nay là sinh nhật của quý khách. TechCam xin chúc quý khách một ngày sinh nhật vui vẻ hạnh phúc!.<br>TechCam xin gửi tặng bạn voucher có mã là %s , hạn sử dụng  đến %s
+       <br> Rất mong quý khách sẽ tiếp tục sử dụng dịch vụ của chúng tôi. <br> Lưu ý:khuyến mại sử dụng trên tổng hóa đơn thanh toán. Được phép sử dụng nhiều khuyến mại cùng một lúc}
+      subject: ${CU_SUBJECT_BRITHDAY:Chúc Mừng Sinh Nhật Quý Khách}
+      frommail: ${CU_FROM_MAIL_BRTHDAY:techcam.poly@gmail.com}

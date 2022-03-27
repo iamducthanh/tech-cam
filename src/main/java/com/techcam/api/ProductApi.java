@@ -4,7 +4,6 @@ import com.techcam.dto.request.product.ProductAddRequest;
 import com.techcam.dto.request.product.ProductEditRequest;
 import com.techcam.dto.response.product.ProductResponse;
 import com.techcam.exception.TechCamExp;
-import com.techcam.repo.IImageRepo;
 import com.techcam.service.IProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +15,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.techcam.constants.ConstantsErrorCode.*;
+import static com.techcam.type.CommonStatus.SUCCESS;
 
 /**
  * Description :
@@ -37,8 +37,8 @@ public class ProductApi {
     public ResponseEntity<String> createProduct(@RequestBody @Validated ProductAddRequest productRequest, Errors errors) {
         validateInputProduct(errors, productRequest.getProductName(), productRequest.getProductImages());
         String message = productService.createProduct(productRequest);
-        if (Objects.nonNull(message) && message.equals(SUCCESS)) {
-            return ResponseEntity.ok(SUCCESS);
+        if (Objects.nonNull(message) && message.equals(SUCCESS.name())) {
+            return ResponseEntity.ok(SUCCESS.name());
         }
         if (Objects.isNull(message)) {
             message = INTERNAL_SERVER_ERROR;
@@ -50,8 +50,8 @@ public class ProductApi {
     public ResponseEntity<String> updateProduct(@RequestBody @Validated ProductEditRequest productRequest, Errors errors) {
         validateInputProduct(errors, productRequest.getProductName(), productRequest.getProductImages());
         String message = productService.updateProduct(productRequest);
-        if (Objects.nonNull(message) && message.equals(SUCCESS)) {
-            return ResponseEntity.ok(SUCCESS);
+        if (Objects.nonNull(message) && message.equals(SUCCESS.name())) {
+            return ResponseEntity.ok(SUCCESS.name());
         }
         if (Objects.isNull(message)) {
             message = INTERNAL_SERVER_ERROR;
@@ -62,8 +62,8 @@ public class ProductApi {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable("id") String productId) {
         String message = productService.deleteProduct(productId);
-        if (Objects.nonNull(message) && message.equals(SUCCESS)) {
-            return ResponseEntity.ok(SUCCESS);
+        if (Objects.nonNull(message) && message.equals(SUCCESS.name())) {
+            return ResponseEntity.ok(SUCCESS.name());
         }
         if (Objects.isNull(message)) {
             message = INTERNAL_SERVER_ERROR;

@@ -2,6 +2,7 @@ package com.techcam.repo;
 
 import com.techcam.entity.CategoryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,4 +22,13 @@ public interface ICategoryRepo extends JpaRepository<CategoryEntity, String> {
     List<CategoryEntity> findAllByDeleteFlagIsFalse();
 
     CategoryEntity getByIdAndDeleteFlagIsFalse(String categoryId);
+
+    @Query("select o from CategoryEntity o where o.deleteFlag = false and o.parentId is null order by o.createDate asc ")
+    List<CategoryEntity> findCategoryParent();
+
+    @Query("select o from CategoryEntity o where o.deleteFlag = false and o.parentId = ?1 order by o.createDate asc ")
+    List<CategoryEntity> findCategoryByParent(String parentId);
+
+    @Query("select o from CategoryEntity o where o.deleteFlag = false and o.name = ?1 and o.parentId = ?2 ")
+    List<CategoryEntity> findByNameAndParent(String categoryName, String parentId);
 }
