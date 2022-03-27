@@ -4,38 +4,49 @@ import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Objects;
 
-/**
- * @author Dev
- * @version 1.0
- * @since 13.3.2022
- */
 @Entity
-@Table(name = "goodsreceipt", schema = "poly_techcam", catalog = "")
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Table(name = "goodsreceipt")
 @Getter
 @Setter
 @ToString
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class GoodsreceiptEntity extends BaseEntity {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "ID", nullable = false, length = 64)
     private String id;
-    @Basic
-    @Column(name = "TotalAmount", nullable = false, precision = 0)
-    private int totalAmount;
-    @Basic
-    @Column(name = "Supplier_ID", nullable = false, length = 64)
+
+    @Column(name = "Supplier_ID", nullable = false)
     private String supplierId;
-    @Basic
+
     @Column(name = "STATUS", nullable = false, length = 50)
     private String status;
-    @Basic
-    @Column(name = "NOTE", nullable = true, length = -1)
+
+    @Lob
+    @Column(name = "NOTE")
     private String note;
+
+    @Column(name = "discount", precision = 10)
+    private BigDecimal discount;
+
+    @Column(name = "total_amount", nullable = false)
+    private Integer totalAmount;
+
+    @Column(name = "total_quantity", nullable = false)
+    private Integer totalQuantity;
+
+    @Column(name = "receipt_status", length = 50)
+    private String receiptStatus;
+
+    @Column(name = "order_id")
+    private String orderId;
+
+    @Column(name = "receipt_id", length = 64)
+    private String receiptId;
 
     @Override
     public boolean equals(Object o) {
