@@ -63,17 +63,25 @@
 <script layout:fragment="script">
 
     $(document).ready(function () {
+        const email = $('#username');
         const messageFail = "[[${param.status}]]";
         const typingEmail = "[[${session.emailLogin}]]";
         if (messageFail === 'login_false') {
             $('#message').addClass("alert alert-danger").html(`<i class="fas fa-times-circle fs-5 me-2"></i><span>Thông tin đăng nhập không chính xác!</span>`).show();
         }
         if (typingEmail !== '') {
-            $('#username').val(typingEmail);
+            email.val(typingEmail);
         }
 
-        $('#username').val(Cookies.get('email'));
+        email.val(Cookies.get('email'));
         $('#remember').prop("checked", true);
+
+        // Submit by key press Enter
+        $('form').keypress((e) => {
+            if (e.which === 13) {
+                $('form').submit();
+            }
+        })
     });
 
     function validate() {

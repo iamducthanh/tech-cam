@@ -1,6 +1,7 @@
 package com.techcam.service.impl;
 
 import com.techcam.dto.request.staff.StaffAddRequestDTO;
+import com.techcam.dto.request.staff.StaffChangePassRequestDTO;
 import com.techcam.dto.request.staff.StaffEditRequestDTO;
 import com.techcam.dto.response.staff.StaffResponseDTO;
 import com.techcam.entity.StaffEntity;
@@ -177,6 +178,21 @@ public class StaffService implements IStaffService {
         } catch (Exception e) {
             log.error(e.getMessage());
         }
+        return "ok";
+    }
+
+    @Override
+    public String changePasswordStaff(StaffChangePassRequestDTO staff) {
+        StaffEntity entity = staffRepo.getById(staff.getId());
+        entity.setPassword(staff.getPassword());
+
+        try {
+            entity = staffRepo.save(entity);
+            session.setAttribute("user", entity);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+
         return "ok";
     }
 

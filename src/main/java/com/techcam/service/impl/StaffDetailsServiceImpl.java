@@ -50,7 +50,6 @@ public class StaffDetailsServiceImpl implements UserDetailsService {
         staff = staffService.saveStaff(staff);
 
         // Add info logged user to Session
-        log.info("Logged: " + staff);
         session.setAttribute("user", staff);
 
         List<String> roleNames = new ArrayList<>();
