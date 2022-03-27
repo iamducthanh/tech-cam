@@ -267,19 +267,19 @@
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-user-Interface"
                    role="button">
-                  <i class="fas fa-box-open me-2"></i>Hàng hoá
+                  <i class="fas fa-box-open me-2"></i>
+                  Hàng hoá
                   <div class="arrow-down"></div>
                 </a>
 
                 <div class="dropdown-menu" aria-labelledby="topnav-user-Interface">
-                  <a href="#" class="dropdown-item">
-                    <i class="fas fa-list-ol me-2"></i>Danh mục
+                  <a th:href="@{/category}" class="dropdown-item">
+                    <i class="fas fa-list-ol me-2"></i>
+                    Danh mục
                   </a>
-                  <a href="#" class="dropdown-item">
-                    <i class="fas fa-tags me-2"></i>Thiết lập giá
-                  </a>
-                  <a href="#" class="dropdown-item">
-                    <i class="fas fa-clipboard-check me-2"></i>Kiểm kho
+                  <a th:href="@{/product}" class="dropdown-item">
+                    <i class="fas fa-tags me-2"></i>
+                    Sản phẩm
                   </a>
                 </div>
               </li>
@@ -287,32 +287,31 @@
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-components"
                    role="button">
-                  <i class="fas fa-exchange-alt me-2"></i>Giao dịch
+                  <i class="fas fa-exchange-alt me-2"></i>
+                  Giao dịch
                   <div class="arrow-down"></div>
                 </a>
 
                 <div class="dropdown-menu" aria-labelledby="topnav-user-Interface">
-                  <a href="#" class="dropdown-item">
-                    <i class="fas fa-file-invoice-dollar me-2"></i>Hoá đơn
+                  <a th:href="@{/invoice}" class="dropdown-item">
+                    <i class="fas fa-file-invoice-dollar me-2"></i>
+                    Nhập hàng
+                  </a>
+                  <a th:href="@{/order}" class="dropdown-item">
+                    <i class="fas fa-reply-all me-2"></i>
+                    Đặt hàng
                   </a>
                   <a href="#" class="dropdown-item">
-                    <i class="fas fa-reply-all me-2"></i>Trả hàng
-                  </a>
-                  <a href="#" class="dropdown-item">
-                    <i class="fas fa-dolly-flatbed me-2"></i>Nhập hàng
-                  </a>
-                  <a href="#" class="dropdown-item">
-                    <i class="fas fa-upload me-2"></i>Trả hàng nhập
-                  </a>
-                  <a href="#" class="dropdown-item">
-                    <i class="fas fa-truck me-2"></i>Chuyển hàng
+                    <i class="fas fa-dolly-flatbed me-2"></i>
+                    Đặt hàng NCC
                   </a>
                 </div>
               </li>
 
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-advanced-ui" role="button">
-                  <i class="fas fa-user-tie me-2"></i>Đối tác
+                  <i class="fas fa-user-tie me-2"></i>
+                  Đối tác
                   <div class="arrow-down"></div>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="topnav-user-Interface">
@@ -358,8 +357,9 @@
                   <div class="arrow-down"></div>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="topnav-user-Interface">
-                  <a href="/category" class="dropdown-item">
-                    <i class="bi bi-card-text"></i>&ensp;Quản lý tiêu đề
+                  <a th:href="@{/voucher}" class="dropdown-item">
+                    <i class="bi bi-card-text"></i>
+                    Mã giảm giá
                   </a>
                 </div>
               </li>
