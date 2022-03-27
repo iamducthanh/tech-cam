@@ -1,4 +1,4 @@
-package com.techcam.dto.response;
+package com.techcam.dto.request.staff;
 
 import lombok.Data;
 
@@ -13,7 +13,7 @@ import java.util.Date;
  */
 
 @Data
-public class StaffResponseDTO {
+public class StaffEditRequestDTO {
 
     private String id;
 
@@ -21,9 +21,9 @@ public class StaffResponseDTO {
 
     private String phoneNumber;
 
-    private String email;
-
     private String address;
+
+    private String avatar;
 
     private Date dateOfBirth;
 
@@ -31,15 +31,11 @@ public class StaffResponseDTO {
 
     private String identityNumber;
 
-    private String avatar;
-
     private String role;
 
     private String username;
 
     private String note;
 
-    private String status;
-
-    private Date createDate;
+    private int countLoginFalse;
 }

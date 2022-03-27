@@ -1,7 +1,10 @@
-package com.techcam.dto.request;
+package com.techcam.dto.request.staff;
 
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -13,13 +16,13 @@ import java.util.Date;
  */
 
 @Data
-public class StaffEditRequestDTO {
-
-    private String id;
+public class StaffAddRequestDTO {
 
     private String fullName;
 
     private String phoneNumber;
+
+    private String email;
 
     private String address;
 
@@ -29,11 +32,13 @@ public class StaffEditRequestDTO {
 
     private String identityNumber;
 
+    private String avatar;
+
     private String role;
 
     private String username;
 
     private String note;
 
-    private int countLoginFalse;
+    private String status;
 }

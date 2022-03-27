@@ -9,7 +9,6 @@ import com.techcam.repo.ICategoryRepo;
 import com.techcam.repo.IVoucherRepo;
 import com.techcam.repo.VoucherCustomerRepo;
 import com.techcam.service.IVoucherService;
-import com.techcam.constants.ConstantsErrorCode;
 import com.techcam.util.ConvertUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +18,9 @@ import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.techcam.type.CommonStatus.SUCCESS;
+import static com.techcam.type.CustomerStatus.FAILED;
+import static org.apache.commons.lang3.BooleanUtils.OFF;
 import static org.apache.commons.lang3.BooleanUtils.ON;
 
 /**
@@ -50,11 +52,11 @@ public class VoucherService implements IVoucherService {
     public String activeVoucher(String id) {
         VoucherEntity voucherEntity = voucherRepo.getByIdAndDeleteFlagIsFalse(id);
         if (Objects.isNull(voucherEntity)) {
-            return ConstantsErrorCode.ERROR;
+            return FAILED.name();
         }
         voucherEntity.setStatus(ON.toUpperCase());
         voucherRepo.save(voucherEntity);
-        return ConstantsErrorCode.SUCCESS;
+        return SUCCESS.name();
     }
 
     @Override
@@ -71,15 +73,15 @@ public class VoucherService implements IVoucherService {
     @Transactional
     public String createVoucher(VoucherRequest voucherRequest) {
         if (Objects.isNull(voucherRequest)) {
-            return ConstantsErrorCode.ERROR;
+            return FAILED.name();
         }
         // check voucher đã tồnt ại hay chưa
         if (!voucherRepo.findAllByCodeAndDeleteFlagIsFalse(voucherRequest.getVoucherCode()).isEmpty()) {
-            return ConstantsErrorCode.ERROR;
+            return FAILED.name();
         }
         VoucherEntity voucherEntity = mapToVoucherEntity(voucherRequest, new VoucherEntity());
         voucherEntity.setId(UUID.randomUUID().toString());
-        voucherEntity.setStatus("FALSE");
+        voucherEntity.setStatus(ON.toUpperCase());
         List<VoucherCustomerEntity> lstVoucherCustomerEntities = new ArrayList<>();
         if (Objects.nonNull(voucherRequest.getTypeDiscountPerson())) {
             for (String x : voucherRequest.getTypeDiscountPerson()) {
@@ -87,17 +89,20 @@ public class VoucherService implements IVoucherService {
                         .id(UUID.randomUUID().toString())
                         .customerId(x)
                         .voucherId(voucherEntity.getId())
-                        .status("TRUE")
+                        .status(OFF.toUpperCase())
+                        .discount(voucherEntity.getDiscount())
+                        .startDatte(voucherEntity.getStartDate())
+                        .endDate(voucherEntity.getEndDate())
                         .build());
             }
         }
         try {
             voucherRepo.save(voucherEntity);
             voucherCustomerRepo.saveAll(lstVoucherCustomerEntities);
-            return ConstantsErrorCode.SUCCESS;
+            return SUCCESS.name();
         } catch (Exception e) {
             e.printStackTrace();
-            return ConstantsErrorCode.ERROR;
+            return FAILED.name();
         }
     }
 
@@ -105,17 +110,17 @@ public class VoucherService implements IVoucherService {
     @Transactional
     public String updateVoucher(VoucherRequest voucherRequest) {
         if (Objects.isNull(voucherRequest)) {
-            return ConstantsErrorCode.ERROR;
+            return FAILED.name();
         }
         VoucherEntity voucherEntity = voucherRepo.getByIdAndDeleteFlagIsFalse(voucherRequest.getVoucherId());
         if (Objects.isNull(voucherEntity)) {
-            return ConstantsErrorCode.ERROR;
+            return FAILED.name();
         }
         String voucherId = voucherEntity.getId();
         List<VoucherEntity> lstFindAllByCode = voucherRepo.findAllByCodeAndDeleteFlagIsFalse(voucherRequest.getVoucherCode())
                 .stream().filter(e -> !e.getId().equals(voucherId)).collect(Collectors.toList());
         if (!lstFindAllByCode.isEmpty()) {
-            return ConstantsErrorCode.ERROR;
+            return FAILED.name();
         }
         Timestamp createDate = voucherEntity.getCreateDate();
         voucherEntity = mapToVoucherEntity(voucherRequest, voucherEntity);
@@ -129,7 +134,10 @@ public class VoucherService implements IVoucherService {
                         .id(UUID.randomUUID().toString())
                         .customerId(x)
                         .voucherId(voucherEntity.getId())
-                        .status("TRUE")
+                        .status(OFF.toUpperCase())
+                        .discount(voucherEntity.getDiscount())
+                        .startDatte(voucherEntity.getStartDate())
+                        .endDate(voucherEntity.getEndDate())
                         .build());
             }
         }
@@ -139,10 +147,10 @@ public class VoucherService implements IVoucherService {
         try {
             voucherRepo.save(voucherEntity);
             voucherCustomerRepo.saveAll(lstVoucherCustomerEntities);
-            return ConstantsErrorCode.SUCCESS;
+            return SUCCESS.name();
         } catch (Exception e) {
             e.printStackTrace();
-            return ConstantsErrorCode.ERROR;
+            return FAILED.name();
         }
     }
 
@@ -150,16 +158,16 @@ public class VoucherService implements IVoucherService {
     public String deleteVoucher(String id) {
         VoucherEntity voucherEntity = voucherRepo.getByIdAndDeleteFlagIsFalse(id);
         if (Objects.isNull(voucherEntity)) {
-            return ConstantsErrorCode.ERROR;
+            return FAILED.name();
         }
         // TODO voucher đã được sử dụng cchuwa
         try {
             voucherEntity.setDeleteFlag(true);
             voucherRepo.save(voucherEntity);
-            return ConstantsErrorCode.SUCCESS;
+            return SUCCESS.name();
         } catch (Exception e) {
             e.printStackTrace();
-            return ConstantsErrorCode.ERROR;
+            return FAILED.name();
         }
     }
 

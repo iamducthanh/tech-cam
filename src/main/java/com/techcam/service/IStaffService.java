@@ -1,8 +1,8 @@
 package com.techcam.service;
 
-import com.techcam.dto.request.StaffAddRequestDTO;
-import com.techcam.dto.request.StaffEditRequestDTO;
-import com.techcam.dto.response.StaffResponseDTO;
+import com.techcam.dto.request.staff.StaffAddRequestDTO;
+import com.techcam.dto.request.staff.StaffEditRequestDTO;
+import com.techcam.dto.response.staff.StaffResponseDTO;
 import com.techcam.entity.StaffEntity;
 
 import java.util.List;

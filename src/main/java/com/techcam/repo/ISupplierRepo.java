@@ -30,4 +30,6 @@ public interface ISupplierRepo extends JpaRepository<SupplierEntity, String> {
     Optional<SupplierEntity> findByPhoneNumber(String phoneNumber);
 
     Optional<SupplierEntity> findByIdAndDeleteFlagFalse(String id);
+
+    SupplierEntity getByIdAndDeleteFlagIsFalse(String supplierId);
 }

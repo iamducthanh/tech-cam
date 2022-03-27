@@ -4,6 +4,7 @@ import com.techcam.dto.request.order.*;
 import com.techcam.dto.response.order.GetInfoOrder;
 import com.techcam.dto.response.order.GetInfoOrderDetails;
 import com.techcam.dto.response.order.OrderResponse;
+import com.techcam.dto.response.voucher.VoucherUseByOrderResponse;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -43,4 +44,6 @@ public interface IOrderService {
     OrderResponse editOrderDetailsConfirm(EditOrderDetailsConfirmRequest request);
 
     OrderResponse cancelOrder(String id);
+
+    List<VoucherUseByOrderResponse> findAllByVoucherId(String voucherId);
 }
