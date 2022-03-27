@@ -146,7 +146,7 @@ public class OrderServiceImpl implements IOrderService {
         String vnp_ref = "";
         VoucherResponse voucherResponse = null;
         List<ProductEntity> productEntities = getInfoProducts(request.getProductDetails());
-        if (Objects.nonNull(request.getVoucherId())) {
+        if (StringUtils.isNotBlank(request.getVoucherId())) {
             voucherResponse = getInfoVoucher(request.getVoucherId());
             if (Objects.isNull(voucherResponse)) {
                 throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
