@@ -3,7 +3,10 @@ package com.techcam.controller;
 import com.techcam.dto.response.SupplierResponseDTO;
 import com.techcam.dto.response.invoice.InvoiceResponse;
 import com.techcam.dto.response.invoiceOrder.InvoiceOrderResponse;
+import com.techcam.dto.response.product.ProductResponse;
+import com.techcam.service.IGoodsOrderService;
 import com.techcam.service.IGoodsreceiptService;
+import com.techcam.service.IProductService;
 import com.techcam.service.ISupplierService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -32,18 +35,24 @@ public class ImportInvoceController {
 
     private final ISupplierService supplierService;
 
+    private final IProductService productService;
+
+    private final IGoodsOrderService goodsOrderService;
+
     @GetMapping
     public String homeInvoice(Model model) {
         List<InvoiceResponse> lstInvoice = goodsreceiptService.findAllInvoice();
         for (InvoiceResponse x : lstInvoice) {
             x.setDetails(goodsreceiptService.findAllInvoiceDetailByInvoiceId(x.getInvoiceId()));
         }
-        List<InvoiceOrderResponse> lstInvoiceOrder = new ArrayList<>();
+        List<InvoiceOrderResponse> lstInvoiceOrder = goodsOrderService.getAllInvoiceOrder();
 //        List<SupplierResponseDTO> lstSupplier = supplierService.findAllByDeleteFlagFalse();
         List<SupplierResponseDTO> lstSupplier = new ArrayList<>();
+        List<ProductResponse> lstProduct = productService.getAllProduct();
         model.addAttribute("lstInvoice", lstInvoice);
         model.addAttribute("lstInvoiceOrder", lstInvoiceOrder);
         model.addAttribute("lstSupplier", lstSupplier);
+        model.addAttribute("lstProduct", lstProduct);
         return "views/import-invoice/008_import_invoice";
     }
 

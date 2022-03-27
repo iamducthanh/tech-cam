@@ -3,6 +3,7 @@ package com.techcam.api;
 import com.techcam.dto.request.invoice.InvoiceRequest;
 import com.techcam.dto.response.invoice.InvoiceResponse;
 import com.techcam.exception.TechCamExp;
+import com.techcam.service.IGoodsOrderService;
 import com.techcam.service.IGoodsreceiptService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -33,8 +34,11 @@ public class InvoiceApi {
 
     private final IGoodsreceiptService goodsreceiptService;
 
+    private final IGoodsOrderService goodsOrderService;
+
     @PostMapping
     public ResponseEntity<?> createInvoice(@Validated @RequestBody InvoiceRequest invoiceRequest, Errors errors) {
+        System.out.println(invoiceRequest);
         validateInvoice(invoiceRequest, errors);
         if (!goodsreceiptService.findAllByInvoiceCode(invoiceRequest.getInvoiceCode()).isEmpty()) {
             // mã nhập hàng đã tồn tại rồi
@@ -73,6 +77,11 @@ public class InvoiceApi {
             return ResponseEntity.ok(invoiceResponse);
         }
         throw new TechCamExp(ERROR_NOT_EXISTS, "Hoá đơn nhập hàng");
+    }
+
+    @GetMapping(params = {"orderId"})
+    public ResponseEntity<?> getByOrderId(@RequestParam("orderId") String orderId) {
+        return ResponseEntity.ok(goodsOrderService.findAllOrderDetailByOrderId(orderId));
     }
 
     @DeleteMapping("{id}")

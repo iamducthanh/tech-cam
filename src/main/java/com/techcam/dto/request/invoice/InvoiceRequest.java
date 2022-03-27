@@ -1,9 +1,6 @@
 package com.techcam.dto.request.invoice;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -20,6 +17,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class InvoiceRequest {
 
     /**
@@ -40,7 +38,7 @@ public class InvoiceRequest {
     /**
      * mã đặt hàng
      */
-    private String orderInvoiceCode;
+    private String invoiceOrderId;
 
     /**
      * trạng thái
