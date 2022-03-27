@@ -6,14 +6,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Quản lý nhập hàng - TechCam</title>
+    <link rel="stylesheet" th:href="@{/assets/css/select2.min.css}">
 </head>
 <body>
-<div layout:fragment="content" class="container-fluid">
-    <section class="row main-page">
-        <section class="col-2 mainLeft">
-            <h1 class="heading-page">Quản lý nhập hàng</h1>
+<div layout:fragment="content" class="container-fluid" style="max-width: 98%">
+    <div class="row container1">
+        <div class="col-lg-2 h-100" id="leftKH">
+            <h1 class="heading-page">Quản lý sản phẩm</h1>
             <div class="filter-report">
-                <div class="card">
+                <div class="card" style="padding-left: 15px; padding-top: 15px">
                     <h6 class="mx-2 mt-2 fs-14">Trạng thái</h6>
                     <div class="mx-2 mb-2">
                         <div class="form-group form-check">
@@ -40,186 +41,189 @@
                     </div>
                 </div>
             </div>
-        </section>
-        <section class="col-10 mainRight card card-body">
+        </div>
+        <div class="col-lg-10" id="rightKH" style="height: 100%">
             <div class="row justify-content-end">
-                <a href="#modal-add-product" type="button"
+                <a href="#modal-add-invoice" type="button"
                    class="btn btn-primary col-auto mb-3 waves-effect waves-light"
                    data-bs-toggle="modal">
                     <i class="fas fa-plus me-2"></i>
                     Nhập hàng
                 </a>
             </div>
-            <table id="datatable"
-                   class="table table-responsive table-hover table-bordered nowrap dataTable no-footer shadow">
-                <thead>
-                <tr class="text-center">
-                    <th></th>
-                    <th>NCC</th>
-                    <th>Mã đặt hàng</th>
-                    <th>Mã phiếu nhập</th>
-                    <th>Tổng tiền</th>
-                    <th>Giảm giá</th>
-                    <th>Đã thanh toán</th>
-                    <th>Phải trả NCC</th>
-                    <th>Trạng thái</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="product, theCount : ${lstProducts}">
-                    <td></td>
-                    <td>NCC</td>
-                    <td>Mã đặt hàng</td>
-                    <td>Mã phiếu nhập</td>
-                    <td>Tổng tiền</td>
-                    <td>Giảm giá</td>
-                    <td>Đã thanh toán</td>
-                    <td>Phải trả NCC</td>
-                    <td>Trạng thái</td>
-                </tr>
-                </tbody>
-            </table>
-        </section>
-    </section>
+            <div class="card">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card-body overflow-auto">
+                            <table id="datatable"
+                                   class="table table-responsive table-hover table-bordered nowrap dataTable no-footer shadow"
+                                   style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                <thead>
+                                <tr class="text-center">
+                                    <th>STT</th>
+                                    <th>Chức năng</th>
+                                    <th>NCC</th>
+                                    <th>Mã đặt hàng</th>
+                                    <th>Mã phiếu nhập</th>
+                                    <th>Tổng tiền</th>
+                                    <th>Giảm giá</th>
+                                    <th>Đã thanh toán</th>
+                                    <th>Phải trả NCC</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="invoice : ${lstInvoice}">
+                                    <td></td>
+                                    <td class="text-center">
+                                        <a href="#" class="btn btn-info btn-sm" data-bs-toggle="modal">
+                                            Chi tiết
+                                        </a>
+                                    </td>
+                                    <td th:text="${invoice.supplierName}">NCC</td>
+                                    <td th:text="${invoice.orderInvoiceCode}">Mã đặt hàng</td>
+                                    <td th:text="${invoice.invoiceCode}">Mã phiếu nhập</td>
+                                    <td class="text-end"
+                                        th:text="${#numbers.formatDecimal(invoice.totalMoney, 0, 'COMMA', 0, 'POINT') + 'đ'}">
+                                        Tổng tiền
+                                    </td>
+                                    <td class="text-end"
+                                        th:text="${#numbers.formatDecimal(invoice.discount, 0, 'COMMA', 0, 'POINT') + 'đ'}">
+                                        Giảm giá
+                                    </td>
+                                    <td class="text-end"
+                                        th:text="${#numbers.formatDecimal(invoice.paid, 0, 'COMMA', 0, 'POINT') + 'đ'}">
+                                        Đã thanh toán
+                                    </td>
+                                    <td class="text-end"
+                                        th:text="${#numbers.formatDecimal(invoice.totalMoney - invoice.discount - invoice.paid, 0, 'COMMA', 0, 'POINT') + 'đ'}">
+                                        Phải trả NCC
+                                    </td>
+                                    <td class="text-center">
+                                        <span th:if="${invoice.status == 'ON'}" class="badge bg-success">
+                                            Đã nhập
+                                        </span>
+                                        <span th:unless="${invoice.status == 'ON'}" class="badge bg-success">
+                                            Đã huỷ
+                                        </span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- <div id="morris-bar-stacked" class="morris-chart-height morris-charts"></div> -->
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <div id="modal-add-product" class="modal fade show" style="display: block;" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div id="modal-add-invoice" class="modal fade show" style="display: block;" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title mt-0">Thêm sản phẩm</h5>
+                    <h5 class="modal-title mt-0">Thêm nhập hàng</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <ul class="nav nav-tabs nav-tabs-custom nav-justified" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" data-bs-toggle="tab" href="#info-product" role="tab">
-                                <span class="d-none d-md-block">Thông tin sản phẩm</span><span
-                                    class="d-block d-md-none"><i class="mdi mdi-home-variant h5"></i></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#description-product" role="tab">
-                                <span class="d-none d-md-block">Mô tả chi tiết sản phẩm</span><span
-                                    class="d-block d-md-none"><i class="mdi mdi-account h5"></i></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#image-product-add" role="tab">
-                                <span class="d-none d-md-block">Hình ảnh sản phẩm</span><span
-                                    class="d-block d-md-none"><i class="mdi mdi-account h5"></i></span>
-                            </a>
-                        </li>
-                    </ul>
-
                     <!-- Tab panes -->
-                    <div class="tab-content">
-                        <div class="tab-pane active p-3" id="info-product" role="tabpanel">
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="mb-3 row">
-                                        <div class="col-lg-5">
-                                            Mã sản phẩm
-                                        </div>
-                                        <div class="col-lg-7">
-                                            <input type="text" id="ip-add-product-code" placeholder="Mã sản phẩm...."
-                                                   class="form-control"/>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3 row">
-                                        <div class="col-lg-5">
-                                            Tên sản phẩm
-                                        </div>
-                                        <div class="col-lg-7">
-                                            <input type="text" id="ip-add-product-name" placeholder="Tên sản phẩm...."
-                                                   class="form-control"/>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3 row">
-                                        <div class="col-lg-5">
-                                            Giá bán
-                                        </div>
-                                        <div class="col-lg-7">
-                                            <input type="text" id="ip-add-product-price" placeholder="Giá bán...."
-                                                   class="form-control"/>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3 row">
-                                        <div class="col-lg-5">
-                                            Thương hiệu
-                                        </div>
-                                        <div class="col-lg-7">
-                                            <select id="ip-add-product-brand" class="form-control select2">
-                                                <option th:each="brand : ${lstBrands}" th:value="${brand.brandId}"
-                                                        th:text="${brand.brandName}">
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3 row">
-                                        <div class="col-lg-5"></div>
-                                        <div class="col-lg-7">
-                                            <input class="form-check-input mt-2" type="checkbox"
-                                                   id="ip-add-product-status"/>
-                                            <label for="ip-add-product-status" class="col-form-label">
-                                                Kinh doanh sản phẩm ngay
-                                            </label>
-                                        </div>
-                                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3 row">
+                                <div class="col-lg-5">
+                                    <label for="ip-add-invoice-code">
+                                        Mã nhập hàng hàng
+                                    </label>
                                 </div>
-                                <div class="col-lg-6">
-                                    <div class="mb-3 row">
-                                        <div class="col-lg-5">
-                                            Danh mục sản phẩm
-                                        </div>
-                                        <div class="col-lg-7">
-                                            <select id="ip-add-product-category" class="form-control select2"
-                                                    data-status="add" onchange="onChangeCategory(this)">
-                                                <option th:each="category : ${lstCategories}"
-                                                        th:value="${category.categoryId}"
-                                                        th:text="${category.categoryName}">
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div id="product-add-property"></div>
+                                <div class="col-lg-7">
+                                    <input type="text" id="ip-add-invoice-code" placeholder="Mã nhập hàng...."
+                                           class="form-control"/>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col-lg-5">
+                                    <label for="ip-add-order-code">
+                                        Mã đặt hàng
+                                    </label>
+                                </div>
+                                <div class="col-lg-7">
+                                    <select id="ip-add-order-code" class="form-control select2">
+                                        <option value="">Chưa đặt</option>
+                                        <option th:each="invoiceOrder : ${lstInvoiceOrder}"
+                                                th:value="${invoiceOrder.invoiceOrderId}"
+                                                th:text="${invoiceOrder.invoiceOrderCode}">
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col-lg-5">
+                                    <label for="ip-add-supplier">
+                                        Nhà cung cấp
+                                    </label>
+                                </div>
+                                <div class="col-lg-7">
+                                    <select id="ip-add-supplier" class="form-control select2">
+                                        <option th:each="supplier : ${lstSupplier}" th:value="${supplier.id}"
+                                                th:text="${supplier.name}">
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col-lg-5">
+                                    <label for="ip-add-invoice-discount">
+                                        Giảm giá
+                                    </label>
+                                </div>
+                                <div class="col-lg-7">
+                                    <input type="text" id="ip-add-invoice-discount" placeholder="Số tiền NCC giảm...."
+                                           class="form-control"/>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col-lg-5"></div>
+                                <div class="col-lg-7">
+                                    <input class="form-check-input mt-2" type="checkbox"
+                                           id="ip-add-invoice-status"/>
+                                    <label for="ip-add-invoice-status" class="col-form-label">
+                                        Đã nhập hàng
+                                    </label>
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane p-3" id="description-product" role="tabpanel">
-                            <textarea id="productAddDescription" class="form-control"></textarea>
-                        </div>
-                        <div class="tab-pane p-3" id="image-product-add" role="tabpanel">
-                            <div class="dropzone mb-3">
-                                <div class="fallback">
-                                    <input id="ip-add-product-image" hidden type="file" multiple="multiple">
-                                </div>
-                                <div class="dz-message needsclick" onclick="onClickChooseImageAdd()">
-                                    <div class="mb-3">
-                                        <i class="mdi mdi-cloud-upload display-4 text-muted"></i>
-                                    </div>
-                                    <h4>Nhấn để chọn hình ảnh.</h4>
+                        <div class="col-lg-6">
+                            <div class="mb-3 row">
+                                <label class="col-lg-5" for="ip-add-product">
+                                    Sản phẩm nhập
+                                </label>
+                                <div class="col-lg-7">
+                                    <select id="ip-add-product" class="form-control select2" multiple
+                                            onchange="onChangeAddProduct(this)">
+                                        <option>a</option>
+                                        <option>b</option>
+                                        <option>c</option>
+                                        <option>d</option>
+                                        <option>d</option>
+                                        <option>d</option>
+                                        <option>d</option>
+                                        <option>d</option>
+                                        <option>d</option>
+                                        <option th:each="supplier : ${lstSupplier}" th:value="${supplier.id}"
+                                                th:text="${supplier.name}">
+                                        </option>
+                                    </select>
                                 </div>
                             </div>
-                            <hr/>
-                            <div class="file_upload">
-                                <div class="bd-example text-center">
-                                    <div id="carouselExampleCaptionsAdd" class="carousel slide" data-bs-ride="carousel">
-                                        <div class="carousel-indicators" id="carousel-indicators-add">
-                                        </div>
-                                        <div class="carousel-inner" id="previewUploadAdd">
-                                        </div>
-                                        <a class="carousel-control-prev " type="button"
-                                           data-bs-target="#carouselExampleCaptionsAdd"
-                                           data-bs-slide="prev">
-                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                            <span class="visually-hidden">Previous</span>
-                                        </a>
-                                        <a class="carousel-control-next" type="button"
-                                           data-bs-target="#carouselExampleCaptionsAdd"
-                                           data-bs-slide="next">
-                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                            <span class="visually-hidden">Next</span>
-                                        </a>
+                            <div id="invoice-detail">
+                                <div class="mb-3 row">
+                                    <label class="col-lg-5" for="ip-add-product1">
+                                        Sản phẩm 1
+                                    </label>
+                                    <div class="col-lg-7">
+                                        <input type="text" id="ip-add-product1" data-id="idSanPham"
+                                               placeholder="Số lượng...."
+                                               class="form-control add-product-quantity-invoice"/>
                                     </div>
                                 </div>
                             </div>
@@ -237,168 +241,44 @@
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 
-    <div id="modal-edit-product" class="modal fade show" style="display: block;" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title mt-0">Sửa sản phẩm</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <ul class="nav nav-tabs nav-tabs-custom nav-justified" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" data-bs-toggle="tab" href="#info-product-edit" role="tab">
-                                <span class="d-none d-md-block">Thông tin sản phẩm</span>
-                                <span class="d-block d-md-none">
-                                    <i class="mdi mdi-home-variant h5"></i>
-                                </span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#description-product-edit" role="tab">
-                                <span class="d-none d-md-block">Mô tả chi tiết sản phẩm</span><span
-                                    class="d-block d-md-none"><i class="mdi mdi-account h5"></i></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#image-product-edit" role="tab">
-                                <span class="d-none d-md-block">Hình ảnh sản phẩm</span><span
-                                    class="d-block d-md-none"><i class="mdi mdi-account h5"></i></span>
-                            </a>
-                        </li>
-                    </ul>
+    <script>
 
-                    <!-- Tab panes -->
-                    <div class="tab-content">
-                        <div class="tab-pane active p-3" id="info-product-edit" role="tabpanel">
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="mb-3 row">
-                                        <div class="col-lg-5">
-                                            Mã sản phẩm
-                                        </div>
-                                        <div class="col-lg-7">
-                                            <input type="text" id="ip-edit-product-code" placeholder="Mã sản phẩm...."
-                                                   class="form-control"/>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3 row">
-                                        <div class="col-lg-5">
-                                            Tên sản phẩm
-                                        </div>
-                                        <div class="col-lg-7">
-                                            <input type="text" id="ip-edit-product-name" placeholder="Tên sản phẩm...."
-                                                   class="form-control"/>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3 row">
-                                        <div class="col-lg-5">
-                                            Giá bán
-                                        </div>
-                                        <div class="col-lg-7">
-                                            <input type="text" id="ip-edit-product-price" placeholder="Giá bán...."
-                                                   class="form-control"/>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3 row">
-                                        <div class="col-lg-5">
-                                            Thương hiệu
-                                        </div>
-                                        <div class="col-lg-7">
-                                            <select id="ip-edit-product-brand"
-                                                    class="form-control select2 ip-voucher-person-apply">
-                                                <option th:each="brand : ${lstBrands}" th:value="${brand.brandId}"
-                                                        th:text="${brand.brandName}">
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3 row">
-                                        <div class="col-lg-5"></div>
-                                        <div class="col-lg-7">
-                                            <input class="form-check-input mt-2" type="checkbox"
-                                                   id="ip-edit-product-status"/>
-                                            <label for="ip-edit-product-status" class="col-form-label">
-                                                Kinh doanh sản phẩm ngay
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="mb-3 row">
-                                        <div class="col-lg-5">
-                                            Danh mục sản phẩm
-                                        </div>
-                                        <div class="col-lg-7">
-                                            <select id="ip-edit-product-category" class="form-control select2"
-                                                    data-status="edit" onchange="onChangeCategory(this)">
-                                                <option th:each="category : ${lstCategories}"
-                                                        th:value="${category.categoryId}"
-                                                        th:text="${category.categoryName}">
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div id="product-edit-property"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane p-3" id="description-product-edit" role="tabpanel">
-                            <textarea id="productEditDescription" class="form-control"></textarea>
-                        </div>
-                        <div class="tab-pane p-3" id="image-product-edit" role="tabpanel">
-                            <div class="dropzone mb-3">
-                                <div class="fallback">
-                                    <input id="ip-edit-product-image" hidden type="file" multiple="multiple">
-                                </div>
-                                <div class="dz-message needsclick" onclick="onClickChooseImage()">
-                                    <div class="mb-3">
-                                        <i class="mdi mdi-cloud-upload display-4 text-muted"></i>
-                                    </div>
-                                    <h4>Nhấn để chọn hình ảnh.</h4>
-                                </div>
-                            </div>
-                            <hr/>
-                            <div class="file_upload">
-                                <div class="bd-example text-center">
-                                    <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
-                                        <div class="carousel-indicators text-black-50" id="carousel-indicators">
-                                        </div>
-                                        <div class="carousel-inner" id="previewUpload">
-                                        </div>
-                                        <a class="carousel-control-prev " type="button"
-                                           data-bs-target="#carouselExampleCaptions"
-                                           data-bs-slide="prev">
-                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                            <span class="visually-hidden">Previous</span>
-                                        </a>
-                                        <a class="carousel-control-next" type="button"
-                                           data-bs-target="#carouselExampleCaptions"
-                                           data-bs-slide="next">
-                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                            <span class="visually-hidden">Next</span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Đóng</button>
-                    <button type="button" data-id="" class="btn btn-success waves-effect waves-light"
-                            id="btn-submit-edit-product" onclick="onClickUpdateProduct(this)">Cập nhật
-                    </button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+        function onChangeAddProduct(e) {
+            console.log(getSelectValues(e))
+        }
+
+        function getSelectValues(select) {
+            let result = [];
+            let options = select && select.options;
+            let opt;
+
+            for (let i = 0, iLen = options.length; i < iLen; i++) {
+                opt = options[i];
+                if (opt.selected) {
+                    result.push(opt.value || opt.text);
+                }
+            }
+            return result;
+        }
+
+        function onClickAddInvoice(e) {
+            let getInvoiceCode = document.getElementById('ip-add-invoice-code');
+            let getInvoiceOrderCode = document.getElementById('ip-add-order-code');
+            let getSupplier = document.getElementById('ip-add-supplier');
+            let getInvoiceDiscount = document.getElementById('ip-add-invoice-discount');
+            let getInvoiceStatus = document.getElementById('ip-add-invoice-status');
+            let getAllQuantityProduct = document.getElementsByClassName('add-product-quantity-invoice');
+
+        }
+    </script>
 
 </div>
 <div layout:fragment="script">
-    <script src="/assets/js/select2.min.js"></script>
-    <script src="/assets/js/form-advanced.init.js"></script>
-    <script th:src="@{/toastr/toa.js}"></script>
+    <script th:src="@{/assets/js/spectrum.min.js}"></script>
+    <script th:src="@{/assets/js/bootstrap-maxlength.min.js}"></script>
+    <script th:src="@{/assets/js/jquery.bootstrap-touchspin.min.js}"></script>
+    <script th:src="@{/assets/js/select2.min.js}"></script>
+    <script th:src="@{/assets/js/form-advanced.init.js}"></script>
 </div>
 </body>
 </html>

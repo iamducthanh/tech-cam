@@ -125,7 +125,7 @@ public class CustomerService implements ICustomerService {
                 customerEntity.setAddress(customerRequest.getAddress());
                 customerEntity.setEmail(customerRequest.getEmail());
                 customerEntity.setPhoneNumber(customerRequest.getPhoneNumber());
-                customerEntity.setDateOfBirth(ConvertUtil.get().strToDate(customerRequest.getDateOfBirth(),"yyyy-MM-dd"));
+                customerEntity.setDateOfBirth(Objects.nonNull(customerRequest.getDateOfBirth()) ? ConvertUtil.get().strToDate(customerRequest.getDateOfBirth(),"yyyy-MM-dd"): null);
                 customerEntity.setFullName(customerRequest.getFullName());
                 customerEntity.setId(UUID.randomUUID().toString());
                 customerEntity.setStatus(CustomerStatus.ON.name());
@@ -168,7 +168,7 @@ public class CustomerService implements ICustomerService {
                 customerEntity.setPhoneNumber(customerRequest.getPhoneNumber());
                 customerEntity.setEmail(customerRequest.getEmail());
                 customerEntity.setAddress(customerRequest.getAddress());
-                customerEntity.setDateOfBirth(ConvertUtil.get().strToDate(customerRequest.getDateOfBirth(),"yyyy-MM-dd"));
+                customerEntity.setDateOfBirth(Objects.nonNull(customerRequest.getDateOfBirth()) ? ConvertUtil.get().strToDate(customerRequest.getDateOfBirth(),"yyyy-MM-dd"): null);
                 customerEntity.setFullName(customerRequest.getFullName());
 //                customerEntity.setModifierDate(new Timestamp(new Date().getTime()));
 
