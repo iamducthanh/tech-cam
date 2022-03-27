@@ -52,7 +52,6 @@ public class StaffDetailsServiceImpl implements UserDetailsService {
         // Add info logged user to Session
         log.info("Logged: " + staff);
         session.setAttribute("user", staff);
-        session.setAttribute("username", staff.getUsername());
 
         List<String> roleNames = new ArrayList<>();
         assert staff != null;

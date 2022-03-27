@@ -1,10 +1,7 @@
-package com.techcam.dto.request;
+package com.techcam.dto.response.staff;
 
 import lombok.Data;
-import org.springframework.data.annotation.CreatedDate;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -16,7 +13,9 @@ import java.util.Date;
  */
 
 @Data
-public class StaffAddRequestDTO {
+public class StaffResponseDTO {
+
+    private String id;
 
     private String fullName;
 
@@ -41,4 +40,6 @@ public class StaffAddRequestDTO {
     private String note;
 
     private String status;
+
+    private Date createDate;
 }

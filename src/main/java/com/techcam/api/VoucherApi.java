@@ -1,10 +1,12 @@
 package com.techcam.api;
 
+import com.techcam.constants.ConstantsErrorCode;
 import com.techcam.dto.request.voucher.VoucherRequest;
 import com.techcam.dto.response.voucher.VoucherResponse;
+import com.techcam.dto.response.voucher.VoucherUseByOrderResponse;
 import com.techcam.exception.TechCamExp;
+import com.techcam.service.IOrderService;
 import com.techcam.service.IVoucherService;
-import com.techcam.constants.ConstantsErrorCode;
 import com.techcam.util.ConvertUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+
+import static com.techcam.type.CustomerStatus.FAILED;
+import static com.techcam.type.CustomerStatus.SUCCESS;
 
 /**
  * Description :
@@ -30,6 +37,8 @@ public class VoucherApi {
 
     private final IVoucherService voucherService;
 
+    private final IOrderService orderService;
+
     @PostMapping
     public ResponseEntity<String> createVoucher(@RequestBody @Validated VoucherRequest voucherRequest, Errors errors) {
         validateVoucher(voucherRequest, errors);
@@ -37,13 +46,13 @@ public class VoucherApi {
             if (Integer.parseInt(voucherRequest.getVoucherQuantity()) < 1) {
                 throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
             }
-            if (voucherService.createVoucher(voucherRequest).equals(ConstantsErrorCode.SUCCESS)) {
-                return ResponseEntity.ok(ConstantsErrorCode.SUCCESS);
+            if (voucherService.createVoucher(voucherRequest).equals(SUCCESS.name())) {
+                return ResponseEntity.ok(SUCCESS.name());
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ResponseEntity.badRequest().body(ConstantsErrorCode.ERROR);
+        return ResponseEntity.badRequest().body(FAILED.name());
     }
 
     @PutMapping
@@ -53,30 +62,71 @@ public class VoucherApi {
             if (Integer.parseInt(voucherRequest.getVoucherQuantity()) < 1) {
                 throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
             }
-            if (voucherService.updateVoucher(voucherRequest).equals(ConstantsErrorCode.SUCCESS)) {
-                return ResponseEntity.ok(ConstantsErrorCode.SUCCESS);
+            if (Integer.parseInt(voucherRequest.getVoucherQuantity()) < orderService.findAllByVoucherId(voucherRequest.getVoucherId()).size()) {
+                throw new TechCamExp(ConstantsErrorCode.VOUCHER_MAX_USED);
+            }
+            if (voucherService.updateVoucher(voucherRequest).equals(SUCCESS.name())) {
+                return ResponseEntity.ok(SUCCESS.name());
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ResponseEntity.badRequest().body(ConstantsErrorCode.ERROR);
+        return ResponseEntity.badRequest().body(FAILED.name());
     }
 
     @PutMapping("/active/{id}")
     public ResponseEntity<String> activeVoucher(@PathVariable("id") String id) {
         try {
-            if (voucherService.activeVoucher(id).equals(ConstantsErrorCode.SUCCESS)) {
-                return ResponseEntity.ok(ConstantsErrorCode.SUCCESS);
+            if (voucherService.activeVoucher(id).equals(SUCCESS.name())) {
+                return ResponseEntity.ok(SUCCESS.name());
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ResponseEntity.badRequest().body(ConstantsErrorCode.ERROR);
+        return ResponseEntity.badRequest().body(FAILED.name());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<VoucherResponse> getById(@PathVariable("id") String id) {
-        return ResponseEntity.ok(voucherService.getById(id));
+        VoucherResponse voucherResponse = voucherService.getById(id);
+        if (Objects.isNull(voucherResponse) || voucherResponse.getVoucherStartDate().compareTo(new Date()) < 0) {
+            // voucher không đúng
+            throw new TechCamExp(ConstantsErrorCode.VOUCHER_NOT_EXISTS);
+        }
+        List<VoucherUseByOrderResponse> lstUsedByVoucherId = orderService.findAllByVoucherId(voucherResponse.getVoucherId());
+        if (voucherResponse.getVoucherEndDate().compareTo(new Date()) > 0
+                || voucherResponse.getVoucherQuantity() <= lstUsedByVoucherId.size()) {
+            // VOUCHER đã hết lượt dùng
+            throw new TechCamExp(ConstantsErrorCode.VOUCHER_END_USED);
+        }
+        return ResponseEntity.ok(voucherResponse);
+    }
+
+    @GetMapping(params = "code")
+    public ResponseEntity<VoucherResponse> getAllByCode(@RequestParam("code") String code) {
+        List<VoucherResponse> lstVoucher = voucherService.findAllByCode(code);
+        if (lstVoucher.isEmpty()) {
+            // voucher không đúng
+            throw new TechCamExp(ConstantsErrorCode.VOUCHER_NOT_EXISTS);
+        }
+        VoucherResponse response = null;
+        for (VoucherResponse x : lstVoucher) {
+            List<VoucherUseByOrderResponse> lstUsedByVoucherId = orderService.findAllByVoucherId(x.getVoucherId());
+            if (x.getVoucherEndDate().compareTo(new Date()) <= 0
+                    && x.getVoucherQuantity() > lstUsedByVoucherId.size()) {
+                response = x;
+            }
+        }
+        if (Objects.isNull(response)) {
+            // VOUCHER đã hết lượt dùng
+            throw new TechCamExp(ConstantsErrorCode.VOUCHER_END_USED);
+        }
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping(value = "/{id}/used")
+    public ResponseEntity<List<VoucherUseByOrderResponse>> getCustemorUserByVoucherId(@PathVariable("id") String id) {
+        return ResponseEntity.ok(orderService.findAllByVoucherId(id));
     }
 
     private void validateVoucher(@Validated @RequestBody VoucherRequest voucherRequest, Errors errors) {
@@ -100,14 +150,15 @@ public class VoucherApi {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteVoucher(@PathVariable("id") String id) {
-        if (!id.isEmpty() && voucherService.deleteVoucher(id).equals(ConstantsErrorCode.SUCCESS)) {
-            return ResponseEntity.ok(ConstantsErrorCode.SUCCESS);
+        if (!id.isEmpty() && voucherService.deleteVoucher(id).equals(SUCCESS.name())) {
+            return ResponseEntity.ok(SUCCESS.name());
         }
-        return ResponseEntity.badRequest().body(ConstantsErrorCode.ERROR);
+        return ResponseEntity.badRequest().body(FAILED.name());
     }
 
     private boolean checkEqualLength(String value, int min, int max) {
         return value.length() < min || value.length() > max;
     }
+
 
 }
