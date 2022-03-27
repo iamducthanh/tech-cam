@@ -56,7 +56,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/index",
 //                "/api/v1/orders",
                 "/api/v1/orders/**",
-                ""
                 "/vnp-pay/check-out/order/**",
                 "/api/staff/**",
                 "/staff/**",
