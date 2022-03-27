@@ -4,16 +4,11 @@ import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Objects;
 
-/**
- * @author Dev
- * @version 1.0
- * @since 13.3.2022
- */
 @Entity
-@Table(name = "goodsreceiptdetail", schema = "poly_techcam", catalog = "")
-@IdClass(GoodsreceiptdetailEntityPK.class)
+@Table(name = "goodsreceiptdetail")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,38 +16,42 @@ import java.util.Objects;
 @Setter
 @ToString
 public class GoodsreceiptdetailEntity extends BaseEntity {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "GoodsReceipt_ID", nullable = false, length = 64)
+    @Column(name = "id", nullable = false, length = 64)
+    private String id;
+
+    @Column(name = "Goods_Receipt_ID", nullable = false)
     private String goodsReceiptId;
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Id
-    @Column(name = "Product_ID", nullable = false, length = 64)
+
+    @Column(name = "Product_ID", nullable = false)
     private String productId;
-    @Basic
+
     @Column(name = "Quantity", nullable = false)
-    private int quantity;
-    @Basic
-    @Column(name = "Price", nullable = false, precision = 0)
-    private int price;
-    @Basic
+    private Integer quantity;
+
+    @Column(name = "Price", nullable = false, precision = 10)
+    private BigDecimal price;
+
     @Column(name = "STATUS", nullable = false, length = 50)
     private String status;
-    @Basic
-    @Column(name = "NOTE", nullable = true, length = -1)
+
+    @Lob
+    @Column(name = "NOTE")
     private String note;
+
+    @Column(name = "discount", precision = 10)
+    private BigDecimal discount;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         GoodsreceiptdetailEntity that = (GoodsreceiptdetailEntity) o;
-        return goodsReceiptId != null && Objects.equals(goodsReceiptId, that.goodsReceiptId)
-                && productId != null && Objects.equals(productId, that.productId);
+        return id != null && Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(goodsReceiptId, productId);
+        return getClass().hashCode();
     }
 }
