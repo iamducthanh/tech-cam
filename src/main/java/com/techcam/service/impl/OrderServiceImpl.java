@@ -187,12 +187,13 @@ public class OrderServiceImpl implements IOrderService {
         String orderStratus = "";
         if ( request.getOrderType().equals(OrderType.COUNTER.name()) || request.getPaymentMethod().equals(OrderMethod.PAYMENT.name())) {
             setQuantityProductOrder(request, productEntities);
-            orderStratus = OrderStatus.CONFIRM.name();
         }
 //        else if(request.getOrderType().equals(OrderType.COUNTER.name())){
 //            orderStratus = OrderStatus.CONFIRM.name();
 //        }
-        else {
+        if( request.getOrderType().equals(OrderType.COUNTER.name())){
+            orderStratus = OrderStatus.CONFIRM.name();
+        } else {
             orderStratus = OrderStatus.VERIFY.name();
         }
         // lưu hóa đơn.
