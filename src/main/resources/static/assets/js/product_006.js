@@ -272,7 +272,7 @@ function validateObjectProduct(
         }
         if (getElementSelect !== null && getElementSelect !== undefined) {
             for (let i = 0; i < getElementSelect.length; i++) {
-                let value = getElementInput[i].value;
+                let value = getElementSelect[i].value;
                 if (value !== null && value !== undefined && value !== '') {
                     productProperties.push({
                         "propertyId": getElementSelect[i].dataset.id,

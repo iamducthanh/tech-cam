@@ -112,7 +112,7 @@ public class VoucherApi {
         if (errors.hasErrors()) {
             throw new TechCamExp(errors.getFieldErrors().get(0).getDefaultMessage());
         }
-        if (checkEqualLength(voucherRequest.getVoucherCode(), 0, 10)) {
+        if (checkEqualLength(voucherRequest.getVoucherCode(), 0, 50)) {
             throw new TechCamExp(ConstantsErrorCode.ERROR_LENGTH, "Mã giảm giá", 0, 50);
         }
         if (checkEqualLength(voucherRequest.getVoucherName(), 10, 255)) {

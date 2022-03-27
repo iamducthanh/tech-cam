@@ -55,67 +55,68 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-lg-12">
-                            <div class="card">
-                                <div class="card-body overflow-auto">
-                                    <table id="datatable"
-                                           class="table table-striped table-hover table-bordered nowrap dataTable no-footer shadow"
-                                           style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                                        <thead>
-                                        <tr class="text-center">
-                                            <th>STT</th>
-                                            <th>Thumbnail</th>
-                                            <th>Chức năng</th>
-                                            <th>Tên sản phẩm</th>
-                                            <th>Giá bán</th>
-                                            <th>Tồn kho</th>
-                                            <th>Trạng thái</th>
-                                            <th>Người thêm</th>
-                                            <th>Ngày thêm</th>
-                                            <th>Ngày cập nhật</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <th:block th:each="product, theCount : ${lstProducts}">
-                                            <tr>
-                                                <td class="text-center" th:text="${theCount.index + 1}">STT</td>
-                                                <td class="text-center">
-                                                    <img th:src="${product.thumbnail}" th:title="${product.productName}" height="25px"
-                                                         style="cursor: pointer" onclick="zoomImageProduct(this)"/>
-                                                </td>
-                                                <td class="text-center">
-                                                    <a href="#modal-edit-product" th:data-id="${product.productId}" data-bs-toggle="modal"
-                                                       class="btn btn-primary btn-sm waves-effect waves-light"
-                                                       onclick="onClickEditProduct(this)">
-                                                        Chỉnh sửa
-                                                    </a>
-                                                </td>
-                                                <td th:text="${product.productName}">Tên sản phẩm</td>
-                                                <td class="text-end"
-                                                    th:text="${#numbers.formatDecimal(product.productPrice, 0, 'COMMA', 2, 'POINT') + 'đ'}">
-                                                    Giá bán
-                                                </td>
-                                                <td class="text-end">Tồn kho</td>
-                                                <td class="text-center">
+                            <div class="card-body overflow-auto">
+                                <table id="datatable"
+                                       class="table table-striped table-hover table-bordered nowrap dataTable no-footer shadow"
+                                       style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                    <thead>
+                                    <tr class="text-center">
+                                        <th>STT</th>
+                                        <th>Thumbnail</th>
+                                        <th>Chức năng</th>
+                                        <th>Tên sản phẩm</th>
+                                        <th>Giá bán</th>
+                                        <th>Tồn kho</th>
+                                        <th>Trạng thái</th>
+                                        <th>Người thêm</th>
+                                        <th>Ngày thêm</th>
+                                        <th>Ngày cập nhật</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <th:block th:each="product, theCount : ${lstProducts}">
+                                        <tr>
+                                            <td class="text-center" th:text="${theCount.index + 1}">STT</td>
+                                            <td class="text-center">
+                                                <img th:src="${product.thumbnail}" th:title="${product.productName}"
+                                                     height="25px"
+                                                     style="cursor: pointer" onclick="zoomImageProduct(this)"/>
+                                            </td>
+                                            <td class="text-center">
+                                                <a href="#modal-edit-product" th:data-id="${product.productId}"
+                                                   data-bs-toggle="modal"
+                                                   class="btn btn-primary btn-sm waves-effect waves-light"
+                                                   onclick="onClickEditProduct(this)">
+                                                    Chỉnh sửa
+                                                </a>
+                                            </td>
+                                            <td th:text="${product.productName}">Tên sản phẩm</td>
+                                            <td class="text-end"
+                                                th:text="${#numbers.formatDecimal(product.productPrice, 0, 'COMMA', 2, 'POINT') + 'đ'}">
+                                                Giá bán
+                                            </td>
+                                            <td class="text-end">Tồn kho</td>
+                                            <td class="text-center">
                             <span th:if="${product.productStatus != null && product.productStatus == 'ON'}"
                                   class="badge bg-success">
                                 Kinh doanh
                             </span>
-                                                    <span th:unless="${product.productStatus != null && product.productStatus == 'ON'}"
-                                                          class="badge bg-danger">
+                                                <span th:unless="${product.productStatus != null && product.productStatus == 'ON'}"
+                                                      class="badge bg-danger">
                                 Ngừng kinh doanh
                             </span>
-                                                </td>
-                                                <td th:text="${product.createBy}" class="text-center">Người thêm</td>
-                                                <td th:text="${#dates.format(product.createDate, 'dd-MM-yyyy')}" class="text-center">
-                                                </td>
-                                                <td th:text="${#dates.format(product.modifierDate, 'dd-MM-yyyy')}" class="text-center">
-                                                </td>
-                                            </tr>
-                                        </th:block>
-                                        </tbody>
-                                    </table>
-
-                                </div>
+                                            </td>
+                                            <td th:text="${product.createBy}" class="text-center">Người thêm</td>
+                                            <td th:text="${#dates.format(product.createDate, 'dd-MM-yyyy')}"
+                                                class="text-center">
+                                            </td>
+                                            <td th:text="${#dates.format(product.modifierDate, 'dd-MM-yyyy')}"
+                                                class="text-center">
+                                            </td>
+                                        </tr>
+                                    </th:block>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
