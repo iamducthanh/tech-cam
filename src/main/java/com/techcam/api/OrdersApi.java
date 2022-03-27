@@ -31,13 +31,13 @@ import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/v1/orders")
-@CrossOrigin(origins = "*")
 public class OrdersApi {
     private final String LOCALHOST_IPV4 = "127.0.0.1";
     private final String LOCALHOST_IPV6 = "0:0:0:0:0:0:0:1";
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     @Autowired
     private IOrderService orderService;
+    @CrossOrigin(origins = "http://localhost:8888")
     @PostMapping
     public ResponseEntity<?> registrationOrder(@Valid @RequestBody OrderRequest orderRequest, HttpServletRequest request){
         System.out.println(request);
