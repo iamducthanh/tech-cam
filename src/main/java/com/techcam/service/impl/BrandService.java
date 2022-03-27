@@ -36,6 +36,12 @@ public class BrandService implements IBrandService {
         return BrandResponse.builder()
                 .brandId(x.getId())
                 .brandName(x.getName())
+                .brandEmail(x.getEmail())
+                .brandAddress(x.getAddress())
+                .brandAvatar(x.getAvatar())
+                .brandNote(x.getNote())
+                .brandStatus(x.getStatus())
+                .brandPhone(x.getPhone())
                 .build();
     }
 }

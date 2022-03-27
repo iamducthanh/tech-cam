@@ -49,6 +49,17 @@ public class BrandEntity {
     @Basic
     @Column(name = "DELETE_FLAG")
     private boolean deleteFlag;
+    @Basic
+    @Column(name = "AVATAR")
+    private String avatar;
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
 
     public String getId() {
         return id;
