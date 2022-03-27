@@ -66,9 +66,11 @@ public interface ConstantsErrorCode {
     String LOGIN_PASS_M_FAIL = "TC-LG-003";
     String LOGIN_EMAIL_INPUT_NULL = "TC-LG-004";
     String LOGIN_EMAIL_NOT_EXITS = "TC-LG-005";
+    String LOGIN_CHANGE_PASS_SUCCESS = "TC-LG-006";
     String LOGIN_PASS_FAIL = "TC-LG-007";
     String LOGIN_FAIL_FIVE = "TC-LG-008";
     String LOGIN_RESET_BY_EMAIL_SUCCESS = "TC-LG-009";
+    String LOGIN_ACCOUNT_BLOCKED = "TC-LG-012";
 
     String ORDER_PRODUCT_OUT_OF_STOCK = "TC-007-001";
     String CUST_ORDER_TOO_MUCH = "TC-007-002";

@@ -4,8 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.techcam.constants.ConstantsErrorCode;
 import com.techcam.constants.RequestForgotPasswordConstant;
-import com.techcam.dto.request.*;
-import com.techcam.dto.request.staff.StaffAddRequestDTO;
+import com.techcam.dto.request.ChangePasswordDto;
+import com.techcam.dto.request.ForgotPasswordDto;
+import com.techcam.dto.request.MailDto;
+import com.techcam.dto.request.staff.StaffChangePassRequestDTO;
 import com.techcam.dto.request.staff.StaffEditRequestDTO;
 import com.techcam.entity.StaffEntity;
 import com.techcam.exception.TechCamExp;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * Description:
@@ -43,8 +46,11 @@ public class AccountApi {
     @Autowired
     private HttpServletRequest req;
 
-    private final SessionUtil sessionUtil;
+    @Autowired
+    private final HttpSession session;
+
     private final StaffService staffService;
+    private final SessionUtil sessionUtil;
     private final EncodeUtil encodeUtil;
     private final MailerUtil mailerUtil;
     private final ModelMapper modelMapper = new ModelMapper();
@@ -52,27 +58,36 @@ public class AccountApi {
     private String message;
 
     @PostMapping("/change-password")
-    public void changePassword(@RequestBody ChangePasswordDto changePasswordDto) {
+    public ResponseEntity<String> changePassword(@RequestBody ChangePasswordDto changePasswordDto) {
         log.warn("Change Password typing...: " + changePasswordDto.toString());
-        StaffEntity staffEntity = (StaffEntity) sessionUtil.getObject("STAFF");
+        StaffEntity staffEntity = (StaffEntity) session.getAttribute("user");
         BCryptPasswordEncoder pass = new BCryptPasswordEncoder();
         if (changePasswordDto.getPasswordOld().trim().length() == 0
                 || changePasswordDto.getPasswordNew().trim().length() == 0
                 || changePasswordDto.getPasswordComfirm().trim().length() == 0
         ) {
-            throw new TechCamExp(ConstantsErrorCode.LOGIN_DATA_FAIL);
+            message = String.valueOf(new TechCamExp(ConstantsErrorCode.LOGIN_DATA_FAIL).getErrorMessage().getVn());
+            log.error(message);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
         }
         if (!pass.matches(changePasswordDto.getPasswordOld(), staffEntity.getPassword())) {
-            throw new TechCamExp(ConstantsErrorCode.LOGIN_PASS_C_FAIL);
+            message = String.valueOf(new TechCamExp(ConstantsErrorCode.LOGIN_PASS_C_FAIL).getErrorMessage().getVn());
+            log.error(message);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
         }
         if (!changePasswordDto.getPasswordNew().equals(changePasswordDto.getPasswordComfirm())) {
-            throw new TechCamExp(ConstantsErrorCode.LOGIN_PASS_M_FAIL);
+            message = String.valueOf(new TechCamExp(ConstantsErrorCode.LOGIN_PASS_M_FAIL).getErrorMessage().getVn());
+            log.error(message);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
         }
 
         String password = pass.encode(changePasswordDto.getPasswordNew());
         staffEntity.setPassword(password);
 
-        staffService.addStaff(modelMapper.map(staffEntity, StaffAddRequestDTO.class));
+        staffService.changePasswordStaff(modelMapper.map(staffEntity, StaffChangePassRequestDTO.class));
+        message = String.valueOf(new TechCamExp(ConstantsErrorCode.LOGIN_CHANGE_PASS_SUCCESS).getErrorMessage().getVn());
+        log.info(message);
+        return ResponseEntity.status(HttpStatus.OK).body(message);
     }
 
     @GetMapping("/request-forgot-password")
@@ -159,6 +174,7 @@ public class AccountApi {
     public ResponseEntity<String> getCountLoginFalse(@RequestParam("email") String email) {
         StaffEntity staff = staffService.getByEmail(email);
         if (staff != null) {
+            // Check login false
             int count = staff.getCountLoginFalse();
             if (count > 0) {
                 log.error("Login failed to " + email + " for the " + count + " time");
@@ -167,6 +183,13 @@ public class AccountApi {
                     log.error(message);
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
                 }
+            }
+
+            // Check block account
+            if (staff.getStatus().equals("0")) {
+                message = String.valueOf(new TechCamExp(ConstantsErrorCode.LOGIN_ACCOUNT_BLOCKED).getErrorMessage().getVn());
+                log.info(message);
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
             }
             return ResponseEntity.status(HttpStatus.OK).body("OKE");
         }
