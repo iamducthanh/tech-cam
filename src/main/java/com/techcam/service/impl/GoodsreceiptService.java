@@ -145,6 +145,7 @@ public class GoodsreceiptService implements IGoodsreceiptService {
                 .build();
     }
 
+
     private <R> InvoiceResponse mapToInvoiceResponse(GoodsreceiptEntity x) {
         if (Objects.isNull(x)) return new InvoiceResponse();
         SupplierEntity supplierEntity = supplierRepo.getByIdAndDeleteFlagIsFalse(x.getSupplierId());
@@ -156,6 +157,7 @@ public class GoodsreceiptService implements IGoodsreceiptService {
                 .supplierName(Objects.nonNull(supplierEntity) ? supplierEntity.getName() : "")
                 .orderInvoiceCode("")// mã đặt hàng
                 .status(x.getStatus())
+                .totalMoney((long) x.getTotalAmount())
                 .discount(Long.parseLong("0")) // giá giảm
                 .paid(paid)
                 .note(x.getNote())
