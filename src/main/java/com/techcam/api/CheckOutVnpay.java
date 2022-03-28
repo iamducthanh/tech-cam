@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.view.RedirectView;
 
 /**
  * Description:
@@ -25,8 +26,11 @@ public class CheckOutVnpay {
     @Autowired
     private IOrderService orderService;
     @GetMapping("")
-    public OrderResponse checkOutVnpay(@RequestParam String vnp_TxnRef, @RequestParam String vnp_ResponseCode){
-       return orderService.checkOutBank(vnp_ResponseCode,vnp_TxnRef);
-
+    public RedirectView checkOutVnpay(@RequestParam String vnp_TxnRef, @RequestParam String vnp_ResponseCode){
+       OrderResponse response = orderService.checkOutBank(vnp_ResponseCode,vnp_TxnRef);
+        RedirectView redirectView = new RedirectView();
+        redirectView.addStaticAttribute("checkOutCart", response.getStatus());
+        redirectView.setUrl("http://localhost:8888/check-out/result");
+        return redirectView;
     }
 }

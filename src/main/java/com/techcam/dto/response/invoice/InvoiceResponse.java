@@ -45,6 +45,11 @@ public class InvoiceResponse {
     private String status;
 
     /**
+     * tổng tiền hàng
+     */
+    private Long totalMoney;
+
+    /**
      * giảm giá
      */
     private Long discount;

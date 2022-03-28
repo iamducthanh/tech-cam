@@ -28,4 +28,6 @@ public interface IVoucherService {
     List<String> findAllIdCustomerByVoucherId(String voucherId);
 
     VoucherResponse getById(String voucherId);
+
+    List<VoucherResponse> findAllByCode(String code);
 }

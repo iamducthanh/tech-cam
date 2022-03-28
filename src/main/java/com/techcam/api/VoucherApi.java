@@ -102,6 +102,28 @@ public class VoucherApi {
         return ResponseEntity.ok(voucherResponse);
     }
 
+    @GetMapping(params = "code")
+    public ResponseEntity<VoucherResponse> getAllByCode(@RequestParam("code") String code) {
+        List<VoucherResponse> lstVoucher = voucherService.findAllByCode(code);
+        if (lstVoucher.isEmpty()) {
+            // voucher không đúng
+            throw new TechCamExp(ConstantsErrorCode.VOUCHER_NOT_EXISTS);
+        }
+        VoucherResponse response = null;
+        for (VoucherResponse x : lstVoucher) {
+            List<VoucherUseByOrderResponse> lstUsedByVoucherId = orderService.findAllByVoucherId(x.getVoucherId());
+            if (x.getVoucherEndDate().compareTo(new Date()) <= 0
+                    && x.getVoucherQuantity() > lstUsedByVoucherId.size()) {
+                response = x;
+            }
+        }
+        if (Objects.isNull(response)) {
+            // VOUCHER đã hết lượt dùng
+            throw new TechCamExp(ConstantsErrorCode.VOUCHER_END_USED);
+        }
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping(value = "/{id}/used")
     public ResponseEntity<List<VoucherUseByOrderResponse>> getCustemorUserByVoucherId(@PathVariable("id") String id) {
         return ResponseEntity.ok(orderService.findAllByVoucherId(id));
@@ -112,7 +134,7 @@ public class VoucherApi {
         if (errors.hasErrors()) {
             throw new TechCamExp(errors.getFieldErrors().get(0).getDefaultMessage());
         }
-        if (checkEqualLength(voucherRequest.getVoucherCode(), 0, 10)) {
+        if (checkEqualLength(voucherRequest.getVoucherCode(), 0, 50)) {
             throw new TechCamExp(ConstantsErrorCode.ERROR_LENGTH, "Mã giảm giá", 0, 50);
         }
         if (checkEqualLength(voucherRequest.getVoucherName(), 10, 255)) {
@@ -137,5 +159,6 @@ public class VoucherApi {
     private boolean checkEqualLength(String value, int min, int max) {
         return value.length() < min || value.length() > max;
     }
+
 
 }

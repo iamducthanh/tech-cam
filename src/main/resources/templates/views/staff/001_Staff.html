@@ -5,13 +5,12 @@
       xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <title>Quản lý nhân viên - TechCam</title>
-    <!-- SweetAlert2-->
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
-<div layout:fragment="content" class="container-fluid" style="max-width: 98%">
-    <div class="row container1">
+<div layout:fragment="content" class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
         <div class="col-lg-2 h-100" id="leftKH">
             <h1 class="heading-page">Người dùng</h1>
             <div class="card" id="formLeft">
@@ -80,7 +79,7 @@
                         <tbody style="vertical-align: middle;">
                             <tr th:each="staff, iterator : ${staffs}">
                                 <td class="text-end">
-                                <!-- <span th:text="${iterator.index + 1}"></span>-->
+                                    <!-- <span th:text="${iterator.index + 1}"></span>-->
                                 </td>
                                 <td th:switch="${staff.getStatus()}" class="text-center">
                                     <i class="col-4 fas fa-edit" style="color: darkblue;" title="Cập nhật" onclick="onBtnEdit(this)"></i>
@@ -320,7 +319,10 @@
 
         // Disable click of current user logged in
         const currentUserEmail = "[[${#session.getAttribute('currentUserEmail')}]]";
-        $('table#datatable>tbody').find(`tr:has(td:contains(${currentUserEmail}))`).children().eq(1).html("<i class=\"fas fa-user-alt text-success text-center fs-3\" title=\"Thông tin\" onclick=\"onBtnEdit(this)\"></i>");
+        $('table#datatable>tbody')
+            .find(`tr:has(td:contains(${currentUserEmail}))`)
+            .children().eq(1)
+            .html("<i class=\"fas fa-user-alt text-success text-center fs-3\" title=\"Thông tin\" onclick=\"onBtnEdit(this)\"></i>");
     });
 
     function hoverIconLock() {

@@ -1,6 +1,5 @@
 package com.techcam.repo;
 
-import com.techcam.dto.response.invoice.InvoiceResponse;
 import com.techcam.entity.GoodsreceiptEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
