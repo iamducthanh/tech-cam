@@ -14,7 +14,7 @@ public interface MessageUtil {
     String SAVE_ORDER_CUSTOMER_DONE= "Khách hàng thanh toán hóa đơn : %s";
     String RECEIPT_NAME_ORDER="Thanh toán hóa đơn mua hàng";
     // mail mua hàng
-    String FROM_MAIL="";
+    String FROM_MAIL="techcam.poly@gmail.com";
     String SUBJECT_MAIL_ORDER="Thông Tin Mua Hàng";
     String MAIL_CUSTOMER_ORDER_DONE="Cảm Ơn Quý Khách đã mua sắm tại TechCam.<br><br> " +
             "Vui lòng đánh giá dịch vụ tại hotline : 0978825572 hoặc gửi mail về TechCam@gmail.com.<br><br>" +
