@@ -213,9 +213,9 @@ public class OrderServiceImpl implements IOrderService {
                 .voucher(Objects.isNull(voucherResponse) ? null : MODEL_MAPPER.map(voucherResponse, VoucherEntity.class))
                 .ipAddress(request.getIpAddress())
                 .orderType(request.getOrderType())
-                .recipientName(Objects.nonNull(request.getRecipientName()) ? request.getRecipientName() : request.getCustomer().getFullName())
-                .recipientPhone(Objects.nonNull(request.getRecipientPhone()) ? request.getRecipientPhone() : request.getCustomer().getPhoneNumber())
-                .recipientAddress(Objects.nonNull(request.getRecipientAddress()) ? request.getRecipientAddress() : request.getCustomer().getAddress())
+                .recipientName(StringUtils.isNotBlank(request.getRecipientName()) ? request.getRecipientName() : request.getCustomer().getFullName())
+                .recipientPhone(StringUtils.isNotBlank(request.getRecipientPhone()) ? request.getRecipientPhone() : request.getCustomer().getPhoneNumber())
+                .recipientAddress(StringUtils.isNotBlank(request.getRecipientAddress()) ? request.getRecipientAddress() : request.getCustomer().getAddress())
                 .totalAmount(totalDiscount)
                 .itemQuantity(itemQuantity)
                 .tax(orderRequestProduct.getTotalAmount())
@@ -269,7 +269,7 @@ public class OrderServiceImpl implements IOrderService {
                     String vnpay = VNPAYService.payments(ordersEntity.getTax() - ordersEntity.getTotalAmount(), vnp_ref, httpServletRequest);
                     response.setVnpay(vnpay);
                 }
-                if (Objects.isNull(customerInfoResponse.getEmail())) {
+                if (Objects.nonNull(customerInfoResponse.getEmail())) {
                     sendMail(String.format(MessageUtil.MAIL_ORDER_REGISTRATION_ONLINE, orderSave.getId()), customerInfoResponse.getEmail(),
                             MessageUtil.SUBJECT_MAIL_ORDER, MessageUtil.FROM_MAIL);
                 }
