@@ -11,5 +11,5 @@ package com.techcam.util;
 
 public interface DescLog {
     // log của customer
-    String LOG_INSERT_CUSTOMER = "%s vừa thêm mới khách hàng %s";
+    String LOG_INSERT_CUSTOMER = "%s vừa thêm mới khách hàng %s"; // tên viết createby, mã giao dịch
 }
