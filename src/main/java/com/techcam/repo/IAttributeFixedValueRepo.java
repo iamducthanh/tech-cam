@@ -20,6 +20,8 @@ public interface IAttributeFixedValueRepo extends JpaRepository<AttributeFixedVa
 
     AttributeFixedValueEntity getByIdAndDeleteFlagIsFalse(String fixedValueId);
 
+    List<AttributeFixedValueEntity> findAllByAttributeIdAndDeleteFlagIsFalse(String propertyId);
+
     @Query("select o from AttributeFixedValueEntity o where o.attributeId = ?1 and o.deleteFlag = false ")
     AttributeFixedValueEntity findByAttributeId(String attributeId);
 }
