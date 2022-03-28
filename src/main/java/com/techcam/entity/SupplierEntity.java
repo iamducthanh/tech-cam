@@ -12,7 +12,6 @@ import java.util.Objects;
 @Entity
 @Table(name = "supplier", schema = "poly_techcam", catalog = "")
 public class SupplierEntity {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "ID")
     private String id;
