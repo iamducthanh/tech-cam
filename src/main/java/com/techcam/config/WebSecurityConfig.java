@@ -4,7 +4,6 @@ import com.techcam.entity.StaffEntity;
 import com.techcam.service.impl.StaffDetailsServiceImpl;
 import com.techcam.service.impl.StaffService;
 import com.techcam.util.CookieUtil;
-import com.techcam.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +26,12 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CookieUtil cookieUtil;
-    private final SessionUtil session;
 
     @Autowired
     private StaffDetailsServiceImpl staffDetailsService;
     private final StaffService staffService;
+
+    private final SessionUtil sessionUtil;
 
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -88,7 +88,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     staffService.saveStaff(staffEntity);
                     response.sendRedirect(request.getContextPath());
                     cookieUtil.add("username", username, 168); //7 days
-                    session.addObject("username", username);
+                    sessionUtil.addObject("username", username);
                 })
                 .and().logout().logoutUrl("/logout").logoutSuccessUrl("/login?status=logout");
 
