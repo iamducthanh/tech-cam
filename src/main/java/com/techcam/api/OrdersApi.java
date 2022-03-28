@@ -12,10 +12,7 @@ import com.techcam.type.OrderType;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -40,9 +37,10 @@ public class OrdersApi {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     @Autowired
     private IOrderService orderService;
+    @CrossOrigin(origins = "http://localhost:8888")
     @PostMapping
     public ResponseEntity<?> registrationOrder(@Valid @RequestBody OrderRequest orderRequest, HttpServletRequest request){
-
+        System.out.println(request);
         if(orderRequest.getOrderType().equals(OrderType.ONLINE.name())) {
             String ipAddress = getDevice(request);
             orderRequest.setIpAddress(ipAddress);
@@ -50,7 +48,7 @@ public class OrdersApi {
         }
         OrderResponse response = orderService.resgistrationOrder(orderRequest,request);
         if(Objects.nonNull(response.getVnpay())){
-            String vnpay = orderService.resgistrationOrder(orderRequest,request).getVnpay();
+            String vnpay = response.getVnpay();
             try {
                 VNPAYResponse cartDto = OBJECT_MAPPER.readValue(vnpay, VNPAYResponse.class);
                 return ResponseEntity.ok(cartDto);

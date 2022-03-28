@@ -50,7 +50,7 @@ public class MailerUtil {
   helper.setReplyTo(mail.getFrom());
    sender.send(message);
   }catch (Exception e){
-
+   e.printStackTrace();
   }
  }
 }
