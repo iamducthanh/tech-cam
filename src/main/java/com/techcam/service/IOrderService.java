@@ -29,6 +29,8 @@ public interface IOrderService {
 
     List<GetInfoOrder> getAllOrderByDeleteFlag();
 
+    GetInfoOrder findOrderById(String id);
+
     List<GetInfoOrderDetails> findAllOrdersDetailsById(String id);
 
     OrderResponse resgistrationOrder(OrderRequest request, HttpServletRequest httpServletRequest);
