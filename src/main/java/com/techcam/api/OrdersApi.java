@@ -4,10 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.techcam.constants.ConstantsErrorCode;
 import com.techcam.dto.request.order.*;
+import com.techcam.dto.response.order.GetInfoOrder;
+import com.techcam.dto.response.order.GetInfoOrderDetails;
 import com.techcam.dto.response.order.OrderResponse;
+import com.techcam.dto.response.order.VNPAYResponse;
 import com.techcam.exception.TechCamExp;
 import com.techcam.service.IOrderService;
-import com.techcam.dto.response.order.VNPAYResponse;
 import com.techcam.type.OrderType;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -96,6 +99,11 @@ public class OrdersApi {
     @PostMapping("/pay-the-bill")
     public OrderResponse payTheBill(@Valid @RequestBody CustomerPayTheBillRequest request) {
         return orderService.payTheBill(request);
+    }
+
+    @GetMapping("/{id}")
+    public GetInfoOrder findById(@PathVariable("id") String id) {
+        return orderService.findOrderById(id);
     }
 
     public String getDevice(HttpServletRequest request) {
