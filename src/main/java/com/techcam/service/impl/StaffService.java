@@ -7,6 +7,7 @@ import com.techcam.dto.response.staff.StaffResponseDTO;
 import com.techcam.entity.StaffEntity;
 import com.techcam.repo.IStaffRepo;
 import com.techcam.service.IStaffService;
+import com.techcam.util.CookieUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -38,6 +39,8 @@ public class StaffService implements IStaffService {
 
     @Autowired
     private final HttpSession session;
+
+    private final CookieUtil cookieUtil;
 
     @Override
     public List<StaffResponseDTO> findAll() {
@@ -174,7 +177,9 @@ public class StaffService implements IStaffService {
 
         try {
             entity = staffRepo.save(entity);
-            session.setAttribute("user", entity);
+            if (entity.getEmail().equals(cookieUtil.get("email"))) {
+                session.setAttribute("user", entity);
+            }
         } catch (Exception e) {
             log.error(e.getMessage());
         }
