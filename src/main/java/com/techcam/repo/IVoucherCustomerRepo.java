@@ -4,6 +4,8 @@ import com.techcam.entity.VoucherCustomerEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Description :
  *
@@ -15,4 +17,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IVoucherCustomerRepo extends JpaRepository<VoucherCustomerEntity, String> {
+
+    List<VoucherCustomerEntity> findAllByVoucherId(String voucherId);
+
+
 }

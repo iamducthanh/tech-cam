@@ -30,4 +30,7 @@ public interface IVoucherService {
     VoucherResponse getById(String voucherId);
 
     List<VoucherResponse> findAllByCode(String code);
+
+    VoucherResponse findFistByCode(String code);
+
 }

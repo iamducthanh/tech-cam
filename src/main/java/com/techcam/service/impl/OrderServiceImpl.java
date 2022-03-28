@@ -26,6 +26,7 @@ import com.techcam.util.ConvertDateUtil;
 import com.techcam.util.MailerUtil;
 import com.techcam.util.MessageUtil;
 import com.techcam.util.SessionUtil;
+import groovyjarjarantlr4.runtime.tree.CommonErrorNode;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -133,6 +134,14 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     @Override
+    public GetInfoOrder findOrderById(String id) {
+        OrdersEntity orderEntity = ordersRepo.findByIdAndDeleteFlagFalse(id);
+        Type listType = new TypeToken<GetInfoOrder>() {}.getType();
+
+        return MODEL_MAPPER.map(orderEntity, listType);
+    }
+
+    @Override
     public List<GetInfoOrderDetails> findAllOrdersDetailsById(String id) {
         List<OrderdetailEntity> orderdetailEntities = orderDetailsRepo.findAllByOrdersIdAndDeleteFlag(id, false);
         Type listType = new TypeToken<List<GetInfoOrderDetails>>() {
@@ -170,6 +179,9 @@ public class OrderServiceImpl implements IOrderService {
         }
         // lưu khách hàng
         CustomerInfoResponse customerInfoResponse = resgistrationCustomer(request.getCustomer());
+        if(Objects.isNull(customerInfoResponse)){
+            throw new TechCamExp(ConstantsErrorCode.INTERNAL_SERVER_ERROR);
+        }
         int itemQuantity = request.getProductDetails().stream().mapToInt(e -> e.getQuantity()).sum();
         OrderProductRequest orderRequestProduct = getTotalProduct(productEntities, request.getProductDetails());
         int totalDiscount = 0;
@@ -205,9 +217,9 @@ public class OrderServiceImpl implements IOrderService {
                 .voucher(Objects.isNull(voucherResponse) ? null : MODEL_MAPPER.map(voucherResponse, VoucherEntity.class))
                 .ipAddress(request.getIpAddress())
                 .orderType(request.getOrderType())
-                .recipientName(Objects.nonNull(request.getRecipientName()) ? request.getRecipientName() : request.getCustomer().getFullName())
-                .recipientPhone(Objects.nonNull(request.getRecipientPhone()) ? request.getRecipientPhone() : request.getCustomer().getPhoneNumber())
-                .recipientAddress(Objects.nonNull(request.getRecipientAddress()) ? request.getRecipientAddress() : request.getCustomer().getAddress())
+                .recipientName(StringUtils.isNotBlank(request.getRecipientName()) ? request.getRecipientName() : request.getCustomer().getFullName())
+                .recipientPhone(StringUtils.isNotBlank(request.getRecipientPhone()) ? request.getRecipientPhone() : request.getCustomer().getPhoneNumber())
+                .recipientAddress(StringUtils.isNotBlank(request.getRecipientAddress()) ? request.getRecipientAddress() : request.getCustomer().getAddress())
                 .totalAmount(totalDiscount)
                 .itemQuantity(itemQuantity)
                 .tax(orderRequestProduct.getTotalAmount())
@@ -261,7 +273,7 @@ public class OrderServiceImpl implements IOrderService {
                     String vnpay = VNPAYService.payments(ordersEntity.getTax() - ordersEntity.getTotalAmount(), vnp_ref, httpServletRequest);
                     response.setVnpay(vnpay);
                 }
-                if (Objects.isNull(customerInfoResponse.getEmail())) {
+                if (Objects.nonNull(customerInfoResponse.getEmail())) {
                     sendMail(String.format(MessageUtil.MAIL_ORDER_REGISTRATION_ONLINE, orderSave.getId()), customerInfoResponse.getEmail(),
                             MessageUtil.SUBJECT_MAIL_ORDER, MessageUtil.FROM_MAIL);
                 }

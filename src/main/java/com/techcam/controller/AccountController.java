@@ -37,11 +37,6 @@ public class AccountController {
         return "views/forgotpassword";
     }
 
-    @GetMapping("/change-password")
-    public String changePasswordPage() {
-        return "views/changepassword";
-    }
-
     @GetMapping("/reset-password")
     public String resetPasswordPage(@RequestParam("token") String token, Model model) throws JsonProcessingException {
         log.warn("Request reset password " + RequestForgotPasswordConstant.requests.size());

@@ -57,7 +57,7 @@
         </div>
     </div>
     <div class="mt-5 text-center position-relative">
-        <p class="text-white-50">© FShop <span class="d-none d-sm-inline-block"> - Work by <i class="mdi mdi-heart text-danger"></i></span></p>
+        <p class="text-white-50">© TechCam <span class="d-none d-sm-inline-block"> - Work by <i class="mdi mdi-heart text-danger"></i></span></p>
     </div>
 </div>
 <script layout:fragment="script">
@@ -79,7 +79,7 @@
         // Submit by key press Enter
         $('form').keypress((e) => {
             if (e.which === 13) {
-                $('form').submit();
+                $('#btnLogin').click();
             }
         })
     });
