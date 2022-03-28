@@ -79,4 +79,7 @@ public interface ConstantsErrorCode {
 
     String INVOICE_NOT_DETAIL = "TC-008-001";
 
+
+    String ATB_NAME = "TC-012-001";
+
 }

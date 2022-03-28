@@ -1,12 +1,22 @@
 function onAdd(elm){
     let level = elm.getAttribute('level');
     let parentId = elm.getAttribute('parentId');
-    console.log(level)
-    console.log(parentId)
     $('#error')[0].style.display = 'none'
-    $('#categoryName')[0].innerHTML= ''
+    $('#categoryName')[0].value= ''
     onModalCategory(null, level, parentId)
-    $('#modalTitle')[0].innerHTML = "Thêm danh mục";
+
+    let atbRequied = $('#atbRequied')[0];
+    let containerAtb = $('#containerAtb')[0];
+    containerAtb.innerHTML = '';
+    containerAtb.appendChild(atbRequied);
+}
+
+function onModalEditCategory(categoryId, level, parentId) {
+    $('#editCategory')[0].style.display = 'unset';
+    $('#parentIdEdit')[0].value = parentId;
+    $('#levelCategoryEdit')[0].value = level;
+    $('#categoryIdEdit')[0].value = categoryId;
+
 
 }
 
@@ -14,8 +24,7 @@ function onEdit(elm){
     let level = elm.getAttribute('level');
     let categoryId = elm.getAttribute("categoryId")
     let parentId = elm.getAttribute('parentId');
-    $('#modalTitle')[0].innerHTML = "Sửa danh mục";
-    onModalCategory(categoryId, level, parentId)
+    onModalEditCategory(categoryId, level, parentId)
 
     $.ajax({
         url: '/category/' +categoryId,
@@ -138,6 +147,10 @@ function onRemove(elm){
             }
         })
     }
+}
+
+function closeModalEditCategory() {
+    $('#editCategory')[0].style.display = 'none';
 }
 
 // QuotationDetail(

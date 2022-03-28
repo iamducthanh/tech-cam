@@ -93,7 +93,7 @@
         <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
             <div class="modal-content" style=" max-height: 85vh; overflow:scroll; overflow-x: hidden">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitle">Modal title</h5>
+                    <h5 class="modal-title" id="modalTitle">Thêm danh mục</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true" onclick="closeModalCategory()">&times;</span>
                     </button>
@@ -117,7 +117,7 @@
                                 <input class="form-control atbName" placeholder="Tên thuộc tính">
                             </div>
                             <div class="col-lg-6">
-                                <input class="form-control atbValue" placeholder="Giá trị mặc định">
+                                <input class="form-control atbValue" placeholder="Giá trị mặc định 1; giá trị 2; giá trị 3;...">
                             </div>
                             <div class="col-lg-1 btnRemoveAtb" style="text-align: center">
 
@@ -127,6 +127,51 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeModalCategory()">Đóng</button>
+                    <button type="button" class="btn btn-primary" onclick="saveCategory()">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal edit -->
+    <div class="modal fade" id="editCategory" style="display: none; opacity: 100" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+            <div class="modal-content" style=" max-height: 85vh; overflow:scroll; overflow-x: hidden">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEditTitle">Sửa danh mục</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" onclick="closeModalCategory()">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h5>Tên danh mục</h5>
+                    <p style="color: red;display: none" id="errorEdit">Hello</p>
+                    <input class="form-control" id="categoryEditName" placeholder="Nhập tên danh mục">
+                    <input class="form-control" type="hidden" id="parentIdEdit">
+                    <input class="form-control" type="hidden" id="categoryIdEdit">
+                    <input class="form-control" type="hidden" id="levelCategoryEdit">
+                    <div class="row mt-3">
+                        <div class="col-lg-6"><h5 style="margin-top: 20px">Thuộc tính</h5></div>
+                        <div class="col-lg-6" style="text-align: right">
+                            <button class="btn btn-primary" onclick="addRowAtb()">+ Thuộc tính</button>
+                        </div>
+                    </div>
+                    <div id="containerAtbEdit">
+                        <div class="row mb-3" id="atbRequiedEdit">
+                            <div class="col-lg-5">
+                                <input class="form-control atbName" placeholder="Tên thuộc tính">
+                            </div>
+                            <div class="col-lg-6">
+                                <input class="form-control atbValue" placeholder="Giá trị mặc định 1; giá trị 2; giá trị 3;...">
+                            </div>
+                            <div class="col-lg-1 btnRemoveAtb" style="text-align: center">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeModalEditCategory()">Đóng</button>
                     <button type="button" class="btn btn-primary" onclick="saveCategory()">Lưu</button>
                 </div>
             </div>
