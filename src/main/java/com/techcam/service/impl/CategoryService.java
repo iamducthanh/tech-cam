@@ -1,19 +1,22 @@
 package com.techcam.service.impl;
 
 import com.techcam.constants.ConstantsErrorCode;
-import com.techcam.dto.request.CategoryReqDto;
+import com.techcam.dto.request.category.AttributeReqDto;
+import com.techcam.dto.request.category.CategoryReqDto;
 import com.techcam.dto.response.CategoryDto;
 import com.techcam.dto.response.category.CategoryResponse;
+import com.techcam.entity.AttributeEntity;
+import com.techcam.entity.AttributeFixedValueEntity;
 import com.techcam.entity.CategoryEntity;
-import com.techcam.entity.StaffEntity;
 import com.techcam.exception.TechCamExp;
+import com.techcam.repo.IAttributeFixedValueRepo;
+import com.techcam.repo.IAttributeRepo;
 import com.techcam.repo.ICategoryRepo;
 import com.techcam.service.ICategoryService;
 import com.techcam.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -33,6 +36,8 @@ import java.util.stream.Collectors;
 public class CategoryService implements ICategoryService {
 
     private final ICategoryRepo categoryRepo;
+    private final IAttributeRepo attributeRepo;
+    private final IAttributeFixedValueRepo attributeFixedValueRepo;
     private final SessionUtil sessionUtil;
 
     @Override
@@ -103,8 +108,6 @@ public class CategoryService implements ICategoryService {
         if(categoryDto.getCategoryName().trim().length() == 0){
             throw new TechCamExp(ConstantsErrorCode.CATEGORY_NAME);
         } else {
-            System.out.println(categoryDto.getCategoryName());
-            System.out.println(categoryDto.getParentId());
             List<CategoryEntity> categoryEntity = categoryRepo.findByNameAndParent(categoryDto.getCategoryName(), categoryDto.getParentId());
             if(!categoryEntity.isEmpty()) throw new TechCamExp(ConstantsErrorCode.CATEGORY_NAME_EXIST);
         }
@@ -121,13 +124,83 @@ public class CategoryService implements ICategoryService {
                 .deleteFlag(false)
                 .build();
 
-        System.out.println(categoryEntity.toString());
+        List<AttributeEntity> attributeDel = attributeRepo.findAllByCategoryIdAndDeleteFlagIsFalse(categoryEntity.getId());
+        if(!attributeDel.isEmpty()){
+            attributeDel.forEach(o -> {
+                AttributeFixedValueEntity attributeFixedValues = attributeFixedValueRepo.findByAttributeId(o.getId());
+                if(attributeFixedValues != null){
+                    attributeFixedValueRepo.delete(attributeFixedValues);
+                }
+                attributeRepo.delete(o);
+            });
+        }
+
+
+        List<AttributeEntity> attributes = new ArrayList<>();
+        List<AttributeFixedValueEntity> attributeFixvalues = new ArrayList<>();
+
+        categoryDto.getAttributes().forEach(o -> {
+            String id = UUID.randomUUID().toString();
+            attributes.add(AttributeEntity.builder()
+                    .id(id)
+                    .attributeName(o.getName())
+                    .categoryId(categoryDto.getCategoryId())
+                    .status("1")
+                    .createDate(new Date())
+                    .modifierDate(new Date())
+                    .createBy((String) sessionUtil.getObject("username"))
+                    .modifierBy((String) sessionUtil.getObject("username"))
+                    .deleteFlag(false)
+                    .build());
+
+            if(!o.getValue().isEmpty()){
+                attributeFixvalues.add(AttributeFixedValueEntity.builder()
+                        .id(UUID.randomUUID().toString())
+                        .attributeId(id)
+                        .attributeFixedVal(o.getValue())
+                        .status("1")
+                        .note("1")
+                        .createDate(new Date())
+                        .modifierDate(new Date())
+                        .createBy((String) sessionUtil.getObject("username"))
+                        .modifierBy((String) sessionUtil.getObject("username"))
+                        .deleteFlag(false)
+                        .build());
+            }
+        });
+
         categoryRepo.save(categoryEntity);
+        attributeRepo.saveAll(attributes);
+        if(!attributeFixvalues.isEmpty()){
+            attributeFixedValueRepo.saveAll(attributeFixvalues);
+        }
+
     }
 
     @Override
     public void deleteCategory(CategoryEntity categoryEntity) {
         categoryRepo.save(categoryEntity);
+    }
+
+    @Override
+    public List<AttributeReqDto> findAllAttribute(String categoryId) {
+        List<AttributeReqDto> attributeReq = new ArrayList<>();
+        List<AttributeEntity> attributes = attributeRepo.findAllByCategoryIdAndDeleteFlagIsFalse(categoryId);
+
+        if(!attributes.isEmpty()){
+            attributes.forEach(o -> {
+                AttributeFixedValueEntity attributeFixedValueEntity = attributeFixedValueRepo.findByAttributeId(o.getId());
+                String valueDefault = "";
+                if(attributeFixedValueEntity != null){
+                    valueDefault = attributeFixedValueEntity.getAttributeFixedVal();
+                }
+                attributeReq.add(AttributeReqDto.builder()
+                        .name(o.getAttributeName())
+                        .value(valueDefault)
+                        .build());
+            });
+        }
+        return attributeReq;
     }
 
 }

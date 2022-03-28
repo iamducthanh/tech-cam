@@ -4,8 +4,9 @@ function onAdd(elm){
     console.log(level)
     console.log(parentId)
     $('#error')[0].style.display = 'none'
+    $('#categoryName')[0].innerHTML= ''
     onModalCategory(null, level, parentId)
-    $('#modalTitle')[0].innerHTML = "Thêm tiêu đề";
+    $('#modalTitle')[0].innerHTML = "Thêm danh mục";
 
 }
 
@@ -13,14 +14,32 @@ function onEdit(elm){
     let level = elm.getAttribute('level');
     let categoryId = elm.getAttribute("categoryId")
     let parentId = elm.getAttribute('parentId');
-    $('#modalTitle')[0].innerHTML = "Sửa tiêu đề";
+    $('#modalTitle')[0].innerHTML = "Sửa danh mục";
     onModalCategory(categoryId, level, parentId)
 
     $.ajax({
         url: '/category/' +categoryId,
         method: 'GET',
         success: function (datas) {
+            console.log(datas)
+            let containerAtb = $('#containerAtb')[0]
+            containerAtb.innerHTML = '';
+            let btnDelete = '<button class="btn btn-danger" onclick="removeRowAtb(this)">-</button>'
             $('#categoryName')[0].value = datas.categoryName
+            for(let i=0;i<datas.attributes.length;i++){
+                containerAtb.innerHTML +=
+                    '<div class="row mb-3" id="atbRequied">\n' +
+                    '                            <div class="col-lg-5">\n' +
+                    '                                <input class="form-control atbName" value="'+datas.attributes[i].name+'" placeholder="Tên thuộc tính">\n' +
+                    '                            </div>\n' +
+                    '                            <div class="col-lg-6">\n' +
+                    '                                <input class="form-control atbValue" value="'+datas.attributes[i].value+'" placeholder="Giá trị mặc định">\n' +
+                    '                            </div>\n' +
+                    '                            <div class="col-lg-1 btnRemoveAtb" style="text-align: center">\n' +
+                    (i==0?'':btnDelete) +
+                    '                            </div>\n' +
+                    '                        </div>'
+            }
         },
         error: function (error) {
             console.log(error)
@@ -28,26 +47,41 @@ function onEdit(elm){
     })
 }
 
-function onRemove(){
-
-}
-
 function onModalCategory(categoryId, level, parentId){
-    $('#editCategory')[0].style.display = 'unset';
+    $('#addCategory')[0].style.display = 'unset';
     $('#parentId')[0].value = parentId;
     $('#levelCategory')[0].value = level;
     $('#categoryId')[0].value = categoryId;
 }
 function closeModalCategory(){
-    $('#editCategory')[0].style.display = 'none';
+    $('#addCategory')[0].style.display = 'none';
 }
 
-function saveCategory(){
+function saveCategory(action){
     let parentId = $('#parentId')[0].value
     let level = $('#levelCategory')[0].value
     let categoryName = $('#categoryName')[0].value
     let categoryId = $('#categoryId')[0].value
+    let atbName = $('.atbName');
+    let atbValue = $('.atbValue');
+    let attributes = [];
+    for(let i=0;i<atbName.length;i++){
+        if(atbName[i].value.trim().length > 0){
+            attributes.push({
+                name: atbName[i].value,
+                value: atbValue[i].value
+            })
+        }
+    }
 
+    console.log(attributes)
+    if(attributes.length == 0){
+        toastDanger("Lỗi", "Vui lòng nhập ít nhất 1 thuộc tính");
+        return;
+    }
+
+    console.log(atbName)
+    console.log(atbValue)
     console.log(parentId)
     console.log(level)
     console.log(categoryName)
@@ -58,31 +92,38 @@ function saveCategory(){
         data: JSON.stringify({
             categoryId: categoryId,
             categoryName: categoryName,
-            parentId: parentId
+            parentId: parentId,
+            attributes: attributes
         }),
         contentType: 'application/json',
         success: function (datas) {
             console.log(datas)
             $('#error')[0].style.display = 'none'
-            window.location.href = '/category?message=success';
+            window.location.href = '/category?message=success&level=' + level;
         },
         error: function (error) {
             $('#error')[0].style.display = 'unset'
             $('#error')[0].innerHTML = error.responseJSON.vn
-            console.log(error)
         }
     })
 }
 
 window.onload = function () {
-    if(window.location.href.indexOf('message=success') > -1){
+    let href = window.location.href;
+    if(href.indexOf('message=success') > -1){
         toastSuccess("Thành công", "Cập nhật thành công.")
+    }
+
+    let level = href.substring(href.length-1, href.length);
+    let tab = $('.tab_lv' + level)
+    if(tab != null){
+        tab.click()
     }
 }
 
 function onRemove(elm){
     let categoryId = elm.getAttribute('categoryId');
-    let comfirm = confirm("Bạn có chắc muốn xóa tiêu đề này?")
+    let comfirm = confirm("Bạn có chắc muốn xóa danh mục này?")
     console.log(comfirm)
     console.log(categoryId)
     if(comfirm){
