@@ -133,6 +133,14 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     @Override
+    public GetInfoOrder findOrderById(String id) {
+        OrdersEntity orderEntity = ordersRepo.findByIdAndDeleteFlagFalse(id);
+        Type listType = new TypeToken<GetInfoOrder>() {}.getType();
+
+        return MODEL_MAPPER.map(orderEntity, listType);
+    }
+
+    @Override
     public List<GetInfoOrderDetails> findAllOrdersDetailsById(String id) {
         List<OrderdetailEntity> orderdetailEntities = orderDetailsRepo.findAllByOrdersIdAndDeleteFlag(id, false);
         Type listType = new TypeToken<List<GetInfoOrderDetails>>() {
