@@ -26,6 +26,7 @@ import com.techcam.util.ConvertDateUtil;
 import com.techcam.util.MailerUtil;
 import com.techcam.util.MessageUtil;
 import com.techcam.util.SessionUtil;
+import groovyjarjarantlr4.runtime.tree.CommonErrorNode;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -170,6 +171,9 @@ public class OrderServiceImpl implements IOrderService {
         }
         // lưu khách hàng
         CustomerInfoResponse customerInfoResponse = resgistrationCustomer(request.getCustomer());
+        if(Objects.isNull(customerInfoResponse)){
+            throw new TechCamExp(ConstantsErrorCode.INTERNAL_SERVER_ERROR);
+        }
         int itemQuantity = request.getProductDetails().stream().mapToInt(e -> e.getQuantity()).sum();
         OrderProductRequest orderRequestProduct = getTotalProduct(productEntities, request.getProductDetails());
         int totalDiscount = 0;
