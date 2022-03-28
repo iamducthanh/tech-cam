@@ -318,7 +318,7 @@
         $('#img-temp').attr('src', base64Image);
 
         // Disable click of current user logged in
-        const currentUserEmail = "[[${#session.getAttribute('currentUserEmail')}]]";
+        const currentUserEmail = "[[${session.user.email}]]";
         $('table#datatable>tbody')
             .find(`tr:has(td:contains(${currentUserEmail}))`)
             .children().eq(1)
@@ -423,13 +423,14 @@
             data["" + v.name + ""] = v.value;
         });
         data["dateOfBirth"] = moment(data["dateOfBirth"], 'DD-MM-YYYY').format('YYYY-MM-DD');
-        data["username"] = generateUsername(convertViToEn(data["fullName"])) + moment(data["dateOfBirth"], 'DD-MM-YYYY').format('DDMM');
+        data["username"] = generateUsername(convertViToEn(data["fullName"])) + moment(data["dateOfBirth"], 'YYYY-MM-DD').format('DDMM');
 
-        if(validateForm('add')) {
-            addStaff(data);
-        } else {
-            console.log("validate fail");
-        }
+        console.log(data["username"]);
+        // if(validateForm('add')) {
+        //     addStaff(data);
+        // } else {
+        //     console.log("validate fail");
+        // }
     });
 
     // Event onKeyPress formAdd
@@ -584,6 +585,7 @@
             data: JSON.stringify(data),
             dataType: 'json',
             success: function (result) {
+                $('.modal-add-staff').modal('hide');
                 const Toast = Swal.mixin({
                     toast: true,
                     position: 'top-end',
@@ -645,6 +647,7 @@
             data: JSON.stringify(data),
             dataType: 'json',
             success: function (result) {
+                $('.modal-edit-staff').modal('hide');
                 const Toast = Swal.mixin({
                     toast: true,
                     position: 'top-end',
