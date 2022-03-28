@@ -1,5 +1,7 @@
 package com.techcam.entity;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
@@ -12,10 +14,9 @@ import java.util.Objects;
 @Entity
 @Table(name = "brand", schema = "poly_techcam", catalog = "")
 public class BrandEntity {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "ID")
-    private String id;
+    private String id = RandomStringUtils.randomNumeric(6);
     @Basic
     @Column(name = "NAME")
     private String name;

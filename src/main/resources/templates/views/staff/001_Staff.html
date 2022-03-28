@@ -419,9 +419,13 @@
     $('#btnAdd').click(function () {
         let data = {};
         let formData = $('#formAdd').serializeArray();
+        console.log(formData);
         $.each(formData, function (i, v) {
             data["" + v.name + ""] = v.value;
+            console.log(v.name);
+            console.log(v.value);
         });
+        console.log(data);
         data["dateOfBirth"] = moment(data["dateOfBirth"], 'DD-MM-YYYY').format('YYYY-MM-DD');
         data["username"] = generateUsername(convertViToEn(data["fullName"])) + moment(data["dateOfBirth"], 'DD-MM-YYYY').format('DDMM');
 
