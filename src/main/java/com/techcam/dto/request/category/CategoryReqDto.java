@@ -1,6 +1,8 @@
-package com.techcam.dto.request;
+package com.techcam.dto.request.category;
 
 import lombok.*;
+
+import java.util.List;
 
 /**
  * Description:
@@ -18,4 +20,5 @@ public class CategoryReqDto {
  private String categoryId;
  private String categoryName;
  private String parentId;
+ List<AttributeReqDto> attributes;
 }
