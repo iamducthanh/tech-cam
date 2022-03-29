@@ -1,5 +1,11 @@
 package com.techcam.service;
 
+import com.techcam.dto.request.techcamlog.TechCamlogRequest;
+import com.techcam.dto.response.techcamlog.TechCamlogResponse;
+import org.springframework.scheduling.annotation.Async;
+
+import java.util.List;
+
 /**
  * Description:
  *
@@ -10,4 +16,7 @@ package com.techcam.service;
  */
 
 public interface ITechCamLogService {
+    void saveLog(TechCamlogRequest request);
+
+    List<TechCamlogResponse> getALlTechCamLog();
 }

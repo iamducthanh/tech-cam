@@ -8,6 +8,7 @@ import com.techcam.constants.ConstantsErrorCode;
 import com.techcam.dto.request.Customer.CustomerRequest;
 import com.techcam.dto.request.MailDto;
 import com.techcam.dto.request.order.*;
+import com.techcam.dto.request.techcamlog.TechCamlogRequest;
 import com.techcam.dto.request.voucher.VoucherRequest;
 import com.techcam.dto.response.Customer.CustomerInfoResponse;
 import com.techcam.dto.response.order.GetInfoOrder;
@@ -20,20 +21,16 @@ import com.techcam.exception.TechCamExp;
 import com.techcam.repo.*;
 import com.techcam.service.ICustomerService;
 import com.techcam.service.IOrderService;
+import com.techcam.service.ITechCamLogService;
 import com.techcam.service.IVoucherService;
 import com.techcam.type.*;
-import com.techcam.util.ConvertDateUtil;
-import com.techcam.util.MailerUtil;
-import com.techcam.util.MessageUtil;
-import com.techcam.util.SessionUtil;
-import groovyjarjarantlr4.runtime.tree.CommonErrorNode;
+import com.techcam.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
@@ -68,6 +65,8 @@ public class OrderServiceImpl implements IOrderService {
     private IReceiptVoucherRepo receiptVoucherRepo;
     @Autowired
     private MailerUtil mailerUtil;
+    @Autowired
+    private ITechCamLogService techCamLogService;
     @Autowired
     private IVoucherRepo voucherRepo;
     private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
@@ -136,7 +135,8 @@ public class OrderServiceImpl implements IOrderService {
     @Override
     public GetInfoOrder findOrderById(String id) {
         OrdersEntity orderEntity = ordersRepo.findByIdAndDeleteFlagFalse(id);
-        Type listType = new TypeToken<GetInfoOrder>() {}.getType();
+        Type listType = new TypeToken<GetInfoOrder>() {
+        }.getType();
 
         return MODEL_MAPPER.map(orderEntity, listType);
     }
@@ -179,7 +179,7 @@ public class OrderServiceImpl implements IOrderService {
         }
         // lưu khách hàng
         CustomerInfoResponse customerInfoResponse = resgistrationCustomer(request.getCustomer());
-        if(Objects.isNull(customerInfoResponse)){
+        if (Objects.isNull(customerInfoResponse)) {
             throw new TechCamExp(ConstantsErrorCode.INTERNAL_SERVER_ERROR);
         }
         int itemQuantity = request.getProductDetails().stream().mapToInt(e -> e.getQuantity()).sum();
@@ -205,7 +205,7 @@ public class OrderServiceImpl implements IOrderService {
 //        else if(request.getOrderType().equals(OrderType.COUNTER.name())){
 //            orderStratus = OrderStatus.CONFIRM.name();
 //        }
-        if( request.getOrderType().equals(OrderType.COUNTER.name())){
+        if (request.getOrderType().equals(OrderType.COUNTER.name())) {
             orderStratus = OrderStatus.CONFIRM.name();
         } else {
             orderStratus = OrderStatus.VERIFY.name();
@@ -262,14 +262,14 @@ public class OrderServiceImpl implements IOrderService {
             if (request.getOrderType().equals(OrderType.COUNTER.name()) || request.getPaymentMethod().equals(OrderMethod.PAYMENT.name())) {
                 productRepo.saveAll(productEntities);
             }
-            if(Objects.nonNull(voucherResponse)){
+            if (Objects.nonNull(voucherResponse)) {
                 // todo lưu ý hỏi ngọc save voucher thế này được không
-                voucherResponse.setVoucherQuantity(voucherResponse.getVoucherQuantity()-1);
-                VoucherRequest voucherRequest = MODEL_MAPPER.map(voucherResponse,VoucherRequest.class);
+                voucherResponse.setVoucherQuantity(voucherResponse.getVoucherQuantity() - 1);
+                VoucherRequest voucherRequest = MODEL_MAPPER.map(voucherResponse, VoucherRequest.class);
                 voucherService.createVoucher(voucherRequest);
             }
-            if(request.getOrderType().equals(OrderType.ONLINE.name())) {
-                if(request.getPaymentMethod().equalsIgnoreCase(OrderMethod.PAYMENT.name())) {
+            if (request.getOrderType().equals(OrderType.ONLINE.name())) {
+                if (request.getPaymentMethod().equalsIgnoreCase(OrderMethod.PAYMENT.name())) {
                     String vnpay = VNPAYService.payments(ordersEntity.getTax() - ordersEntity.getTotalAmount(), vnp_ref, httpServletRequest);
                     response.setVnpay(vnpay);
                 }
@@ -278,6 +278,10 @@ public class OrderServiceImpl implements IOrderService {
                             MessageUtil.SUBJECT_MAIL_ORDER, MessageUtil.FROM_MAIL);
                 }
             }
+            if (request.getOrderMethod().equals(OrderType.COUNTER.name())) {
+                saveLog(DescLog.INSERT_ORDER,orderSave.getId());
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(CommonStatus.FAIL.name());
@@ -381,6 +385,7 @@ public class OrderServiceImpl implements IOrderService {
 //            int itemQuantity = orderDetailsSaves.stream().mapToInt(e -> e.getQuantity()).sum();
             editOrderEntity(orderDetailsSaveALl, orders);
             ordersRepo.save(orders);
+            saveLog(DescLog.EDIT_ORDER_VERIFY,orders.getId());
         } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(CommonStatus.FAIL.name());
@@ -392,7 +397,7 @@ public class OrderServiceImpl implements IOrderService {
         orders.setItemQuantity(0);
         orders.setTax(0);
         orders.setTotalAmount(0);
-        orders.setModifierBy(getInfoStaff());
+        orders.setModifierBy(getInfoStaff().getUsername());
         orderDetailsSaveALl.stream().filter(item -> {
             orders.setItemQuantity(orders.getItemQuantity() + item.getQuantity());
             orders.setTax((int) (orders.getTax() + (item.getQuantity() * item.getProduct().getPrice())));
@@ -441,7 +446,7 @@ public class OrderServiceImpl implements IOrderService {
         orders.setRecipientPhone(request.getRecipientPhone());
         orders.setRecipientAddress(request.getRecipientAddress());
         orders.setDeliveryDate(request.getDeliveryDate());
-        orders.setSalesPerson(getInfoStaff());
+        orders.setSalesPerson(getInfoStaff().getUsername());
         orders.setNote(request.getNote());
         orders.setTransactionStatus(OrderStatus.CONFIRM.name());
         orders.setModifierDate(new Date());
@@ -452,6 +457,7 @@ public class OrderServiceImpl implements IOrderService {
                 sendMail(String.format(MessageUtil.MAIL_CONFIRM_ORDER, orders.getId(), ConvertDateUtil.convertDateTime(orders.getDeliveryDate())), orders.getCustomer().getEmail(),
                         MessageUtil.SUBJECT_MAIL_ORDER, MessageUtil.FROM_MAIL);
             }
+            saveLog(DescLog.CONFIRM_ORDER,orders.getId());
         } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(CommonStatus.FAIL.name());
@@ -491,9 +497,10 @@ public class OrderServiceImpl implements IOrderService {
                 return false;
             }).collect(Collectors.toList());
             orderDetailsRepo.saveAll(orderDetails);
-            orders.setStockKeeper(getInfoStaff());
+            orders.setStockKeeper(getInfoStaff().getUsername());
             orders.setTransactionStatus(OrderStatus.SHIPPING.name());
             orders.setModifierDate(new Date());
+            saveLog(DescLog.CONFIRM_EXPORT_ORDER,orders.getId());
         } catch (Exception e) {
             orderResponse.setStatus(CommonStatus.FAIL.name());
         }
@@ -517,7 +524,7 @@ public class OrderServiceImpl implements IOrderService {
         if (Objects.isNull(orders)) {
             throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
         }
-        orders.setAccounting(getInfoStaff());
+        orders.setAccounting(getInfoStaff().getUsername());
         orders.setModifierDate(new Date());
         orders.setTransactionStatus(OrderStatus.DONE.name());
         orders.setStatus(OrderStatus.PAID.name());
@@ -541,6 +548,7 @@ public class OrderServiceImpl implements IOrderService {
                 sendMail(MessageUtil.MAIL_CUSTOMER_ORDER_DONE, orders.getCustomer().getEmail(),
                         MessageUtil.SUBJECT_MAIL_ORDER, MessageUtil.FROM_MAIL);
             }
+            saveLog(DescLog.PAY_ORDER,orders.getId());
         } catch (Exception e) {
             orderResponse.setStatus(CommonStatus.FAIL.name());
         }
@@ -591,8 +599,9 @@ public class OrderServiceImpl implements IOrderService {
             List<OrderdetailEntity> orderdetailEntities = orderDetailsRepo.findAllByOrdersIdAndDeleteFlag(request.getOrderId(), false);
             editOrderEntity(orderdetailEntities, orders);
             orders.setModifierDate(new Date());
-            orders.setModifierBy(getInfoStaff());
+            orders.setModifierBy(getInfoStaff().getUsername());
             ordersRepo.save(orders);
+            saveLog(DescLog.EDIT_ORDER_VERIFY, orders.getId());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -652,14 +661,15 @@ public class OrderServiceImpl implements IOrderService {
             }
             orders.setDeleteFlag(true);
             orders.setModifierDate(new Date());
-            orders.setModifierBy(getInfoStaff());
+            orders.setModifierBy(getInfoStaff().getUsername());
             ordersRepo.save(orders);
             // mới thêm để cộng lại voucher
-            if(Objects.nonNull(orders.getVoucher())){
+            if (Objects.nonNull(orders.getVoucher())) {
                 VoucherEntity voucherEntity = orders.getVoucher();
-                voucherEntity.setQuantity(voucherEntity.getQuantity()+1);
+                voucherEntity.setQuantity(voucherEntity.getQuantity() + 1);
                 voucherRepo.save(voucherEntity);
             }
+            saveLog(DescLog.CANCEL_ORDER,orders.getId());
         } catch (Exception e) {
             e.printStackTrace();
             orderResponse.setStatus(CommonStatus.FAIL.name());
@@ -737,11 +747,23 @@ public class OrderServiceImpl implements IOrderService {
         return productEntities;
     }
 
-    private String getInfoStaff() {
+    private StaffEntity getInfoStaff() {
         StaffEntity staffEntity = (StaffEntity) sessionUtil.getObject("STAFF");
         if (Objects.isNull(staffEntity)) {
             throw new TechCamExp(ConstantsErrorCode.INTERNAL_SERVER_ERROR);
         }
-        return staffEntity.getFullName();
+        return staffEntity;
+    }
+
+    public void saveLog(String typeMethod,String id) {
+        StaffEntity staffEntity = getInfoStaff();
+        TechCamlogRequest techCamlogRequest = new TechCamlogRequest();
+        techCamlogRequest.setCreateBy(staffEntity.getUsername());
+        techCamlogRequest.setStaffId(staffEntity.getId());
+        techCamlogRequest.setOperationLink("thêm link sau ");
+        techCamlogRequest.setOperationDesc(String.format(DescLog.LOG_ORDER, staffEntity.getUsername(),typeMethod, id));
+        techCamlogRequest.setOperationKey(id);
+        techCamLogService.saveLog(techCamlogRequest);
+
     }
 }
