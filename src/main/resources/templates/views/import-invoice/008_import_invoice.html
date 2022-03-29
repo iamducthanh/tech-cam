@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/weblayout}"
->
+      layout:decorate="~{layout/weblayout}">
 <head>
     <meta charset="UTF-8">
     <title>Quản lý nhập hàng - TechCam</title>
@@ -12,7 +11,7 @@
 <div layout:fragment="content" class="container-fluid" style="max-width: 98%">
     <div class="row container1">
         <div class="col-lg-2 h-100" id="leftKH">
-            <h1 class="heading-page">Quản lý sản phẩm</h1>
+            <h1 class="heading-page">Quản lý nhập hàng</h1>
             <div class="filter-report">
                 <div class="card" style="padding-left: 15px; padding-top: 15px">
                     <h6 class="mx-2 mt-2 fs-14">Trạng thái</h6>
@@ -26,16 +25,16 @@
                         </div>
                         <div class="form-group form-check">
                             <input class="form-check-input" type="radio" name="status" id="statusActive"
-                                   value="Kinh doanh" onchange="onStatusChange(this)">
+                                   value="Đã nhập" onchange="onStatusChange(this)">
                             <label class="form-check-label" for="statusActive">
-                                Kinh doanh
+                                Đã nhập
                             </label>
                         </div>
                         <div class="form-group form-check">
                             <input class="form-check-input" type="radio" name="status" id="statusInActive"
-                                   value="Ngừng kinh doanh" onchange="onStatusChange(this)">
+                                   value="Đã huỷ" onchange="onStatusChange(this)">
                             <label class="form-check-label" for="statusInActive">
-                                Ngừng kinh doanh
+                                Đã huỷ
                             </label>
                         </div>
                     </div>
@@ -76,7 +75,8 @@
                                 <tr th:each="invoice : ${lstInvoice}">
                                     <td></td>
                                     <td class="text-center">
-                                        <a href="#" class="btn btn-info btn-sm" data-bs-toggle="modal">
+                                        <a href="#modal-edit-invoice" class="btn btn-info btn-sm"
+                                           data-bs-toggle="modal">
                                             Chi tiết
                                         </a>
                                     </td>
@@ -103,7 +103,7 @@
                                         <span th:if="${invoice.status == 'ON'}" class="badge bg-success">
                                             Đã nhập
                                         </span>
-                                        <span th:unless="${invoice.status == 'ON'}" class="badge bg-success">
+                                        <span th:unless="${invoice.status == 'ON'}" class="badge bg-danger">
                                             Đã huỷ
                                         </span>
                                     </td>
@@ -286,7 +286,7 @@
                                 </div>
                                 <div class="col-lg-7">
                                     <select id="ip-edit-order-code" class="form-control select2"
-                                            onchange="onChangeInvoiceOrder(this)">
+                                            onchange="onChangeInvoiceOrderEdit(this)">
                                         <option value="">Chưa đặt</option>
                                         <option th:each="invoiceOrder : ${lstInvoiceOrder}"
                                                 th:value="${invoiceOrder.invoiceOrderId + '@' + invoiceOrder.invoiceSupplierId}"
@@ -372,21 +372,21 @@
                                 </label>
                                 <div class="col-lg-8">
                                     <select id="ip-edit-product" class="form-control select2" multiple
-                                            onchange="onChangeAddProduct(this)">
+                                            onchange="onChangeAddProductEdit(this)">
                                         <option th:each="product : ${lstProduct}" th:value="${product.productId}"
                                                 th:text="${product.productName}">
                                         </option>
                                     </select>
                                 </div>
                             </div>
-                            <div id="invoice-detail-edit"></div>
+                            <div id="invoice-edit-detail"></div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Đóng</button>
-                    <button type="button" class="btn btn-success waves-effect waves-light"
-                            onclick="onClickAddInvoice()">
+                    <button type="button" class="btn btn-success waves-effect waves-light" data-id=""
+                            onclick="onClickEditInvoice(this)">
                         Cập nhật
                     </button>
                 </div>
@@ -395,6 +395,10 @@
     </div><!-- /.modal -->
 
     <script>
+
+        window.onload = function () {
+            $('.modal').hide()
+        }
 
         function onChangeInvoiceOrder(e) {
             let value = e.value + '';
@@ -410,7 +414,6 @@
                 url: '/api/invoice?orderId=' + id,
                 method: 'GET',
                 success: function (data) {
-                    console.log(data)
                     $("#ip-add-product option:selected").attr('selected', false).change();
                     $(data).each((index, obj) => {
                         $('#ip-add-product option[value=' + obj.productId + ']').attr('selected', true)
@@ -450,6 +453,73 @@
                 }
             })
             $('#invoice-detail .row').each((index, data) => {
+                let flag = false;
+                for (let i = 0; i < arrSelect.length; i++) {
+                    if (arrSelect[i].id === data.id) {
+                        flag = true;
+                        break;
+                    }
+                }
+                if (!flag) {
+                    $(data).prop('outerHTML', '')
+                }
+            })
+
+        }
+
+        function onChangeInvoiceOrderEdit(e) {
+            let value = e.value + '';
+            let id, supplierId;
+            if (value !== null && value !== undefined && value !== '') {
+                id = value.substring(0, value.indexOf('@'));
+                supplierId = value.substring(value.includes('@') + 1)
+            } else {
+                return;
+            }
+            $('#ip-edit-supplier option[value=' + supplierId + ']').attr('selected', true).change();
+            $.ajax({
+                url: '/api/invoice?orderId=' + id,
+                method: 'GET',
+                success: function (data) {
+                    $("#ip-add-product option:selected").attr('selected', false).change();
+                    $(data).each((index, obj) => {
+                        $('#ip-edit-product option[value=' + obj.productId + ']').attr('selected', true)
+                        $('#ip-add-product').change();
+                        $('#ip-edit-product-quantity-' + obj.productId).val(obj.productQuantity)
+                    })
+                },
+                error: function (error) {
+
+                }
+            })
+        }
+
+        function onChangeAddProductEdit(e) {
+            let arrSelect = getSelectValues(e);
+            $(arrSelect).each((index, data) => {
+                let invoiceDetail = $('#invoice-edit-detail');
+                if (invoiceDetail.children('#edit' + data.id).length === 0) {
+                    invoiceDetail.append('<div class="row" id="edit' + data.id + '">\n' +
+                        '    <div class="col-lg-4 mb-3">\n' +
+                        '        <label for="ip-edit-product-quantity-' + data.id + '">\n' +
+                        data.name +
+                        '        </label>\n' +
+                        '    </div>\n' +
+                        '    <div class="col-lg-4 mb-3">\n' +
+                        '        <input type="number" min="1" value="1" id="ip-edit-product-quantity-' + data.id + '" data-id="' + data.id + '"\n' +
+                        '               placeholder="Số lượng...."\n' +
+                        '               class="form-control edit-product-quantity-invoice"/>\n' +
+                        '    </div>\n' +
+                        '    <div class="col-lg-4 mb-3">\n' +
+                        '        <input type="number" min="0" value="0" id="ip-edit-product-price-' + data.id + '" data-id="' + data.id + '"\n' +
+                        '               placeholder="Giá nhập...."\n' +
+                        '               class="form-control edit-product-price-invoice"/>\n' +
+                        '    </div>\n' +
+                        '</div>'
+                    )
+                }
+            })
+            $('#invoice-edit-detail .row').each((index, data) => {
                 let flag = false;
                 for (let i = 0; i < arrSelect.length; i++) {
                     if (arrSelect[i].id === data.id) {
@@ -507,10 +577,59 @@
                     contentType: 'application/json',
                     data: JSON.stringify(obj),
                     success: function (data) {
-                        console.log(data)
+                        console.log(data);
+                        toastSuccess('Thành công', 'Đã thêm mới nhập hàng')
+                        setTimeout(function () {
+                            location.reload()
+                        }, 2000)
                     },
                     error: function (error) {
+                        console.log(error)
+                        toastDanger('Lỗi', jqXHR.responseJSON.vn);
+                    }
+                })
+            }
+        }
 
+        function onClickEditInvoice(e) {
+            let getInvoiceCode = document.getElementById('ip-edit-invoice-code');
+            let getInvoiceOrderCode = document.getElementById('ip-edit-order-code');
+            let getSupplier = document.getElementById('ip-edit-supplier');
+            let getInvoiceDiscount = document.getElementById('ip-edit-invoice-discount');
+            let getInvoicePaid = document.getElementById('ip-edit-invoice-paid');
+            let getInvoiceStatus = document.getElementById('ip-edit-invoice-status');
+            let getInvoiceNote = document.getElementById('ip-edit-invoice-note');
+            let getAllQuantityProduct = document.getElementsByClassName('edit-product-quantity-invoice');
+            let getAllPriceProduct = document.getElementsByClassName('edit-product-price-invoice');
+            let obj = valueDateInvoice(
+                e.dataset.id,
+                getInvoiceCode,
+                getInvoiceOrderCode,
+                getSupplier,
+                getInvoiceDiscount,
+                getInvoicePaid,
+                getInvoiceStatus,
+                getInvoiceNote,
+                getAllQuantityProduct,
+                getAllPriceProduct
+            )
+            console.log(obj)
+            if (obj !== null && obj !== undefined) {
+                $.ajax({
+                    url: '/api/invoice',
+                    method: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(obj),
+                    success: function (data) {
+                        console.log(data);
+                        toastSuccess('Thành công', 'Đã thêm mới nhập hàng')
+                        setTimeout(function () {
+                            location.reload()
+                        }, 2000)
+                    },
+                    error: function (error) {
+                        console.log(error)
+                        toastDanger('Lỗi', jqXHR.responseJSON.vn);
                     }
                 })
             }
@@ -532,7 +651,7 @@
                 toastDanger('Lỗi', 'Vui lòng nhập mã nhập hàng');
                 return;
             }
-            if (getInvoiceCode.value.length < 10 || getInvoiceCode.value.length > 50) {
+            if (getInvoiceCode.value.length < 5 || getInvoiceCode.value.length > 50) {
                 toastDanger('Lỗi', 'Mã nhập hàng phải từ 10 đến 50 ký tự');
                 return;
             }
@@ -599,16 +718,31 @@
                 toastDanger('Lỗi', 'Vui lòng chọn sản phẩm nhập');
                 return;
             }
+            let invoiceOrderCode = getInvoiceOrderCode.value + '';
             return {
                 "invoiceId": id,
                 "invoiceCode": getInvoiceCode.value,
-                "invoiceOrderId": getInvoiceOrderCode.value,
+                "invoiceOrderId": invoiceOrderCode.substring(0, invoiceOrderCode.indexOf('@')),
                 "supplierId": getSupplier.value,
                 "discount": getInvoiceDiscount.value,
                 "status": getInvoiceStatus.checked,
                 "paid": getInvoicePaid.value,
                 "note": getInvoiceNote.value,
                 "details": detail
+            }
+        }
+
+        function onStatusChange(element) {
+            const value = $(element).val();
+            const tagAll = $('#datatable tbody tr');
+            const tag = $('tbody tr td span').filter(function () {
+                return $(this).text().includes(value);
+            });
+            if (value === '') {
+                tagAll.show();
+            } else {
+                tagAll.hide();
+                tag.parent().parent().show();
             }
         }
 

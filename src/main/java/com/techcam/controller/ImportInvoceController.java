@@ -46,8 +46,8 @@ public class ImportInvoceController {
             x.setDetails(goodsreceiptService.findAllInvoiceDetailByInvoiceId(x.getInvoiceId()));
         }
         List<InvoiceOrderResponse> lstInvoiceOrder = goodsOrderService.getAllInvoiceOrder();
-//        List<SupplierResponseDTO> lstSupplier = supplierService.findAllByDeleteFlagFalse();
-        List<SupplierResponseDTO> lstSupplier = new ArrayList<>();
+        List<SupplierResponseDTO> lstSupplier = supplierService.getAll();
+//        List<SupplierResponseDTO> lstSupplier = new ArrayList<>();
         List<ProductResponse> lstProduct = productService.getAllProduct();
         model.addAttribute("lstInvoice", lstInvoice);
         model.addAttribute("lstInvoiceOrder", lstInvoiceOrder);

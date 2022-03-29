@@ -20,7 +20,7 @@ public class ErrorMessageLoader {
     private static Map<String, ErrorMessage> errorMessageMap = new HashMap<>();
 
     public ErrorMessageLoader() {
-        ResourceBundle resourceBundle = Utf8ResourceBundle.getBundle("message_vn");
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("message_vn");
         Enumeration massageKeys = resourceBundle.getKeys();
         while (massageKeys.hasMoreElements()) {
             String key = (String) massageKeys.nextElement();

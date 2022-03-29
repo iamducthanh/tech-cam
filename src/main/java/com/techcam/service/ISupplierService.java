@@ -26,4 +26,6 @@ public interface ISupplierService {
     SupplierResponseDTO findById(String id);
 
     void delete(String id);
+
+    List<SupplierResponseDTO> getAll();
 }
