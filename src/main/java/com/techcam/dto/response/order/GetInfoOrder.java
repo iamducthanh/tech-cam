@@ -42,17 +42,17 @@ public class GetInfoOrder {
     private String shipmentId;
     private String status;
     private String note;
+    private Date deliveryDate;
     private Date createDate;
     private Date modifierDate;
     private String createBy;
     private String modifierBy;
     private Boolean deleteFlag;
     private String ipAddress;
+    private String bankTransaction;
 
-    @JsonIgnore
-    private CustomerEntity customer;
+    private String customerId;
 
     @JsonIgnore
     private VoucherEntity voucher;
-    private String bankTransaction;
 }

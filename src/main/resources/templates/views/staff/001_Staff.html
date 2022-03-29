@@ -172,7 +172,7 @@
                                         <th><label for="birthdate" class="form-label">Ngày sinh</label><span class="required"> *</span></th>
                                         <td>
                                             <div class="input-daterange input-group" id="datepicker-dateOfBirth" data-date-format="dd/mm/yyyy" data-date-autoclose="true" data-provide="datepicker" data-date-container='#datepicker-dateOfBirth'>
-                                                <input type="text" name="dateOfBirth"  id="birthdate" class="form-control text-start" onblur="onType(this)" placeholder="dd/MM/yyyy">
+                                                <input type="text" name="dateOfBirth" id="birthdate" class="form-control text-start" onblur="onType(this)" placeholder="dd/MM/yyyy">
                                             </div>
                                         </td>
                                     </tr>
@@ -429,12 +429,11 @@
         data["dateOfBirth"] = moment(data["dateOfBirth"], 'DD-MM-YYYY').format('YYYY-MM-DD');
         data["username"] = generateUsername(convertViToEn(data["fullName"])) + moment(data["dateOfBirth"], 'YYYY-MM-DD').format('DDMM');
 
-        console.log(data["username"]);
-        // if(validateForm('add')) {
-        //     addStaff(data);
-        // } else {
-        //     console.log("validate fail");
-        // }
+        if(validateForm('add')) {
+            addStaff(data);
+        } else {
+            console.log("validate fail");
+        }
     });
 
     // Event onKeyPress formAdd

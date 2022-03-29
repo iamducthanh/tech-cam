@@ -155,3 +155,41 @@ ul {
 .required {
     color: red;
 }
+
+table.none-border, table.none-border td {
+    padding: 5px 5px 5px 20px;
+}
+
+
+
+table.border,
+table.border td,
+table.border th {
+    border: 1px solid;
+}
+
+table.border {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table.border th {
+    text-align: center;
+}
+
+td.number {
+    text-align: right;
+}
+
+th,
+td {
+    padding: 7px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.border-none {
+    border: 0;
+}
