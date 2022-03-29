@@ -12,15 +12,8 @@
     <div class="row">
         <!-- Sidebar -->
         <div class="col-lg-2 h-100" id="leftKH">
-            <h1 class="heading-page">Người dùng</h1>
+            <h1 class="heading-page">Thương hiệu</h1>
             <div class="card" id="formLeft">
-                <h3 class="leftTitle" style="margin-top: 10px">Chức vụ</h3>
-                <div class="boxLeftC">
-                    <select class="roleFilter w-100" multiple style="width: 100%" onchange="onRoleChange(this)">
-                        <option value="Quản trị viên">Quản trị viên</option>
-                        <option value="Nhân viên">Nhân viên</option>
-                    </select>
-                </div>
                 <div style="border: 1px solid #e3e3e3;margin: 12px 12px;border-radius: 8px;">
                 </div>
                 <div style="">
@@ -52,78 +45,76 @@
         <div class="col-lg-10" id="rightKH">
             <div class="row justify-content-end">
                 <button type="button" class="btn btn-primary col-auto mb-3 me-2 waves-effect waves-light" data-bs-toggle="modal" data-bs-target=".modal-add-staff">
-                    <i class="fas fa-plus me-2"></i>Người dùng
+                    <i class="fas fa-plus me-2"></i>Thương hiệu
                 </button>
             </div>
             <div class="card">
-                <div class="card-body overflow-auto">
-                    <table id="datatable"
-                           class="table table-striped table-hover table-bordered nowrap dataTable no-footer shadow"
-                           style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                        <thead class="text-center">
-                            <th></th>
-                            <th>Chức năng</th>
-                            <th>Ảnh đại diện</th>
-                            <th>Mã nhân viên</th>
-                            <th>Tên đăng nhập</th>
-                            <th>Họ tên</th>
-                            <th>Ngày sinh</th>
-                            <th>Số điện thoại</th>
-                            <th>Email</th>
-                            <th>Địa chỉ</th>
-                            <th>Chức vụ</th>
-                            <th>CMND/CCCD</th>
-                            <th>Ngày bắt đầu</th>
-                            <th>Trạng thái</th>
-                        </thead>
-                        <tbody style="vertical-align: middle;">
-                            <tr th:each="staff, iterator : ${staffs}">
-                                <td class="text-end">
-                                    <!-- <span th:text="${iterator.index + 1}"></span>-->
-                                </td>
-                                <td th:switch="${staff.getStatus()}" class="text-center">
-                                    <i class="col-4 fas fa-edit" style="color: darkblue;" title="Cập nhật" onclick="onBtnEdit(this)"></i>
-                                    <i th:case="1" class="col-4 fas fa-lock-open" style="color: green;" title="Khoá tài khoản" onclick="onBtnStatus(this)"></i>
-                                    <i th:case="0" class="col-4 fas fa-lock" style="color: red;" title="Mở khoá tài khoản" onclick="onBtnStatus(this)"></i>
-                                    <i class="col-4 fas fa-user-times" style="color: red;" title="Xoá người dùng" onclick="onBtnDelete(this)"></i>
-                                </td>
-                                <td class="text-center">
-                                    <img th:src="${staff.getAvatar()}" alt="avatar" class="border rounded" height="50">
-                                </td>
-                                <td class="text-end">
-                                    <span class="staff-code" th:text="${staff.getStaffCode()}">Mã nhân viên</span>
-                                    <input type="hidden" class="check-item" th:value="${staff.getId()}">
-                                </td>
-                                <td th:text="${staff.getUsername()}">Tên đăng nhập</td>
-                                <td th:text="${staff.getFullName()}">Họ tên</td>
-                                <td th:text="${#dates.format(staff.getDateOfBirth(), 'dd/MM/yyyy')}" class="text-center">Ngày sinh</td>
-                                <td th:text="${staff.getPhoneNumber()}">Số điện thoại</td>
-                                <td th:text="${staff.getEmail()}">Email</td>
-                                <td th:text="${staff.getAddress()}">Địa chỉ</td>
-                                <td th:switch="${staff.getRole()}" class="text-center">
-                                    <span th:case="ROLE_ADMIN" class="role">Quản trị viên</span>
-                                    <span th:case="ROLE_USER" class="role">Nhân viên</span>
-                                </td>
-                                <td th:text="${staff.getIdentityNumber()}">CMND/CCCD</td>
-                                <td th:text="${#dates.format(staff.getCreateDate(), 'dd/MM/yyyy HH:mm:ss')}" class="text-center">Ngày bắt đầu</td>
-                                <td th:switch="${staff.getStatus()}" class="text-center">
-                                    <span th:case="1" class="status badge bg-success fs-6">Đang hoạt động</span>
-                                    <span th:case="0" class="status badge bg-danger fs-6">Ngừng hoạt động</span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-body overflow-auto">
+                                    <table id="datatable"
+                                           class="table table-striped table-hover table-bordered nowrap dataTable no-footer shadow"
+                                           style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                        <thead class="text-center">
+                                        <th></th>
+                                        <th>Chức năng</th>
+                                        <th>Mã thương hiệu</th>
+                                        <th>Tên thương hiệu</th>
+                                        <th>Số điện thoại</th>
+                                        <th>Email</th>
+                                        <th>Địa chỉ</th>
+                                        <th>Ảnh</th>
+                                        <th>Ghi chú</th>
+                                        <th>Trạng thái</th>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="brand, iterator : ${brands}">
+                                            <td class="text-end">
+                                                <span th:text="${iterator.index + 1}"></span>
+                                            </td>
+                                            <td class="row" th:switch="${brand.getBrandStatus()}">
+                                                <i class="col-4 fas fa-edit" style="color: darkblue;" title="Cập nhật" onclick="onBtnEdit(this)"></i>
+                                                <i th:case="1" class="col-4 fas fa-lock-open" style="color: green;" title="Khoá tài khoản" onclick="onBtnStatus(this)"></i>
+                                                <i th:case="0" class="col-4 fas fa-lock" style="color: red;" title="Mở khoá tài khoản" onclick="onBtnStatus(this)"></i>
+                                                <i class="col-4 fas fa-user-times" style="color: red;" title="Xoá người dùng" onclick="onBtnDelete(this)"></i>
+                                            </td>
+                                            <td class="text-end">
+                                                <span th:text="${brand.getBrandId()}">Mã thương hiệu</span>
+                                                <input type="hidden" class="check-item" th:value="${brand.getBrandId()}">
+                                            </td>
+                                            <td th:text="${brand.getBrandName()}">Tên thương hiệu</td>
+                                            <td th:text="${brand.getBrandPhone()}">Số điện thoại</td>
+                                            <td th:text="${brand.getBrandEmail()}">Email</td>
+                                            <td th:text="${brand.getBrandAddress()}">Địa chỉ</td>
+                                            <td >Anh</td>
+                                            <td th:text="${brand.getBrandNote()}">Ghi chú</td>
+                                            <td th:switch="${brand.getBrandStatus()}">
+                                                <span th:case="1" class="status badge bg-success fs-6">Đang hoạt động</span>
+                                                <span th:case="0" class="status badge bg-danger fs-6">Ngừng hoạt động</span>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div id="morris-bar-stacked" class="morris-chart-height morris-charts"></div> -->
                 </div>
             </div>
+
         </div>
     </div>
 
-    <!-- Modal Add Staff -->
+    <!-- Modal Add brand -->
     <div class="modal fade modal-add-staff" tabindex="-1" style="display: none;" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title mt-0">Thêm người dùng</h5>
+                    <h5 class="modal-title mt-0">Thêm thương hiệu</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="formAdd">
@@ -135,46 +126,27 @@
                             <div class="col-5 px-4">
                                 <table class="table-borderless w-100">
                                     <tr>
-                                        <th style="width: 140px"><label class="form-label" for="fullName">Họ và tên</label><span class="required"> *</span></th>
-                                        <td><input class="form-control" type="text" name="fullName" id="fullName" onblur="onType(this)"></td>
+                                        <th style="width: 140px"><label class="form-label" for="fullName">Tên thương hiệu</label><span class="required"> *</span></th>
+                                        <td><input class="form-control" type="text" name="name" id="fullName" onblur="onType(this)"></td>
                                     </tr>
                                     <tr>
                                         <th style="width: 140px;"><label for="email" class="form-label">Email</label><span class="required"> *</span></th>
                                         <td><input type="email" name="email" id="email" class="form-control" onblur="onType(this)" placeholder="abc@email.com"></td>
                                     </tr>
-                                    <tr>
-                                        <th><label for="role" class="form-label">Chức vụ</label><span class="required"> *</span></th>
-                                        <td>
-                                            <select class="form-select" name="role" id="role" onchange="onType(this)">
-                                                <option value="" disabled selected>-- Chọn Chức vụ --</option>
-                                                <option value="ROLE_ADMIN">Quản trị viên</option>
-                                                <option value="ROLE_USER">Nhân viên</option>
-                                            </select>
-                                        </td>
-                                    </tr>
+
+
                                 </table>
                             </div>
                             <div class="col-5 px-4">
                                 <table class="table-borderless w-100">
-                                    <tr>
-                                        <th style="width: 140px;"><label for="identityNumber" class="form-label">CMND/CCCD</label><span class="required"> *</span></th>
-                                        <td><input type="number" name="identityNumber" id="identityNumber" class="form-control" onblur="onType(this)"></td>
-                                    </tr>
+
                                     <tr>
                                         <th><label for="phoneNumber" class="form-label">Điện thoại</label><span class="required"> *</span></th>
-                                        <td><input type="number" name="phoneNumber" id="phoneNumber" class="form-control" onblur="onType(this)" placeholder="0323456789"></td>
+                                        <td><input type="number" name="phone" id="phoneNumber" class="form-control" onblur="onType(this)" placeholder="0323456789"></td>
                                     </tr>
                                     <tr>
                                         <th><label for="address" class="form-label">Địa chỉ</label><span class="required"> *</span></th>
                                         <td><input type="text" name="address" id="address" class="form-control" onblur="onType(this)"></td>
-                                    </tr>
-                                    <tr>
-                                        <th><label for="birthdate" class="form-label">Ngày sinh</label><span class="required"> *</span></th>
-                                        <td>
-                                            <div class="input-daterange input-group" id="datepicker-dateOfBirth" data-date-format="dd/mm/yyyy" data-date-autoclose="true" data-provide="datepicker" data-date-container='#datepicker-dateOfBirth'>
-                                                <input type="text" name="dateOfBirth"  id="birthdate" class="form-control text-start" onblur="onType(this)" placeholder="dd/MM/yyyy">
-                                            </div>
-                                        </td>
                                     </tr>
                                     <tr>
                                         <th style="vertical-align: top; padding-top: 7px;"><label for="note" class="form-label">Ghi chú</label></th>
@@ -318,7 +290,7 @@
         $('#img-temp').attr('src', base64Image);
 
         // Disable click of current user logged in
-        const currentUserEmail = "[[${session.user.email}]]";
+        const currentUserEmail = "[[${#session.getAttribute('currentUserEmail')}]]";
         $('table#datatable>tbody')
             .find(`tr:has(td:contains(${currentUserEmail}))`)
             .children().eq(1)
@@ -419,22 +391,15 @@
     $('#btnAdd').click(function () {
         let data = {};
         let formData = $('#formAdd').serializeArray();
-        console.log(formData);
         $.each(formData, function (i, v) {
             data["" + v.name + ""] = v.value;
-            console.log(v.name);
-            console.log(v.value);
         });
         console.log(data);
-        data["dateOfBirth"] = moment(data["dateOfBirth"], 'DD-MM-YYYY').format('YYYY-MM-DD');
-        data["username"] = generateUsername(convertViToEn(data["fullName"])) + moment(data["dateOfBirth"], 'YYYY-MM-DD').format('DDMM');
-
-        console.log(data["username"]);
-        // if(validateForm('add')) {
-        //     addStaff(data);
-        // } else {
-        //     console.log("validate fail");
-        // }
+        if(validateForm('add')) {
+            addBrand(data);
+        } else {
+            console.log("validate fail");
+        }
     });
 
     // Event onKeyPress formAdd
@@ -469,32 +434,27 @@
                 errorMessage += 'Email không hợp lệ!\n';
                 flag = false;
             } else {
-                $.ajax({
-                    url: `/api/staff/find/email/${email.val()}`,
-                    async: false,
-                    type: 'GET',
-                    contentType: 'application/json',
-                    dataType: 'json',
-                    success: function (result) {
-                        if (result !== 0) {
-                            email.addClass('error');
-                            errorMessage += 'Email đã được sử dụng!\n';
-                            flag = false;
-                            console.log(errorMessage);
-                        }
-                    },
-                    error: function (error) {
-
-                    }
-                })
+                // $.ajax({
+                //     url: `/api/staff/find/email/${email.val()}`,
+                //     async: false,
+                //     type: 'GET',
+                //     contentType: 'application/json',
+                //     dataType: 'json',
+                //     success: function (result) {
+                //         if (result !== 0) {
+                //             email.addClass('error');
+                //             errorMessage += 'Email đã được sử dụng!\n';
+                //             flag = false;
+                //             console.log(errorMessage);
+                //         }
+                //     },
+                //     error: function (error) {
+                //
+                //     }
+                // })
             }
         }
 
-        const role = (type === 'add') ? $('#role') : $('#role-edit');
-        if (role.val() === null) {
-            role.addClass('error');
-            flag = false;
-        }
 
         const phoneNumber = (type === 'add') ? $('#phoneNumber') : $('#phoneNumber-edit');
         const patternPhone = /^(84|0[3|5|7|8|9])+([0-9]{8})\b$/i;
@@ -506,39 +466,28 @@
             errorMessage += 'Số điện thoại không hợp lệ!\n';
             flag = false;
         } else if (type === 'add') {
-            $.ajax({
-                url: `/api/staff/find/phone/${phoneNumber.val()}`,
-                async: false,
-                type: 'GET',
-                contentType: 'application/json',
-                dataType: 'json',
-                success: function (result) {
-                    if (result !== 0) {
-                        phoneNumber.addClass('error');
-                        errorMessage += 'Số điện thoại đã được sử dụng!\n';
-                        flag = false;
-                    }
-                },
-                error: function (error) {
-
-                }
-            })
+            // $.ajax({
+            //     url: `/api/staff/find/phone/${phoneNumber.val()}`,
+            //     async: false,
+            //     type: 'GET',
+            //     contentType: 'application/json',
+            //     dataType: 'json',
+            //     success: function (result) {
+            //         if (result !== 0) {
+            //             phoneNumber.addClass('error');
+            //             errorMessage += 'Số điện thoại đã được sử dụng!\n';
+            //             flag = false;
+            //         }
+            //     },
+            //     error: function (error) {
+            //
+            //     }
+            // })
         }
 
         const address = (type === 'add') ? $('#address') : $('#address-edit');
         if (address.val() === '') {
             address.addClass('error');
-            flag = false;
-        }
-
-        const identityNumber = (type === 'add') ? $('#identityNumber') : $('#identityNumber-edit');
-        const patternIdentityNumber = /^[0-9]*$/i;
-        if (identityNumber.val() === '') {
-            identityNumber.addClass('error');
-            flag = false;
-        } else if (!patternIdentityNumber.test(identityNumber.val())) {
-            identityNumber.addClass('error');
-            errorMessage += 'Số CMND/CCCD không hợp lệ!\n';
             flag = false;
         }
 
@@ -581,15 +530,14 @@
     }
 
     //API add Staff
-    function addStaff(data) {
+    function addBrand(data) {
         $.ajax({
-            url: '/api/staff',
+            url: '/api/brand',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
             dataType: 'json',
             success: function (result) {
-                $('.modal-add-staff').modal('hide');
                 const Toast = Swal.mixin({
                     toast: true,
                     position: 'top-end',
@@ -604,7 +552,7 @@
                 Toast.fire({
                     icon: 'success',
                     title: 'Thêm thành công'
-                }).then(() => window.location.href = "/staff");
+                }).then(() => window.location.href = "/brand");
             },
             error: function (error) {
                 const Toast = Swal.mixin({
@@ -651,7 +599,6 @@
             data: JSON.stringify(data),
             dataType: 'json',
             success: function (result) {
-                $('.modal-edit-staff').modal('hide');
                 const Toast = Swal.mixin({
                     toast: true,
                     position: 'top-end',
