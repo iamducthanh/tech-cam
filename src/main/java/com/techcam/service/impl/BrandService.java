@@ -1,6 +1,7 @@
 package com.techcam.service.impl;
 
 import com.techcam.dto.request.brand.BrandAddRequestDTO;
+import com.techcam.dto.request.brand.BrandEditRequestDTO;
 import com.techcam.dto.response.brand.BrandResponse;
 import com.techcam.entity.BrandEntity;
 import com.techcam.repo.IBrandRepo;
@@ -38,6 +39,11 @@ public class BrandService implements IBrandService {
     }
 
     @Override
+    public BrandResponse findById(String id) {
+        return entityToDto(brandRepo.getById(id));
+    }
+
+    @Override
     public String addBrand(BrandAddRequestDTO dto) {
         BrandEntity entity = new BrandEntity();
         if(brandRepo.findByEmailAndDeleteFlagIsFalse(dto.getEmail()).size() != 0){
@@ -49,7 +55,7 @@ public class BrandService implements IBrandService {
         entity.setName(dto.getName());
         entity.setPhone(dto.getPhone());
         entity.setAvatar(dto.getAvatar());
-        entity.setStatus("0");
+        entity.setStatus("1");
         entity.setNote(dto.getNote());
         entity.setDeleteFlag(false);
         entity.setCreateDate(new Timestamp(System.currentTimeMillis()));
@@ -59,6 +65,25 @@ public class BrandService implements IBrandService {
         brandRepo.save(entity);
 
         return "ok";
+    }
+
+    @Override
+    public String editBrand(BrandEditRequestDTO dto) {
+        BrandEntity entity = brandRepo.getById(dto.getId());
+        entity.setAddress(dto.getAddress());
+        entity.setName(dto.getName());
+        entity.setPhone(dto.getPhone());
+        entity.setAvatar(dto.getAvatar());
+        entity.setStatus("1");
+        entity.setNote(dto.getNote());
+        entity.setDeleteFlag(false);
+        entity.setCreateDate(new Timestamp(System.currentTimeMillis()));
+        entity.setModifierDate(new Timestamp(System.currentTimeMillis()));
+        entity.setCreateBy((String) sessionUtil.getObject("username"));
+        entity.setModifierBy((String) sessionUtil.getObject("username"));
+        brandRepo.save(entity);
+        return "ok";
+
     }
 
     @Override
@@ -77,6 +102,31 @@ public class BrandService implements IBrandService {
             return  0;
         }
         return list.size();
+    }
+
+    @Override
+    public boolean deleteBrand(String id) {
+        BrandEntity brandEntity = brandRepo.getById(id);
+        brandEntity.setDeleteFlag(true);
+
+        try {
+            brandRepo.save(brandEntity);
+        }catch (Exception e){
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean changeStatusBrand(String id, String status) {
+        BrandEntity brandEntity = brandRepo.getById(id);
+        brandEntity.setStatus(status);
+        try {
+            brandRepo.save(brandEntity);
+        } catch (Exception e) {
+           return false;
+        }
+        return true;
     }
 
     private <R> BrandResponse mapToBrandResponse(BrandEntity x) {
@@ -105,4 +155,7 @@ public class BrandService implements IBrandService {
         brandResponse.setBrandStatus(brandEntity.getStatus());
         return brandResponse;
     }
+
+
+
 }
