@@ -1,5 +1,6 @@
 package com.techcam.dto.response;
 
+import com.techcam.dto.request.category.AttributeReqDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,4 +24,5 @@ public class CategoryDto {
     private String categoryId;
     private String categoryName;
     private List<CategoryDto> categoryChild;
+    private List<AttributeReqDto> attributes;
 }

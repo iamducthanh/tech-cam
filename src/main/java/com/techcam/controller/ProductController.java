@@ -61,7 +61,7 @@ public class ProductController {
             x.setFixedValue(attributeService.findAllFixedValueByPropertyId(x.getPropertyId()));
         }
         model.addAttribute("lstProperty", lstPropertyResponses);
-        return "component/property";
+        return "views/product/component/property";
     }
 
     @GetMapping(value = "/property/edit", params = {"category", "product"})
@@ -94,7 +94,7 @@ public class ProductController {
             x.setFixedValue(attributeService.findAllFixedValueByPropertyId(x.getPropertyId()));
         }
         model.addAttribute("lstProperty", lstProductPropertyResponses);
-        return "component/propertyEdit";
+        return "views/product/component/propertyEdit";
     }
 
 }

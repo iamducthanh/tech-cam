@@ -1,5 +1,7 @@
 package com.techcam.entity;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
@@ -12,10 +14,9 @@ import java.util.Objects;
 @Entity
 @Table(name = "brand", schema = "poly_techcam", catalog = "")
 public class BrandEntity {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "ID")
-    private String id;
+    private String id = RandomStringUtils.randomNumeric(6);
     @Basic
     @Column(name = "NAME")
     private String name;
@@ -49,6 +50,17 @@ public class BrandEntity {
     @Basic
     @Column(name = "DELETE_FLAG")
     private boolean deleteFlag;
+    @Basic
+    @Column(name = "AVATAR")
+    private String avatar;
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
 
     public String getId() {
         return id;
