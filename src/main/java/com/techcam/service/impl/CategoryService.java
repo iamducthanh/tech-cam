@@ -102,9 +102,6 @@ public class CategoryService implements ICategoryService {
     @Override
     public void saveCategory(CategoryReqDto categoryDto) {
         if(categoryDto.getParentId().isEmpty()) categoryDto.setParentId(null);
-        if(categoryDto.getCategoryId().isEmpty()) {
-            categoryDto.setCategoryId(UUID.randomUUID().toString());
-        }
         if(categoryDto.getCategoryName().trim().length() == 0){
             throw new TechCamExp(ConstantsErrorCode.CATEGORY_NAME);
         } else {
@@ -113,7 +110,7 @@ public class CategoryService implements ICategoryService {
         }
 
         CategoryEntity categoryEntity = CategoryEntity.builder()
-                .id(categoryDto.getCategoryId())
+                .id(UUID.randomUUID().toString())
                 .name(categoryDto.getCategoryName())
                 .parentId(categoryDto.getParentId())
                 .status("")
@@ -124,27 +121,21 @@ public class CategoryService implements ICategoryService {
                 .deleteFlag(false)
                 .build();
 
-        List<AttributeEntity> attributeDel = attributeRepo.findAllByCategoryIdAndDeleteFlagIsFalse(categoryEntity.getId());
-        if(!attributeDel.isEmpty()){
-            attributeDel.forEach(o -> {
-                AttributeFixedValueEntity attributeFixedValues = attributeFixedValueRepo.findByAttributeId(o.getId());
-                if(attributeFixedValues != null){
-                    attributeFixedValueRepo.delete(attributeFixedValues);
-                }
-                attributeRepo.delete(o);
-            });
-        }
-
-
         List<AttributeEntity> attributes = new ArrayList<>();
         List<AttributeFixedValueEntity> attributeFixvalues = new ArrayList<>();
 
+        List<String> atbNameExist = new ArrayList<>();
+
         categoryDto.getAttributes().forEach(o -> {
+            if(atbNameExist.contains(o.getName())){
+                throw new TechCamExp(ConstantsErrorCode.ATB_NAME);
+            }
+            atbNameExist.add(o.getName());
             String id = UUID.randomUUID().toString();
             attributes.add(AttributeEntity.builder()
                     .id(id)
                     .attributeName(o.getName())
-                    .categoryId(categoryDto.getCategoryId())
+                    .categoryId(categoryEntity.getId())
                     .status("1")
                     .createDate(new Date())
                     .modifierDate(new Date())
@@ -154,18 +145,32 @@ public class CategoryService implements ICategoryService {
                     .build());
 
             if(!o.getValue().isEmpty()){
-                attributeFixvalues.add(AttributeFixedValueEntity.builder()
-                        .id(UUID.randomUUID().toString())
-                        .attributeId(id)
-                        .attributeFixedVal(o.getValue())
-                        .status("1")
-                        .note("1")
-                        .createDate(new Date())
-                        .modifierDate(new Date())
-                        .createBy((String) sessionUtil.getObject("username"))
-                        .modifierBy((String) sessionUtil.getObject("username"))
-                        .deleteFlag(false)
-                        .build());
+                System.out.println(o.getValue());
+                List<String> values = new ArrayList<>();
+                String props = o.getValue();
+                while (props.contains(";")) {
+                    String newValue = props.substring(0, props.indexOf(";"));
+                    if(!newValue.isEmpty()){
+                        values.add(newValue);
+                        props = props.substring(props.indexOf(";") + 1, props.length());
+                    }
+                }
+                values.add(props);
+                values.forEach(a -> {
+                    attributeFixvalues.add(AttributeFixedValueEntity.builder()
+                            .id(UUID.randomUUID().toString())
+                            .attributeId(id)
+                            .attributeFixedVal(a.trim())
+                            .status("1")
+                            .note("1")
+                            .createDate(new Date())
+                            .modifierDate(new Date())
+                            .createBy((String) sessionUtil.getObject("username"))
+                            .modifierBy((String) sessionUtil.getObject("username"))
+                            .deleteFlag(false)
+                            .build());
+                });
+
             }
         });
 
@@ -189,10 +194,13 @@ public class CategoryService implements ICategoryService {
 
         if(!attributes.isEmpty()){
             attributes.forEach(o -> {
-                AttributeFixedValueEntity attributeFixedValueEntity = attributeFixedValueRepo.findByAttributeId(o.getId());
+                List<AttributeFixedValueEntity> attributeFixedValueEntities = attributeFixedValueRepo.findByAttributeId(o.getId());
                 String valueDefault = "";
-                if(attributeFixedValueEntity != null){
-                    valueDefault = attributeFixedValueEntity.getAttributeFixedVal();
+                if(!attributeFixedValueEntities.isEmpty()){
+                    for(AttributeFixedValueEntity a : attributeFixedValueEntities){
+                        valueDefault += (";" + a.getAttributeFixedVal());
+                    }
+                    valueDefault = valueDefault.substring(1, valueDefault.length());
                 }
                 attributeReq.add(AttributeReqDto.builder()
                         .name(o.getAttributeName())
