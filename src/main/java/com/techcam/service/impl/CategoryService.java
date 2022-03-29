@@ -149,8 +149,11 @@ public class CategoryService implements ICategoryService {
                 List<String> values = new ArrayList<>();
                 String props = o.getValue();
                 while (props.contains(";")) {
-                    values.add(props.substring(0, props.indexOf(";")));
-                    props = props.substring(props.indexOf(";") + 1, props.length());
+                    String newValue = props.substring(0, props.indexOf(";"));
+                    if(!newValue.isEmpty()){
+                        values.add(newValue);
+                        props = props.substring(props.indexOf(";") + 1, props.length());
+                    }
                 }
                 values.add(props);
                 values.forEach(a -> {
@@ -191,10 +194,13 @@ public class CategoryService implements ICategoryService {
 
         if(!attributes.isEmpty()){
             attributes.forEach(o -> {
-                AttributeFixedValueEntity attributeFixedValueEntity = attributeFixedValueRepo.findByAttributeId(o.getId());
+                List<AttributeFixedValueEntity> attributeFixedValueEntities = attributeFixedValueRepo.findByAttributeId(o.getId());
                 String valueDefault = "";
-                if(attributeFixedValueEntity != null){
-                    valueDefault = attributeFixedValueEntity.getAttributeFixedVal();
+                if(!attributeFixedValueEntities.isEmpty()){
+                    for(AttributeFixedValueEntity a : attributeFixedValueEntities){
+                        valueDefault += (";" + a.getAttributeFixedVal());
+                    }
+                    valueDefault = valueDefault.substring(1, valueDefault.length());
                 }
                 attributeReq.add(AttributeReqDto.builder()
                         .name(o.getAttributeName())

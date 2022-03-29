@@ -3,7 +3,10 @@ function onAdd(elm){
     let parentId = elm.getAttribute('parentId');
     $('#error')[0].style.display = 'none'
     $('#categoryName')[0].value= ''
-    onModalCategory(null, level, parentId)
+    $('#addCategory')[0].style.display = 'unset';
+    $('#parentId')[0].value = parentId;
+    $('#levelCategory')[0].value = level;
+    $('#categoryId')[0].value = null;
 
     let atbRequied = $('#atbRequied')[0];
     let containerAtb = $('#containerAtb')[0];
@@ -11,41 +14,47 @@ function onAdd(elm){
     containerAtb.appendChild(atbRequied);
 }
 
-function onModalEditCategory(categoryId, level, parentId) {
-    $('#editCategory')[0].style.display = 'unset';
-    $('#parentIdEdit')[0].value = parentId;
-    $('#levelCategoryEdit')[0].value = level;
-    $('#categoryIdEdit')[0].value = categoryId;
-
-
-}
+// function onModalEditCategory(categoryId, level, parentId) {
+//     $('#editCategory')[0].style.display = 'unset';
+//     $('#parentIdEdit')[0].value = parentId;
+//     $('#levelCategoryEdit')[0].value = level;
+//     $('#categoryIdEdit')[0].value = categoryId;
+//
+//
+// }
 
 function onEdit(elm){
     let level = elm.getAttribute('level');
     let categoryId = elm.getAttribute("categoryId")
     let parentId = elm.getAttribute('parentId');
-    onModalEditCategory(categoryId, level, parentId)
+
+    $('#editCategory')[0].style.display = 'unset';
+    $('#parentIdEdit')[0].value = parentId;
+    $('#levelCategoryEdit')[0].value = level;
+    $('#categoryIdEdit')[0].value = categoryId;
 
     $.ajax({
         url: '/category/' +categoryId,
         method: 'GET',
         success: function (datas) {
             console.log(datas)
-            let containerAtb = $('#containerAtb')[0]
-            containerAtb.innerHTML = '';
-            let btnDelete = '<button class="btn btn-danger" onclick="removeRowAtb(this)">-</button>'
-            $('#categoryName')[0].value = datas.categoryName
+            let containerAtbEdit = $('#containerAtbEdit')[0]
+            containerAtbEdit.innerHTML = '';
+            let btnDelete = '<button class="btn btn-danger" onclick="removeRowEditAtb(this)">-</button>'
+            $('#categoryEditName')[0].value = datas.categoryName
             for(let i=0;i<datas.attributes.length;i++){
-                containerAtb.innerHTML +=
-                    '<div class="row mb-3" id="atbRequied">\n' +
+                console.log('oke')
+
+                console.log(containerAtbEdit)
+                containerAtbEdit.innerHTML += '<div class="row mb-3">\n' +
                     '                            <div class="col-lg-5">\n' +
                     '                                <input class="form-control atbName" value="'+datas.attributes[i].name+'" placeholder="Tên thuộc tính">\n' +
                     '                            </div>\n' +
                     '                            <div class="col-lg-6">\n' +
-                    '                                <input class="form-control atbValue" value="'+datas.attributes[i].value+'" placeholder="Giá trị mặc định">\n' +
+                    '                                <input class="form-control atbValue" value="'+datas.attributes[i].value+'" placeholder="Giá trị mặc định 1; giá trị 2; giá trị 3;...">\n' +
                     '                            </div>\n' +
-                    '                            <div class="col-lg-1 btnRemoveAtb" style="text-align: center">\n' +
-                    (i==0?'':btnDelete) +
+                    '                            <div class="col-lg-1 btnRemoveEditAtb" style="text-align: center">\n' +
+                    btnDelete +
                     '                            </div>\n' +
                     '                        </div>'
             }
@@ -56,12 +65,6 @@ function onEdit(elm){
     })
 }
 
-function onModalCategory(categoryId, level, parentId){
-    $('#addCategory')[0].style.display = 'unset';
-    $('#parentId')[0].value = parentId;
-    $('#levelCategory')[0].value = level;
-    $('#categoryId')[0].value = categoryId;
-}
 function closeModalCategory(){
     $('#addCategory')[0].style.display = 'none';
 }
