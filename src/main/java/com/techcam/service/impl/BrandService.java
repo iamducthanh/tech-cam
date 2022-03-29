@@ -2,16 +2,15 @@ package com.techcam.service.impl;
 
 import com.techcam.dto.request.brand.BrandAddRequestDTO;
 import com.techcam.dto.request.brand.BrandEditRequestDTO;
+
 import com.techcam.dto.response.brand.BrandResponse;
 import com.techcam.entity.BrandEntity;
 import com.techcam.repo.IBrandRepo;
 import com.techcam.service.IBrandService;
 import com.techcam.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -66,6 +65,7 @@ public class BrandService implements IBrandService {
 
         return "ok";
     }
+
 
     @Override
     public String editBrand(BrandEditRequestDTO dto) {

@@ -1,7 +1,9 @@
 package com.techcam.service;
 
+
 import com.techcam.dto.request.brand.BrandAddRequestDTO;
 import com.techcam.dto.request.brand.BrandEditRequestDTO;
+
 import com.techcam.dto.response.brand.BrandResponse;
 
 import java.util.List;
@@ -20,6 +22,7 @@ public interface IBrandService {
     BrandResponse findById(String id);
 
     String addBrand(BrandAddRequestDTO brandAddRequestDTO);
+
 
     String editBrand(BrandEditRequestDTO brandEditRequestDTO);
 
