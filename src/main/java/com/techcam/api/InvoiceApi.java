@@ -44,8 +44,6 @@ public class InvoiceApi {
             // mã nhập hàng đã tồn tại rồi
             throw new TechCamExp(ERROR_EXISTS, "Mã nhập hàng");
         }
-        Long totalMoney = invoiceRequest.getDetails().stream()
-                .mapToLong(e -> e.getPrice() * e.getQuantity()).sum();
         String result = goodsreceiptService.createInvoice(invoiceRequest);
         if (result.equals(SUCCESS.name())) {
             return ResponseEntity.ok(result);

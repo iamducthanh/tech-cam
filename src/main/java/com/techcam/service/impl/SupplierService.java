@@ -16,7 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Project_name : SMW_TECHCAM
@@ -32,8 +34,9 @@ public class SupplierService implements ISupplierService {
     private ISupplierRepo supplierRepository;
 
     private ModelMapper modelMapper = new ModelMapper();
+
     @Override
-    public List<SupplierResponseDTO> findAllByDeleteFlagFalse(){
+    public List<SupplierResponseDTO> findAllByDeleteFlagFalse() {
         List<SupplierEntity> supplierEntities = supplierRepository.findAllByDeleteFlagFalse();
         List<SupplierResponseDTO> supplierResponseDTOS = new ArrayList<>();
         supplierResponseDTOS = (List<SupplierResponseDTO>) modelMapper.map(supplierEntities, SupplierResponseDTO.class);
@@ -42,12 +45,12 @@ public class SupplierService implements ISupplierService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public SupplierResponseDTO create(SupplierDTO supplierDTO){
+    public SupplierResponseDTO create(SupplierDTO supplierDTO) {
 
-        if(supplierRepository.findByEmail(supplierDTO.getEmail()).isPresent()){
+        if (supplierRepository.findByEmail(supplierDTO.getEmail()).isPresent()) {
             throw new SupplierException(ConstantsErrorCode.EMAIL_EXIST);
         }
-        if(supplierRepository.findByPhoneNumber(supplierDTO.getPhoneNumber()).isPresent()){
+        if (supplierRepository.findByPhoneNumber(supplierDTO.getPhoneNumber()).isPresent()) {
             throw new SupplierException(ConstantsErrorCode.PHONE_NUMBER_EXIST);
         }
         SupplierEntity supplierEntity = modelMapper.map(supplierDTO, SupplierEntity.class);
@@ -58,17 +61,17 @@ public class SupplierService implements ISupplierService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public SupplierResponseDTO update(SupplierDTO supplierDTO, String id){
-        if(!supplierRepository.findById(id).isPresent()){
+    public SupplierResponseDTO update(SupplierDTO supplierDTO, String id) {
+        if (!supplierRepository.findById(id).isPresent()) {
             throw new SupplierException(ConstantsErrorCode.SUPPLIER_NOT_EXIST);
         }
         SupplierEntity supplierEntity = supplierRepository.findById(id).get();
-        if(Strings.isNotBlank(supplierDTO.getEmail()) && !supplierDTO.getEmail().equals(supplierEntity.getEmail())
-                && supplierRepository.findByEmail(supplierDTO.getEmail()).isPresent()){
+        if (Strings.isNotBlank(supplierDTO.getEmail()) && !supplierDTO.getEmail().equals(supplierEntity.getEmail())
+                && supplierRepository.findByEmail(supplierDTO.getEmail()).isPresent()) {
             throw new SupplierException(ConstantsErrorCode.EMAIL_EXIST);
         }
-        if(Strings.isNotBlank(supplierDTO.getPhoneNumber()) && !supplierDTO.getPhoneNumber().equals(supplierEntity.getPhoneNumber())
-                && supplierRepository.findByPhoneNumber(supplierDTO.getPhoneNumber()).isPresent()){
+        if (Strings.isNotBlank(supplierDTO.getPhoneNumber()) && !supplierDTO.getPhoneNumber().equals(supplierEntity.getPhoneNumber())
+                && supplierRepository.findByPhoneNumber(supplierDTO.getPhoneNumber()).isPresent()) {
             throw new SupplierException(ConstantsErrorCode.PHONE_NUMBER_EXIST);
         }
         BeanUtils.copyProperties(supplierDTO, supplierEntity);
@@ -76,8 +79,8 @@ public class SupplierService implements ISupplierService {
     }
 
     @Override
-    public SupplierResponseDTO findById(String id){
-        if(!supplierRepository.findById(id).isPresent()){
+    public SupplierResponseDTO findById(String id) {
+        if (!supplierRepository.findById(id).isPresent()) {
             throw new SupplierException(ConstantsErrorCode.SUPPLIER_NOT_EXIST);
         }
         SupplierEntity supplierEntity = supplierRepository.findByIdAndDeleteFlagFalse(id).get();
@@ -85,12 +88,26 @@ public class SupplierService implements ISupplierService {
     }
 
     @Override
-    public void delete(String id){
-        if(!supplierRepository.findById(id).isPresent()){
+    public void delete(String id) {
+        if (!supplierRepository.findById(id).isPresent()) {
             throw new SupplierException(ConstantsErrorCode.SUPPLIER_NOT_EXIST);
         }
         SupplierEntity supplierEntity = supplierRepository.findByIdAndDeleteFlagFalse(id).get();
         supplierEntity.setDeleteFlag(true);
+    }
+
+    @Override
+    public List<SupplierResponseDTO> getAll() {
+        return supplierRepository.findAllByDeleteFlagFalse().stream()
+                .map(this::mapToSupllierResponse).collect(Collectors.toList());
+    }
+
+    private <R> SupplierResponseDTO mapToSupllierResponse(SupplierEntity x) {
+        if (Objects.isNull(x)) return new SupplierResponseDTO();
+        SupplierResponseDTO s = new SupplierResponseDTO();
+        s.setId(x.getId());
+        s.setName(x.getName());
+        return s;
     }
 
 }
