@@ -72,6 +72,7 @@ public class InvoiceApi {
     public ResponseEntity<?> getById(@PathVariable String id) {
         InvoiceResponse invoiceResponse = goodsreceiptService.getByInvoiceId(id);
         if (Objects.nonNull(invoiceResponse)) {
+            invoiceResponse.setDetails(goodsreceiptService.findAllInvoiceDetailByInvoiceId(id));
             return ResponseEntity.ok(invoiceResponse);
         }
         throw new TechCamExp(ERROR_NOT_EXISTS, "Hoá đơn nhập hàng");

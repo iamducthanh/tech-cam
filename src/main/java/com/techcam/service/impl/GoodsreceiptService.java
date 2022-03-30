@@ -60,7 +60,7 @@ public class GoodsreceiptService implements IGoodsreceiptService {
 
     @Override
     public InvoiceResponse getByInvoiceId(String id) {
-        return null;
+        return mapToInvoiceResponse(goodsreceiptRepo.getByIdAndDeleteFlagIsFalse(id));
     }
 
     @Override
@@ -122,6 +122,55 @@ public class GoodsreceiptService implements IGoodsreceiptService {
         }
     }
 
+    @Override
+    @Transactional
+    public String updateInvoice(InvoiceRequest invoiceRequest) {
+        try {
+            GoodsreceiptEntity goodsreceiptEntity = mapToInvoiceEntity(invoiceRequest);
+            if (Objects.isNull(goodsreceiptEntity)) return FAILED.name();
+            SupplierEntity supplierEntity = supplierRepo.getByIdAndDeleteFlagIsFalse(invoiceRequest.getSupplierId());
+            if (Objects.isNull(supplierEntity)) return FAILED.name();
+            long totalMoney = invoiceRequest.getDetails().stream()
+                    .mapToLong(e -> e.getQuantity() * e.getPrice()).sum();
+            goodsreceiptEntity.setTotalAmount(Math.toIntExact(totalMoney));
+            List<GoodsreceiptdetailEntity> lstDetails = new ArrayList<>();
+            for (InvoiceDetailRequest x : invoiceRequest.getDetails()) {
+                if (x.getQuantity() < 1) return FAILED.name();
+                GoodsreceiptdetailEntity goodsreceiptdetailEntity = goodsreceiptdetailRepo.findAllByGoodsReceiptIdAndProductIdAndDeleteFlagIsFalse(
+                        invoiceRequest.getInvoiceCode(),
+                        x.getProductId()
+                ).stream().findFirst().orElse(null);
+                if (Objects.nonNull(goodsreceiptdetailEntity)) {
+                    goodsreceiptdetailEntity.setQuantity(x.getQuantity());
+                    goodsreceiptdetailEntity.setPrice(BigDecimal.valueOf(x.getPrice()));
+                    lstDetails.add(goodsreceiptdetailEntity);
+                    continue;
+                }
+                totalMoney += x.getPrice() * x.getQuantity();
+                lstDetails.add(GoodsreceiptdetailEntity.builder()
+                        .id(goodsreceiptEntity.getId())
+                        .goodsReceiptId(goodsreceiptEntity.getId())
+                        .productId(x.getProductId())
+                        .quantity(x.getQuantity())
+                        .price(BigDecimal.valueOf(x.getPrice()))
+                        .status(ON.name())
+                        .note("import invoice")
+                        .build());
+            }
+            goodsreceiptRepo.save(goodsreceiptEntity);
+            List<GoodsreceiptdetailEntity> lstFind = goodsreceiptdetailRepo.findAllByGoodsReceiptIdAndDeleteFlagIsFalse(invoiceRequest.getInvoiceId());
+            List<String> lstInvoiceDetailId = lstDetails.stream().map(GoodsreceiptdetailEntity::getId).collect(Collectors.toList());
+            lstFind = lstFind.stream().filter(e -> !lstInvoiceDetailId.contains(e.getId())).collect(Collectors.toList());
+            lstFind.forEach(e -> e.setDeleteFlag(true));
+            goodsreceiptdetailRepo.saveAll(lstDetails);
+            goodsreceiptdetailRepo.saveAll(lstFind);
+            return SUCCESS.name();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return FAILED.name();
+        }
+    }
+
     private GoodsreceiptEntity mapToInvoiceEntity(InvoiceRequest x) {
         if (Objects.isNull(x)) return null;
         return GoodsreceiptEntity.builder()
@@ -137,11 +186,6 @@ public class GoodsreceiptService implements IGoodsreceiptService {
                 .build();
     }
 
-    @Override
-    public String updateInvoice(InvoiceRequest invoiceRequest) {
-        return null;
-    }
-
     private <R> InvoiceDetailResponse mapToInvoiceDetailReponse(GoodsreceiptdetailEntity x) {
         if (Objects.isNull(x)) return new InvoiceDetailResponse();
         ProductEntity productEntity = productRepo.getByIdAndDeleteFlagIsFalse(x.getProductId());
@@ -151,6 +195,7 @@ public class GoodsreceiptService implements IGoodsreceiptService {
         CategoryEntity categoryEntity = categoryRepo.getByIdAndDeleteFlagIsFalse(productEntity.getCategoryId());
         BrandEntity brandEntity = brandRepo.getByIdAndDeleteFlagIsFalse(productEntity.getBrandId());
         return InvoiceDetailResponse.builder()
+                .idDetail(x.getId())
                 .productId(x.getProductId())
                 .productName(productEntity.getName())
                 .productCode(productEntity.getProductCode())
@@ -172,6 +217,7 @@ public class GoodsreceiptService implements IGoodsreceiptService {
                 .invoiceCode(x.getReceiptId())// mã hoá đơn nhập hàng
                 .supplierId(x.getSupplierId())
                 .supplierName(Objects.nonNull(supplierEntity) ? supplierEntity.getName() : "")
+                .orderInvoiceId(Objects.isNull(goodsOrderEntity) ? "" : goodsOrderEntity.getId())
                 .orderInvoiceCode(Objects.isNull(goodsOrderEntity) ? "" : goodsOrderEntity.getOrderId())// mã đặt hàng
                 .status(x.getStatus())
                 .totalMoney((long) x.getTotalAmount())
