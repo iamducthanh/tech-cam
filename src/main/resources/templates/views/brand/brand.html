@@ -369,7 +369,7 @@
         });
         console.log(data);
         if(validateForm('add')) {
-             addBrand(data);
+            addBrand(data);
         } else {
             console.log("validate fail");
         }
@@ -603,7 +603,7 @@
 
     function onBtnEdit (id) {
         const tag = document.getElementById("id" + id).value;
-       console.log(tag);
+        console.log(tag);
         $.ajax({
             url: '/api/brand/' + tag,
             type: 'GET',
@@ -629,11 +629,13 @@
     function onBtnStatus (id , element) {
         const tag = document.getElementById("id" + id).value;
         let status = document.getElementById("status" + id).value;
+        var a = false;
         console.log(status);
         if(status === "0"){
             status = 1;
         }else {
             status = 0;
+            a = true;
         }
         $.ajax({
             url: `/api/brand/status/${tag}/${status}`,
@@ -641,7 +643,7 @@
             contentType: 'application/json',
             success: function (result) {
                 Swal.fire(
-                    status === "1" ? 'Đã khoá tài khoản!' : 'Đã mở khoá tài khoản',
+                    a ? 'Đã khoá tài khoản!' : 'Đã mở khoá tài khoản',
                     `Mã thương hiệu ${tag}`,
                     'success'
                 ).then(() => {
