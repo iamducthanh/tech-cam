@@ -27,4 +27,5 @@ public interface IOrderRepo extends JpaRepository<OrdersEntity,String> {
     OrdersEntity findByBankTransaction(String bankTransaction);
 
     List<OrdersEntity> findAllByVoucherIdAndDeleteFlagIsFalse(String voucherId);
+    OrdersEntity findFirstByVoucherCodeAndCustomerPhoneNumber(String code, String phoneNumber);
 }

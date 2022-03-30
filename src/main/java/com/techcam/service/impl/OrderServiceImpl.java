@@ -156,7 +156,7 @@ public class OrderServiceImpl implements IOrderService {
         VoucherResponse voucherResponse = null;
         List<ProductEntity> productEntities = getInfoProducts(request.getProductDetails());
         if (StringUtils.isNotBlank(request.getVoucherId())) {
-            voucherResponse = getInfoVoucher(request.getVoucherId());
+            voucherResponse = getInfoVoucher(request.getVoucherId(), request.getCustomer().getPhoneNumber());
             if (Objects.isNull(voucherResponse)) {
                 throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
             }
@@ -337,7 +337,20 @@ public class OrderServiceImpl implements IOrderService {
             throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
         }
         List<String> ids = requests.getOrderProductDetailsRequests().stream().map(OrderProductDetailsRequest::getId).collect(Collectors.toList());
+        List<String> productIds = requests.getOrderProductDetailsRequests().stream().map(OrderProductDetailsRequest::getProductId).collect(Collectors.toList());
         List<OrderdetailEntity> orderDetailEntities = orderDetailsRepo.findAllByIdNotInAndOrdersIdAndDeleteFlagFalse(ids, requests.getOrderId());
+        List<ProductEntity> productEntities=productRepo.findAllByIdInAndDeleteFlagFalse(productIds);
+        productEntities.stream().filter(productEntity -> {
+            requests.getOrderProductDetailsRequests().stream().filter(item->{
+                if(productEntity.getId().equals(item.getProductId())){
+                    if(productEntity.getQuantity()<item.getQuantity()){
+                        throw new TechCamExp(ConstantsErrorCode.ORDER_PRODUCT_OUT_OF_STOCK);
+                    }
+                }
+                return false;
+            }).collect(Collectors.toList());
+            return false;
+        }).collect(Collectors.toList());
         if (!orderDetailEntities.isEmpty()) {
             orderDetailEntities.forEach(item -> item.setDeleteFlag(true));
             orderDetailsRepo.saveAll(orderDetailEntities);
@@ -353,7 +366,7 @@ public class OrderServiceImpl implements IOrderService {
                                     orderDetailsSaves.add(e);
                                 }
                             }
-                            if (Objects.isNull(item.getId())) {
+                            if (StringUtils.isBlank(item.getId())) {
                                 String id = UUID.randomUUID().toString();
                                 item.setId(id);
                                 OrderdetailEntity orderdetailEntity = new OrderdetailEntity();
@@ -363,12 +376,15 @@ public class OrderServiceImpl implements IOrderService {
                                 orderdetailEntity.setCreateDate(new Date());
                                 orderdetailEntity.setModifierDate(new Date());
                                 orderdetailEntity.setNote(item.getNote());
-                                orderdetailEntity.setDiscount(60000);
+                                orderdetailEntity.setDeleteFlag(false);
+                                orderdetailEntity.setDiscount((int) getSaleProduct(item.getProductId()));
                                 orderdetailEntity.setQuantity(item.getQuantity());
                                 OrdersEntity ordersEntity = new OrdersEntity();
                                 ordersEntity.setId(requests.getOrderId());
+                                ProductEntity product = new ProductEntity();
+                                product.setId(item.getProductId());
+                                orderdetailEntity.setProduct(product);
                                 orderdetailEntity.setOrders(ordersEntity);
-                                //todo thiếu discout
                                 orderDetailsSaves.add(orderdetailEntity);
 
                             }
@@ -538,8 +554,8 @@ public class OrderServiceImpl implements IOrderService {
         receiptVoucherEntity.setPayerPhone(orders.getCustomer().getPhoneNumber());
         receiptVoucherEntity.setReceiptName(MessageUtil.RECEIPT_NAME_ORDER);
         receiptVoucherEntity.setDescription(String.format(MessageUtil.SAVE_ORDER_CUSTOMER_DONE, orders.getId()));
-        receiptVoucherEntity.setGivenMoney(request.getGivenMoney());
-        receiptVoucherEntity.setReturnMoney(request.getGivenMoney() - receiptVoucherEntity.getReceiptValue());
+        receiptVoucherEntity.setGivenMoney(Objects.isNull(request.getGivenMoney()) ? (orders.getTax()-orders.getTotalAmount()) : request.getGivenMoney());
+        receiptVoucherEntity.setReturnMoney(Objects.isNull(request.getGivenMoney()) ? 0 :request.getGivenMoney() - receiptVoucherEntity.getReceiptValue());
 //        receiptVoucherEntity.setOrders(orders);
         try {
             ordersRepo.save(orders);
@@ -662,6 +678,7 @@ public class OrderServiceImpl implements IOrderService {
             orders.setDeleteFlag(true);
             orders.setModifierDate(new Date());
             orders.setModifierBy(getInfoStaff().getUsername());
+            orders.setStatus(OrderStatus.CANCEL.name());
             ordersRepo.save(orders);
             // mới thêm để cộng lại voucher
             if (Objects.nonNull(orders.getVoucher())) {
@@ -705,7 +722,7 @@ public class OrderServiceImpl implements IOrderService {
         productEntities.forEach(e -> {
             productDetails.stream().filter(item -> {
                         if (item.getProductId().equals(e.getId())) {
-                            item.setDiscount((int) (e.getPrice() * item.getQuantity() * 0.1));
+                            item.setDiscount((int) (e.getPrice() * item.getQuantity() * getSaleProduct(item.getProductId())));
                             orderRequest.setTotalDiscount((int) (orderRequest.getTotalDiscount() + item.getDiscount()));
                             orderRequest.setTotalAmount((int) (orderRequest.getTotalAmount() + e.getPrice() * item.getQuantity()));
                             orderProductDetailsRequests.add(item);
@@ -730,8 +747,14 @@ public class OrderServiceImpl implements IOrderService {
         return customerInfoResponse;
     }
 
-    private VoucherResponse getInfoVoucher(String id) {
-        VoucherResponse voucherResponse = voucherService.getById(id);
+    private VoucherResponse getInfoVoucher(String code,String phoneNumber) {
+        VoucherResponse voucherResponse = voucherService.findFistByCode(code);
+        if(Objects.nonNull(voucherResponse)){
+           OrdersEntity orders= ordersRepo.findFirstByVoucherCodeAndCustomerPhoneNumber(code,phoneNumber);
+           if(Objects.nonNull(orders)){
+               throw new TechCamExp(ConstantsErrorCode.VOUCHER_NOT_EXISTS);
+           }
+        }
         return voucherResponse;
     }
 
@@ -748,13 +771,16 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     private StaffEntity getInfoStaff() {
-        StaffEntity staffEntity = (StaffEntity) sessionUtil.getObject("STAFF");
-        if (Objects.isNull(staffEntity)) {
-            throw new TechCamExp(ConstantsErrorCode.INTERNAL_SERVER_ERROR);
-        }
+//        StaffEntity staffEntity = (StaffEntity) sessionUtil.getObject("STAFF");
+        StaffEntity staffEntity = new StaffEntity();
+        staffEntity.setId("1");
+        staffEntity.setUsername("aaa");
         return staffEntity;
     }
-
+    public double getSaleProduct(String id){
+        double sale = 0.1;
+      return sale;
+    }
     public void saveLog(String typeMethod,String id) {
         StaffEntity staffEntity = getInfoStaff();
         TechCamlogRequest techCamlogRequest = new TechCamlogRequest();

@@ -101,7 +101,7 @@ public class VoucherApi {
         }
         return ResponseEntity.ok(voucherResponse);
     }
-
+    @CrossOrigin(origins = "http://localhost:8888")
     @GetMapping(params = "code")
     public ResponseEntity<VoucherResponse> getAllByCode(@RequestParam("code") String code) {
         List<VoucherResponse> lstVoucher = voucherService.findAllByCode(code);
