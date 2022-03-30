@@ -49,7 +49,6 @@ public class CustomerApiImpl implements CustomerApi {
 
     @Override
     public CustomerInfoResponse findCustomerById(@PathVariable  String id) {
-        System.out.println(customerService.getCustomerById(id));
         return customerService.getCustomerById(id);
     }
 

@@ -233,6 +233,7 @@
                         <table class="border" style="border-collapse: collapse;">
                             <thead style="background: lightgrey;">
                                 <th>STT</th>
+                                <th>IMEI</th>
                                 <th>Tên sản phẩm</th>
                                 <th>Số lượng <br/> mua</th>
                                 <th>Số lượng <br/> tồn kho</th>
@@ -241,36 +242,19 @@
                                 <th>Giá bán</th>
                                 <th>Thành tiền</th>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="text-center">1</td>
-                                    <td>SP A</td>
-                                    <td class="number">3</td>
-                                    <td class="number">5</td>
-                                    <td>Còn hàng</td>
-                                    <td class="number">0</td>
-                                    <td class="number">20.000 đ</td>
-                                    <td class="number">60.000 đ</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">2</td>
-                                    <td>SP B</td>
-                                    <td class="number">6</td>
-                                    <td class="number">4</td>
-                                    <td>Hết hàng</td>
-                                    <td class="number">30%</td>
-                                    <td class="number">60.000 đ</td>
-                                    <td class="number">42.000 đ</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">3</td>
-                                    <td>SP C</td>
-                                    <td class="number">10</td>
-                                    <td class="number">7</td>
-                                    <td>Hết hàng</td>
-                                    <td class="number">30.000 đ</td>
-                                    <td class="number">150.000 đ</td>
-                                    <td class="number">120.000 đ</td>
+                            <tbody id="list-order">
+                                <tr class="order" style="display: none;">
+                                    <td class="product-index text-center">STT</td>
+                                    <td class="order-imei">IMEI</td>
+                                    <td class="product-name">Tên sản phẩm</td>
+                                    <td class="order-quantity number">Số lượng mua</td>
+                                    <td class="product-quantity number">Số lượng tồn kho</td>
+                                    <td class="text-center">
+                                        <span class="product-available">Trạng thái</span>
+                                    </td>
+                                    <td class="order-discount number">Khuyến mãi</td>
+                                    <td class="product-price number">Giá bán</td>
+                                    <td class="order-price number">Thành tiền</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -675,7 +659,10 @@
     function onBtnInfo (element) {
         const orderId = $(element).parent().parent().find('.order-id').text();
 
-        // Call API get Order info
+        // Reset Modal before showing info
+        $('.order:not(:eq(0))').remove();
+
+        // Call API get info Order
         $.ajax({
             url: `/api/v1/orders/${orderId}`,
             type: 'GET',
@@ -683,19 +670,47 @@
             success: function (result) {
                 $('input[name=recipientName]').val(result.recipientName);
                 $('input[name=recipientPhone]').val(result.recipientPhone);
-                $('input[name=recipientAddress]').val(result.recipientAddress);
+                $('textarea[name=recipientAddress]').text(result.recipientAddress);
                 $('input[name=deliveryDate]').val(moment(result.deliveryDate, 'YYYY-MM-DD').format('DD/MM/YYYY'));
                 $('#createDate').text(moment(result.orderDate).format('DD/MM/YYYY'));
                 $('#price').text(addPoint(`${result.tax - result.totalAmount}`) + ' đ');    // Tổng tiền thanh toán
+                $('input[name=fullName]').val(result.customer.fullName);
+                $('input[name=phoneNumber]').val(result.customer.phoneNumber);
 
-                // Call API get Order's customer info
+                // Call API get info Order details of customer
                 $.ajax({
-                    url: `/api/v1/customer/find-by-id/${result.customerId}`,
+                    url: `/api/v1/orders/list/${result.id}`,
                     type: 'GET',
                     contentType: 'application/json',
                     success: function (res) {
-                        $('input[name=fullName]').val(res.fullName);
-                        $('input[name=phoneNumber]').val(res.phoneNumber);
+                        if (res !== null && res.length > 1) {
+                            for (let i = 0; i < res.length; i++) {
+
+                                // Clone row product of order for table
+                                $('.order').eq(0).clone().appendTo('#list-order');
+
+                                // Get row
+                                const product = $('#list-order').find('.order').eq(i + 1).show();
+
+                                product.find('.order-imei').text(res[i].imei);
+                                product.find('.product-name').text(res[i].product.name);
+                                product.find('.order-quantity').text(res[i].quantity);
+                                product.find('.product-quantity').text(res[i].product.quantity);
+
+                                if (res[i].quantity < res[i].product.quantity) {
+                                    product.find('.product-available').addClass("text-success").text("Còn hàng");
+                                } else {
+                                    product.find('.product-available').addClass("text-danger").text("Hết hàng");
+                                }
+
+                                product.find('.order-discount').text(addPoint(res[i].discount) + " đ");
+                                product.find('.product-price').text(addPoint(res[i].product.price * res[i].quantity) + " đ");
+                                product.find('.order-price').text(addPoint(res[i].product.price * res[i].quantity - res[i].discount) + " đ");
+                            }
+                        }
+
+                        // Reset index list product of order
+                        $('.product-index').each(function(index){$(this).text(index + 1)});
 
                         $('.modal-info-order').modal('show');
                     },

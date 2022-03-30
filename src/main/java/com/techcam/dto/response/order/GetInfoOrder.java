@@ -1,8 +1,6 @@
 package com.techcam.dto.response.order;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.techcam.entity.CustomerEntity;
-import com.techcam.entity.VoucherEntity;
+import com.techcam.dto.response.Customer.CustomerInfoResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -50,9 +48,6 @@ public class GetInfoOrder {
     private Boolean deleteFlag;
     private String ipAddress;
     private String bankTransaction;
-
-    private String customerId;
-
-    @JsonIgnore
-    private VoucherEntity voucher;
+    private CustomerInfoResponse customer;
+    private String voucherCustomerId;
 }

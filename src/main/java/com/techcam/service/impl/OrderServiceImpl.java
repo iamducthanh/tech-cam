@@ -248,8 +248,6 @@ public class OrderServiceImpl implements IOrderService {
                     orderdetailEntity.setOrders(orderSave);
                     orderdetailEntity.setNote(e.getNote());
                     orderdetailEntity.setDeleteFlag(false);
-                    orderdetailEntity.setCreateDate(new Date());
-                    orderdetailEntity.setModifierDate(new Date());
                     orderdetailEntity.setDiscount(e.getDiscount());
                     orderdetailEntity.setQuantity(e.getQuantity());
                     orderdetailEntity.setProduct(new ProductEntity().toBuilder().id(e.getProductId()).build());
@@ -360,8 +358,6 @@ public class OrderServiceImpl implements IOrderService {
                                 orderdetailEntity.setQuantity(item.getQuantity());
                                 orderdetailEntity.setId(id);
                                 orderdetailEntity.setDeleteFlag(false);
-                                orderdetailEntity.setCreateDate(new Date());
-                                orderdetailEntity.setModifierDate(new Date());
                                 orderdetailEntity.setNote(item.getNote());
                                 orderdetailEntity.setDiscount(60000);
                                 orderdetailEntity.setQuantity(item.getQuantity());

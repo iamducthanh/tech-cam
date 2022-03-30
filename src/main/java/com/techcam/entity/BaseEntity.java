@@ -30,7 +30,7 @@ public abstract class BaseEntity {
 
     @CreatedDate
     @Column(name = "create_date")
-    private Timestamp createDate = new Timestamp(new Date().getTime());
+    private Timestamp createDate;
 
     @LastModifiedDate
     @Column(name = "MODIFIER_DATE")
@@ -38,11 +38,11 @@ public abstract class BaseEntity {
 
     @CreatedBy
     @Column(name = "CREATE_BY")
-    private String createBy = "ADMIN";
+    private String createBy;
 
     @LastModifiedBy
     @Column(name = "MODIFIER_BY")
-    private String modifierBy = "ADMIN";
+    private String modifierBy;
 
     @Column(name = "DELETE_FLAG")
     private boolean deleteFlag;
