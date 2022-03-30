@@ -37,6 +37,11 @@ public class InvoiceResponse {
     private String supplierName;
 
     /**
+     * id đặt hàng
+     */
+    private String orderInvoiceId;
+
+    /**
      * mã đặt hàng
      */
     private String orderInvoiceCode;

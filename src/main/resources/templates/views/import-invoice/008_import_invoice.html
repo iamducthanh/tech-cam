@@ -76,7 +76,8 @@
                                     <td></td>
                                     <td class="text-center">
                                         <a href="#modal-edit-invoice" class="btn btn-info btn-sm"
-                                           data-bs-toggle="modal">
+                                           th:data-id="${invoice.invoiceId}"
+                                           data-bs-toggle="modal" onclick="onClickEditInvoice(this)">
                                             Chi tiết
                                         </a>
                                     </td>
@@ -178,8 +179,8 @@
                                     </label>
                                 </div>
                                 <div class="col-lg-7 text-end">
-                                    <label>
-                                        100đ
+                                    <label id="invoice-add-total">
+                                        0 ₫
                                     </label>
                                 </div>
                             </div>
@@ -316,8 +317,8 @@
                                     </label>
                                 </div>
                                 <div class="col-lg-7 text-end">
-                                    <label>
-                                        100đ
+                                    <label id="invoice-edit-total">
+                                        0 ₫
                                     </label>
                                 </div>
                             </div>
@@ -386,7 +387,8 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Đóng</button>
                     <button type="button" class="btn btn-success waves-effect waves-light" data-id=""
-                            onclick="onClickEditInvoice(this)">
+                            id="btn-edit-invoice"
+                            onclick="onClickSubmitEditInvoice(this)">
                         Cập nhật
                     </button>
                 </div>
@@ -395,6 +397,16 @@
     </div><!-- /.modal -->
 
     <script>
+
+        // Create our number formatter.
+        const formatter = new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND',
+
+            // These options are needed to round to whole numbers if that's what you want.
+            //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+            //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+        });
 
         window.onload = function () {
             $('.modal').hide()
@@ -439,12 +451,12 @@
                         '        </label>\n' +
                         '    </div>\n' +
                         '    <div class="col-lg-4 mb-3">\n' +
-                        '        <input type="number" min="1" value="1" id="ip-add-product-quantity-' + data.id + '" data-id="' + data.id + '"\n' +
+                        '        <input type="number" min="1" onchange="onChangeTotal()" value="1" id="ip-add-product-quantity-' + data.id + '" data-id="' + data.id + '"\n' +
                         '               placeholder="Số lượng...."\n' +
                         '               class="form-control add-product-quantity-invoice"/>\n' +
                         '    </div>\n' +
                         '    <div class="col-lg-4 mb-3">\n' +
-                        '        <input type="number" min="0" value="0" id="ip-add-product-price-' + data.id + '" data-id="' + data.id + '"\n' +
+                        '        <input type="number" min="0" onchange="onChangeTotal()" value="0" id="ip-add-product-price-' + data.id + '" data-id="' + data.id + '"\n' +
                         '               placeholder="Giá nhập...."\n' +
                         '               class="form-control add-product-price-invoice"/>\n' +
                         '    </div>\n' +
@@ -464,11 +476,37 @@
                     $(data).prop('outerHTML', '')
                 }
             })
+            onChangeTotal();
+        }
 
+        function onChangeTotal() {
+            let getQuantity = document.getElementsByClassName('add-product-quantity-invoice');
+            let getPrices = document.getElementsByClassName('add-product-price-invoice');
+            let total = 0;
+            for (let i = 0; i < getQuantity.length; i++) {
+                let quantity = Number(getQuantity[i].value)
+                let price = Number(getPrices[i].value)
+                total += (price * quantity)
+            }
+            $('#invoice-add-total').html(formatter.format(total))
+        }
+
+        function onChangeTotalEdit() {
+            let getQuantity = document.getElementsByClassName('edit-product-quantity-invoice');
+            let getPrices = document.getElementsByClassName('edit-product-price-invoice');
+            let total = 0;
+            for (let i = 0; i < getQuantity.length; i++) {
+                let quantity = Number(getQuantity[i].value)
+                let price = Number(getPrices[i].value)
+                total += (price * quantity)
+            }
+            $('#invoice-edit-total').html(formatter.format(total))
         }
 
         function onChangeInvoiceOrderEdit(e) {
             let value = e.value + '';
+            console.log(e)
+            console.log(value)
             let id, supplierId;
             if (value !== null && value !== undefined && value !== '') {
                 id = value.substring(0, value.indexOf('@'));
@@ -481,10 +519,10 @@
                 url: '/api/invoice?orderId=' + id,
                 method: 'GET',
                 success: function (data) {
-                    $("#ip-add-product option:selected").attr('selected', false).change();
+                    $("#ip-edit-product option:selected").attr('selected', false).change();
                     $(data).each((index, obj) => {
                         $('#ip-edit-product option[value=' + obj.productId + ']').attr('selected', true)
-                        $('#ip-add-product').change();
+                        $('#ip-edit-product').change();
                         $('#ip-edit-product-quantity-' + obj.productId).val(obj.productQuantity)
                     })
                 },
@@ -496,6 +534,7 @@
 
         function onChangeAddProductEdit(e) {
             let arrSelect = getSelectValues(e);
+            console.log(arrSelect)
             $(arrSelect).each((index, data) => {
                 let invoiceDetail = $('#invoice-edit-detail');
                 if (invoiceDetail.children('#edit' + data.id).length === 0) {
@@ -506,12 +545,12 @@
                         '        </label>\n' +
                         '    </div>\n' +
                         '    <div class="col-lg-4 mb-3">\n' +
-                        '        <input type="number" min="1" value="1" id="ip-edit-product-quantity-' + data.id + '" data-id="' + data.id + '"\n' +
+                        '        <input type="number" min="1" onchange="onChangeTotalEdit()" value="1" id="ip-edit-product-quantity-' + data.id + '" data-id="' + data.id + '"\n' +
                         '               placeholder="Số lượng...."\n' +
                         '               class="form-control edit-product-quantity-invoice"/>\n' +
                         '    </div>\n' +
                         '    <div class="col-lg-4 mb-3">\n' +
-                        '        <input type="number" min="0" value="0" id="ip-edit-product-price-' + data.id + '" data-id="' + data.id + '"\n' +
+                        '        <input type="number" min="0" onchange="onChangeTotalEdit()" value="0" id="ip-edit-product-price-' + data.id + '" data-id="' + data.id + '"\n' +
                         '               placeholder="Giá nhập...."\n' +
                         '               class="form-control edit-product-price-invoice"/>\n' +
                         '    </div>\n' +
@@ -522,7 +561,7 @@
             $('#invoice-edit-detail .row').each((index, data) => {
                 let flag = false;
                 for (let i = 0; i < arrSelect.length; i++) {
-                    if (arrSelect[i].id === data.id) {
+                    if (data.id.includes(arrSelect[i].id)) {
                         flag = true;
                         break;
                     }
@@ -601,6 +640,51 @@
             let getInvoiceNote = document.getElementById('ip-edit-invoice-note');
             let getAllQuantityProduct = document.getElementsByClassName('edit-product-quantity-invoice');
             let getAllPriceProduct = document.getElementsByClassName('edit-product-price-invoice');
+            let getBtnSubmitInvoice = document.getElementById('btn-edit-invoice');
+            if (getBtnSubmitInvoice !== null && getBtnSubmitInvoice !== undefined) {
+                getBtnSubmitInvoice.dataset.id = e.dataset.id;
+            }
+            $.ajax({
+                url: '/api/invoice/' + e.dataset.id,
+                method: 'GET',
+                success: async function (data) {
+                    console.log(data.orderInvoiceId)
+                    $(getInvoiceCode).val(data.invoiceCode);
+                    await $(getInvoiceOrderCode).val(data.orderInvoiceId + '@' + data.supplierId).change();
+                    $(getSupplier).val(data.supplierId).change();
+                    $(getInvoiceDiscount).val(data.discount);
+                    $(getInvoicePaid).val(data.paid);
+                    getInvoiceStatus.checked = data.status === 'ON';
+                    $(getInvoiceNote).val(data.note);
+                    $("#ip-edit-product option:selected").attr('selected', false).change();
+                    setTimeout(function () {
+                        $(data.details).each((index, obj) => {
+                            console.log(obj.productId)
+                            $('#ip-edit-product option[value=' + obj.productId + ']').attr('selected', true)
+                            $('#ip-edit-product').change();
+                            $('#ip-edit-product-quantity-' + obj.productId).val(obj.quantity)
+                            $('#ip-edit-product-price-' + obj.productId).val(obj.price)
+                        })
+                        onChangeTotalEdit();
+                    }, 100)
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            })
+
+        }
+
+        function onClickSubmitEditInvoice(e) {
+            let getInvoiceCode = document.getElementById('ip-edit-invoice-code');
+            let getInvoiceOrderCode = document.getElementById('ip-edit-order-code');
+            let getSupplier = document.getElementById('ip-edit-supplier');
+            let getInvoiceDiscount = document.getElementById('ip-edit-invoice-discount');
+            let getInvoicePaid = document.getElementById('ip-edit-invoice-paid');
+            let getInvoiceStatus = document.getElementById('ip-edit-invoice-status');
+            let getInvoiceNote = document.getElementById('ip-edit-invoice-note');
+            let getAllQuantityProduct = document.getElementsByClassName('edit-product-quantity-invoice');
+            let getAllPriceProduct = document.getElementsByClassName('edit-product-price-invoice');
             let obj = valueDateInvoice(
                 e.dataset.id,
                 getInvoiceCode,
@@ -614,25 +698,25 @@
                 getAllPriceProduct
             )
             console.log(obj)
-            if (obj !== null && obj !== undefined) {
-                $.ajax({
-                    url: '/api/invoice',
-                    method: 'PUT',
-                    contentType: 'application/json',
-                    data: JSON.stringify(obj),
-                    success: function (data) {
-                        console.log(data);
-                        toastSuccess('Thành công', 'Đã thêm mới nhập hàng')
-                        setTimeout(function () {
-                            location.reload()
-                        }, 2000)
-                    },
-                    error: function (error) {
-                        console.log(error)
-                        toastDanger('Lỗi', jqXHR.responseJSON.vn);
-                    }
-                })
-            }
+            // if (obj !== null && obj !== undefined) {
+            //     $.ajax({
+            //         url: '/api/invoice',
+            //         method: 'PUT',
+            //         contentType: 'application/json',
+            //         data: JSON.stringify(obj),
+            //         success: function (data) {
+            //             console.log(data);
+            //             toastSuccess('Thành công', 'Đã cập nhật thông tin nhập hàng')
+            //             setTimeout(function () {
+            //                 location.reload()
+            //             }, 2000)
+            //         },
+            //         error: function (error) {
+            //             console.log(error)
+            //             toastDanger('Lỗi', jqXHR.responseJSON.vn);
+            //         }
+            //     })
+            // }
         }
 
         function valueDateInvoice(
@@ -662,7 +746,7 @@
             if (getInvoiceDiscount.value === null || getInvoiceDiscount.value === undefined) {
                 getInvoiceDiscount.value = 0
             }
-            if (Number(getInvoiceDiscount.value)) {
+            if (Number(getInvoiceDiscount.value) || getInvoiceDiscount.value === '0') {
                 if (Number(getInvoiceDiscount.value) < 0) {
                     toastDanger('Lỗi', 'Số tiền giảm giá phải từ 0đ')
                     return;
@@ -674,7 +758,7 @@
             if (getInvoicePaid.value === null || getInvoicePaid.value === undefined) {
                 getInvoicePaid.value = 0
             }
-            if (Number(getInvoicePaid.value)) {
+            if (Number(getInvoicePaid.value) || getInvoicePaid.value === '0') {
                 if (Number(getInvoicePaid.value) < 0) {
                     toastDanger('Lỗi', 'Số tiền trả NCC phải từ 0đ')
                     return;
@@ -698,7 +782,7 @@
                         toastDanger('Lỗi', 'Số lượng nhập phải là một số nguyên')
                         return;
                     }
-                    if (Number(price)) {
+                    if (Number(price) || price === '0') {
                         if (Number(quantity) < 0) {
                             toastDanger('Lỗi', 'Số tiền phải từ 0đ')
                             return;
