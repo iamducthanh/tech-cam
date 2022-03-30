@@ -10,6 +10,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Type;
@@ -26,11 +27,13 @@ import java.util.UUID;
  * Project_name: Tech-cam
  */
 @EnableAsync
+@Service
 public class TechCamLogService implements ITechCamLogService {
     @Autowired
     private ITechCamBlogRepo techCamBlogRepo;
     private  final ModelMapper MODEL_MAPPER=new ModelMapper();
     @Async
+    @Override
     public void saveLog(TechCamlogRequest request){
         TechcamBlogEntity techcamBlogEntity =new TechcamBlogEntity();
         techcamBlogEntity.setId(UUID.randomUUID().toString());
@@ -42,6 +45,7 @@ public class TechCamLogService implements ITechCamLogService {
         techcamBlogEntity.setCreateBy(request.getCreateBy());
         techCamBlogRepo.save(techcamBlogEntity);
     }
+    @Override
     public List<TechCamlogResponse> getALlTechCamLog(){
         Type type = new TypeToken<List<TechCamlogResponse>>(){}.getType();
         List<TechcamBlogEntity> techcamBlogEntities = techCamBlogRepo.findAllByOrderByCreateDateDesc();

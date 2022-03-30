@@ -51,7 +51,7 @@ public class ProductController {
         model.addAttribute("lstProducts", lstProducts);
         model.addAttribute("lstBrands", lstBrands);
         model.addAttribute("lstCategories", lstCategories);
-        return "/views/product/index";
+        return "views/product/index";
     }
 
     @GetMapping(value = "/property/add", params = "category")
