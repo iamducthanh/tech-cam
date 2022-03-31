@@ -148,6 +148,7 @@ function saveEditCategory(){
         attributes: atbArr
     }
 
+
     console.log(atbArr)
     $.ajax({
         url: '/category',
