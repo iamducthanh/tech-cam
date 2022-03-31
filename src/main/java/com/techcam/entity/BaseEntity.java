@@ -30,7 +30,7 @@ public abstract class BaseEntity {
 
     @CreatedDate
     @Column(name = "create_date")
-    private Timestamp createDate;
+    private Timestamp createDate = new Timestamp(new Date().getTime());
 
     @LastModifiedDate
     @Column(name = "MODIFIER_DATE")
