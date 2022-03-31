@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class AttributeReqDto {
+ private String id;
  private String name;
  private String value;
 }

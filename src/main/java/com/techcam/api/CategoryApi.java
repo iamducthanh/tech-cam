@@ -30,6 +30,13 @@ public class CategoryApi {
   return "";
  }
 
+ @PutMapping("")
+ public String updateCategory(@RequestBody CategoryDto categoryDto){
+  System.out.println(categoryDto.toString());
+//  categoryService.saveCategory(categoryDto);
+  return "";
+ }
+
  @GetMapping("/{categoryId}")
  public CategoryDto getByCategoryId(@PathVariable("categoryId") String categoryId){
   CategoryEntity categoryEntity = categoryService.findById(categoryId);
