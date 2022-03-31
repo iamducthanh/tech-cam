@@ -203,6 +203,7 @@ public class CategoryService implements ICategoryService {
                     valueDefault = valueDefault.substring(1, valueDefault.length());
                 }
                 attributeReq.add(AttributeReqDto.builder()
+                        .id(o.getId())
                         .name(o.getAttributeName())
                         .value(valueDefault)
                         .build());

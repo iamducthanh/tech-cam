@@ -140,7 +140,7 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalEditTitle">Sửa danh mục</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true" onclick="closeModalCategory()">&times;</span>
+                        <span aria-hidden="true" onclick="closeModalEditCategory()">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
@@ -172,7 +172,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeModalEditCategory()">Đóng</button>
-                    <button type="button" class="btn btn-primary" onclick="saveCategory()">Lưu</button>
+                    <button type="button" class="btn btn-primary" onclick="saveEditCategory()">Lưu</button>
                 </div>
             </div>
         </div>
@@ -227,10 +227,11 @@
             containerAtbEdit.innerHTML +=
                 '                        <div class="row mb-3">\n' +
                 '                            <div class="col-lg-5">\n' +
-                '                                <input class="form-control atbName" placeholder="Tên thuộc tính">\n' +
+                '<input class="form-control atbEditId" type="hidden" value="">\n' +
+                '                                <input class="form-control atbEditName" placeholder="Tên thuộc tính">\n' +
                 '                            </div>\n' +
                 '                            <div class="col-lg-6">\n' +
-                '                                <input class="form-control atbValue" placeholder="Giá trị mặc định 1; giá trị 2; giá trị 3;...">\n' +
+                '                                <input class="form-control atbEditValue" placeholder="Giá trị mặc định 1; giá trị 2; giá trị 3;...">\n' +
                 '                            </div>\n' +
                 '                            <div class="col-lg-1 btnRemoveAtb" style="text-align: center">\n' +
                 '<button class="btn btn-danger" onclick="removeRowEditAtb(this)">-</button>' +
