@@ -267,7 +267,7 @@
                                         <th><label for="birthdate-edit" class="form-label">Ngày sinh</label><span class="required"> *</span></th>
                                         <td>
                                             <div class="input-daterange input-group" id="datepicker6" data-date-format="dd/mm/yyyy" data-date-autoclose="true" data-provide="datepicker" data-date-container='#datepicker6'>
-                                                <input type="text" name="dateOfBirth"  id="birthdate-edit" class="form-control text-start" onblur="onType(this)" placeholder="dd/MM/yyyy">
+                                                <input type="text" name="dateOfBirth" id="birthdate-edit" class="form-control text-start" onblur="onType(this)" placeholder="dd/MM/yyyy">
                                             </div>
                                         </td>
                                     </tr>
@@ -445,6 +445,20 @@
             tag.removeClass('error');
         }
     }
+
+    // Event onBlur for input date
+    $('#birthdate').blur(function () {
+        setTimeout(function(){
+            onType($('#birthdate'));
+        }, 100); // delay 500 ms
+    });
+
+    // Event onBlur for input date
+    $('#birthdate-edit').blur(function () {
+        setTimeout(function(){
+            onType($('#birthdate-edit'));
+        }, 100); // delay 500 ms
+    });
 
     // Validation formAdd
     function validateForm(type) {

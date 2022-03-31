@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,6 +26,8 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class OrderRequest {
+
+    private String id;
     private CustomerRequest customer;
     private String voucherId;
     private List<OrderProductDetailsRequest> productDetails;
@@ -33,6 +35,7 @@ public class OrderRequest {
     private String paymentMethod;
 
     private String orderMethod;
+    private Date deliveryDate;
     private String note;
     private int tax;
     private String orderType;

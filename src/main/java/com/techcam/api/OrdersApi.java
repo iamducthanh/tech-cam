@@ -111,6 +111,12 @@ public class OrdersApi {
         return orderService.findAllOrdersDetailsById(id);
     }
 
+    @PutMapping
+    public ResponseEntity updateOrder(@RequestBody OrderRequest order) {
+        orderService.editOrder(order);
+        return ResponseEntity.ok().body(order);
+    }
+
     public String getDevice(HttpServletRequest request) {
         String ipAddress = request.getHeader("X-Forwarded-For");
         if (StringUtils.isEmpty(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {

@@ -193,3 +193,37 @@ td {
 .border-none {
     border: 0;
 }
+
+#loading-image {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+}
+
+#loading-image>img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#loading-image>#bg-color {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    opacity: 0.5;
+    background-image: linear-gradient(to top, #30cfd0 0%, #330867 100%);
+}
+
+/* Hide spinner input number */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none!important;
+    margin: 0!important;
+}

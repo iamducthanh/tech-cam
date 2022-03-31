@@ -25,6 +25,7 @@ import com.techcam.service.ITechCamLogService;
 import com.techcam.service.IVoucherService;
 import com.techcam.type.*;
 import com.techcam.util.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -48,7 +49,7 @@ import java.util.stream.Collectors;
  * @since: 3/20/2022
  * Project_name: Tech-cam
  */
-
+@Slf4j
 @Service
 public class OrderServiceImpl implements IOrderService {
     @Autowired
@@ -677,6 +678,22 @@ public class OrderServiceImpl implements IOrderService {
     public List<VoucherUseByOrderResponse> findAllByVoucherId(String voucherId) {
         return ordersRepo.findAllByVoucherIdAndDeleteFlagIsFalse(voucherId)
                 .stream().map(this::mapToVoucherUseResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public String editOrder(OrderRequest order) {
+        OrdersEntity entity = ordersRepo.getById(order.getId());
+        entity.setRecipientName(order.getRecipientName());
+        entity.setRecipientPhone(order.getRecipientPhone());
+        entity.setRecipientAddress(order.getRecipientAddress());
+        entity.setDeliveryDate(order.getDeliveryDate());
+
+        try {
+            entity = ordersRepo.save(entity);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+        return "ok";
     }
 
     private <R> VoucherUseByOrderResponse mapToVoucherUseResponse(OrdersEntity x) {
