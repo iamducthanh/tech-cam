@@ -5,6 +5,7 @@
       xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <title>Quản lý đơn hàng - TechCam</title>
+
 </head>
 
 <body>
@@ -104,6 +105,9 @@
         <!-- End-Sidebar -->
         <div class="col-lg-10" id="rightKH">
             <div class="row justify-content-end">
+                <button onclick="onAddRow()" type="button" class="btn btn-primary col-auto mb-3 me-2 waves-effect waves-light">
+                    <i class="fas fa-plus me-2"></i>Đừng ấn vào đây
+                </button>
                 <button type="button" class="btn btn-primary col-auto mb-3 me-2 waves-effect waves-light" data-bs-toggle="modal" data-bs-target=".modal-add-order">
                     <i class="fas fa-plus me-2"></i>Đơn hàng
                 </button>
@@ -114,7 +118,7 @@
                            class="table table-striped table-hover table-bordered nowrap dataTable no-footer shadow"
                            style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead class="text-center align-middle">
-                            <th></th>
+                            <th>STT</th>
                             <th>Chức năng</th>
                             <th>Mã hoá đơn</th>
                             <th>Tổng giá tiền</th>
@@ -399,6 +403,26 @@
         <!-- /.modal-dialog -->
     </div>
     <!-- End Modal Edit Staff -->
+    <script th:src="@{/assets/js/jquery.min.js}"></script>
+    <script th:src="@{/assets/js/jquery.dataTables.min.js}"></script>
+    <script th:src="@{/assets/js/dataTables.bootstrap4.min.js}"></script>
+    <script th:src="@{/assets/js/dataTables.buttons.min.js}"></script>
+    <script th:src="@{/assets/js/buttons.bootstrap4.min.js}"></script>
+    <script th:src="@{/assets/js/jszip.min.js}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script th:src="@{/assets/js/buttons.html5.min.js}"></script>
+    <script th:src="@{/assets/js/buttons.print.min.js}"></script>
+    <script th:src="@{/assets/js/buttons.colVis.min.js}"></script>
+    <script th:src="@{/system/order.js}"></script>
+    <script th:inline="javascript">
+
+
+
+
+
+    </script>
+
 </div>
 
 <script layout:fragment="script" >
