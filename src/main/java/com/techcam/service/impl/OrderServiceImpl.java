@@ -29,6 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -74,6 +75,8 @@ public class OrderServiceImpl implements IOrderService {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     @Autowired
     private SessionUtil sessionUtil;
+    @Autowired
+    private SimpMessageSendingOperations messagingTemplate;
 
 
     @Override
@@ -241,6 +244,34 @@ public class OrderServiceImpl implements IOrderService {
         }
         System.out.println(ordersEntity);
         OrdersEntity orderSave = ordersRepo.save(ordersEntity);
+        GetInfoOrder infoOrder = GetInfoOrder.builder()
+                .id(orderSave.getId())
+                .orderDate(orderSave.getOrderDate())
+                .tax(orderSave.getTax())
+                .transactionStatus(orderSave.getTransactionStatus())
+                .paymentDate(orderSave.getPaymentDate())
+                .itemQuantity(orderSave.getItemQuantity())
+                .totalAmount(orderSave.getTotalAmount())
+                .orderType(orderSave.getOrderType())
+                .stockKeeper(orderSave.getStockKeeper())
+                .recipientName(orderSave.getRecipientName())
+                .recipientPhone(orderSave.getRecipientPhone())
+                .paymentMethod(orderSave.getPaymentMethod())
+                .recipientAddress(orderSave.getRecipientAddress())
+                .shipmentStatus(orderSave.getShipmentStatus())
+                .salesPerson(orderSave.getSalesPerson())
+                .accounting(orderSave.getAccounting())
+                .shipmentId(orderSave.getShipmentId())
+                .status(orderSave.getStatus())
+                .note(orderSave.getStatus())
+                .createBy(orderSave.getCreateBy())
+                .modifierBy(orderSave.getModifierBy())
+                .deleteFlag(orderSave.getDeleteFlag())
+                .ipAddress(orderSave.getIpAddress())
+                .build();
+        messagingTemplate.convertAndSend("/topic/notify", infoOrder);
+
+
         List<OrderdetailEntity> orderdetailEntities = new ArrayList<>();
         orderRequestProduct.getProductDetailsRequests().stream().filter(e -> {
                     OrderdetailEntity orderdetailEntity = new OrderdetailEntity();
