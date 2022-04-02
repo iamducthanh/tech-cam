@@ -33,7 +33,7 @@ public class CategoryApi {
  @PutMapping("")
  public String updateCategory(@RequestBody CategoryDto categoryDto){
   System.out.println(categoryDto.toString());
-//  categoryService.saveCategory(categoryDto);
+  categoryService.updateCategory(categoryDto);
   return "";
  }
 

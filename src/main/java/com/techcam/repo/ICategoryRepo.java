@@ -31,4 +31,7 @@ public interface ICategoryRepo extends JpaRepository<CategoryEntity, String> {
 
     @Query("select o from CategoryEntity o where o.deleteFlag = false and o.name = ?1 and o.parentId = ?2 ")
     List<CategoryEntity> findByNameAndParent(String categoryName, String parentId);
+
+    @Query("select o from CategoryEntity o where o.deleteFlag = false and o.name = ?1 and o.parentId is null ")
+    List<CategoryEntity> findByNameAndParentNull(String categoryName);
 }
