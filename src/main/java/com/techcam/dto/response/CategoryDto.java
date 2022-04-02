@@ -23,6 +23,7 @@ import java.util.List;
 public class CategoryDto {
     private String categoryId;
     private String categoryName;
+    private String parentId;
     private List<CategoryDto> categoryChild;
     private List<AttributeReqDto> attributes;
 }

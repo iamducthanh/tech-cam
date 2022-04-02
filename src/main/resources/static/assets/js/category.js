@@ -130,6 +130,7 @@ function saveEditCategory(){
     let level = $('#levelCategoryEdit')[0].value;
     let categoryId = $('#categoryIdEdit')[0].value;
     let categoryName = $('#categoryEditName')[0].value
+    let parentId = $('#parentIdEdit')[0].value
 
     for(let i=0;i<atbEditIdInputs.length;i++){
         let obj = {
@@ -145,11 +146,10 @@ function saveEditCategory(){
     let objUpdate = {
         categoryId: categoryId,
         categoryName: categoryName,
-        attributes: atbArr
+        attributes: atbArr,
+        parentId: parentId
     }
 
-
-    console.log(atbArr)
     $.ajax({
         url: '/category',
         method: 'PUT',
@@ -157,6 +157,7 @@ function saveEditCategory(){
         contentType: 'application/json',
         success: function (datas) {
             console.log(datas)
+            window.location.href = '/category?message=success&level=' + level;
         },
         error: function (error) {
             console.log(error)
