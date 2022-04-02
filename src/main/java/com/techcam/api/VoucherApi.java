@@ -41,24 +41,70 @@ public class VoucherApi {
 
     @PostMapping
     public ResponseEntity<String> createVoucher(@RequestBody @Validated VoucherRequest voucherRequest, Errors errors) {
-        validateVoucher(voucherRequest, errors);
+        final String patternDate = "dd-MM-yyyy";
+        if (errors.hasErrors()) {
+            throw new TechCamExp(errors.getFieldErrors().get(0).getDefaultMessage());
+        }
+        if (checkEqualLength(voucherRequest.getVoucherCode(), 5, 50)) {
+            throw new TechCamExp(ConstantsErrorCode.ERROR_LENGTH, "Mã giảm giá", 5, 50);
+        }
+        if (checkEqualLength(voucherRequest.getVoucherName(), 5, 255)) {
+            throw new TechCamExp(ConstantsErrorCode.ERROR_LENGTH, "Tên chương trình", 5, 255);
+        }
+        voucherRequest.setVoucherCode(voucherRequest.getVoucherCode().toLowerCase());
+        if (!voucherService.findAllByCode(voucherRequest.getVoucherCode()).isEmpty()) {
+            throw new TechCamExp(ConstantsErrorCode.ERROR_EXISTS, "Mã giảm giá");
+        }
         try {
+            if (ConvertUtil.get().strToDate(voucherRequest.getVoucherStartDate(), patternDate).compareTo(new Date()) < 0 || ConvertUtil.get().strToDate(voucherRequest.getVoucherStartDate(), patternDate).compareTo(ConvertUtil.get().strToDate(voucherRequest.getVoucherEndDate(), patternDate)) > 0) {
+                throw new TechCamExp(ConstantsErrorCode.VOUCHER_DATE_NOT_PAST);
+            }
+            if (Long.parseLong(voucherRequest.getVoucherDiscount()) <= 0) {
+                throw new TechCamExp(ConstantsErrorCode.ERROR_MIN_MONEY, "giảm giá", "1đ");
+            }
             if (Integer.parseInt(voucherRequest.getVoucherQuantity()) < 1) {
                 throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
             }
             if (voucherService.createVoucher(voucherRequest).equals(SUCCESS.name())) {
                 return ResponseEntity.ok(SUCCESS.name());
             }
+        } catch (ArithmeticException e) {
+            throw new TechCamExp(ConstantsErrorCode.ERROR_FORMAT_NUMBER);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ResponseEntity.badRequest().body(FAILED.name());
+        throw new TechCamExp(ConstantsErrorCode.ERROR_SAVE_FAILED);
     }
 
     @PutMapping
     public ResponseEntity<String> updateVoucher(@RequestBody @Validated VoucherRequest voucherRequest, Errors errors) {
-        validateVoucher(voucherRequest, errors);
+        final String patternDate = "dd-MM-yyyy";
+        if (errors.hasErrors()) {
+            throw new TechCamExp(errors.getFieldErrors().get(0).getDefaultMessage());
+        }
+        VoucherResponse voucherResponse = voucherService.getById(voucherRequest.getVoucherId());
+        if (Objects.isNull(voucherResponse)) {
+            throw new TechCamExp(ConstantsErrorCode.ERROR_NOT_EXISTS, "Mã giảm giả");
+        }
+        if (!voucherResponse.getVoucherCode().equals(voucherRequest.getVoucherCode().toUpperCase())) {
+            if (!voucherService.findAllByCode(voucherRequest.getVoucherCode()).isEmpty()) {
+                throw new TechCamExp(ConstantsErrorCode.ERROR_EXISTS, "Mã giảm giá");
+            }
+        }
+        voucherRequest.setVoucherCode(voucherRequest.getVoucherCode().toLowerCase());
+        if (checkEqualLength(voucherRequest.getVoucherCode(), 5, 50)) {
+            throw new TechCamExp(ConstantsErrorCode.ERROR_LENGTH, "Mã giảm giá", 5, 50);
+        }
+        if (checkEqualLength(voucherRequest.getVoucherName(), 10, 255)) {
+            throw new TechCamExp(ConstantsErrorCode.ERROR_LENGTH, "Tên chương trình", 10, 255);
+        }
         try {
+            if (ConvertUtil.get().strToDate(voucherRequest.getVoucherEndDate(), patternDate).compareTo(new Date()) < 0) {
+                throw new TechCamExp(ConstantsErrorCode.VOUCHER_DATE_NOT_PAST);
+            }
+            if (Long.parseLong(voucherRequest.getVoucherDiscount()) <= 0) {
+                throw new TechCamExp(ConstantsErrorCode.ERROR_MIN_MONEY, "giảm giá", "1đ");
+            }
             if (Integer.parseInt(voucherRequest.getVoucherQuantity()) < 1) {
                 throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
             }
@@ -71,7 +117,7 @@ public class VoucherApi {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ResponseEntity.badRequest().body(FAILED.name());
+        throw new TechCamExp(ConstantsErrorCode.ERROR_SAVE_FAILED);
     }
 
     @PutMapping("/active/{id}")
@@ -83,7 +129,7 @@ public class VoucherApi {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ResponseEntity.badRequest().body(FAILED.name());
+        throw new TechCamExp(ConstantsErrorCode.ERROR_SAVE_FAILED);
     }
 
     @GetMapping("/{id}")
@@ -94,8 +140,7 @@ public class VoucherApi {
             throw new TechCamExp(ConstantsErrorCode.VOUCHER_NOT_EXISTS);
         }
         List<VoucherUseByOrderResponse> lstUsedByVoucherId = orderService.findAllByVoucherId(voucherResponse.getVoucherId());
-        if (voucherResponse.getVoucherEndDate().compareTo(new Date()) > 0
-                || voucherResponse.getVoucherQuantity() <= lstUsedByVoucherId.size()) {
+        if (voucherResponse.getVoucherEndDate().compareTo(new Date()) > 0 || voucherResponse.getVoucherQuantity() <= lstUsedByVoucherId.size()) {
             // VOUCHER đã hết lượt dùng
             throw new TechCamExp(ConstantsErrorCode.VOUCHER_END_USED);
         }
@@ -112,8 +157,7 @@ public class VoucherApi {
         VoucherResponse response = null;
         for (VoucherResponse x : lstVoucher) {
             List<VoucherUseByOrderResponse> lstUsedByVoucherId = orderService.findAllByVoucherId(x.getVoucherId());
-            if (x.getVoucherEndDate().compareTo(new Date()) <= 0
-                    && x.getVoucherQuantity() > lstUsedByVoucherId.size()) {
+            if (x.getVoucherEndDate().compareTo(new Date()) <= 0 && x.getVoucherQuantity() > lstUsedByVoucherId.size()) {
                 response = x;
                 break;
             }
@@ -128,25 +172,6 @@ public class VoucherApi {
     @GetMapping(value = "/{id}/used")
     public ResponseEntity<List<VoucherUseByOrderResponse>> getCustemorUserByVoucherId(@PathVariable("id") String id) {
         return ResponseEntity.ok(orderService.findAllByVoucherId(id));
-    }
-
-    private void validateVoucher(@Validated @RequestBody VoucherRequest voucherRequest, Errors errors) {
-        final String patternDate = "dd-MM-yyyy";
-        if (errors.hasErrors()) {
-            throw new TechCamExp(errors.getFieldErrors().get(0).getDefaultMessage());
-        }
-        if (checkEqualLength(voucherRequest.getVoucherCode(), 0, 50)) {
-            throw new TechCamExp(ConstantsErrorCode.ERROR_LENGTH, "Mã giảm giá", 0, 50);
-        }
-        if (checkEqualLength(voucherRequest.getVoucherName(), 10, 255)) {
-            throw new TechCamExp(ConstantsErrorCode.ERROR_LENGTH, "Tên chương trình", 10, 255);
-        }
-        if (ConvertUtil.get().strToDate(voucherRequest.getVoucherStartDate(), patternDate)
-                .compareTo(new Date()) < 0
-                || ConvertUtil.get().strToDate(voucherRequest.getVoucherStartDate(), patternDate)
-                .compareTo(ConvertUtil.get().strToDate(voucherRequest.getVoucherEndDate(), patternDate)) > 0) {
-            throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
-        }
     }
 
     @DeleteMapping("/{id}")

@@ -1,6 +1,5 @@
 package com.techcam.dto.response.invoice;
 
-import com.techcam.dto.request.invoice.InvoiceDetailRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -36,6 +35,11 @@ public class InvoiceResponse {
      * tên nhà cungg cấp
      */
     private String supplierName;
+
+    /**
+     * id đặt hàng
+     */
+    private String orderInvoiceId;
 
     /**
      * mã đặt hàng
