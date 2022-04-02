@@ -15,6 +15,9 @@ public interface ConstantsErrorCode {
     String ERROR_MIN_MONEY = "CM-TC-003";
     String ERROR_EXISTS = "CM-TC-004";
     String ERROR_NOT_EXISTS = "CM-TC-005";
+    String ERROR_FORMAT_NUMBER = "CM-TC-007";
+
+    String ERROR_SAVE_FAILED = "CM-TC-006";
 
     // lỗi hệ thống
     String ERROR_DATA_REQUEST = "TC-000-001";
@@ -38,6 +41,7 @@ public interface ConstantsErrorCode {
     String VOUCHER_NOT_EXISTS = "TC-005-007";
     String VOUCHER_END_USED = "TC-005-008";
     String VOUCHER_MAX_USED = "TC-005-009";
+    String VOUCHER_DATE_NOT_PAST = "TC-005-010";
 
     String ERROR_BLANK = "CM-TC-002";
 
