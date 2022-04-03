@@ -65,6 +65,10 @@ public class VoucherEntity extends BaseEntity {
     @Column(name = "NOTE")
     private String note;
 
+    @Basic
+    @Column(name = "accompany_promo")
+    private String accompanyPromo;
+
     @OneToMany(mappedBy = "voucher",fetch = FetchType.EAGER)
     private List<OrdersEntity> orders;
 
