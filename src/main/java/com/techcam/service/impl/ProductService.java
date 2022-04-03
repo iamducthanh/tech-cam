@@ -47,6 +47,10 @@ public class ProductService implements IProductService {
 
     private final IBrandRepo brandRepo;
 
+    private final IGoodsreceiptdetailRepo goodsreceiptdetailRepo;
+
+    private final IOrderDetailsRepo orderDetailsRepo;
+
     @Override
     public List<ProductPropertyResponse> findAllPropertyByProductId(String productId) {
         // TODO trả về list thuộc tính sản phẩm
@@ -257,6 +261,11 @@ public class ProductService implements IProductService {
 
     private <R> ProductResponse mapToResponse(ProductEntity x) {
         if (Objects.isNull(x)) return new ProductResponse();
+        List<GoodsreceiptdetailEntity> lstInvoiceDetail = goodsreceiptdetailRepo.findAllByProductIdAndDeleteFlagIsFalse(x.getId());
+        List<OrderdetailEntity> lstOrderDetail = orderDetailsRepo.findAllByProductIdAndDeleteFlagIsFalse(x.getId());
+        Long sumInvoice = lstInvoiceDetail.stream().mapToLong(GoodsreceiptdetailEntity::getQuantityActual).sum();
+        Long sumOrder = lstOrderDetail.stream().mapToLong(OrderdetailEntity::getQuantity).sum();
+        int sumQuantity = (int) (sumInvoice - sumOrder);
         ProductResponse s = new ProductResponse();
         s.setProductId(x.getId());
         s.setProductCode(x.getProductCode());
@@ -270,6 +279,7 @@ public class ProductService implements IProductService {
         s.setCreateDate(x.getCreateDate());
         s.setModifierDate(x.getModifierDate());
         s.setThumbnail(x.getThumbnail());
+        s.setProductQuantity(sumQuantity);
         return s;
     }
 }

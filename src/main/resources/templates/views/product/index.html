@@ -64,6 +64,7 @@
                                     <th>Thumbnail</th>
                                     <th>Chức năng</th>
                                     <th>Tên sản phẩm</th>
+                                    <th>Tồn kho</th>
                                     <th>Giá bán</th>
                                     <th>Tồn kho</th>
                                     <th>Trạng thái</th>
@@ -90,6 +91,9 @@
                                             </a>
                                         </td>
                                         <td th:text="${product.productName}">Tên sản phẩm</td>
+                                        <td th:text="${product.productQuantity}">
+                                            Số lượng
+                                        </td>
                                         <td class="text-end"
                                             th:text="${#numbers.formatDecimal(product.productPrice, 0, 'COMMA', 2, 'POINT') + 'đ'}">
                                             Giá bán
