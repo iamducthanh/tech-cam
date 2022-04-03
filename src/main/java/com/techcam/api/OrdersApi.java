@@ -103,7 +103,7 @@ public class OrdersApi {
 
     @GetMapping("/{id}")
     public GetInfoOrder findById(@PathVariable("id") String id) {
-        return orderService.findOrderById(id);
+        return orderService.findOrderById(Integer.parseInt(id));
     }
 
     @GetMapping("/list/{id}")

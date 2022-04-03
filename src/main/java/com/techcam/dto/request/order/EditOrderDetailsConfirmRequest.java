@@ -20,7 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class EditOrderDetailsConfirmRequest {
-    private String orderId;
+    private Integer orderId;
     private String productId;
     private List<String> imei;
     private String note;

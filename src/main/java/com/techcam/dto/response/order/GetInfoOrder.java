@@ -21,7 +21,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class GetInfoOrder {
-    private String id;
+    private Integer id;
     private Date orderDate;
     private Integer tax;
     private String transactionStatus;

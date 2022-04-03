@@ -17,13 +17,13 @@ import java.util.List;
  */
 
 @Repository
-public interface IOrderDetailsRepo extends JpaRepository<OrderdetailEntity, String> {
+public interface IOrderDetailsRepo extends JpaRepository<OrderdetailEntity, Integer> {
     //    @Query("select o from OrderdetailEntity o where o.orders.id=?1 and o.deleteFlag=?2")
-    List<OrderdetailEntity> findAllByOrdersIdAndDeleteFlag(String id, boolean flagDelete);
+    List<OrderdetailEntity> findAllByOrdersIdAndDeleteFlag(Integer id, boolean flagDelete);
 
-    List<OrderdetailEntity> findAllByIdNotInAndOrdersIdAndDeleteFlagFalse(List<String> ids, String id);
+    List<OrderdetailEntity> findAllByIdNotInAndOrdersIdAndDeleteFlagFalse(List<String> ids, Integer id);
 
-    List<OrderdetailEntity> findAllByIdInAndOrdersIdAndDeleteFlagFalse(List<String> ids, String id);
+    List<OrderdetailEntity> findAllByIdInAndOrdersIdAndDeleteFlagFalse(List<String> ids, Integer id);
 
-    OrderdetailEntity findByOrdersIdAndProductId(String orderId, String productId);
+    OrderdetailEntity findByOrdersIdAndProductId(Integer orderId, String productId);
 }

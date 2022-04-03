@@ -18,7 +18,7 @@ import lombok.*;
 @AllArgsConstructor
 public class VoucherUseByOrderResponse {
 
-    private String orderId;
+    private Integer orderId;
 
     private String orderCode;
 

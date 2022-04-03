@@ -30,9 +30,9 @@ public interface IOrderService {
 
     List<GetInfoOrder> getAllOrderByDeleteFlag();
 
-    GetInfoOrder findOrderById(String id);
+    GetInfoOrder findOrderById(Integer id);
 
-    List<GetInfoOrderDetails> findAllOrdersDetailsById(String id);
+    List<GetInfoOrderDetails> findAllOrdersDetailsById(Integer id);
 
     OrderResponse resgistrationOrder(OrderRequest request, HttpServletRequest httpServletRequest);
 
