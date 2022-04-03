@@ -58,13 +58,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/count_login_false/**",
                 "/index",
 //                "/api/v1/orders",
+                "/api/voucher",
                 "/api/v1/orders/**",
                 "/vnp-pay/check-out/order/**",
-                "/api/staff/**",
-                "/staff/**",
-                "/api/v1/customer/**",
-                "/customer/**",
-                "/customer"
+                "/api/receipt-voucher/**"
         ).permitAll();
 
         http.authorizeRequests().antMatchers("/**").access("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')");

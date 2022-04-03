@@ -20,7 +20,7 @@ import java.math.BigInteger;
 @NoArgsConstructor
 @Builder
 public class CustomerPayTheBillRequest {
-    private String id;
+    private Integer id;
     private BigInteger customerMoney;
     private String paymentMethod;
     private Integer givenMoney;

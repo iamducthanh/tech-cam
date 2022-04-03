@@ -45,5 +45,6 @@ public class OrderRequest {
     private String ipAddress;
     private int totalAmount;
     private int totalDiscount;
+    private int feeDelivery;
 
 }

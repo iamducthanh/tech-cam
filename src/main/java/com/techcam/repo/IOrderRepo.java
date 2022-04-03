@@ -20,11 +20,12 @@ public interface IOrderRepo extends JpaRepository<OrdersEntity,String> {
     List<OrdersEntity> findAllByOrderByCreateDateDesc();
     List<OrdersEntity> findAllByStatusAndDeleteFlagFalseOrderByCreateDateDesc(String status);
     List<OrdersEntity> findAllByDeleteFlagFalseOrderByCreateDateDesc();
-    OrdersEntity findByIdAndDeleteFlagFalse(String id);
-    OrdersEntity findByIdAndTransactionStatusAndDeleteFlagFalse(String id,String status);
+    OrdersEntity findByIdAndDeleteFlagFalse(Integer id);
+    OrdersEntity findByIdAndTransactionStatusAndDeleteFlagFalse(Integer id,String status);
     @Query("select count(o) from OrdersEntity o where o.orderDate=?1 and o.customer.phoneNumber=?2 and o.ipAddress=?3")
     int countByPhoneNumberCustomer(Date date, String phoneNumber, String ipAddress);
     OrdersEntity findByBankTransaction(String bankTransaction);
 
     List<OrdersEntity> findAllByVoucherIdAndDeleteFlagIsFalse(String voucherId);
+    OrdersEntity findFirstByVoucherCodeAndCustomerPhoneNumber(String code, String phoneNumber);
 }
