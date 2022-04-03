@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/weblayout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Đặt hàng NCC - TechCam</title>
+    <link rel="stylesheet" th:href="@{/assets/css/select2.min.css}">
+</head>
+<body>
+<div layout:fragment="content" class="container-fluid" style="max-width: 98%">
+    <div class="row container1">
+        <div class="col-lg-2 h-100" id="leftKH">
+            <h1 class="heading-page">Đặt hàng NCC</h1>
+            <div class="filter-report">
+                <div class="card" style="padding-left: 15px; padding-top: 15px">
+                    <h6 class="mx-2 mt-2 fs-14">Trạng thái</h6>
+                    <div class="mx-2 mb-2">
+                        <div class="form-group form-check">
+                            <input class="form-check-input" type="radio" name="status" id="statusAll" value=""
+                                   onchange="onStatusChange(this)" checked>
+                            <label class="form-check-label" for="statusAll">
+                                Tất cả
+                            </label>
+                        </div>
+                        <div class="form-group form-check">
+                            <input class="form-check-input" type="radio" name="status" id="statusActive"
+                                   value="Đã nhập" onchange="onStatusChange(this)">
+                            <label class="form-check-label" for="statusActive">
+                                Đã nhập
+                            </label>
+                        </div>
+                        <div class="form-group form-check">
+                            <input class="form-check-input" type="radio" name="status" id="statusInActive"
+                                   value="Đã huỷ" onchange="onStatusChange(this)">
+                            <label class="form-check-label" for="statusInActive">
+                                Đã huỷ
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-10" id="rightKH" style="height: 100%">
+            <div class="row justify-content-end">
+                <a href="#modalOrderInvoice" type="button" onclick="onClickAddOrderInvoice()"
+                   class="btn btn-primary col-auto mb-3 waves-effect waves-light"
+                   data-bs-toggle="modal">
+                    <i class="fas fa-plus me-2"></i>
+                    Đặt NCC
+                </a>
+            </div>
+            <div class="card">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card-body overflow-auto">
+                            <table id="datatable"
+                                   class="table table-responsive table-hover table-bordered nowrap dataTable no-footer shadow"
+                                   style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                <thead>
+                                <tr class="text-center">
+                                    <th>STT</th>
+                                    <th>Chức năng</th>
+                                    <th>Mã đặt hàng</th>
+                                    <th>NCC</th>
+                                    <td>Ngày đặt</td>
+                                    <td>Hạn nhập</td>
+                                    <td>Ngày nhận hàng</td>
+                                    <th>Trạng thái</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="orderInvoice : ${lstOrderInvoice}" class="text-center">
+                                    <td></td>
+                                    <td class="text-center">
+                                        <a href="#modalOrderInvoice" class="btn btn-info btn-sm"
+                                           th:data-id="${orderInvoice.invoiceOrderId}"
+                                           data-bs-toggle="modal" onclick="onClickEditOrderInvoice(this)">
+                                            Chi tiết
+                                        </a>
+                                    </td>
+                                    <td th:text="${orderInvoice.invoiceOrderCode}">Mã đặt hàng</td>
+                                    <td th:text="${orderInvoice.invoiceSupplierName}">NCC</td>
+                                    <td th:text="${#temporals.format(orderInvoice.orderDate, 'dd-MM-yyyy')}">
+                                    </td>
+                                    <td th:text="${#temporals.format(orderInvoice.orderDelivery, 'dd-MM-yyyy')}">
+                                    </td>
+                                    <td th:text="${#dates.format(orderInvoice.dateInvoice, 'dd-MM-yyyy hh:mm')}"></td>
+                                    <td class="text-center">
+                                        <span th:if="${orderInvoice.dateInvoice != null}" class="badge bg-success">
+                                            Đã nhập
+                                        </span>
+                                        <span th:if="${orderInvoice.dateInvoice == null}" class="badge bg-danger">
+                                            Đã nhập
+                                        </span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- <div id="morris-bar-stacked" class="morris-chart-height morris-charts"></div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalOrderInvoice" class="modal fade show" style="display: block;" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title mt-0" id="titleModelOrderInvoice"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="bodyModalOrderInvoice">
+                    <!-- Tab panes -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" id="btnSubmitEditOrderInvoice"
+                            class="btn btn-success waves-effect waves-light"
+                            data-id="" onclick="onClickSubmitEditOrderInvoice(this)">
+                        Cập nhật
+                    </button>
+                    <button type="button" id="btnSubmitAddOrderInvoice" class="btn btn-success waves-effect waves-light"
+                            onclick="onClickSubmitAddOrderInvoice()">
+                        Lưu
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+</div>
+<div layout:fragment="script">
+    <script th:src="@{/assets/js/order_invoice_014.js}"></script>
+    <script th:src="@{/assets/js/table-edits.min.js}"></script>
+    <!--    <script th:src="@{/assets/js/table-editable.init.js}"></script>-->
+</div>
+</body>
+</html>

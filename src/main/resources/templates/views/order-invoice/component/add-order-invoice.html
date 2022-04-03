@@ -1,0 +1,106 @@
+<div class="row" xmlns:th="http://www.thymeleaf.org">
+    <link rel="stylesheet" th:href="@{/assets/css/bootstrap-datepicker.min.css}">
+    <div class="col-lg-6">
+        <div class="mb-3 row">
+            <div class="col-lg-5">
+                <label for="ip-edit-invoice-code">
+                    Mã đặt hàng
+                </label>
+            </div>
+            <div class="col-lg-7">
+                <input th:disabled="${orderInvoice.dateInvoice != null}" type="text" id="ip-edit-invoice-code"
+                       placeholder="Mã đặt hàng...."
+                       class="form-control" th:value="${orderInvoice.invoiceOrderCode}"/>
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <div class="col-lg-5">
+                <label for="ip-edit-order-code">
+                    Hẹn ngày nhận
+                </label>
+            </div>
+            <div class="col-lg-7">
+                <input th:disabled="${orderInvoice.dateInvoice != null}" type="text" class="form-control"
+                       placeholder="dd-MM-yyyy"
+                       data-date-format="dd-MM-yyyy" data-date-container='#datepicker2' data-provide="datepicker"
+                       data-date-autoclose="true"
+                       th:value="${#temporals.format(orderInvoice.orderDelivery, 'dd-MM-yyyy')}">
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <div class="col-lg-5">
+                <label for="ip-edit-supplier">
+                    Nhà cung cấp
+                </label>
+            </div>
+            <div class="col-lg-7">
+                <select th:disabled="${orderInvoice.dateInvoice != null}" id="ip-edit-supplier"
+                        class="form-control select2">
+                    <option th:each="supplier : ${lstSupplier}"
+                            th:selected="${orderInvoice.invoiceSupplierId == supplier.id}"
+                            th:value="${supplier.id}"
+                            th:text="${supplier.name}">
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <div class="col-lg-5">
+                <label for="ip-edit-invoice-note">
+                    Ghi chú
+                </label>
+            </div>
+            <div class="col-lg-7">
+                <input type="text" id="ip-edit-invoice-note" placeholder="Ghi chú...."
+                       class="form-control" th:value="${orderInvoice.note}"/>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="table-responsive" style="overflow-y: auto; max-height: 60vh">
+            <table class="table table-editable table-nowrap align-middle table-edits">
+                <thead>
+                <tr class="text-center">
+                    <th colspan="1">Sản phẩm</th>
+                    <th colspan="1">Số lượng đặt</th>
+                    <th th:if="${orderInvoice.dateInvoice != null}"></th>
+                </tr>
+                </thead>
+                <tbody id="bodyAddProductOrderInvoice">
+                <tr th:each="detail, theCount : ${lstOrderDetail}" th:data-id="${theCount.index + 1}"
+                    class="tr-order-product">
+                    <td colspan="1" class="text-center"
+                        th:style="${orderInvoice.dateInvoice != null ? 'pointer-events:none' : ''}">
+                        <select th:disabled="${orderInvoice.dateInvoice != null}"
+                                class="form-control select2 ip-edit-product">
+                            <option th:each="product : ${lstProduct}"
+                                    th:value="${product.productId}"
+                                    th:selected="${product.productId == detail.productId}"
+                                    th:text="${product.productName}">
+                            </option>
+                        </select>
+                    </td>
+                    <td th:style="${orderInvoice.dateInvoice != null ? 'pointer-events:none' : ''}" colspan="1"
+                        class="ip-edit-quantity text-end" data-field="quantity" th:text="${detail.quantity}"></td>
+                    <td th:if="${orderInvoice.dateInvoice == null}" style="width: 100px" class="text-center">
+                        <a class="btn btn-outline-secondary btn-sm edit" title="Edit">
+                            <i class="fas fa-pencil-alt"></i>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div th:if="${orderInvoice.dateInvoice == null}" class="text-end">
+            <button class="btn btn-secondary" id="btnAddProduct" onclick="onAddProductOrderInvoice( this)">
+                Thêm sản phẩm
+            </button>
+        </div>
+    </div>
+    <script th:src="@{/assets/js/spectrum.min.js}"></script>
+    <script th:src="@{/assets/js/bootstrap-maxlength.min.js}"></script>
+    <script th:src="@{/assets/js/jquery.bootstrap-touchspin.min.js}"></script>
+    <script th:src="@{/assets/js/select2.min.js}"></script>
+    <script th:src="@{/assets/js/form-advanced.init.js}"></script>
+    <script th:src="@{/assets/js/bootstrap-datepicker.min.js}"></script>
+</div>
