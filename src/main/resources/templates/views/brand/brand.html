@@ -75,20 +75,21 @@
                                                 <span th:text="${iterator.index + 1}"></span>
                                             </td>
                                             <td class="row" th:switch="${brand.getBrandStatus()}">
-                                                <i class="col-4 fas fa-edit" style="color: darkblue;" title="Cập nhật" onclick="onBtnEdit(this)"></i>
-                                                <i th:case="1" class="col-4 fas fa-lock-open" style="color: green;" title="Khoá tài khoản" onclick="onBtnStatus(this)"></i>
-                                                <i th:case="0" class="col-4 fas fa-lock" style="color: red;" title="Mở khoá tài khoản" onclick="onBtnStatus(this)"></i>
-                                                <i class="col-4 fas fa-user-times" style="color: red;" title="Xoá người dùng" onclick="onBtnDelete(this)"></i>
+                                                <i class="col-4 fas fa-edit" style="color: darkblue;" title="Cập nhật"  th:attr="onclick=|onBtnEdit('${iterator.index}')|" ></i>
+                                                <i th:case="1" class="col-4 fas fa-lock-open" style="color: green;" title="Khoá tài khoản" th:attr="onclick=|onBtnStatus('${iterator.index}', this)|"></i>
+                                                <i th:case="0" class="col-4 fas fa-lock" style="color: red;" title="Mở khoá tài khoản" th:attr="onclick=|onBtnStatus('${iterator.index}' , this)|"></i>
+                                                <i class="col-4 fas fa-user-times" style="color: red;" title="Xoá người dùng" th:attr="onclick=|onBtnDelete('${iterator.index}')|"></i>
+                                                <input hidden th:value="${brand.getBrandStatus()}" th:id="'status'+${iterator.index}">
                                             </td>
                                             <td class="text-end">
                                                 <span th:text="${brand.getBrandId()}">Mã thương hiệu</span>
-                                                <input type="hidden" class="check-item" th:value="${brand.getBrandId()}">
+                                                <input type="hidden" th:id="'id' + ${iterator.index}" th:value="${brand.getBrandId()}">
                                             </td>
                                             <td th:text="${brand.getBrandName()}">Tên thương hiệu</td>
                                             <td th:text="${brand.getBrandPhone()}">Số điện thoại</td>
                                             <td th:text="${brand.getBrandEmail()}">Email</td>
                                             <td th:text="${brand.getBrandAddress()}">Địa chỉ</td>
-                                            <td >Anh</td>
+                                            <td class="text-center"><img th:src="${brand.getBrandAvatar()}" alt="avatar" class="border rounded" height="50"></td>
                                             <td th:text="${brand.getBrandNote()}">Ghi chú</td>
                                             <td th:switch="${brand.getBrandStatus()}">
                                                 <span th:case="1" class="status badge bg-success fs-6">Đang hoạt động</span>
@@ -175,14 +176,14 @@
         </div>
         <!-- /.modal-dialog -->
     </div>
-    <!-- End Modal Add Staff -->
+    <!-- End Modal Add Brand -->
 
-    <!-- Modal Edit Staff -->
+    <!-- Modal Edit Brand -->
     <div class="modal fade modal-edit-staff" tabindex="-1" style="display: none;" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title mt-0">Cập nhật người dùng</h5>
+                    <h5 class="modal-title mt-0">Cập nhật thương hiệu</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="formEdit">
@@ -195,53 +196,25 @@
                                 <table class="table-borderless w-100">
                                     <tr>
                                         <th><label class="form-label" for="fullName-edit">Họ và tên</label><span class="required"> *</span></th>
-                                        <td><input class="form-control" type="text" name="fullName" id="fullName-edit" onblur="onType(this)"></td>
+                                        <td><input class="form-control" type="text" name="name" id="fullName-edit" onblur="onType(this)"></td>
                                     </tr>
-                                    <tr>
-                                        <th><label class="form-label" for="staffCode-edit">Mã nhân viên</label><span class="required"> *</span></th>
-                                        <td><input type="text" name="staffCode" id="staffCode-edit" class="form-control" onblur="onType(this)"></td>
-                                    </tr>
-                                    <tr>
-                                        <th><label class="form-label" for="username">Tên đăng nhập</label><span class="required"> *</span></th>
-                                        <td><input type="text" name="username" id="username" class="form-control" onblur="onType(this)"></td>
-                                    </tr>
+
                                     <tr>
                                         <th><label for="email-edit" class="form-label">Email</label><span class="required"> *</span></th>
                                         <td><input type="email" name="email" id="email-edit" class="form-control" title="Không thể sửa email" disabled></td>
                                     </tr>
                                     <tr>
-                                        <th><label for="role-edit" class="form-label">Chức vụ</label><span class="required"> *</span></th>
-                                        <td>
-                                            <select class="form-select" name="role" id="role-edit">
-                                                <option value="" disabled selected>-- Chọn Chức vụ --</option>
-                                                <option value="ROLE_ADMIN">Quản trị viên</option>
-                                                <option value="ROLE_USER">Nhân viên</option>
-                                            </select>
-                                        </td>
+                                        <th><label for="phoneNumber-edit" class="form-label">Điện thoại</label><span class="required"> *</span></th>
+                                        <td><input type="number" name="phone" id="phoneNumber-edit" class="form-control" onblur="onType(this)" placeholder="0323456789"></td>
                                     </tr>
                                 </table>
                             </div>
                             <div class="col-5 px-4">
                                 <table class="table-borderless w-100">
-                                    <tr>
-                                        <th style="width: 140px;"><label for="identityNumber-edit" class="form-label">CMND/CCCD</label><span class="required"> *</span></th>
-                                        <td><input type="number" name="identityNumber" id="identityNumber-edit" class="form-control" onblur="onType(this)"></td>
-                                    </tr>
-                                    <tr>
-                                        <th><label for="phoneNumber-edit" class="form-label">Điện thoại</label><span class="required"> *</span></th>
-                                        <td><input type="number" name="phoneNumber" id="phoneNumber-edit" class="form-control" onblur="onType(this)" placeholder="0323456789"></td>
-                                    </tr>
+
                                     <tr>
                                         <th><label for="address-edit" class="form-label">Địa chỉ</label><span class="required"> *</span></th>
                                         <td><input type="text" name="address" id="address-edit" class="form-control" onblur="onType(this)"></td>
-                                    </tr>
-                                    <tr>
-                                        <th><label for="birthdate-edit" class="form-label">Ngày sinh</label><span class="required"> *</span></th>
-                                        <td>
-                                            <div class="input-daterange input-group" id="datepicker6" data-date-format="dd/mm/yyyy" data-date-autoclose="true" data-provide="datepicker" data-date-container='#datepicker6'>
-                                                <input type="text" name="dateOfBirth"  id="birthdate-edit" class="form-control text-start" onblur="onType(this)" placeholder="dd/MM/yyyy">
-                                            </div>
-                                        </td>
                                     </tr>
                                     <tr>
                                         <th style="vertical-align: top; padding-top: 7px;"><label for="note-edit" class="form-label">Ghi chú</label></th>
@@ -434,24 +407,24 @@
                 errorMessage += 'Email không hợp lệ!\n';
                 flag = false;
             } else {
-                // $.ajax({
-                //     url: `/api/staff/find/email/${email.val()}`,
-                //     async: false,
-                //     type: 'GET',
-                //     contentType: 'application/json',
-                //     dataType: 'json',
-                //     success: function (result) {
-                //         if (result !== 0) {
-                //             email.addClass('error');
-                //             errorMessage += 'Email đã được sử dụng!\n';
-                //             flag = false;
-                //             console.log(errorMessage);
-                //         }
-                //     },
-                //     error: function (error) {
-                //
-                //     }
-                // })
+                $.ajax({
+                    url: `/api/brand/find/email/${email.val()}`,
+                    async: false,
+                    type: 'GET',
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    success: function (result) {
+                        if (result !== 0) {
+                            email.addClass('error');
+                            errorMessage += 'Email đã được sử dụng!\n';
+                            flag = false;
+                            console.log(errorMessage);
+                        }
+                    },
+                    error: function (error) {
+
+                    }
+                })
             }
         }
 
@@ -466,23 +439,23 @@
             errorMessage += 'Số điện thoại không hợp lệ!\n';
             flag = false;
         } else if (type === 'add') {
-            // $.ajax({
-            //     url: `/api/staff/find/phone/${phoneNumber.val()}`,
-            //     async: false,
-            //     type: 'GET',
-            //     contentType: 'application/json',
-            //     dataType: 'json',
-            //     success: function (result) {
-            //         if (result !== 0) {
-            //             phoneNumber.addClass('error');
-            //             errorMessage += 'Số điện thoại đã được sử dụng!\n';
-            //             flag = false;
-            //         }
-            //     },
-            //     error: function (error) {
-            //
-            //     }
-            // })
+            $.ajax({
+                url: `/api/brand/find/phone/${phoneNumber.val()}`,
+                async: false,
+                type: 'GET',
+                contentType: 'application/json',
+                dataType: 'json',
+                success: function (result) {
+                    if (result !== 0) {
+                        phoneNumber.addClass('error');
+                        errorMessage += 'Số điện thoại đã được sử dụng!\n';
+                        flag = false;
+                    }
+                },
+                error: function (error) {
+
+                }
+            })
         }
 
         const address = (type === 'add') ? $('#address') : $('#address-edit');
@@ -493,14 +466,6 @@
 
         if (type === 'edit') {
             const username = $('#staffCode-edit')
-            if (username.val() === '') {
-                username.addClass('error');
-                flag = false;
-            }
-        }
-
-        if (type === 'edit') {
-            const username = $('#username')
             if (username.val() === '') {
                 username.addClass('error');
                 flag = false;
@@ -578,11 +543,12 @@
     $('#btnEdit').click(function () {
         let data = {};
         let formData = $('#formEdit').serializeArray();
+        console.log(formData);
         $.each(formData, function (i, v) {
             data["" + v.name + ""] = v.value;
         });
-        data["dateOfBirth"] = moment(data["dateOfBirth"], 'DD-MM-YYYY').format('YYYY-MM-DD');
 
+        console.log(data);
         if(validateForm('edit')) {
             editStaff(data);
         } else {
@@ -593,7 +559,7 @@
     //API edit Staff
     function editStaff(data) {
         $.ajax({
-            url: '/api/staff',
+            url: '/api/brand',
             type: 'PUT',
             contentType: 'application/json',
             data: JSON.stringify(data),
@@ -613,7 +579,7 @@
                 Toast.fire({
                     icon: 'success',
                     title: 'Cập nhật thành công'
-                }).then(() => window.location.href = "/staff");
+                }).then(() => window.location.href = "/brand");
             },
             error: function (error) {
                 const Toast = Swal.mixin({
@@ -635,29 +601,23 @@
         })
     }
 
-    function onBtnEdit (element) {
-        const tag = $(element).parent().parent().find('.check-item');
+    function onBtnEdit (id) {
+        const tag = document.getElementById("id" + id).value;
+        console.log(tag);
         $.ajax({
-            url: `/api/staff/${tag.val()}`,
+            url: '/api/brand/' + tag,
             type: 'GET',
             contentType: 'application/json',
             success: function (result) {
                 // Input image
-                $('#img-temp-edit').attr('src', result.avatar);
-                $('#img-base64-edit').val(result.avatar);
-
-                $('#id').val(result.id);
-                $('#fullName-edit').val(result.fullName);
-                $('#staffCode-edit').val(result.staffCode);
-                $('#username').val(result.staffCode);
-                $('#email-edit').val(result.email);
-                $('#role-edit').val(result.role);
-                $('#identityNumber-edit').val(result.identityNumber);
-                $('#phoneNumber-edit').val(result.phoneNumber);
-                $('#address-edit').val(result.address);
-                $('#birthdate-edit').val(moment(result.dateOfBirth).format('DD/MM/YYYY'));
-                $('#note-edit').val(result.note);
-
+                $('#img-temp-edit').attr('src', result.brandAvatar);
+                $('#img-base64-edit').val(result.brandAvatar);
+                $('#id').val(result.brandId);
+                $('#fullName-edit').val(result.brandName);
+                $('#email-edit').val(result.brandEmail);
+                $('#phoneNumber-edit').val(result.brandPhone);
+                $('#address-edit').val(result.brandAddress);
+                $('#note-edit').val(result.brandNote);
                 $('.modal-edit-staff').modal('show');
             },
             error: function (error) {
@@ -666,34 +626,28 @@
         })
     }
 
-    function onBtnStatus (element) {
-        const tag = $(element).parent().parent();
-        const lock = $(element).hasClass('fa-lock');
-        const status = lock ? "0" : "1";
-        const length_of_row = $('table#datatable th').length;
+    function onBtnStatus (id , element) {
+        const tag = document.getElementById("id" + id).value;
+        let status = document.getElementById("status" + id).value;
+        var a = false;
+        console.log(status);
+        if(status === "0"){
+            status = 1;
+        }else {
+            status = 0;
+            a = true;
+        }
         $.ajax({
-            url: `/api/staff/status/${tag.find('.check-item').val()}/${status}`,
+            url: `/api/brand/status/${tag}/${status}`,
             type: 'PUT',
             contentType: 'application/json',
             success: function (result) {
                 Swal.fire(
-                    lock ? 'Đã khoá tài khoản!' : 'Đã mở khoá tài khoản',
-                    `Mã nhân viên ${tag.find('.staff-code').text()}`,
+                    a ? 'Đã khoá tài khoản!' : 'Đã mở khoá tài khoản',
+                    `Mã thương hiệu ${tag}`,
                     'success'
                 ).then(() => {
-                    if (lock) {
-                        $(element).removeClass('fa-lock-open').addClass('fa-lock').css('color', 'red');
-                        tag.find('.status').text("Ngừng hoạt động");
-                        tag.find('.status').removeClass('badge bg-success');
-                        tag.find('.status').addClass('badge bg-danger');
-                    } else {
-                        $(element).removeClass('fa-lock').addClass('fa-lock-open').css('color', 'green');
-                        tag.find('.status').text("Đang hoạt động");
-                        tag.find('.status').removeClass('badge bg-danger');
-                        tag.find('.status').addClass('badge bg-success');
-                    }
-
-                    hoverIconLock();
+                    window.location.href = "/brand";
                 })
             },
             error: function (error) {
@@ -706,8 +660,8 @@
         })
     }
 
-    function onBtnDelete (element) {
-        const tag = $(element).parent().parent();
+    function onBtnDelete (id) {
+        const tag = document.getElementById("id" + id).value;
         const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
                 confirmButton: 'btn btn-success mx-2',
@@ -717,7 +671,7 @@
         })
 
         swalWithBootstrapButtons.fire({
-            title: `Bạn chắc chắn muốn xoá <br> Nhân viên mã có ${tag.find('.staff-code').text()} chứ?`,
+            title: `Bạn chắc chắn muốn xoá <br> Nhân viên mã có ${tag} chứ?`,
             text: "Chú ý không thể hoàn tác sau khi thực hiện tác vụ này!",
             icon: 'warning',
             showCancelButton: true,
@@ -732,11 +686,11 @@
                     'success'
                 ).then(
                     $.ajax({
-                        url: `/api/staff/delete/${tag.find('.check-item').val()}`,
+                        url: `/api/brand/delete/${tag}`,
                         type: 'PUT',
                         contentType: 'application/json',
                         success: function (result) {
-                            window.location.href = "/staff";
+                            window.location.href = "/brand";
                         },
                         error: function (error) {
                             console.log(error);
