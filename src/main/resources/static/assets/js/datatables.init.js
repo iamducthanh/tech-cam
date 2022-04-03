@@ -27,7 +27,7 @@ $(document).ready(function() {
                         titleAttr : 'Hiển thị tuỳ chỉnh'
                     }],
 
-        scrollY: "55vh",
+        scrollY: "54vh",
         scrollX: true,
         scrollCollapse: true,
 

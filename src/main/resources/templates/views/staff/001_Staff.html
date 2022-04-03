@@ -603,21 +603,14 @@
             dataType: 'json',
             success: function (result) {
                 $('.modal-add-staff').modal('hide');
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                    }
-                })
-                Toast.fire({
+                Swal.fire({
+                    position: 'center',
                     icon: 'success',
-                    title: 'Thêm thành công'
-                }).then(() => window.location.href = "/staff");
+                    title: 'Thêm thành công',
+                    showConfirmButton: true,
+                    timerProgressBar: true,
+                    timer: 2000
+                }).then(()=> window.location.reload());
             },
             error: function (error) {
                 const Toast = Swal.mixin({
@@ -665,21 +658,14 @@
             dataType: 'json',
             success: function (result) {
                 $('.modal-edit-staff').modal('hide');
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                    }
-                })
-                Toast.fire({
+                Swal.fire({
+                    position: 'center',
                     icon: 'success',
-                    title: 'Cập nhật thành công'
-                }).then(() => window.location.href = "/staff");
+                    title: 'Cập nhật thành công',
+                    showConfirmButton: true,
+                    timerProgressBar: true,
+                    timer: 2000
+                }).then(()=> window.location.reload());
             },
             error: function (error) {
                 const Toast = Swal.mixin({
