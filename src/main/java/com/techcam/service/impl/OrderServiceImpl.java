@@ -188,18 +188,10 @@ public class OrderServiceImpl implements IOrderService {
         int itemQuantity = request.getProductDetails().stream().mapToInt(e -> e.getQuantity()).sum();
         OrderProductRequest orderRequestProduct = getTotalProduct(productEntities, request.getProductDetails());
         int totalDiscount = 0;
+        VoucherEntity voucher = new VoucherEntity();
         if (Objects.nonNull(voucherResponse)) {
-            if (voucherResponse.getVoucherKey().equals(VoucherKey.UNUSED.name())) {
-                if (checkPermissionVoucher(productEntities)) {
-                    throw new TechCamExp(ConstantsErrorCode.VOUCHER_ERROR);
-                } else {
-                    totalDiscount = valueVoucher(voucherResponse, orderRequestProduct.getTotalAmount());
-                }
-            } else {
-                totalDiscount = valueVoucher(voucherResponse, orderRequestProduct.getTotalAmount()) + orderRequestProduct.getTotalDiscount();
-            }
-        } else {
-            totalDiscount = orderRequestProduct.getTotalDiscount();
+            totalDiscount = valueVoucher(voucherResponse, orderRequestProduct.getTotalAmount()) + orderRequestProduct.getTotalDiscount();
+            voucher.setId(voucherResponse.getVoucherId());
         }
         String orderStratus = "";
         if (request.getOrderType().equals(OrderType.COUNTER.name()) || request.getPaymentMethod().equals(OrderMethod.PAYMENT.name())) {
@@ -217,7 +209,7 @@ public class OrderServiceImpl implements IOrderService {
         OrdersEntity ordersEntity = new OrdersEntity().builder()
 //                .id(UUID.randomUUID().toString())
                 .customer(MODEL_MAPPER.map(customerInfoResponse, CustomerEntity.class))
-                .voucher(Objects.isNull(voucherResponse) ? null : MODEL_MAPPER.map(voucherResponse, VoucherEntity.class))
+                .voucher(Objects.isNull(voucher.getId())? null : voucher)
                 .ipAddress(request.getIpAddress())
                 .orderType(request.getOrderType())
                 .recipientName(StringUtils.isNotBlank(request.getRecipientName()) ? request.getRecipientName() : request.getCustomer().getFullName())
@@ -245,7 +237,7 @@ public class OrderServiceImpl implements IOrderService {
         }
         System.out.println(ordersEntity);
         OrdersEntity orderSave = ordersRepo.save(ordersEntity);
-        if(request.getOrderType().equalsIgnoreCase(OrderType.ONLINE.name())) {
+        if (request.getOrderType().equalsIgnoreCase(OrderType.ONLINE.name())) {
             GetInfoOrder infoOrder = GetInfoOrder.builder()
                     .id(orderSave.getId())
                     .orderDate(orderSave.getOrderDate())
@@ -296,12 +288,12 @@ public class OrderServiceImpl implements IOrderService {
             if (request.getOrderType().equals(OrderType.COUNTER.name()) || request.getPaymentMethod().equals(OrderMethod.PAYMENT.name())) {
                 productRepo.saveAll(productEntities);
             }
-            if (Objects.nonNull(voucherResponse)) {
-                // todo lưu ý hỏi ngọc save voucher thế này được không
-                voucherResponse.setVoucherQuantity(voucherResponse.getVoucherQuantity() - 1);
-                VoucherRequest voucherRequest = MODEL_MAPPER.map(voucherResponse, VoucherRequest.class);
-                voucherService.createVoucher(voucherRequest);
-            }
+//            if (Objects.nonNull(voucherResponse)) {
+//                // todo lưu ý hỏi ngọc save voucher thế này được không
+//                voucherResponse.setVoucherQuantity(voucherResponse.getVoucherQuantity() - 1);
+//                VoucherRequest voucherRequest = MODEL_MAPPER.map(voucherResponse, VoucherRequest.class);
+//                voucherService.createVoucher(voucherRequest);
+//            }
             if (request.getOrderType().equals(OrderType.ONLINE.name())) {
                 if (request.getPaymentMethod().equalsIgnoreCase(OrderMethod.PAYMENT.name())) {
                     String vnpay = VNPAYService.payments(ordersEntity.getTax() - ordersEntity.getTotalAmount(), vnp_ref, httpServletRequest);
@@ -313,7 +305,7 @@ public class OrderServiceImpl implements IOrderService {
                 }
             }
             if (request.getOrderMethod().equals(OrderType.COUNTER.name())) {
-                saveLog(DescLog.INSERT_ORDER,"HD00" +orderSave.getId());
+                saveLog(DescLog.INSERT_ORDER, "HD00" + orderSave.getId());
             }
 
         } catch (Exception e) {
@@ -352,9 +344,10 @@ public class OrderServiceImpl implements IOrderService {
 
     private int valueVoucher(VoucherResponse voucherResponse, int sumMoney) {
         if (voucherResponse.getVoucherTypeDiscount().equals("%")) {
-            return (int) (sumMoney * voucherResponse.getVoucherDiscount());
+            return (int) ((sumMoney * voucherResponse.getVoucherDiscount())/100);
         }
-        return voucherResponse.getVoucherDiscount().intValue();
+        int sum = Math.toIntExact(voucherResponse.getVoucherDiscount());
+        return sum;
     }
 
     private boolean checkPermissionVoucher(List<ProductEntity> productEntities) {
@@ -373,11 +366,11 @@ public class OrderServiceImpl implements IOrderService {
         List<String> ids = requests.getOrderProductDetailsRequests().stream().map(OrderProductDetailsRequest::getId).collect(Collectors.toList());
         List<String> productIds = requests.getOrderProductDetailsRequests().stream().map(OrderProductDetailsRequest::getProductId).collect(Collectors.toList());
         List<OrderdetailEntity> orderDetailEntities = orderDetailsRepo.findAllByIdNotInAndOrdersIdAndDeleteFlagFalse(ids, requests.getOrderId());
-        List<ProductEntity> productEntities=productRepo.findAllByIdInAndDeleteFlagFalse(productIds);
+        List<ProductEntity> productEntities = productRepo.findAllByIdInAndDeleteFlagFalse(productIds);
         productEntities.stream().filter(productEntity -> {
-            requests.getOrderProductDetailsRequests().stream().filter(item->{
-                if(productEntity.getId().equals(item.getProductId())){
-                    if(productEntity.getQuantity()<item.getQuantity()){
+            requests.getOrderProductDetailsRequests().stream().filter(item -> {
+                if (productEntity.getId().equals(item.getProductId())) {
+                    if (productEntity.getQuantity() < item.getQuantity()) {
                         throw new TechCamExp(ConstantsErrorCode.ORDER_PRODUCT_OUT_OF_STOCK);
                     }
                 }
@@ -436,7 +429,7 @@ public class OrderServiceImpl implements IOrderService {
 //            int itemQuantity = orderDetailsSaves.stream().mapToInt(e -> e.getQuantity()).sum();
             editOrderEntity(orderDetailsSaveALl, orders);
             ordersRepo.save(orders);
-            saveLog(DescLog.EDIT_ORDER_VERIFY,"HD00"+orders.getId());
+            saveLog(DescLog.EDIT_ORDER_VERIFY, "HD00" + orders.getId());
         } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(CommonStatus.FAIL.name());
@@ -494,7 +487,7 @@ public class OrderServiceImpl implements IOrderService {
         }
         // kiểm tra xem người dùng có thay đổi người nhận hàng không thiếu ngày nhận hàng
         Date deliveryDate = null;
-        if(StringUtils.isNotBlank(request.getDeliveryDate())) {
+        if (StringUtils.isNotBlank(request.getDeliveryDate())) {
             try {
                 deliveryDate = format.parse(request.getDeliveryDate());
             } catch (ParseException e) {
@@ -517,7 +510,7 @@ public class OrderServiceImpl implements IOrderService {
                 sendMail(String.format(MessageUtil.MAIL_CONFIRM_ORDER, orders.getId(), ConvertDateUtil.convertDateTime(orders.getDeliveryDate())), orders.getCustomer().getEmail(),
                         MessageUtil.SUBJECT_MAIL_ORDER, MessageUtil.FROM_MAIL);
             }
-            saveLog(DescLog.CONFIRM_ORDER,"HD00"+orders.getId());
+            saveLog(DescLog.CONFIRM_ORDER, "HD00" + orders.getId());
         } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(CommonStatus.FAIL.name());
@@ -561,7 +554,7 @@ public class OrderServiceImpl implements IOrderService {
             orders.setTransactionStatus(OrderStatus.SHIPPING.name());
             orders.setModifierDate(new Date());
             ordersRepo.save(orders);
-            saveLog(DescLog.CONFIRM_EXPORT_ORDER,"HD00" +orders.getId());
+            saveLog(DescLog.CONFIRM_EXPORT_ORDER, "HD00" + orders.getId());
         } catch (Exception e) {
             e.printStackTrace();
             orderResponse.setStatus(CommonStatus.FAIL.name());
@@ -600,8 +593,8 @@ public class OrderServiceImpl implements IOrderService {
         receiptVoucherEntity.setPayerPhone(orders.getCustomer().getPhoneNumber());
         receiptVoucherEntity.setReceiptName(MessageUtil.RECEIPT_NAME_ORDER);
         receiptVoucherEntity.setDescription(String.format(MessageUtil.SAVE_ORDER_CUSTOMER_DONE, orders.getId()));
-        receiptVoucherEntity.setGivenMoney(Objects.isNull(request.getGivenMoney()) ? (orders.getTax()-orders.getTotalAmount()) : request.getGivenMoney());
-        receiptVoucherEntity.setReturnMoney(Objects.isNull(request.getGivenMoney()) ? 0 :request.getGivenMoney() - receiptVoucherEntity.getReceiptValue());
+        receiptVoucherEntity.setGivenMoney(Objects.isNull(request.getGivenMoney()) ? (orders.getTax() - orders.getTotalAmount()) : request.getGivenMoney());
+        receiptVoucherEntity.setReturnMoney(Objects.isNull(request.getGivenMoney()) ? 0 : request.getGivenMoney() - receiptVoucherEntity.getReceiptValue());
 //        receiptVoucherEntity.setOrders(orders);
         try {
             ordersRepo.save(orders);
@@ -610,7 +603,7 @@ public class OrderServiceImpl implements IOrderService {
                 sendMail(MessageUtil.MAIL_CUSTOMER_ORDER_DONE, orders.getCustomer().getEmail(),
                         MessageUtil.SUBJECT_MAIL_ORDER, MessageUtil.FROM_MAIL);
             }
-            saveLog(DescLog.PAY_ORDER,"HD00"+orders.getId());
+            saveLog(DescLog.PAY_ORDER, "HD00" + orders.getId());
         } catch (Exception e) {
             e.printStackTrace();
             orderResponse.setStatus(CommonStatus.FAIL.name());
@@ -664,7 +657,7 @@ public class OrderServiceImpl implements IOrderService {
             orders.setModifierDate(new Date());
             orders.setModifierBy(getInfoStaff().getUsername());
             ordersRepo.save(orders);
-            saveLog(DescLog.EDIT_ORDER_VERIFY,"HD00"+ orders.getId());
+            saveLog(DescLog.EDIT_ORDER_VERIFY, "HD00" + orders.getId());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -733,7 +726,7 @@ public class OrderServiceImpl implements IOrderService {
                 voucherEntity.setQuantity(voucherEntity.getQuantity() + 1);
                 voucherRepo.save(voucherEntity);
             }
-            saveLog(DescLog.CANCEL_ORDER,"HD00" + orders.getId());
+            saveLog(DescLog.CANCEL_ORDER, "HD00" + orders.getId());
         } catch (Exception e) {
             e.printStackTrace();
             orderResponse.setStatus(CommonStatus.FAIL.name());
@@ -742,8 +735,8 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     @Override
-    public List<VoucherUseByOrderResponse> findAllByVoucherId(String voucherId) {
-        return ordersRepo.findAllByVoucherIdAndDeleteFlagIsFalse(voucherId)
+    public List<VoucherUseByOrderResponse> findAllByVoucherId(String code) {
+        return ordersRepo.findAllByVoucherCodeAndTransactionStatusNotInAndDeleteFlagFalse(code, OrderStatus.CANCEL.name())
                 .stream().map(this::mapToVoucherUseResponse).collect(Collectors.toList());
     }
 
@@ -794,13 +787,13 @@ public class OrderServiceImpl implements IOrderService {
         return customerInfoResponse;
     }
 
-    private VoucherResponse getInfoVoucher(String code,String phoneNumber) {
+    private VoucherResponse getInfoVoucher(String code, String phoneNumber) {
         VoucherResponse voucherResponse = voucherService.findFistByCode(code);
-        if(Objects.nonNull(voucherResponse)){
-           OrdersEntity orders= ordersRepo.findFirstByVoucherCodeAndCustomerPhoneNumber(code,phoneNumber);
-           if(Objects.nonNull(orders)){
-               throw new TechCamExp(ConstantsErrorCode.VOUCHER_NOT_EXISTS);
-           }
+        if (Objects.nonNull(voucherResponse)) {
+            OrdersEntity orders = ordersRepo.findFirstByVoucherCodeAndCustomerPhoneNumberAndTransactionStatusNotIn(code, phoneNumber, OrderStatus.CANCEL.name());
+            if (Objects.nonNull(orders)) {
+                throw new TechCamExp(ConstantsErrorCode.VOUCHER_NOT_EXISTS);
+            }
         }
         return voucherResponse;
     }
@@ -824,17 +817,19 @@ public class OrderServiceImpl implements IOrderService {
         staffEntity.setUsername("aaa");
         return staffEntity;
     }
-    public double getSaleProduct(String id){
+
+    public double getSaleProduct(String id) {
         double sale = 0.1;
-      return sale;
+        return sale;
     }
-    public void saveLog(String typeMethod,String id) {
+
+    public void saveLog(String typeMethod, String id) {
         StaffEntity staffEntity = getInfoStaff();
         TechCamlogRequest techCamlogRequest = new TechCamlogRequest();
         techCamlogRequest.setCreateBy(staffEntity.getUsername());
         techCamlogRequest.setStaffId(staffEntity.getId());
         techCamlogRequest.setOperationLink("thêm link sau ");
-        techCamlogRequest.setOperationDesc(String.format(DescLog.LOG_ORDER, staffEntity.getUsername(),typeMethod, id));
+        techCamlogRequest.setOperationDesc(String.format(DescLog.LOG_ORDER, staffEntity.getUsername(), typeMethod, id));
         techCamlogRequest.setOperationKey(id);
         techCamLogService.saveLog(techCamlogRequest);
 
