@@ -397,6 +397,7 @@ public class OrderServiceImpl implements IOrderService {
                             if (Objects.nonNull(item.getId()) && e.getId().equals(item.getId())) {
                                 if (e.getQuantity() != item.getQuantity()) {
                                     e.setQuantity(item.getQuantity());
+                                    e.setNote(item.getNote());
                                     orderDetailsSaves.add(e);
                                 }
                             }
@@ -559,8 +560,10 @@ public class OrderServiceImpl implements IOrderService {
             orders.setStockKeeper(getInfoStaff().getUsername());
             orders.setTransactionStatus(OrderStatus.SHIPPING.name());
             orders.setModifierDate(new Date());
+            ordersRepo.save(orders);
             saveLog(DescLog.CONFIRM_EXPORT_ORDER,"HD00" +orders.getId());
         } catch (Exception e) {
+            e.printStackTrace();
             orderResponse.setStatus(CommonStatus.FAIL.name());
         }
         return orderResponse;
@@ -609,6 +612,7 @@ public class OrderServiceImpl implements IOrderService {
             }
             saveLog(DescLog.PAY_ORDER,"HD00"+orders.getId());
         } catch (Exception e) {
+            e.printStackTrace();
             orderResponse.setStatus(CommonStatus.FAIL.name());
         }
         return orderResponse;
