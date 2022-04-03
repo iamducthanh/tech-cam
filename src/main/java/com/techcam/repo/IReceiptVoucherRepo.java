@@ -14,4 +14,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface IReceiptVoucherRepo extends JpaRepository<ReceiptVoucherEntity,String> {
+    ReceiptVoucherEntity findFirstByIdAndDeleteFlagFalse(String id);
 }

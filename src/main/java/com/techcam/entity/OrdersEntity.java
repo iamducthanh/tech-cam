@@ -25,7 +25,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "orders", schema = "poly_techcam", catalog = "")
 public class OrdersEntity {
-    private String id;
+    private Integer id;
     private Date orderDate;
     private Integer tax;
     private String transactionStatus;
@@ -55,6 +55,9 @@ public class OrdersEntity {
     private VoucherEntity voucher;
     private String bankTransaction;
     private List<OrderdetailEntity> ordersEntities;
+    private Integer feeDelivery;
+    private String shipperName;
+    private String shipperPhone;
 //    private List<ReceiptVoucherEntity> orReceiptVoucherEntities;
 //    @OneToMany(mappedBy = "orders")
 //    public List<ReceiptVoucherEntity> getOrReceiptVoucherEntities() {
@@ -93,11 +96,11 @@ public class OrdersEntity {
     }
     @Id
     @Column(name = "id")
-    public String getId() {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Integer getId() {
         return id;
     }
-
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -357,6 +360,33 @@ public class OrdersEntity {
 
     public void setCustomer(CustomerEntity customer) {
         this.customer = customer;
+    }
+    @Basic
+    @Column(name = "ship_fee")
+    public Integer getFeeDelivery() {
+        return feeDelivery;
+    }
+
+    public void setFeeDelivery(Integer feeDelivery) {
+        this.feeDelivery = feeDelivery;
+    }
+    @Basic
+    @Column(name = "shipper")
+    public String getShipperName() {
+        return shipperName;
+    }
+
+    public void setShipperName(String shipperName) {
+        this.shipperName = shipperName;
+    }
+    @Basic
+    @Column(name = "shipper_phone")
+    public String getShipperPhone() {
+        return shipperPhone;
+    }
+
+    public void setShipperPhone(String shipperPhone) {
+        this.shipperPhone = shipperPhone;
     }
 
     @Override

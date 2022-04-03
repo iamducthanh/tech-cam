@@ -22,4 +22,7 @@ public interface MessageUtil {
     String MAIL_CONFIRM_ORDER="Tech Cam xác nhận đơn hàng %s của bạn.<br><br> Sản phẩm sẽ được giao đến bạn vào %s.<br><br> Mọi thắc mắc xin liên hệ : 0978825572";
     String MAIL_ORDER_REGISTRATION_ONLINE="Chúc Mừng quý khách đã đặt hàng thành công tại TechCam.<br><br> Mã đơn hàng là : %s. <br><br> Chúng tôi sẽ liên hệ sớm nhất đến quý khách <br><br> Hoặc liên hệ với chúng tôi qua Hotline : 0978825572";
     String VOUCHER_DESCRIPTION_SEND_BIRTHDAY= "Voucher gửi tặng sinh nhật khách hàng";
+
+    // mai xóa hóa đơn gửi cho oogn quản lí.
+    String MAIL_DELETE_RECEIPT_VOUCHER="%s vừa xóa phiếu thu %s với lí do : %s";
 }

@@ -146,22 +146,21 @@ public class VoucherApi {
         }
         return ResponseEntity.ok(voucherResponse);
     }
-
-    @GetMapping(params = "code")
-    public ResponseEntity<VoucherResponse> getAllByCode(@RequestParam("code") String code) {
+    @CrossOrigin(origins = "http://localhost:8888")
+    @GetMapping(value = "check-code",params = "code")
+    public ResponseEntity<VoucherResponse> getAllByCode(@RequestParam("code") String code, @RequestParam("sumMoney") String sumMoney) {
         List<VoucherResponse> lstVoucher = voucherService.findAllByCode(code);
         if (lstVoucher.isEmpty()) {
             // voucher không đúng
             throw new TechCamExp(ConstantsErrorCode.VOUCHER_NOT_EXISTS);
         }
         VoucherResponse response = null;
-        for (VoucherResponse x : lstVoucher) {
-            List<VoucherUseByOrderResponse> lstUsedByVoucherId = orderService.findAllByVoucherId(x.getVoucherId());
-            if (x.getVoucherEndDate().compareTo(new Date()) <= 0 && x.getVoucherQuantity() > lstUsedByVoucherId.size()) {
-                response = x;
-                break;
+        List<VoucherUseByOrderResponse> lstUsedByVoucherId = orderService.findAllByVoucherId(code);
+
+            if (lstVoucher.get(0).getVoucherEndDate().compareTo(new Date()) >= 0 && lstVoucher.get(0).getVoucherQuantity() > lstUsedByVoucherId.size() &&
+                    Integer.parseInt(sumMoney) > lstVoucher.get(0).getTypeDiscountMinAmount()) {
+                response = lstVoucher.get(0);
             }
-        }
         if (Objects.isNull(response)) {
             // VOUCHER đã hết lượt dùng
             throw new TechCamExp(ConstantsErrorCode.VOUCHER_END_USED);
