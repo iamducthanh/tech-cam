@@ -21,6 +21,6 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class EditOrderDetailRequest {
-    private String orderId;
+    private Integer orderId;
     private List<OrderProductDetailsRequest> orderProductDetailsRequests;
 }

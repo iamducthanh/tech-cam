@@ -19,7 +19,9 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Project_name : SMW_TECHCAM
@@ -35,8 +37,9 @@ public class SupplierService implements ISupplierService {
     private ISupplierRepo supplierRepository;
 
     private ModelMapper modelMapper = new ModelMapper();
+
     @Override
-    public List<SupplierResponseDTO> findAllByDeleteFlagFalse(){
+    public List<SupplierResponseDTO> findAllByDeleteFlagFalse() {
         List<SupplierEntity> supplierEntities = supplierRepository.findAllByDeleteFlagFalse();
         List<SupplierResponseDTO> supplierResponseDTOS = new ArrayList<>();
         supplierEntities.forEach(x ->{
@@ -48,8 +51,7 @@ public class SupplierService implements ISupplierService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public SupplierResponseDTO create(SupplierDTO supplierDTO){
-
+    public SupplierResponseDTO create(SupplierDTO supplierDTO) {
         if(supplierRepository.findByEmail(supplierDTO.getEmail()).isPresent()){
             throw new TechCamExp(ConstantsErrorCode.EMAIL_EXIST);
         }
@@ -106,6 +108,20 @@ public class SupplierService implements ISupplierService {
         SupplierEntity supplierEntity = supplierRepository.findByIdAndDeleteFlagFalse(id).get();
         supplierEntity.setDeleteFlag(true);
         supplierRepository.save(supplierEntity);
+    }
+
+    @Override
+    public List<SupplierResponseDTO> getAll() {
+        return supplierRepository.findAllByDeleteFlagFalse().stream()
+                .map(this::mapToSupllierResponse).collect(Collectors.toList());
+    }
+
+    private <R> SupplierResponseDTO mapToSupllierResponse(SupplierEntity x) {
+        if (Objects.isNull(x)) return new SupplierResponseDTO();
+        SupplierResponseDTO s = new SupplierResponseDTO();
+        s.setId(x.getId());
+        s.setName(x.getName());
+        return s;
     }
 
 }

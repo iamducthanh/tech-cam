@@ -11,6 +11,7 @@ import com.techcam.repo.IOrderRepo;
 import com.techcam.repo.IVoucherCustomerRepo;
 import com.techcam.repo.IVoucherRepo;
 import com.techcam.service.IVoucherService;
+import com.techcam.type.OrderStatus;
 import com.techcam.util.ConvertUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -75,17 +76,18 @@ public class VoucherService implements IVoucherService {
 
     @Override
     public List<VoucherResponse> findAllByCode(String code) {
-        return voucherRepo.findAllByCodeAndDeleteFlagIsFalse(code).stream()
+        return voucherRepo.findAllByCodeAndDeleteFlagIsFalse(code.toUpperCase()).stream()
                 .map(this::mapToVoucherDto).collect(Collectors.toList());
     }
 
     @Override
     public VoucherResponse findFistByCode(String code) {
-        List<VoucherResponse> lstVoucher = findAllByCode(code);
+        List<VoucherResponse> lstVoucher = findAllByCode(code.toUpperCase());
         VoucherResponse response = null;
+        List<OrdersEntity> lstUsedByVoucherId = orderRepo.findAllByVoucherCodeAndTransactionStatusNotInAndDeleteFlagFalse(code, OrderStatus.CANCEL.name());
         for (VoucherResponse x : lstVoucher) {
-            List<OrdersEntity> lstUsedByVoucherId = orderRepo.findAllByVoucherIdAndDeleteFlagIsFalse(x.getVoucherId());
-            if (x.getVoucherEndDate().compareTo(new Date()) <= 0
+//            List<OrdersEntity> lstUsedByVoucherId = orderRepo.findAllByVoucherCodeAndDeleteFlagIsFalseAndTransactionStatusNotIn(x.getVoucherId());
+            if (x.getVoucherEndDate().compareTo(new Date()) >= 0
                     && x.getVoucherQuantity() > lstUsedByVoucherId.size()) {
                 response = x;
                 break;
@@ -219,7 +221,7 @@ public class VoucherService implements IVoucherService {
         if (voucherEntity == null) return new VoucherResponse();
         return VoucherResponse.builder()
                 .voucherId(voucherEntity.getId())
-                .voucherCode(voucherEntity.getCode())
+                .voucherCode(voucherEntity.getCode().toUpperCase())
                 .voucherName(voucherEntity.getName())
                 .voucherStartDate(voucherEntity.getStartDate())
                 .voucherEndDate(voucherEntity.getEndDate())

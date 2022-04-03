@@ -37,4 +37,6 @@ public interface IStaffRepo extends JpaRepository<StaffEntity, String> {
 
     // Find staff by phoneNumber
     List<StaffEntity> findByPhoneNumber(String phoneNumber);
+
+    List<StaffEntity> findAllByRoleInAndDeleteFlagFalse(List<String> role);
 }

@@ -4,6 +4,7 @@ import com.techcam.entity.StaffEntity;
 import com.techcam.service.impl.StaffDetailsServiceImpl;
 import com.techcam.service.impl.StaffService;
 import com.techcam.util.CookieUtil;
+import com.techcam.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private StaffDetailsServiceImpl staffDetailsService;
     private final StaffService staffService;
 
+    private final SessionUtil sessionUtil;
+
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -54,14 +57,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/change-res    et-password/**",
                 "/api/count_login_false/**",
                 "/index",
-//                "/api/v1/orders",
+                "/api/voucher/**",
                 "/api/v1/orders/**",
                 "/vnp-pay/check-out/order/**",
-                "/api/staff/**",
-                "/staff/**",
-                "/api/v1/customer/**",
-                "/customer/**",
-                "/customer"
+                "/api/receipt-voucher/**"
         ).permitAll();
 
         http.authorizeRequests().antMatchers("/**").access("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')");
@@ -86,6 +85,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     staffService.saveStaff(staffEntity);
                     response.sendRedirect(request.getContextPath());
                     cookieUtil.add("username", username, 168); //7 days
+                    sessionUtil.addObject("username", username);
                 })
                 .and().logout().logoutUrl("/logout").logoutSuccessUrl("/login?status=logout");
 

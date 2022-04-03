@@ -1,6 +1,7 @@
 package com.techcam.repo;
 
 import com.techcam.dto.response.invoiceOrder.InvoiceOrderResponse;
+import com.techcam.entity.GoodsOrderDetailEntity;
 import com.techcam.entity.GoodsOrderEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -17,4 +18,6 @@ import java.util.List;
 
 public interface IGoodsOrderRepo extends JpaRepository<GoodsOrderEntity, String> {
     List<GoodsOrderEntity> findAllByDeleteFlagIsFalse();
+
+    GoodsOrderEntity getByIdAndDeleteFlagIsFalse(String orderId);
 }

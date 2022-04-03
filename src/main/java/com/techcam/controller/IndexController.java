@@ -32,12 +32,12 @@ public class IndexController {
         return "views/index";
     }
 
-    @GetMapping("/index")
-    public String index1(HttpServletRequest request) {
-        System.out.println(getDevice(request));
-        System.out.println(orderService.findAllOrdersDetailsById("39f49e48-3d80-4065-ab06-79a26c22a3a3").size());
-        return "test_vnpay";
-    }
+//    @GetMapping("/index")
+//    public String index1(HttpServletRequest request) {
+//        System.out.println(getDevice(request));
+//        System.out.println(orderService.findAllOrdersDetailsById("39f49e48-3d80-4065-ab06-79a26c22a3a3").size());
+//        return "test_vnpay";
+//    }
 
     public String getDevice(HttpServletRequest request) {
         String ipAddress = request.getHeader("X-Forwarded-For");

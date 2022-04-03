@@ -13,92 +13,117 @@
 
 <body>
 <div layout:fragment="content" class="container-fluid">
-    <section class="row main-page">
-        <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane fade show active" id="nav-chinhanh1" role="tabpanel" aria-labelledby="nav-home-tab">
-                <div class="box_border mt-4">
-                    <div class="bd-example">
-                        <div id="datatable_wrapper" class="dataTables_wrapper dt-bootstrap5">
-                            <div class="row align-items-center">
-                                <div class="col-md-6">
-                                    <div class="lever_tab">
-                                        <span>Cấp độ tiêu đề</span>
-                                        <div class="tab_lv1 active">1</div>
-                                        <div class="tab_lv2">2</div>
-                                        <div class="tab_lv3">3</div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="lever_tab" style="float: right">
-                                        <button level="1" parentId="" onclick="onAdd(this)" class="btn btn-primary">Thêm cấp độ 1</button>
-                                    </div>
-                                </div>
+    <div class="col-lg-12" id="rightKH" style="height: 100%">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body overflow-auto">
+                                <div id="datatable_wrapper" class="dataTables_wrapper dt-bootstrap5">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-6">
+                                            <div class="lever_tab">
+                                                <span>Cấp độ danh mục</span>
+                                                <div class="tab_lv1 active">1</div>
+                                                <div class="tab_lv2">2</div>
+                                                <div class="tab_lv3">3</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="lever_tab" style="float: right">
+                                                <button level="1" parentId="" onclick="onAdd(this)" class="btn btn-primary"><i class="fas fa-plus me-2"></i>Thêm cấp độ 1</button>
+                                            </div>
+                                        </div>
 
-                            </div>
-                            <div class="table-responsive ">
-                                <table class="table table-hover">
-                                    <thead>
-                                    <tr class="sticky-header">
-                                        <th rowspan="2">Tiêu đề</th>
-                                        <th colspan="2">Hành động</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <th:block th:each="category : ${categories}">
-                                        <tr class="lv1">
-                                            <td style="font-size: 11pt" class="text-left">[[${category.categoryName}]]</td>
-                                            <td><i style="color: #655be6" level="2" th:parentId="${category.categoryId}" onclick="onAdd(this)"  class="bi bi-plus-square"></i>
-                                                <i class="fas fa-edit" level="1" parentId="" th:categoryId="${category.categoryId}" onclick="onEdit(this)" style="color: #655be6; margin-left: 10px" title="Cập nhật"></i>
-                                                <i style="color: #655be6; margin-left: 10px" onclick="onRemove(this)" th:categoryId="${category.categoryId}" class="bi bi-trash"></i>
-                                            </td>
-                                        </tr>
-                                        <th:block th:each="categoryChild1 : ${category.categoryChild}">
-                                            <tr class="lv2">
-                                                <td style="font-size: 11pt" class="text-left">[[${categoryChild1.categoryName}]]</td>
-                                                <td><i style="color: #655be6" level="3" th:parentId="${categoryChild1.categoryId}" onclick="onAdd(this)" class="bi bi-plus-square"></i>
-                                                    <i class="fas fa-edit" level="2" th:parentId="${category.categoryId}" th:categoryId="${categoryChild1.categoryId}" onclick="onEdit(this)" style="color: #655be6; margin-left: 10px" title="Cập nhật"></i>
-                                                    <i style="color: #655be6; margin-left: 10px" onclick="onRemove(this)" th:categoryId="${categoryChild1.categoryId}" class="bi bi-trash"></i>
-                                                </td>
+                                    </div>
+                                    <div class="table-responsive ">
+                                        <table class="table table-hover">
+                                            <thead>
+                                            <tr class="sticky-header">
+                                                <th rowspan="2">Danh mục</th>
+                                                <th colspan="2">Hành động</th>
                                             </tr>
-                                            <th:block th:each="categoryChild2 : ${categoryChild1.categoryChild}">
-                                                <tr class="lv3">
-                                                    <td style="font-size: 11pt" class="text-left">[[${categoryChild2.categoryName}]]</td>
-                                                    <td>
-                                                        <i class="fas fa-edit" level="3" th:parentId="${categoryChild1.categoryId}" th:categoryId="${categoryChild2.categoryId}" onclick="onEdit(this)" style="color: #655be6; margin-left: 10px" title="Cập nhật"></i>
-                                                        <i style="color: #655be6; margin-left: 10px" onclick="onRemove(this)" th:categoryId="${categoryChild2.categoryId}" class="bi bi-trash"></i>
+                                            </thead>
+                                            <tbody>
+                                            <th:block th:each="category : ${categories}">
+                                                <tr class="lv1">
+                                                    <td style="font-size: 11pt" class="text-left">[[${category.categoryName}]]</td>
+                                                    <td><i style="color: #655be6" level="2" th:parentId="${category.categoryId}" onclick="onAdd(this)"  class="bi bi-plus-square"></i>
+                                                        <i class="fas fa-edit" level="1" parentId="" th:categoryId="${category.categoryId}" onclick="onEdit(this)" style="color: #655be6; margin-left: 10px" title="Cập nhật"></i>
+                                                        <i style="color: #655be6; margin-left: 10px" onclick="onRemove(this)" th:categoryId="${category.categoryId}" class="bi bi-trash"></i>
                                                     </td>
                                                 </tr>
+                                                <th:block th:each="categoryChild1 : ${category.categoryChild}">
+                                                    <tr class="lv2">
+                                                        <td style="font-size: 11pt" class="text-left">[[${categoryChild1.categoryName}]]</td>
+                                                        <td><i style="color: #655be6" level="3" th:parentId="${categoryChild1.categoryId}" onclick="onAdd(this)" class="bi bi-plus-square"></i>
+                                                            <i class="fas fa-edit" level="2" th:parentId="${category.categoryId}" th:categoryId="${categoryChild1.categoryId}" onclick="onEdit(this)" style="color: #655be6; margin-left: 10px" title="Cập nhật"></i>
+                                                            <i style="color: #655be6; margin-left: 10px" onclick="onRemove(this)" th:categoryId="${categoryChild1.categoryId}" class="bi bi-trash"></i>
+                                                        </td>
+                                                    </tr>
+                                                    <th:block th:each="categoryChild2 : ${categoryChild1.categoryChild}">
+                                                        <tr class="lv3">
+                                                            <td style="font-size: 11pt" class="text-left">[[${categoryChild2.categoryName}]]</td>
+                                                            <td>
+                                                                <i class="fas fa-edit" level="3" th:parentId="${categoryChild1.categoryId}" th:categoryId="${categoryChild2.categoryId}" onclick="onEdit(this)" style="color: #655be6; margin-left: 10px" title="Cập nhật"></i>
+                                                                <i style="color: #655be6; margin-left: 10px" onclick="onRemove(this)" th:categoryId="${categoryChild2.categoryId}" class="bi bi-trash"></i>
+                                                            </td>
+                                                        </tr>
+                                                    </th:block>
+                                                </th:block>
                                             </th:block>
-                                        </th:block>
-                                    </th:block>
-                                    </tbody>
-                                </table>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+
                             </div>
-
                         </div>
-
                     </div>
                 </div>
-
+                <!-- <div id="morris-bar-stacked" class="morris-chart-height morris-charts"></div> -->
             </div>
         </div>
-    </section>
-    <!-- Modal -->
-    <div class="modal fade" id="editCategory" style="display: none; opacity: 100" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
+    </div>
+
+    <!-- Modal add -->
+    <div class="modal fade" id="addCategory" style="display: none; opacity: 100" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+            <div class="modal-content" style=" max-height: 85vh; overflow:scroll; overflow-x: hidden">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitle">Modal title</h5>
+                    <h5 class="modal-title" id="modalTitle">Thêm danh mục</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true" onclick="closeModalCategory()">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
+                    <h5>Tên danh mục</h5>
                     <p style="color: red;display: none" id="error">Hello</p>
-                    <input class="form-control" id="categoryName" placeholder="Nhập tiêu đề">
+                    <input class="form-control" id="categoryName" placeholder="Nhập tên danh mục">
                     <input class="form-control" type="hidden" id="parentId">
                     <input class="form-control" type="hidden" id="categoryId">
                     <input class="form-control" type="hidden" id="levelCategory">
+                    <div class="row mt-3">
+                        <div class="col-lg-6"><h5 style="margin-top: 20px">Thuộc tính</h5></div>
+                        <div class="col-lg-6" style="text-align: right">
+                            <button class="btn btn-primary" onclick="addRowAtb()">+ Thuộc tính</button>
+                        </div>
+                    </div>
+                    <div id="containerAtb">
+                        <div class="row mb-3" id="atbRequied">
+                            <div class="col-lg-5">
+                                <input class="form-control atbName" placeholder="Tên thuộc tính">
+                            </div>
+                            <div class="col-lg-6">
+                                <input class="form-control atbValue" placeholder="Giá trị mặc định 1; giá trị 2; giá trị 3;...">
+                            </div>
+                            <div class="col-lg-1 btnRemoveAtb" style="text-align: center">
+
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeModalCategory()">Đóng</button>
@@ -107,10 +132,59 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal edit -->
+    <div class="modal fade" id="editCategory" style="display: none; opacity: 100" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+            <div class="modal-content" style=" max-height: 85vh; overflow:scroll; overflow-x: hidden">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEditTitle">Sửa danh mục</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" onclick="closeModalEditCategory()">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h5>Tên danh mục</h5>
+                    <p style="color: red;display: none" id="errorEdit">Hello</p>
+                    <input class="form-control" id="categoryEditName" placeholder="Nhập tên danh mục">
+                    <input class="form-control" type="hidden" id="parentIdEdit">
+                    <input class="form-control" type="hidden" id="categoryIdEdit">
+                    <input class="form-control" type="hidden" id="levelCategoryEdit">
+                    <div class="row mt-3">
+                        <div class="col-lg-6"><h5 style="margin-top: 20px">Thuộc tính</h5></div>
+                        <div class="col-lg-6" style="text-align: right">
+                            <button class="btn btn-primary" onclick="addRowEditAtb()">+ Thuộc tính</button>
+                        </div>
+                    </div>
+                    <div id="containerAtbEdit">
+                        <div class="row mb-3" id="atbRequiedEdit">
+                            <div class="col-lg-5">
+                                <input class="form-control atbName" placeholder="Tên thuộc tính">
+                            </div>
+                            <div class="col-lg-6">
+                                <input class="form-control atbValue" placeholder="Giá trị mặc định 1; giá trị 2; giá trị 3;...">
+                            </div>
+                            <div class="col-lg-1 btnRemoveAtb" style="text-align: center">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeModalEditCategory()">Đóng</button>
+                    <button type="button" class="btn btn-primary" onclick="saveEditCategory()">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script th:src="@{/assets/js/lib.js}"></script>
     <script th:src="@{/assets/js/category.js}"></script>
+<!--    <script th:src="@{/assets/js/jquery.bootstrap-touchspin.min.js}"></script>-->
+
     <!-- JavaScript Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>-->
     <script th:inline="javascript">
         let categories = [[${categories}]]
         console.log(categories)
@@ -136,6 +210,49 @@
 
             });
         });
+
+        function addRowAtb(){
+            let containerAtb = $('#containerAtb')[0];
+            let atbRequied = $('#atbRequied')[0];
+
+            let divAtb = document.createElement('div');
+            divAtb.className = 'row mb-3';
+            divAtb.innerHTML = atbRequied.innerHTML;
+            divAtb.getElementsByClassName('btnRemoveAtb')[0].innerHTML = '<button class="btn btn-danger" onclick="removeRowAtb(this)">-</button>'
+            containerAtb.appendChild(divAtb)
+        }
+
+        function addRowEditAtb(){
+            let containerAtbEdit = $('#containerAtbEdit')[0];
+            containerAtbEdit.innerHTML +=
+                '                        <div class="row mb-3">\n' +
+                '                            <div class="col-lg-5">\n' +
+                '<input class="form-control atbEditId" type="hidden" value="">\n' +
+                '                                <input class="form-control atbEditName" placeholder="Tên thuộc tính">\n' +
+                '                            </div>\n' +
+                '                            <div class="col-lg-6">\n' +
+                '                                <input class="form-control atbEditValue" placeholder="Giá trị mặc định 1; giá trị 2; giá trị 3;...">\n' +
+                '                            </div>\n' +
+                '                            <div class="col-lg-1 btnRemoveAtb" style="text-align: center">\n' +
+                '<button class="btn btn-danger" onclick="removeRowEditAtb(this)">-</button>' +
+                '                            </div>\n' +
+                '                        </div>'
+        }
+
+        function removeRowAtb(elm){
+            let containerAtb = $('#containerAtb')[0];
+            containerAtb.removeChild(elm.parentNode.parentNode)
+        }
+
+        function removeRowEditAtb(elm){
+            let containerAtbEdit = $('#containerAtbEdit')[0];
+            containerAtbEdit.removeChild(elm.parentNode.parentNode)
+
+            let btnRemoveEditAtb = $('.btnRemoveEditAtb')
+            if(btnRemoveEditAtb.length === 1){
+                btnRemoveEditAtb[0].innerHTML = '';
+            }
+        }
     </script>
 </div>
 

@@ -290,7 +290,7 @@
                     <i class="fas fa-file-invoice-dollar me-2"></i>
                     Nhập hàng
                   </a>
-                  <a th:href="@{/order}" class="dropdown-item">
+                  <a th:href="@{/orders}" class="dropdown-item">
                     <i class="fas fa-reply-all me-2"></i>
                     Đặt hàng
                   </a>
@@ -350,8 +350,12 @@
                   <div class="arrow-down"></div>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="topnav-user-Interface">
+                  <a href="/orders" class="dropdown-item">
+                    <i class="fas fa-money-bill-wave me-2"></i>
+                    Hoá đơn
+                  </a>
                   <a th:href="@{/voucher}" class="dropdown-item">
-                    <i class="bi bi-card-text"></i>
+                    <i class="bi bi-card-text me-2"></i>
                     Mã giảm giá
                   </a>
                 </div>

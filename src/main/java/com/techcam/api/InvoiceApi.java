@@ -44,8 +44,6 @@ public class InvoiceApi {
             // mã nhập hàng đã tồn tại rồi
             throw new TechCamExp(ERROR_EXISTS, "Mã nhập hàng");
         }
-        Long totalMoney = invoiceRequest.getDetails().stream()
-                .mapToLong(e -> e.getPrice() * e.getQuantity()).sum();
         String result = goodsreceiptService.createInvoice(invoiceRequest);
         if (result.equals(SUCCESS.name())) {
             return ResponseEntity.ok(result);
@@ -74,6 +72,7 @@ public class InvoiceApi {
     public ResponseEntity<?> getById(@PathVariable String id) {
         InvoiceResponse invoiceResponse = goodsreceiptService.getByInvoiceId(id);
         if (Objects.nonNull(invoiceResponse)) {
+            invoiceResponse.setDetails(goodsreceiptService.findAllInvoiceDetailByInvoiceId(id));
             return ResponseEntity.ok(invoiceResponse);
         }
         throw new TechCamExp(ERROR_NOT_EXISTS, "Hoá đơn nhập hàng");

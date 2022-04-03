@@ -1,4 +1,8 @@
 $(document).ready(function() {
+    let href = window.location.href
+    if(href.indexOf('/orders') > 0){
+        return;
+    }
     var table = $("#datatable").DataTable({
         paging: false,
         lengthChange: !1,
@@ -25,7 +29,7 @@ $(document).ready(function() {
                         titleAttr : 'Hiển thị tuỳ chỉnh'
                     }],
 
-        scrollY: "300px",
+        scrollY: screen.height / 1.3  + 'px',
         scrollX: true,
         scrollCollapse: true,
 

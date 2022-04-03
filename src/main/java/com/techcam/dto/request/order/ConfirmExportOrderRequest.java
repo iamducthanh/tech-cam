@@ -20,7 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class ConfirmExportOrderRequest {
-    String id;
+    Integer id;
     List<OrderProductDetailsRequest> productDetailsRequests;
     String note;
 }

@@ -1,26 +1,64 @@
 function onAdd(elm){
     let level = elm.getAttribute('level');
     let parentId = elm.getAttribute('parentId');
-    console.log(level)
-    console.log(parentId)
     $('#error')[0].style.display = 'none'
-    onModalCategory(null, level, parentId)
-    $('#modalTitle')[0].innerHTML = "Thêm tiêu đề";
+    $('#categoryName')[0].value= ''
+    $('#addCategory')[0].style.display = 'unset';
+    $('#parentId')[0].value = parentId;
+    $('#levelCategory')[0].value = level;
+    $('#categoryId')[0].value = null;
 
+    let atbRequied = $('#atbRequied')[0];
+    let containerAtb = $('#containerAtb')[0];
+    containerAtb.innerHTML = '';
+    containerAtb.appendChild(atbRequied);
 }
+
+// function onModalEditCategory(categoryId, level, parentId) {
+//     $('#editCategory')[0].style.display = 'unset';
+//     $('#parentIdEdit')[0].value = parentId;
+//     $('#levelCategoryEdit')[0].value = level;
+//     $('#categoryIdEdit')[0].value = categoryId;
+//
+//
+// }
 
 function onEdit(elm){
     let level = elm.getAttribute('level');
     let categoryId = elm.getAttribute("categoryId")
     let parentId = elm.getAttribute('parentId');
-    $('#modalTitle')[0].innerHTML = "Sửa tiêu đề";
-    onModalCategory(categoryId, level, parentId)
+
+    $('#editCategory')[0].style.display = 'unset';
+    $('#parentIdEdit')[0].value = parentId;
+    $('#levelCategoryEdit')[0].value = level;
+    $('#categoryIdEdit')[0].value = categoryId;
 
     $.ajax({
         url: '/category/' +categoryId,
         method: 'GET',
         success: function (datas) {
-            $('#categoryName')[0].value = datas.categoryName
+            console.log(datas)
+            let containerAtbEdit = $('#containerAtbEdit')[0]
+            containerAtbEdit.innerHTML = '';
+            let btnDelete = '<button class="btn btn-danger" onclick="removeRowEditAtb(this)">-</button>'
+            $('#categoryEditName')[0].value = datas.categoryName
+            for(let i=0;i<datas.attributes.length;i++){
+                console.log('oke')
+
+                console.log(containerAtbEdit)
+                containerAtbEdit.innerHTML += '<div class="row mb-3">\n' +
+                    '                            <div class="col-lg-5">\n' +
+                    '<input class="form-control atbEditId" type="hidden" value="'+datas.attributes[i].id+'">\n' +
+                    '                                <input class="form-control atbEditName" value="'+datas.attributes[i].name+'" placeholder="Tên thuộc tính">\n' +
+                    '                            </div>\n' +
+                    '                            <div class="col-lg-6">\n' +
+                    '                                <input class="form-control atbEditValue" value="'+datas.attributes[i].value+'" placeholder="Giá trị mặc định 1; giá trị 2; giá trị 3;...">\n' +
+                    '                            </div>\n' +
+                    '                            <div class="col-lg-1 btnRemoveEditAtb" style="text-align: center">\n' +
+                    btnDelete +
+                    '                            </div>\n' +
+                    '                        </div>'
+            }
         },
         error: function (error) {
             console.log(error)
@@ -28,18 +66,8 @@ function onEdit(elm){
     })
 }
 
-function onRemove(){
-
-}
-
-function onModalCategory(categoryId, level, parentId){
-    $('#editCategory')[0].style.display = 'unset';
-    $('#parentId')[0].value = parentId;
-    $('#levelCategory')[0].value = level;
-    $('#categoryId')[0].value = categoryId;
-}
 function closeModalCategory(){
-    $('#editCategory')[0].style.display = 'none';
+    $('#addCategory')[0].style.display = 'none';
 }
 
 function saveCategory(){
@@ -47,7 +75,26 @@ function saveCategory(){
     let level = $('#levelCategory')[0].value
     let categoryName = $('#categoryName')[0].value
     let categoryId = $('#categoryId')[0].value
+    let atbName = $('.atbName');
+    let atbValue = $('.atbValue');
+    let attributes = [];
+    for(let i=0;i<atbName.length;i++){
+        if(atbName[i].value.trim().length > 0){
+            attributes.push({
+                name: atbName[i].value,
+                value: atbValue[i].value
+            })
+        }
+    }
 
+    console.log(attributes)
+    if(attributes.length == 0){
+        toastDanger("Lỗi", "Vui lòng nhập ít nhất 1 thuộc tính");
+        return;
+    }
+
+    console.log(atbName)
+    console.log(atbValue)
     console.log(parentId)
     console.log(level)
     console.log(categoryName)
@@ -58,31 +105,82 @@ function saveCategory(){
         data: JSON.stringify({
             categoryId: categoryId,
             categoryName: categoryName,
-            parentId: parentId
+            parentId: parentId,
+            attributes: attributes
         }),
         contentType: 'application/json',
         success: function (datas) {
             console.log(datas)
             $('#error')[0].style.display = 'none'
-            window.location.href = '/category?message=success';
+            window.location.href = '/category?message=success&level=' + level;
         },
         error: function (error) {
             $('#error')[0].style.display = 'unset'
             $('#error')[0].innerHTML = error.responseJSON.vn
+        }
+    })
+}
+
+function saveEditCategory(){
+    let atbEditIdInputs = $('.atbEditId');
+    let atbEditNameInputs = $('.atbEditName');
+    let atbEditValueInputs = $('.atbEditValue');
+
+    let atbArr = [];
+    let level = $('#levelCategoryEdit')[0].value;
+    let categoryId = $('#categoryIdEdit')[0].value;
+    let categoryName = $('#categoryEditName')[0].value
+    let parentId = $('#parentIdEdit')[0].value
+
+    for(let i=0;i<atbEditIdInputs.length;i++){
+        let obj = {
+            id: atbEditIdInputs[i].value,
+            name: atbEditNameInputs[i].value,
+            value:atbEditValueInputs[i].value
+        }
+        if(obj.name.trim().length > 0){
+            atbArr.push(obj)
+        }
+    }
+
+    let objUpdate = {
+        categoryId: categoryId,
+        categoryName: categoryName,
+        attributes: atbArr,
+        parentId: parentId
+    }
+
+    $.ajax({
+        url: '/category',
+        method: 'PUT',
+        data: JSON.stringify(objUpdate),
+        contentType: 'application/json',
+        success: function (datas) {
+            console.log(datas)
+            window.location.href = '/category?message=success&level=' + level;
+        },
+        error: function (error) {
             console.log(error)
         }
     })
 }
 
 window.onload = function () {
-    if(window.location.href.indexOf('message=success') > -1){
+    let href = window.location.href;
+    if(href.indexOf('message=success') > -1){
         toastSuccess("Thành công", "Cập nhật thành công.")
+    }
+
+    let level = href.substring(href.length-1, href.length);
+    let tab = $('.tab_lv' + level)
+    if(tab != null){
+        tab.click()
     }
 }
 
 function onRemove(elm){
     let categoryId = elm.getAttribute('categoryId');
-    let comfirm = confirm("Bạn có chắc muốn xóa tiêu đề này?")
+    let comfirm = confirm("Bạn có chắc muốn xóa danh mục này?")
     console.log(comfirm)
     console.log(categoryId)
     if(comfirm){
@@ -97,6 +195,10 @@ function onRemove(elm){
             }
         })
     }
+}
+
+function closeModalEditCategory() {
+    $('#editCategory')[0].style.display = 'none';
 }
 
 // QuotationDetail(
