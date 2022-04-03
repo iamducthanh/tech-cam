@@ -16,6 +16,7 @@ import java.util.Objects;
 @Setter
 @ToString
 public class GoodsreceiptdetailEntity extends BaseEntity {
+
     @Id
     @Column(name = "id", nullable = false, length = 64)
     private String id;
@@ -26,8 +27,17 @@ public class GoodsreceiptdetailEntity extends BaseEntity {
     @Column(name = "Product_ID", nullable = false)
     private String productId;
 
-    @Column(name = "Quantity", nullable = false)
+    /**
+     * số lượng trên hoá đươn
+     */
+    @Column(name = "bill_quantity", nullable = false)
     private Integer quantity;
+
+    /**
+     * số lượng thực nhập
+     */
+    @Column(name = "Quantity", nullable = false)
+    private Integer quantityActual;
 
     @Column(name = "Price", nullable = false, precision = 10)
     private BigDecimal price;

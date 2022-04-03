@@ -51,9 +51,14 @@ public class InvoiceDetailResponse {
     private String brandName;
 
     /**
-     * số lượng
+     * số lượng trên hoá đơn
      */
     private Integer quantity;
+
+    /**
+     * số lượng nhập thực tế
+     */
+    private Integer quantityActual;
 
     /**
      * giá tiền

@@ -56,7 +56,9 @@ public class GoodsOrderService implements IGoodsOrderService {
         if (Objects.isNull(x)) return InvoiceOrderDetailResponse.builder().build();
         return InvoiceOrderDetailResponse.builder()
                 .productId(x.getProductId())
-                .productQuantity(x.getItemQuantity())
+                .quantity(x.getItemQuantity())
+                .quantityActual(0)
+                .price(Long.parseLong("0"))
                 .build();
     }
 

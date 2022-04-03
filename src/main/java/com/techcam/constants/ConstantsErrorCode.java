@@ -82,6 +82,7 @@ public interface ConstantsErrorCode {
     String IMEI_DUPLICATE = "TC-007-004";
 
     String INVOICE_NOT_DETAIL = "TC-008-001";
+    String INVOICE_NOT_ZERO = "TC-008-002";
 
 
     String ATB_NAME = "TC-012-001";
