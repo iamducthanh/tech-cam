@@ -17,7 +17,6 @@ import java.util.Date;
 public class OrderdetailEntity {
     private String id;
     private String imei;
-    private String status;
     private Date createDate;
     private String note;
     private String createBy;
@@ -57,16 +56,6 @@ public class OrderdetailEntity {
 
     public void setImei(String imei) {
         this.imei = imei;
-    }
-
-    @Basic
-    @Column(name = "Status")
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     @Basic
