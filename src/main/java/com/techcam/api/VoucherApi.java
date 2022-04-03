@@ -83,7 +83,7 @@ public class VoucherApi {
             throw new TechCamExp(errors.getFieldErrors().get(0).getDefaultMessage());
         }
         VoucherResponse voucherResponse = voucherService.getById(voucherRequest.getVoucherId());
-        if (Objects.isNull(voucherResponse)) {
+        if (Objects.isNull(voucherResponse) || Objects.isNull(voucherResponse.getVoucherId())) {
             throw new TechCamExp(ConstantsErrorCode.ERROR_NOT_EXISTS, "Mã giảm giả");
         }
         if (!voucherResponse.getVoucherCode().equals(voucherRequest.getVoucherCode().toUpperCase())) {
