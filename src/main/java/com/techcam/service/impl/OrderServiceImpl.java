@@ -25,6 +25,7 @@ import com.techcam.service.ITechCamLogService;
 import com.techcam.service.IVoucherService;
 import com.techcam.type.*;
 import com.techcam.util.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -49,7 +50,7 @@ import java.util.stream.Collectors;
  * @since: 3/20/2022
  * Project_name: Tech-cam
  */
-
+@Slf4j
 @Service
 public class OrderServiceImpl implements IOrderService {
     @Autowired
@@ -99,7 +100,6 @@ public class OrderServiceImpl implements IOrderService {
         OrdersEntity orders = ordersRepo.findByBankTransaction(bankTransaction);
         if (Objects.isNull(orders)) {
             response.setStatus(CommonStatus.FAIL.name());
-
         }
         if (!StringUtils.equalsIgnoreCase(bankStatus, "00")) {
             response.setStatus(CommonStatus.FAIL.name());
@@ -275,8 +275,6 @@ public class OrderServiceImpl implements IOrderService {
                     orderdetailEntity.setOrders(orderSave);
                     orderdetailEntity.setNote(e.getNote());
                     orderdetailEntity.setDeleteFlag(false);
-                    orderdetailEntity.setCreateDate(new Date());
-                    orderdetailEntity.setModifierDate(new Date());
                     orderdetailEntity.setDiscount(e.getDiscount());
                     orderdetailEntity.setQuantity(e.getQuantity());
                     orderdetailEntity.setProduct(new ProductEntity().toBuilder().id(e.getProductId()).build());
@@ -402,8 +400,6 @@ public class OrderServiceImpl implements IOrderService {
                                 orderdetailEntity.setQuantity(item.getQuantity());
                                 orderdetailEntity.setId(id);
                                 orderdetailEntity.setDeleteFlag(false);
-                                orderdetailEntity.setCreateDate(new Date());
-                                orderdetailEntity.setModifierDate(new Date());
                                 orderdetailEntity.setNote(item.getNote());
                                 orderdetailEntity.setDeleteFlag(false);
                                 orderdetailEntity.setDiscount((int) getSaleProduct(item.getProductId()));
@@ -487,18 +483,10 @@ public class OrderServiceImpl implements IOrderService {
             }).collect(Collectors.toList());
         }
         // kiểm tra xem người dùng có thay đổi người nhận hàng không thiếu ngày nhận hàng
-        Date deliveryDate = null;
-        if (StringUtils.isNotBlank(request.getDeliveryDate())) {
-            try {
-                deliveryDate = format.parse(request.getDeliveryDate());
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
+        orders.setDeliveryDate(request.getDeliveryDate());
         orders.setRecipientName(request.getRecipientName());
         orders.setRecipientPhone(request.getRecipientPhone());
         orders.setRecipientAddress(request.getRecipientAddress());
-        orders.setDeliveryDate(deliveryDate);
         orders.setSalesPerson(getInfoStaff().getUsername());
         orders.setNote(request.getNote());
         orders.setTransactionStatus(OrderStatus.CONFIRM.name());
@@ -739,6 +727,22 @@ public class OrderServiceImpl implements IOrderService {
     public List<VoucherUseByOrderResponse> findAllByVoucherId(String code) {
         return ordersRepo.findAllByVoucherCodeAndTransactionStatusNotInAndDeleteFlagFalse(code, OrderStatus.CANCEL.name())
                 .stream().map(this::mapToVoucherUseResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public String editOrder(OrderRequest order) {
+        OrdersEntity entity = ordersRepo.getById(order.getId());
+        entity.setRecipientName(order.getRecipientName());
+        entity.setRecipientPhone(order.getRecipientPhone());
+        entity.setRecipientAddress(order.getRecipientAddress());
+        entity.setDeliveryDate(order.getDeliveryDate());
+
+        try {
+            entity = ordersRepo.save(entity);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+        return "ok";
     }
 
     private <R> VoucherUseByOrderResponse mapToVoucherUseResponse(OrdersEntity x) {

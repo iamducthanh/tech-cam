@@ -1,10 +1,8 @@
 $(document).ready(function() {
-    let href = window.location.href
-    if(href.indexOf('/orders') > 0){
-        return;
-    }
     var table = $("#datatable").DataTable({
-        paging: false,
+        paging: true,
+        pageLength: 10,
+        // lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'Todos']],
         lengthChange: !1,
         buttons:    [{
                         extend : 'copy',
@@ -29,7 +27,7 @@ $(document).ready(function() {
                         titleAttr : 'Hiển thị tuỳ chỉnh'
                     }],
 
-        scrollY: screen.height / 1.3  + 'px',
+        scrollY: "54vh",
         scrollX: true,
         scrollCollapse: true,
 
@@ -39,7 +37,7 @@ $(document).ready(function() {
             "targets": [0, 1],
         }],
 
-        "order": [[ 2, 'asc' ]],
+        "order": [[ 5, 'asc' ]],
 
         info: false,
     });
