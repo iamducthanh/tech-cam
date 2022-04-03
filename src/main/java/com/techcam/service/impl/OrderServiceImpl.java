@@ -489,18 +489,19 @@ public class OrderServiceImpl implements IOrderService {
             }).collect(Collectors.toList());
         }
         // kiểm tra xem người dùng có thay đổi người nhận hàng không thiếu ngày nhận hàng
-        Date deliveryDate = null;
-        if(StringUtils.isNotBlank(request.getDeliveryDate())) {
-            try {
-                deliveryDate = format.parse(request.getDeliveryDate());
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
+//        Date deliveryDate = null;
+//        if(StringUtils.isNotBlank(request.getDeliveryDate())) {
+//            try {
+//                deliveryDate = format.parse(request.getDeliveryDate());
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+//        }
+        orders.setDeliveryDate(request.getDeliveryDate());
         orders.setRecipientName(request.getRecipientName());
         orders.setRecipientPhone(request.getRecipientPhone());
         orders.setRecipientAddress(request.getRecipientAddress());
-        orders.setDeliveryDate(deliveryDate);
+//        orders.setDeliveryDate(deliveryDate);
         orders.setSalesPerson(getInfoStaff().getUsername());
         orders.setNote(request.getNote());
         orders.setTransactionStatus(OrderStatus.CONFIRM.name());

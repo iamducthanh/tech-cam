@@ -107,14 +107,8 @@ public class OrdersApi {
     }
 
     @GetMapping("/list/{id}")
-    public List<GetInfoOrderDetails> findAllOrdersDetailsById(@PathVariable("id") String id) {
+    public List<GetInfoOrderDetails> findAllOrdersDetailsById(@PathVariable("id") Integer id) {
         return orderService.findAllOrdersDetailsById(id);
-    }
-
-    @PutMapping
-    public ResponseEntity updateOrder(@RequestBody OrderRequest order) {
-        orderService.editOrder(order);
-        return ResponseEntity.ok().body(order);
     }
 
     public String getDevice(HttpServletRequest request) {

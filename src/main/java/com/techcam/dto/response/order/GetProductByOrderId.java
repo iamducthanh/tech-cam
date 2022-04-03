@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class GetProductByOrderId {
 
+    private String id;
     private String name;
     private String productCode;
     private int quantity;

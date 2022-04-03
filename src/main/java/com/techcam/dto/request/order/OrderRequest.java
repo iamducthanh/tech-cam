@@ -27,7 +27,7 @@ import java.util.List;
 @Builder
 public class OrderRequest {
 
-    private String id;
+    private Integer id;
     private CustomerRequest customer;
     private String voucherId;
     private List<OrderProductDetailsRequest> productDetails;

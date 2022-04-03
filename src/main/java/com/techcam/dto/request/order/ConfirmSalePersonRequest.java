@@ -21,11 +21,10 @@ import java.util.Date;
 @Builder
 public class ConfirmSalePersonRequest {
     private Integer id;
-    private String orderType;
     private String recipientName;
     private String recipientPhone;
     private String recipientAddress;
-    private String deliveryDate;
+    private Date deliveryDate;
     private Integer feeDelivery;
     private String note;
 }

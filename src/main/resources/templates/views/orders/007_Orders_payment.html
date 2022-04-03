@@ -55,21 +55,15 @@
                     <h3 class="leftTitle">Trạng thái</h3>
                     <div class="boxLeftC">
                         <div class="form-group form-check">
+                            <input class="form-check-input" type="radio" name="status" id="statusCancel" value="Huỷ" onchange="onStatusChange(this)">
+                            <label class="form-check-label text-secondary" for="statusCancel">
+                                Huỷ
+                            </label>
+                        </div>
+                        <div class="form-group form-check">
                             <input class="form-check-input" type="radio" name="status" id="statusAll" value="Tất cả" onchange="onStatusChange(this)" checked>
                             <label class="form-check-label" for="statusAll">
                                 Tất cả
-                            </label>
-                        </div>
-                        <div class="form-group form-check">
-                            <input class="form-check-input" type="radio" name="status" id="statusUnpaid" value="Chưa thanh toán" onchange="onStatusChange(this)">
-                            <label class="form-check-label text-danger" for="statusUnpaid">
-                                Chưa thanh toán
-                            </label>
-                        </div>
-                        <div class="form-group form-check">
-                            <input class="form-check-input" type="radio" name="status" id="statusPaid" value="Đã thanh toán" onchange="onStatusChange(this)">
-                            <label class="form-check-label text-info" for="statusPaid">
-                                Đã thanh toán
                             </label>
                         </div>
                         <div class="form-group form-check">
@@ -80,7 +74,7 @@
                         </div>
                         <div class="form-group form-check">
                             <input class="form-check-input" type="radio" name="status" id="statusConfirm" value="Chờ xuất hàng" onchange="onStatusChange(this)">
-                            <label class="form-check-label text-secondary" for="statusConfirm">
+                            <label class="form-check-label text-info" for="statusConfirm">
                                 Chờ xuất hàng
                             </label>
                         </div>
@@ -115,26 +109,27 @@
                            style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead class="text-center align-middle">
                             <th></th>
-                            <th>Chức năng</th>
+                            <th>Trạng thái</th>
                             <th>Mã hoá đơn</th>
-                            <th>Tổng giá tiền</th>
+                            <th>Tổng tiền hàng</th>
                             <th>Ngày đặt đơn</th>
                             <th>Loại đơn hàng</th>
                             <th>Phương thức<br/>thanh toán</th>
-                            <th>Trạng thái</th>
                         </thead>
                         <tbody style="vertical-align: middle;">
                             <tr th:each="order, iterator : ${orders}">
                                 <td class="text-end">
                                     <!-- <span th:text="${iterator.index + 1}"></span>-->
                                 </td>
-                                <td th:switch="${order.getStatus()}" class="text-center">
-                                    <i class="col-4 fas fa-info-circle fs-2" style="color: #655be6;" title="Thông tin" onclick="onBtnInfo(this)"></i>
-                                    <i th:case="1" class="col-4 fas fa-lock-open fs-2" style="color: green;" title="Khoá tài khoản" onclick="onBtnStatus(this)"></i>
-                                    <i th:case="0" class="col-4 fas fa-lock fs-2" style="color: red;" title="Mở khoá tài khoản" onclick="onBtnStatus(this)"></i>
+                                <td th:switch="${order.getTransactionStatus()}" class="text-center">
+                                    <button th:case="CANCEL" class="status badge btn btn-secondary fs-6" onclick="onBtnInfo(this)">Huỷ</button>
+                                    <button th:case="VERIFY" class="status badge btn btn-warning fs-6" onclick="onBtnInfo(this)" onmouseover="$(this).text('Xác nhận')" onmouseleave="$(this).text('Chờ xác nhận')">Chờ xác nhận</button>
+                                    <button th:case="CONFIRM" class="status badge btn btn-info fs-6" onclick="onBtnInfo(this)" onmouseover="$(this).text('Xuất hàng')" onmouseleave="$(this).text('Chờ xuất hàng')">Chờ xuất hàng</button>
+                                    <button th:case="SHIPPING" class="status badge btn btn-primary fs-6" onclick="onBtnInfo(this)">Đang giao hàng</button>
+                                    <button th:case="DONE" class="status badge btn btn-success fs-6" onclick="onBtnInfo(this)">Hoàn thành</button>
                                 </td>
-                                <td class="text-center order-id" th:text="${order.getId()}">Mã hoá đơn</td>
-                                <td class="text-end order-tax" th:text="${#numbers.formatDecimal(order.getTax(), 0, 'POINT', 0, 'COMMA') + ' đ'}">Tổng giá tiền</td>
+                                <td class="order-id" th:text="${order.getId()}">Mã hoá đơn</td>
+                                <td class="text-end order-tax" th:text="${#numbers.formatDecimal(order.getTax(), 0, 'POINT', 0, 'COMMA') + ' đ'}">Tổng tiền hàng</td>
                                 <td class="text-center" th:text="${#dates.format(order.getCreateDate(), 'dd/MM/yyyy HH:mm:ss')}">Ngày đặt đơn</td>
                                 <td class="text-center" th:switch="${order.getOrderType()}">
                                     <span th:case="ONLINE" class="order-type">Online</span>
@@ -143,14 +138,6 @@
                                 <td class="text-center" th:switch="${order.getPaymentMethod()}">
                                     <span th:case="PAYMENT" class="order-method">Thẻ</span>
                                     <span th:case="CASH" class="order-method">Tiền mặt</span>
-                                </td>
-                                <td th:switch="${order.getStatus()}" class="text-center">
-                                    <span th:case="UNPAID" class="status badge bg-danger fs-6">Chưa thanh toán</span>
-                                    <span th:case="PAID" class="status badge bg-info fs-6">Đã thanh toán</span>
-                                    <span th:case="VERIFY" class="status badge bg-warning fs-6">Chờ xác nhận</span>
-                                    <span th:case="CONFIRM" class="status badge bg-secondary fs-6">Chờ xuất hàng</span>
-                                    <span th:case="SHIPPING" class="status badge bg-primary fs-6">Đang giao hàng</span>
-                                    <span th:case="DONE" class="status badge bg-success fs-6">Hoàn thành</span>
                                 </td>
                             </tr>
                         </tbody>
@@ -172,10 +159,10 @@
                 <!-- Modal Body-->
                 <div class="modal-body px-4">
                     <!-- Receiver Info-->
-                    <div class="row px-3">
+                    <div class="row px-3 order-detail">
                         <!-- Thông tin nhận hàng -->
                         <div class="col-lg-6">
-                            <h3 class="fw-bolder text-decoration-underline">Thông tin nhận hàng</h3>
+                            <h3 class="fw-bolder text-decoration-underline">Nhận hàng</h3>
                             <table class="none-border">
                                 <tr>
                                     <th><label for="recipientName">Người nhận</label></th>
@@ -197,12 +184,16 @@
                                         </div>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <th class="align-top"><label for="feeDelivery">Phí giao hàng</label></th>
+                                    <td><input class="ps-2 border-none bg-white fw-bolder text-danger" type="text" name="feeDelivery" id="feeDelivery" onblur="onType(this)" disabled></td>
+                                </tr>
                             </table>
                         </div>
 
                         <!-- Thông tin mua hàng -->
                         <div class="col-lg-6">
-                            <h3 class="fw-bolder text-decoration-underline">Thông tin mua hàng</h3>
+                            <h3 class="fw-bolder text-decoration-underline">Mua hàng</h3>
                             <table class="none-border">
                                 <tr>
                                     <th><label for="fullName">Người mua</label></th>
@@ -222,6 +213,29 @@
                                 </tr>
                             </table>
                         </div>
+
+<!--                        &lt;!&ndash; Thông tin giao hàng &ndash;&gt;-->
+<!--                        <div class="col-lg-4">-->
+<!--                            <h3 class="fw-bolder text-decoration-underline">Giao hàng</h3>-->
+<!--                            <table class="none-border">-->
+<!--                                <tr>-->
+<!--                                    <th><label for="fullName">Người mua</label></th>-->
+<!--                                    <td><span id="fullName"></span></td>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <th><label for="phoneNumber">Số điện thoại</label></th>-->
+<!--                                    <td><span id="phoneNumber" class="text-primary text-decoration-underline"></span></td>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <th><label for="createDate">Ngày mua</label></th>-->
+<!--                                    <td><span id="createDate"></span></td>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <th><label for="fullName">Tổng thanh toán</label></th>-->
+<!--                                    <td><span id="price" class="fw-bolder text-danger"></span></td>-->
+<!--                                </tr>-->
+<!--                            </table>-->
+<!--                        </div>-->
                     </div>
                     <input type="hidden" id="order-id">
 
@@ -234,11 +248,11 @@
                         <table class="border" style="border-collapse: collapse;">
                             <thead style="background: lightgrey;">
                                 <th>STT</th>
-                                <th>IMEI</th>
+                                <th class="order-imei">IMEI</th>
                                 <th>Tên sản phẩm</th>
                                 <th>Số lượng <br/> mua</th>
-                                <th>Số lượng <br/> tồn kho</th>
-                                <th>Trạng thái</th>
+                                <th class="order-verify">Số lượng <br/> tồn kho</th>
+                                <th class="order-verify">Trạng thái</th>
                                 <th>Khuyến mãi</th>
                                 <th>Giá bán</th>
                                 <th>Thành tiền</th>
@@ -246,11 +260,16 @@
                             <tbody id="list-order">
                                 <tr class="order" style="display: none;">
                                     <td class="product-index text-center">STT</td>
-                                    <td class="order-imei">IMEI</td>
+                                    <td class="text-center order-imei">
+                                        <a class="text-decoration-underline" href="#" onclick="onInputIMEI(this)">Nhập IMEI</a>
+                                        <input type="hidden" class="list-imei">
+                                        <input type="hidden" class="product-id">
+                                        <input type="hidden" class="order-detail-id">
+                                    </td>
                                     <td class="product-name">Tên sản phẩm</td>
                                     <td class="order-quantity number">Số lượng mua</td>
-                                    <td class="product-quantity number">Số lượng tồn kho</td>
-                                    <td class="text-center">
+                                    <td class="product-quantity number order-verify">Số lượng tồn kho</td>
+                                    <td class="text-center order-verify">
                                         <span class="product-available">Trạng thái</span>
                                     </td>
                                     <td class="order-discount number">Khuyến mãi</td>
@@ -266,13 +285,13 @@
                         <i class="fas fa-ban me-2"></i>
                         Đóng
                     </button>
-                    <button type="button" class="btn btn-success waves-effect waves-light" onclick="onLockEdit(false)">
+                    <button type="button" class="btn btn-success waves-effect waves-light btnEdit" onclick="onLockEdit(false)">
                         <i class="fas fa-edit me-2"></i>
                         Chỉnh sửa
                     </button>
-                    <button type="button" id="btnSave" class="btn btn-primary waves-effect waves-light">
+                    <button type="button" id="btnSave" class="btn btn-primary waves-effect waves-light" onclick="onBtnSave(this)">
                         <i class="fas fa-save pe-2"></i>
-                        Lưu
+                        <span>Lưu</span>
                     </button>
                 </div>
             </div>
@@ -281,6 +300,38 @@
         <!-- /.modal-dialog -->
     </div>
     <!-- End Modal Info order -->
+
+    <!-- Modal IMEI -->
+    <div class="modal fade modal-imei" tabindex="-1" style="display: none; background-color: rgb(56 55 76 / 86%);" aria-hidden="true">
+        <div class="modal-dialog modal-xs h-100">
+            <div class="modal-content" style="height: 90%;">
+                <!-- Modal Header-->
+                <div class="modal-header">
+                    <h5 class="modal-title mt-0">Sản phẩm</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <!-- Modal Body-->
+                <div class="modal-body px-4 overflow-auto" id="list-imei">
+                    <div class="imei-row row align-items-center" style="display: none;">
+                        <div class="col-lg-1 text-end fw-bolder text-primary"><span class="imei-count"></span></div>
+                        <div class="col"><input type="text" name="imei-value" class="imei-value form-control" placeholder="IMEI" onblur="onType(this)"></div>
+                    </div>
+                </div>
+                <!-- Modal Footer-->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary waves-effect waves-light" data-bs-dismiss="modal">
+                        <i class="fas fa-ban me-2"></i>
+                        Đóng
+                    </button>
+                    <button type="button" id="btnSaveImei" class="btn btn-primary waves-effect waves-light" onclick="onBtnSaveImei(this)">
+                        <i class="fas fa-save pe-2"></i>
+                        <span>Xác nhận</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Modal IMEI -->
 </div>
 
 <script layout:fragment="script" >
@@ -289,6 +340,10 @@
         $('.typeFilter').chosen();
 
         hoverIconLock();
+
+        $('#datatable').find('.order-id').each(function(){
+            $(this).text('HD00' + $(this).text());
+        });
     });
 
     function hoverIconLock() {
@@ -309,28 +364,6 @@
         $(this).toggleClass('down');
         $(this).siblings('.expand').toggle();
     })
-
-    $('.check-item').change(function (e) {
-        const flag = checkSiblings();
-
-        if (flag) {
-            $('#checkAll').prop('checked', true);
-        } else {
-            $('#checkAll').prop('checked', false);
-        }
-
-        function checkSiblings() {
-            const checkboxes = $('.check-item').parent().find('input[type="checkbox"]');
-            let checkFlag = true;
-
-            checkboxes.each(function () {
-                if ($(this).prop("checked") === false) {
-                    checkFlag = false;
-                }
-            });
-            return checkFlag;
-        }
-    });
 
     // disable mousewheel on a input number field when in focus
     // (to prevent Chromium browsers change the value when scrolling)
@@ -387,13 +420,24 @@
         let errorMessage = '';
         let flag = true;
 
-        const input = $('#recipientName, #recipientAddress, #deliveryDate');
+        const input = $('#recipientName, #recipientAddress');
         input.each(function() {
             if ($(this).val() === '') {
                 $(this).addClass('error');
                 flag = false;
             }
         });
+
+        const deliveryDate = $('#deliveryDate');
+        const patternDate = /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/i;
+        if (deliveryDate.val() === '') {
+            deliveryDate.addClass('error');
+            flag = false;
+        } else if (!patternDate.test(deliveryDate.val())) {
+            deliveryDate.addClass('error');
+            errorMessage += 'Ngày giao hàng không hợp lệ!\n';
+            flag = false;
+        }
 
         const phoneNumber = $('#recipientPhone');
         const patternPhone = /^(84|0[3|5|7|8|9])+([0-9]{8})\b$/i;
@@ -435,7 +479,7 @@
         return false;
     }
 
-    // Reset form input
+    // Unlock form input
     const inputModal = $('.modal-info-order').find('.modal-body input.border-none, textarea.border-none');
     function onLockEdit(boolean) {
         if (boolean === false) {
@@ -466,76 +510,233 @@
     /**
      * Submit form
      */
-    $('#btnSave').click(function () {
+    function onBtnSave(tag) {
+
+        // Button submit by status
+        const btnSubmit = $(tag).find('span').text();
+
+        if (btnSubmit === 'Xác nhận') {
+            confirmOrder();
+        } else if (btnSubmit === 'Xuất hàng') {
+            shippingOrder();
+        }
+    }
+
+    //API confirm order
+    function confirmOrder() {
         let data = {};
 
         data["recipientName"] = $('input[name=recipientName]').val();
         data["recipientPhone"] = $('input[name=recipientPhone]').val();
         data["recipientAddress"] = $('textarea[name=recipientAddress]').text();
         data["deliveryDate"] = moment($('input[name=deliveryDate]').val(), 'DD-MM-YYYY').format('YYYY-MM-DD');
+        if ($('input[name=feeDelivery]').val().indexOf(" đ") > 0) {
+            data["feeDelivery"] = +$('input[name=feeDelivery]').val().substring(0, $('input[name=feeDelivery]').val().indexOf(" đ")).replace('.', '');
+        } else {
+            data["feeDelivery"] = $('input[name=feeDelivery]').val();
+        }
         data["id"] = $('input[id=order-id]').val();
 
         if(validateForm()) {
-            saveOrder(data);
+            $.ajax({
+                url: '/api/v1/orders/confirm-order-sale-person',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                dataType: 'json',
+                success: function (result) {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Xác nhận đơn hàng thành công'
+                    }).then(()=> window.location.reload());
+                },
+                error: function (error) {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+                    Toast.fire({
+                        icon: 'error',
+                        title: "Lỗi hệ thống!\nVui lòng thử lại sau"
+                    })
+                }
+            })
             onLockEdit(true);
         } else {
             console.log("validate fail");
         }
-    });
-
-    //API edit Staff
-    function saveOrder(data) {
-        $.ajax({
-            url: '/api/v1/orders',
-            type: 'PUT',
-            contentType: 'application/json',
-            data: JSON.stringify(data),
-            dataType: 'json',
-            success: function (result) {
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                    }
-                })
-                Toast.fire({
-                    icon: 'success',
-                    title: 'Cập nhật thành công'
-                });
-            },
-            error: function (error) {
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                    }
-                })
-                Toast.fire({
-                    icon: 'error',
-                    title: "Lỗi hệ thống!\nVui lòng thử lại sau"
-                })
-            }
-        })
     }
 
-    let date = '';
+    //API shipping order
+    function shippingOrder() {
+        // Validate IMEI
+        let errorCount = 0;
+        $('input.list-imei:not(:first)').each(function (){
+           if ($(this).val() === '') {
+               $(this).parent().addClass('error');
+               errorCount++;
+           }
+        });
+        if (errorCount !== 0) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+            Toast.fire({
+                icon: 'warning',
+                title: "Yêu cầu nhập IMEI sản phẩm!"
+            })
+        } else {
+
+            // Get Order
+            let data = {};
+            data["id"] = $('input[id=order-id]').val();
+            data["note"] = "";
+
+            // Get list OrderDetails
+            console.log("-------List order details----------");
+            let productDetailsRequests = [];
+            $('.order:not(:first)').each(function (index) {
+                // Get single orderDetail
+                let orderDetail = {};
+                orderDetail["productId"] = $(this).find('input.product-id').val();
+                orderDetail["id"] = $(this).find('input.order-detail-id').val();
+                orderDetail["quantity"] = $(this).find('.order-quantity').text();
+                orderDetail["note"] = "";
+                orderDetail["discount"] = $(this).find('.order-discount').text().substring(0, $(this).find('.order-discount').text().indexOf(" đ")).replace('.', '');
+
+                // Get list IMEI
+                let listIMEI = [];
+                // $(this).find('input.list-imei').val().split(',').each(function (){
+                //
+                // });
+                orderDetail["imei"] = $(this).find('input.list-imei').val().split(',');
+
+                // Add single orderDetail to list object OrderDetail
+                productDetailsRequests.push(orderDetail);
+                console.log(orderDetail);
+            });
+            data["productDetailsRequests"] = productDetailsRequests;
+
+            console.log("==========FINAL=======");
+            console.log(data);
+
+            if (validateForm()) {
+                $.ajax({
+                    url: '/api/v1/orders/confirm-export-order',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    dataType: 'json',
+                    success: function (result) {
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        })
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Xuất hàng thành công'
+                        });
+                    },
+                    error: function (error) {
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        })
+                        Toast.fire({
+                            icon: 'error',
+                            title: "Lỗi hệ thống!\nVui lòng thử lại sau"
+                        })
+                    }
+                })
+                onLockEdit(true);
+            } else {
+                console.log("validate fail");
+            }
+        }
+    }
 
     function onBtnInfo (element) {
+        const btnSave = $('#btnSave');
+        const orderId = $(element).parent().parent().find('.order-id').text().substring(4);
+
         $('#loading-image').show();
-        const orderId = $(element).parent().parent().find('.order-id').text();
+        $('.order-verify').removeClass('d-none');
+        $('.order-imei').addClass('d-none');
+        btnSave.removeClass('btn-primary btn-warning btn-success btn-info').addClass('btn-primary');
+        btnSave.removeAttr('disabled');
+        btnSave.show();
 
         // Reset Modal before showing info
         $('.order:not(:eq(0))').remove();
+
+        // Change text button by transaction-status
+        if ($(element).text() === "Xác nhận") {
+            btnSave.find('span').text("Xác nhận");
+            btnSave.removeClass('btn-primary btn-warning btn-success btn-info btn-secondary').addClass('btn-warning');
+        } else if ($(element).text() === "Xuất hàng") {
+            btnSave.find('span').text("Xuất hàng");
+            btnSave.removeClass('btn-primary btn-warning btn-success btn-info btn-secondary').addClass('btn-info');
+            // show input imei
+            $('.order-imei').removeClass('d-none');
+            // remove unnecessary information
+            $('.order-verify').addClass('d-none');
+        } else if ($(element).text() === "Đang giao hàng") {
+            btnSave.find('span').text("Đang giao hàng");
+            btnSave.removeClass('btn-primary btn-warning btn-success btn-info btn-secondary').addClass('btn-primary');
+            btnSave.attr('disabled', '');
+            // remove unnecessary information
+            $('.order-verify').addClass('d-none');
+        } else if ($(element).text() === "Hoàn thành") {
+            btnSave.find('span').text("Hoàn thành");
+            btnSave.removeClass('btn-primary btn-warning btn-success btn-info btn-secondary').addClass('btn-success');
+            btnSave.attr('disabled', '');
+            // remove unnecessary information
+            $('.order-verify').addClass('d-none');
+        } else if ($(element).text() === "Huỷ") {
+            btnSave.hide();
+            // remove unnecessary information
+            $('.order-verify').addClass('d-none');
+        }
 
         // Call API get info Order
         $.ajax({
@@ -546,14 +747,28 @@
                 $('input[name=recipientName]').val(result.recipientName);
                 $('input[name=recipientPhone]').val(result.recipientPhone);
                 $('textarea[name=recipientAddress]').text(result.recipientAddress);
-                $('input[name=deliveryDate]').val(moment(result.deliveryDate, 'YYYY-MM-DD').format('DD/MM/YYYY'));
+                if (result.deliveryDate === null) {
+                    $('input[name=deliveryDate]').val("Chờ xác nhận");
+                } else {
+                    $('input[name=deliveryDate]').val(moment(result.deliveryDate, 'YYYY-MM-DD').format('DD/MM/YYYY'));
+                }
+                $('input[name=feeDelivery]').val(addPoint(result.feeDelivery) + " đ");
                 $('#createDate').text(moment(result.orderDate).format('DD/MM/YYYY'));
                 $('#price').text(addPoint(`${result.tax - result.totalAmount}`) + ' đ');    // Tổng tiền thanh toán
                 $('#fullName').text(result.customer.fullName);
                 $('#phoneNumber').text(result.customer.phoneNumber);
                 $('input[id=order-id]').val(result.id);
 
-                (result.status === 'UNPAID' || result.status === 'UNPAID') ? $('.modal-info-order').find('.btn-success').show() : $('.modal-info-order').find('.btn-success').hide();
+                // Show/Hide btnEdit
+                if (result.transactionStatus === 'CANCEL') {
+                    $('.modal-info-order').find('.btnEdit').hide();
+                } else {
+                    if (result.status === 'UNPAID') {
+                        $('.modal-info-order').find('.btnEdit').show();
+                    } else {
+                        $('.modal-info-order').find('.btnEdit').hide();
+                    }
+                }
 
                 // Call API get info Order details of customer
                 $.ajax({
@@ -570,7 +785,8 @@
                                 // Get row
                                 const product = $('#list-order').find('.order').eq(i + 1).show();
 
-                                product.find('.order-imei').text(res[i].imei);
+                                product.find('.product-id').val(res[i].product.id);                                product.find('.product-id').val(res[i].product.id);
+                                product.find('.order-detail-id').val(res[i].id);
                                 product.find('.product-name').text(res[i].product.name);
                                 product.find('.order-quantity').text(res[i].quantity);
                                 product.find('.product-quantity').text(res[i].product.quantity);
@@ -604,44 +820,96 @@
         })
     }
 
-    function onBtnStatus (element) {
-        const tag = $(element).parent().parent();
-        const lock = $(element).hasClass('fa-lock');
-        const status = lock ? "0" : "1";
-        const length_of_row = $('table#datatable th').length;
-        $.ajax({
-            url: `/api/staff/status/${tag.find('.check-item').val()}/${status}`,
-            type: 'PUT',
-            contentType: 'application/json',
-            success: function (result) {
-                Swal.fire(
-                    lock ? 'Đã khoá tài khoản!' : 'Đã mở khoá tài khoản',
-                    `Mã nhân viên ${tag.find('.staff-code').text()}`,
-                    'success'
-                ).then(() => {
-                    if (lock) {
-                        $(element).removeClass('fa-lock-open').addClass('fa-lock').css('color', 'red');
-                        tag.find('.status').text("Ngừng hoạt động");
-                        tag.find('.status').removeClass('badge bg-success');
-                        tag.find('.status').addClass('badge bg-danger');
-                    } else {
-                        $(element).removeClass('fa-lock').addClass('fa-lock-open').css('color', 'green');
-                        tag.find('.status').text("Đang hoạt động");
-                        tag.find('.status').removeClass('badge bg-danger');
-                        tag.find('.status').addClass('badge bg-success');
-                    }
+    const modalIMEI = $('.modal-imei');
+    let tempInputIMEI;
+    // Input IMEI
+    function onInputIMEI(tag) {
+        const row = $(tag).parent().parent();
+        $(tag).parent().removeClass('error');
+        tempInputIMEI = $(tag).parent().find('.list-imei');
 
-                    hoverIconLock();
-                })
-            },
-            error: function (error) {
-                console.log(error);
-                Swal.fire(
-                    'Lỗi hệ thống!\nVui lòng thử lại sau!',
-                    'error'
-                )
-            }
-        })
+        // Title modal IMEI
+        modalIMEI.find('.modal-title').text(row.find('.product-name').text());
+
+        let arrayIMEI = tempInputIMEI.val();
+        if (arrayIMEI !== null) {
+            arrayIMEI = arrayIMEI.split(',');
+        }
+
+
+        // List input IMEI
+        for (let i = 0; i < row.find('.order-quantity').text(); i++) {
+            // Clone row input imei
+            modalIMEI.find('.modal-body').find('.row').eq(0).clone().appendTo('#list-imei');
+            modalIMEI.find('.imei-row').eq(i + 1).show();
+            modalIMEI.find('.imei-count').eq(i + 1).text(i + 1);
+            (arrayIMEI[0] !== '') ? modalIMEI.find('.imei-value').eq(i + 1).val(arrayIMEI[i]):'';
+        }
+
+        modalIMEI.modal('show');
+    }
+
+    // Bind auto remove row IMEI when close modal IMEI
+    modalIMEI.on('hidden.bs.modal', function () {
+        modalIMEI.find('.imei-row:not(:first)').remove();
+    });
+
+    function onBtnSaveImei() {
+        // Validate IMEI
+        let errorCount = 0;
+        modalIMEI.find('.imei-value:not(:first)').each(function (){
+           if ($(this).val().indexOf(' ') >= 0 || $(this).val() === '') {
+               $(this).addClass('error');
+               errorCount++;
+               console.log($(this).val())
+           }
+        });
+
+        // Alert error
+        if (errorCount !== 0) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+            Toast.fire({
+                icon: 'error',
+                title: 'IMEI không chính xác'
+            })
+        } else {
+            // Insert arrayIMEI to tempInputIMEI
+            const arrayIMEI = $("input[name=imei-value]:not(:first)").map(function(){
+                return $(this).val();
+            }).get();
+            tempInputIMEI.val(arrayIMEI);
+
+            // Alert success
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+            Toast.fire({
+                icon: 'success',
+                title: 'Lưu IMEI thành công'
+            })
+
+            modalIMEI.find('.imei-row:not(:first)').remove();
+
+            modalIMEI.modal('hide');
+        }
     }
 
     // Script split money string by point

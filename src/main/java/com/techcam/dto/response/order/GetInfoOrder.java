@@ -41,13 +41,14 @@ public class GetInfoOrder {
     private String status;
     private String note;
     private Date deliveryDate;
+    private String feeDelivery;
+    private String ipAddress;
+    private String bankTransaction;
+    private CustomerInfoResponse customer;
+    private String voucherCustomerId;
     private Date createDate;
     private Date modifierDate;
     private String createBy;
     private String modifierBy;
     private Boolean deleteFlag;
-    private String ipAddress;
-    private String bankTransaction;
-    private CustomerInfoResponse customer;
-    private String voucherCustomerId;
 }

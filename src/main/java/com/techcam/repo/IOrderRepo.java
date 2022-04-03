@@ -16,7 +16,7 @@ import java.util.List;
  * Project_name: Tech-cam
  */
 
-public interface IOrderRepo extends JpaRepository<OrdersEntity,String> {
+public interface IOrderRepo extends JpaRepository<OrdersEntity, Integer> {
     List<OrdersEntity> findAllByOrderByCreateDateDesc();
     List<OrdersEntity> findAllByStatusAndDeleteFlagFalseOrderByCreateDateDesc(String status);
     List<OrdersEntity> findAllByDeleteFlagFalseOrderByCreateDateDesc();
