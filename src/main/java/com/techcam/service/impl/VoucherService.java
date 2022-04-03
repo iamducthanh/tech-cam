@@ -75,13 +75,13 @@ public class VoucherService implements IVoucherService {
 
     @Override
     public List<VoucherResponse> findAllByCode(String code) {
-        return voucherRepo.findAllByCodeAndDeleteFlagIsFalse(code).stream()
+        return voucherRepo.findAllByCodeAndDeleteFlagIsFalse(code.toUpperCase()).stream()
                 .map(this::mapToVoucherDto).collect(Collectors.toList());
     }
 
     @Override
     public VoucherResponse findFistByCode(String code) {
-        List<VoucherResponse> lstVoucher = findAllByCode(code);
+        List<VoucherResponse> lstVoucher = findAllByCode(code.toUpperCase());
         VoucherResponse response = null;
         for (VoucherResponse x : lstVoucher) {
             List<OrdersEntity> lstUsedByVoucherId = orderRepo.findAllByVoucherIdAndDeleteFlagIsFalse(x.getVoucherId());
@@ -219,7 +219,7 @@ public class VoucherService implements IVoucherService {
         if (voucherEntity == null) return new VoucherResponse();
         return VoucherResponse.builder()
                 .voucherId(voucherEntity.getId())
-                .voucherCode(voucherEntity.getCode())
+                .voucherCode(voucherEntity.getCode().toUpperCase())
                 .voucherName(voucherEntity.getName())
                 .voucherStartDate(voucherEntity.getStartDate())
                 .voucherEndDate(voucherEntity.getEndDate())

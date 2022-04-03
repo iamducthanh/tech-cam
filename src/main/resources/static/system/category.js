@@ -48,10 +48,11 @@ function onEdit(elm){
                 console.log(containerAtbEdit)
                 containerAtbEdit.innerHTML += '<div class="row mb-3">\n' +
                     '                            <div class="col-lg-5">\n' +
-                    '                                <input class="form-control atbName" value="'+datas.attributes[i].name+'" placeholder="Tên thuộc tính">\n' +
+                    '<input class="form-control atbEditId" type="hidden" value="'+datas.attributes[i].id+'">\n' +
+                    '                                <input class="form-control atbEditName" value="'+datas.attributes[i].name+'" placeholder="Tên thuộc tính">\n' +
                     '                            </div>\n' +
                     '                            <div class="col-lg-6">\n' +
-                    '                                <input class="form-control atbValue" value="'+datas.attributes[i].value+'" placeholder="Giá trị mặc định 1; giá trị 2; giá trị 3;...">\n' +
+                    '                                <input class="form-control atbEditValue" value="'+datas.attributes[i].value+'" placeholder="Giá trị mặc định 1; giá trị 2; giá trị 3;...">\n' +
                     '                            </div>\n' +
                     '                            <div class="col-lg-1 btnRemoveEditAtb" style="text-align: center">\n' +
                     btnDelete +
@@ -69,7 +70,7 @@ function closeModalCategory(){
     $('#addCategory')[0].style.display = 'none';
 }
 
-function saveCategory(action){
+function saveCategory(){
     let parentId = $('#parentId')[0].value
     let level = $('#levelCategory')[0].value
     let categoryName = $('#categoryName')[0].value
@@ -116,6 +117,50 @@ function saveCategory(action){
         error: function (error) {
             $('#error')[0].style.display = 'unset'
             $('#error')[0].innerHTML = error.responseJSON.vn
+        }
+    })
+}
+
+function saveEditCategory(){
+    let atbEditIdInputs = $('.atbEditId');
+    let atbEditNameInputs = $('.atbEditName');
+    let atbEditValueInputs = $('.atbEditValue');
+
+    let atbArr = [];
+    let level = $('#levelCategoryEdit')[0].value;
+    let categoryId = $('#categoryIdEdit')[0].value;
+    let categoryName = $('#categoryEditName')[0].value
+    let parentId = $('#parentIdEdit')[0].value
+
+    for(let i=0;i<atbEditIdInputs.length;i++){
+        let obj = {
+            id: atbEditIdInputs[i].value,
+            name: atbEditNameInputs[i].value,
+            value:atbEditValueInputs[i].value
+        }
+        if(obj.name.trim().length > 0){
+            atbArr.push(obj)
+        }
+    }
+
+    let objUpdate = {
+        categoryId: categoryId,
+        categoryName: categoryName,
+        attributes: atbArr,
+        parentId: parentId
+    }
+
+    $.ajax({
+        url: '/category',
+        method: 'PUT',
+        data: JSON.stringify(objUpdate),
+        contentType: 'application/json',
+        success: function (datas) {
+            console.log(datas)
+            window.location.href = '/category?message=success&level=' + level;
+        },
+        error: function (error) {
+            console.log(error)
         }
     })
 }
