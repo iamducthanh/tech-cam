@@ -5,8 +5,10 @@ import com.techcam.dto.request.invoice.InvoiceRequest;
 import com.techcam.dto.response.invoice.InvoiceDetailResponse;
 import com.techcam.dto.response.invoice.InvoiceResponse;
 import com.techcam.entity.*;
+import com.techcam.exception.TechCamExp;
 import com.techcam.repo.*;
 import com.techcam.service.IGoodsreceiptService;
+import com.techcam.service.IProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +20,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.techcam.constants.ConstantsErrorCode.INVOICE_INVENTORY;
 import static com.techcam.type.CustomerStatus.*;
 
 /**
@@ -46,6 +49,8 @@ public class GoodsreceiptService implements IGoodsreceiptService {
     private final ICategoryRepo categoryRepo;
 
     private final IBrandRepo brandRepo;
+
+    private final IProductService productService;
 
     @Override
     public List<InvoiceResponse> findAllByInvoiceCode(String invoiceCode) {
@@ -162,7 +167,16 @@ public class GoodsreceiptService implements IGoodsreceiptService {
             lstFind.forEach(e -> e.setDeleteFlag(true));
             goodsreceiptdetailRepo.saveAll(lstDetails);
             goodsreceiptdetailRepo.saveAll(lstFind);
+            for (GoodsreceiptdetailEntity x : lstDetails) {
+                int inventory = productService.getInventoryByProductId(x.getProductId());
+                if (inventory < 0) {
+                    ProductEntity productEntity = productRepo.getByIdAndDeleteFlagIsFalse(x.getProductId());
+                    throw new TechCamExp(INVOICE_INVENTORY, productEntity.getName());
+                }
+            }
             return SUCCESS.name();
+        } catch (TechCamExp e) {
+            throw new RuntimeException(e);
         } catch (Exception e) {
             e.printStackTrace();
             return FAILED.name();
