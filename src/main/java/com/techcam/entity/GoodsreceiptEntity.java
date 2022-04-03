@@ -36,9 +36,6 @@ public class GoodsreceiptEntity extends BaseEntity {
     @Column(name = "total_amount", nullable = false)
     private Integer totalAmount;
 
-    @Column(name = "total_quantity", nullable = false)
-    private Integer totalQuantity;
-
     @Column(name = "receipt_status", length = 50)
     private String receiptStatus;
 
@@ -47,6 +44,9 @@ public class GoodsreceiptEntity extends BaseEntity {
 
     @Column(name = "receipt_id", length = 64)
     private String receiptId;
+
+    @Column(name = "deliverier", nullable = false)
+    private String deliverier;
 
     @Override
     public boolean equals(Object o) {
