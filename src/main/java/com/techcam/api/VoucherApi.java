@@ -104,6 +104,7 @@ public class VoucherApi {
     @CrossOrigin(origins = "http://localhost:8888")
     @GetMapping(params = "code")
     public ResponseEntity<VoucherResponse> getAllByCode(@RequestParam("code") String code) {
+        System.out.println(code);
         List<VoucherResponse> lstVoucher = voucherService.findAllByCode(code);
         if (lstVoucher.isEmpty()) {
             // voucher không đúng
@@ -111,9 +112,8 @@ public class VoucherApi {
         }
         VoucherResponse response = null;
         for (VoucherResponse x : lstVoucher) {
-            List<VoucherUseByOrderResponse> lstUsedByVoucherId = orderService.findAllByVoucherId(x.getVoucherId());
-            if (x.getVoucherEndDate().compareTo(new Date()) <= 0
-                    && x.getVoucherQuantity() > lstUsedByVoucherId.size()) {
+//            List<VoucherUseByOrderResponse> lstUsedByVoucherId = orderService.findAllByVoucherId(x.getVoucherId()); ko hiểu đê làm gì
+            if (x.getVoucherEndDate().compareTo(new Date()) <= 0 && x.getVoucherQuantity()>0) {
                 response = x;
                 break;
             }
