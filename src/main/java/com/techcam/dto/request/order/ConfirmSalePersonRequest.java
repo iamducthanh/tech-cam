@@ -21,7 +21,7 @@ import java.util.Date;
 @Builder
 public class ConfirmSalePersonRequest {
     private Integer id;
-    private String orderType;
+//    private String orderType;
     private String recipientName;
     private String recipientPhone;
     private String recipientAddress;
