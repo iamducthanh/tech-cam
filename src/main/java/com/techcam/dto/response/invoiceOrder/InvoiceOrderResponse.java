@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 /**
  * Description :
  *
@@ -25,5 +28,19 @@ public class InvoiceOrderResponse {
     private String invoiceOrderCode;
 
     private String invoiceSupplierId;
+
+    private String invoiceSupplierName;
+
+    private LocalDate orderDate;
+
+    private String orderStaff;
+
+    private LocalDate orderDelivery;
+
+    private String status;
+
+    private String note;
+
+    private Date dateInvoice;
 
 }

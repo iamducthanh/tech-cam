@@ -2,7 +2,6 @@ package com.techcam.repo;
 
 import com.techcam.entity.OrderdetailEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,4 +25,6 @@ public interface IOrderDetailsRepo extends JpaRepository<OrderdetailEntity, Inte
     List<OrderdetailEntity> findAllByIdInAndOrdersIdAndDeleteFlagFalse(List<String> ids, Integer id);
 
     OrderdetailEntity findByOrdersIdAndProductId(Integer orderId, String productId);
+
+    List<OrderdetailEntity> findAllByProductIdAndDeleteFlagIsFalse(String productId);
 }

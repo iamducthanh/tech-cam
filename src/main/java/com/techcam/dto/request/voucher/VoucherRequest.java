@@ -52,6 +52,10 @@ public class VoucherRequest {
     @NotBlank(message = ConstantsErrorCode.VOUCHER_DISCOUNT_BLANK)
     private String voucherDiscount;
 
+    @NotNull(message = ConstantsErrorCode.ERROR_DATA_REQUEST)
+    @NotBlank(message = ConstantsErrorCode.VOUCHER_DISCOUNT_BLANK)
+    private String voucherAccompanyPromo;
+
     private String voucherMoneyMin;
 
     private String voucherQuantity;

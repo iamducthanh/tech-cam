@@ -21,4 +21,6 @@ public interface IGoodsreceiptRepo extends JpaRepository<GoodsreceiptEntity, Str
     List<GoodsreceiptEntity> findAllByReceiptIdAndDeleteFlagIsFalse(String invoiceCode);
 
     GoodsreceiptEntity getByIdAndDeleteFlagIsFalse(String id);
+
+    List<GoodsreceiptEntity> findAllByOrderIdAndDeleteFlagIsFalse(String orderId);
 }

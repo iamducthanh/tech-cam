@@ -20,8 +20,24 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class InvoiceOrderDetailResponse {
 
+    /**
+     * id sản phẩm
+     */
     private String productId;
 
-    private int productQuantity;
+    /**
+     * số lượng trên hoá đơn
+     */
+    private Integer quantity;
+
+    /**
+     * số lượng nhập thực tế
+     */
+    private Integer quantityActual;
+
+    /**
+     * giá tiền
+     */
+    private Long price;
 
 }

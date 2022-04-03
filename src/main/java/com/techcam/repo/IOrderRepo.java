@@ -26,6 +26,8 @@ public interface IOrderRepo extends JpaRepository<OrdersEntity, Integer> {
     int countByPhoneNumberCustomer(Date date, String phoneNumber, String ipAddress);
     OrdersEntity findByBankTransaction(String bankTransaction);
 
-    List<OrdersEntity> findAllByVoucherIdAndDeleteFlagIsFalse(String voucherId);
-    OrdersEntity findFirstByVoucherCodeAndCustomerPhoneNumber(String code, String phoneNumber);
+    @Query("select o from OrdersEntity  o where o.voucher.code=?1 and o.transactionStatus not in ?2 and o.deleteFlag =false ")
+    List<OrdersEntity> findAllByVoucherCodeAndTransactionStatusNotInAndDeleteFlagFalse(String voucherId,String status);
+    @Query("select o from OrdersEntity  o where o.voucher.code=?1 and o.customer.phoneNumber=?2 and o.transactionStatus not in ?3 and o.deleteFlag =false ")
+    OrdersEntity findFirstByVoucherCodeAndCustomerPhoneNumberAndTransactionStatusNotIn(String code, String phoneNumber,String status);
 }

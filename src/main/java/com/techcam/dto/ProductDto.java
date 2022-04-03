@@ -37,6 +37,8 @@ public class ProductDto {
     @JsonProperty("productPrice")
     private String productPrice;
 
+    private Integer productQuantity;
+
     @NotNull(message = ERROR_BLANK)
     @NotEmpty(message = ERROR_BLANK)
     @JsonProperty("productBrand")
