@@ -99,6 +99,7 @@ public class OrderServiceImpl implements IOrderService {
         OrdersEntity orders = ordersRepo.findByBankTransaction(bankTransaction);
         if (Objects.isNull(orders)) {
             response.setStatus(CommonStatus.FAIL.name());
+
         }
         if (!StringUtils.equalsIgnoreCase(bankStatus, "00")) {
             response.setStatus(CommonStatus.FAIL.name());
@@ -110,11 +111,11 @@ public class OrderServiceImpl implements IOrderService {
                 return false;
             }).collect(Collectors.toList());
             productRepo.saveAll(productEntities);
-        }
-        {
             orders.setStatus(OrderStatus.PAID.name());
             orders.setDeleteFlag(false);
             ordersRepo.save(orders);
+        }else {
+            response.setStatus(CommonStatus.FAIL.name());
         }
         return response;
     }
@@ -296,7 +297,7 @@ public class OrderServiceImpl implements IOrderService {
 //            }
             if (request.getOrderType().equals(OrderType.ONLINE.name())) {
                 if (request.getPaymentMethod().equalsIgnoreCase(OrderMethod.PAYMENT.name())) {
-                    String vnpay = VNPAYService.payments(ordersEntity.getTax() - ordersEntity.getTotalAmount(), vnp_ref, httpServletRequest);
+                    String vnpay = VNPAYService.payments(ordersEntity.getTax() - ordersEntity.getTotalAmount()+ordersEntity.getFeeDelivery(), vnp_ref, httpServletRequest);
                     response.setVnpay(vnpay);
                 }
                 if (Objects.nonNull(customerInfoResponse.getEmail())) {
