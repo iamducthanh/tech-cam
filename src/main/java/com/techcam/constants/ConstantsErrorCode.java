@@ -83,6 +83,8 @@ public interface ConstantsErrorCode {
     String IMEI_DUPLICATE = "TC-007-004";
 
     String INVOICE_NOT_DETAIL = "TC-008-001";
+    String INVOICE_NOT_ZERO = "TC-008-002";
+    String INVOICE_INVENTORY = "TC-008-003";
 
     String PROMOTION_EXIST = "TC-012-001";
     String PROMOTION_NOT_FOUND = "TC-012-002";

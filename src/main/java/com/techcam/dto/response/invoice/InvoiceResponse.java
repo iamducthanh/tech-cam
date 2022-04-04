@@ -69,6 +69,11 @@ public class InvoiceResponse {
     private String note;
 
     /**
+     * người giao hàng
+     */
+    private String shipper;
+
+    /**
      * chi tiết nhập hàng
      */
     private List<InvoiceDetailResponse> details;

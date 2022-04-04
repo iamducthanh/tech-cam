@@ -1,7 +1,6 @@
 package com.techcam.entity;
 
 import javax.persistence.*;
-import java.util.Date;
 
 /**
  * Description:
@@ -14,20 +13,15 @@ import java.util.Date;
 
 @Entity
 @Table(name = "orderdetail", schema = "poly_techcam", catalog = "")
-public class OrderdetailEntity {
+public class OrderdetailEntity extends BaseEntity {
+
     private String id;
     private String imei;
-    private Date createDate;
     private String note;
-    private String createBy;
-    private String modifierBy;
-    private Date modifierDate;
-    private Boolean deleteFlag;
-    private int discount;
-    private int quantity;
+    private Integer discount;
+    private Integer quantity;
     private OrdersEntity orders;
     private ProductEntity product;
-
 
     @Id
     @Column(name = "ID")
@@ -36,11 +30,11 @@ public class OrderdetailEntity {
     }
     @Basic
     @Column(name = "quantity")
-    public int getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 
@@ -59,16 +53,6 @@ public class OrderdetailEntity {
     }
 
     @Basic
-    @Column(name = "CREATE_DATE")
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
-
-    @Basic
     @Column(name = "NOTE")
     public String getNote() {
         return note;
@@ -79,51 +63,12 @@ public class OrderdetailEntity {
     }
 
     @Basic
-    @Column(name = "CREATE_BY")
-    public String getCreateBy() {
-        return createBy;
-    }
-
-    public void setCreateBy(String createBy) {
-        this.createBy = createBy;
-    }
-
-    @Basic
-    @Column(name = "MODIFIER_BY")
-    public String getModifierBy() {
-        return modifierBy;
-    }
-
-    public void setModifierBy(String modifierBy) {
-        this.modifierBy = modifierBy;
-    }
-
-    @Basic
-    @Column(name = "MODIFIER_DATE")
-    public Date getModifierDate() {
-        return modifierDate;
-    }
-
-    public void setModifierDate(Date modifierDate) {
-        this.modifierDate = modifierDate;
-    }
-
-    @Basic
-    @Column(name = "DELETE_FLAG")
-    public Boolean getDeleteFlag() {
-        return deleteFlag;
-    }
-
-    public void setDeleteFlag(Boolean deleteFlag) {
-        this.deleteFlag = deleteFlag;
-    }
-    @Basic
     @Column(name = "discount")
-    public int getDiscount() {
+    public Integer getDiscount() {
         return discount;
     }
 
-    public void setDiscount(int discount) {
+    public void setDiscount(Integer discount) {
         this.discount = discount;
     }
 

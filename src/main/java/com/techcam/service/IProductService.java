@@ -33,6 +33,8 @@ public interface IProductService {
 
     List<String> findAllImagesByProductId(String productId);
 
+    int getInventoryByProductId(String productId);
+
     List<ProductResponse> findAllByCategoryId(String categoryId);
 
     List<ProductResponseDTO> getAll();

@@ -11,6 +11,7 @@ import com.techcam.repo.IOrderRepo;
 import com.techcam.repo.IVoucherCustomerRepo;
 import com.techcam.repo.IVoucherRepo;
 import com.techcam.service.IVoucherService;
+import com.techcam.type.VoucherKey;
 import com.techcam.type.OrderStatus;
 import com.techcam.util.ConvertUtil;
 import lombok.RequiredArgsConstructor;
@@ -109,6 +110,7 @@ public class VoucherService implements IVoucherService {
         VoucherEntity voucherEntity = mapToVoucherEntity(voucherRequest, new VoucherEntity());
         voucherEntity.setId(UUID.randomUUID().toString());
         voucherEntity.setStatus(ON.toUpperCase());
+        voucherEntity.setAccompanyPromo(voucherRequest.getVoucherAccompanyPromo().toUpperCase().equals(ON.toUpperCase()) ? VoucherKey.USED.name() : VoucherKey.UNUSED.name());
         List<VoucherCustomerEntity> lstVoucherCustomerEntities = new ArrayList<>();
         if (Objects.nonNull(voucherRequest.getTypeDiscountPerson())) {
             for (String x : voucherRequest.getTypeDiscountPerson()) {
@@ -152,6 +154,7 @@ public class VoucherService implements IVoucherService {
         Timestamp createDate = voucherEntity.getCreateDate();
         voucherEntity = mapToVoucherEntity(voucherRequest, voucherEntity);
         voucherEntity.setId(voucherId);
+        voucherEntity.setAccompanyPromo(voucherRequest.getVoucherAccompanyPromo().toUpperCase().equals(ON.toUpperCase()) ? VoucherKey.USED.name() : VoucherKey.UNUSED.name());
         voucherEntity.setCreateDate(createDate);
         List<VoucherCustomerEntity> lstVoucherCustomerEntities = new ArrayList<>();
         System.out.println(voucherRequest.getTypeDiscountPerson());
@@ -237,6 +240,7 @@ public class VoucherService implements IVoucherService {
                 .voucherHidden(voucherEntity.getStartDate().compareTo(new Date()) < 0)
                 .voucherTypeDiscount(voucherEntity.getTypeDiscount())
                 .typeDiscountMinAmount(voucherEntity.getTypeDiscountMoneyMin())
+                .voucherKey(voucherEntity.getAccompanyPromo())
                 .build();
     }
 

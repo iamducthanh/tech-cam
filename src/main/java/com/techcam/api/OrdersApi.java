@@ -106,6 +106,11 @@ public class OrdersApi {
         return orderService.findOrderById(Integer.parseInt(id));
     }
 
+    @GetMapping("/list/{id}")
+    public List<GetInfoOrderDetails> findAllOrdersDetailsById(@PathVariable("id") Integer id) {
+        return orderService.findAllOrdersDetailsById(id);
+    }
+
     public String getDevice(HttpServletRequest request) {
         String ipAddress = request.getHeader("X-Forwarded-For");
         if (StringUtils.isEmpty(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {

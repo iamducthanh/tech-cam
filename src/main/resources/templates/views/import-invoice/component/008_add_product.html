@@ -1,0 +1,18 @@
+<tr th:data-id="${number}" class="tr-product" xmlns:th="http://www.thymeleaf.org">
+    <td class="text-center">
+        <select class="form-control select2 ip-edit-product">
+            <option th:each="product : ${lstProduct}"
+                    th:value="${product.productId}"
+                    th:text="${product.productName}">
+            </option>
+        </select>
+    </td>
+    <td class="ip-edit-quantity" data-field="quantity">1</td>
+    <td class="ip-edit-quantity-actual" data-field="quantityActual">1</td>
+    <td class="ip-edit-price" data-field="price">0</td>
+    <td style="width: 100px" class="text-center">
+        <a class="btn btn-outline-secondary btn-sm edit" title="Edit">
+            <i class="fas fa-pencil-alt"></i>
+        </a>
+    </td>
+</tr>

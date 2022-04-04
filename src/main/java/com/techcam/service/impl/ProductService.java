@@ -53,6 +53,10 @@ public class ProductService implements IProductService {
     @Autowired
     ProductMapper productMapper;
 
+    private final IGoodsreceiptdetailRepo goodsreceiptdetailRepo;
+
+    private final IOrderDetailsRepo orderDetailsRepo;
+
     @Override
     public List<ProductPropertyResponse> findAllPropertyByProductId(String productId) {
         // TODO trả về list thuộc tính sản phẩm
@@ -60,7 +64,7 @@ public class ProductService implements IProductService {
                 .map(this::mapToProductPropertyResponse).collect(Collectors.toList());
     }
 
-    private <R> ProductPropertyResponse mapToProductPropertyResponse(ProductPropertyEntity x) {
+    private ProductPropertyResponse mapToProductPropertyResponse(ProductPropertyEntity x) {
         if (Objects.isNull(x)) return new ProductPropertyResponse();
         AttributeEntity a = attributeRepo.getByIdAndDeleteFlagIsFalse(x.getAttributeId());
         if (Objects.isNull(a)) return new ProductPropertyResponse();
@@ -234,6 +238,15 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    public int getInventoryByProductId(String productId) {
+        List<GoodsreceiptdetailEntity> lstInvoiceDetail = goodsreceiptdetailRepo.findAllByProductIdAndDeleteFlagIsFalse(productId);
+        List<OrderdetailEntity> lstOrderDetail = orderDetailsRepo.findAllByProductIdAndDeleteFlagIsFalse(productId);
+        Long sumInvoice = lstInvoiceDetail.stream().mapToLong(GoodsreceiptdetailEntity::getQuantityActual).sum();
+        Long sumOrder = lstOrderDetail.stream().mapToLong(OrderdetailEntity::getQuantity).sum();
+        return (int) (sumInvoice - sumOrder);
+    }
+
+    @Override
     public List<ProductResponse> findAllByCategoryId(String categoryId){
         return productRepo.findAllByCategoryIdAndDeleteFlagFalse(categoryId).stream()
                 .map(this::mapToResponse).collect(Collectors.toList());
@@ -272,8 +285,13 @@ public class ProductService implements IProductService {
                 .build();
     }
 
-    private <R> ProductResponse mapToResponse(ProductEntity x) {
+    private ProductResponse mapToResponse(ProductEntity x) {
         if (Objects.isNull(x)) return new ProductResponse();
+        List<GoodsreceiptdetailEntity> lstInvoiceDetail = goodsreceiptdetailRepo.findAllByProductIdAndDeleteFlagIsFalse(x.getId());
+        List<OrderdetailEntity> lstOrderDetail = orderDetailsRepo.findAllByProductIdAndDeleteFlagIsFalse(x.getId());
+        Long sumInvoice = lstInvoiceDetail.stream().mapToLong(GoodsreceiptdetailEntity::getQuantityActual).sum();
+        Long sumOrder = lstOrderDetail.stream().mapToLong(OrderdetailEntity::getQuantity).sum();
+        int sumQuantity = (int) (sumInvoice - sumOrder);
         ProductResponse s = new ProductResponse();
         s.setProductId(x.getId());
         s.setProductCode(x.getProductCode());
@@ -288,6 +306,7 @@ public class ProductService implements IProductService {
         s.setModifierDate(x.getModifierDate());
         s.setThumbnail(x.getThumbnail());
         s.setPromotion(x.getPromotion() + "");
+        s.setProductQuantity(sumQuantity);
         return s;
     }
 }
