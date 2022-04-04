@@ -9,20 +9,17 @@ import com.techcam.dto.request.Customer.CustomerRequest;
 import com.techcam.dto.request.MailDto;
 import com.techcam.dto.request.order.*;
 import com.techcam.dto.request.techcamlog.TechCamlogRequest;
-import com.techcam.dto.request.voucher.VoucherRequest;
 import com.techcam.dto.response.Customer.CustomerInfoResponse;
 import com.techcam.dto.response.order.GetInfoOrder;
 import com.techcam.dto.response.order.GetInfoOrderDetails;
 import com.techcam.dto.response.order.OrderResponse;
+import com.techcam.dto.response.PromotionResponseDTO;
 import com.techcam.dto.response.voucher.VoucherResponse;
 import com.techcam.dto.response.voucher.VoucherUseByOrderResponse;
 import com.techcam.entity.*;
 import com.techcam.exception.TechCamExp;
 import com.techcam.repo.*;
-import com.techcam.service.ICustomerService;
-import com.techcam.service.IOrderService;
-import com.techcam.service.ITechCamLogService;
-import com.techcam.service.IVoucherService;
+import com.techcam.service.*;
 import com.techcam.type.*;
 import com.techcam.util.*;
 import org.apache.commons.lang3.StringUtils;
@@ -70,6 +67,8 @@ public class OrderServiceImpl implements IOrderService {
     private ITechCamLogService techCamLogService;
     @Autowired
     private IVoucherRepo voucherRepo;
+    @Autowired
+    private IPromotionService promotionService;
     private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     private static final ModelMapper MODEL_MAPPER = new ModelMapper();
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -819,7 +818,15 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     public double getSaleProduct(String id) {
-        double sale = 0.1;
+        Double sale = 0.0;
+        PromotionResponseDTO promotionResponseDTO = promotionService.findByProductId(id);
+        Long price = promotionResponseDTO.getProducts().stream().findFirst().get().getPrice();
+        if(promotionResponseDTO.getTypeDiscount().equals(DiscountType.MONEY.name())){
+            sale = Double.valueOf(promotionResponseDTO.getDiscount() / price * 100);
+        }
+        if(promotionResponseDTO.getTypeDiscount().equals(DiscountType.PERCENT.name())){
+            sale = Double.valueOf(promotionResponseDTO.getDiscount());
+        }
         return sale;
     }
 

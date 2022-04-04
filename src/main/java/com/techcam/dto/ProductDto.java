@@ -57,5 +57,9 @@ public class ProductDto {
     @JsonProperty("productDescription")
     private String productDescription;
 
+    @NotNull(message = ERROR_BLANK)
+    @NotEmpty(message = ERROR_BLANK)
+    @JsonProperty("promotion")
+    private String promotion;
 
 }

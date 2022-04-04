@@ -8,8 +8,6 @@ import java.util.List;
 @Data
 public class PromotionRequestDTO {
 
-    private List<String> productIds;
-
     private String name;
 
     private Long discount;
@@ -25,4 +23,8 @@ public class PromotionRequestDTO {
     private Boolean status;
 
     private String note;
+
+    private List<String> categoryIds;
+
+    private List<String> productIds;
 }

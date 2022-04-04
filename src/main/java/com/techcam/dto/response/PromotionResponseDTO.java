@@ -1,9 +1,7 @@
 package com.techcam.dto.response;
 
-import com.techcam.dto.ProductDto;
-import com.techcam.dto.response.product.ProductResponse;
 import com.techcam.dto.response.product.ProductResponseDTO;
-import com.techcam.entity.ProductEntity;
+import com.techcam.entity.CategoryEntity;
 import lombok.Data;
 
 import java.util.Date;

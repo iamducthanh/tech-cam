@@ -2,6 +2,7 @@ package com.techcam.service.impl;
 
 import com.techcam.constants.ConstantsErrorCode;
 import com.techcam.dto.request.promotion.PromotionRequestDTO;
+import com.techcam.dto.response.product.ProductResponseDTO;
 import com.techcam.dto.response.PromotionResponseDTO;
 import com.techcam.entity.ProductEntity;
 import com.techcam.entity.PromotionEntity;
@@ -14,18 +15,17 @@ import com.techcam.repo.IPromotionProductRepo;
 import com.techcam.repo.IPromotionRepo;
 import com.techcam.service.IPromotionService;
 import com.techcam.util.DateUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class PromotionService implements IPromotionService {
 
     @Autowired
@@ -46,7 +46,6 @@ public class PromotionService implements IPromotionService {
 
     @Override
     public List<PromotionResponseDTO> getAll(){
-
         List<PromotionEntity> promotions = promotionRepository.findAllByDeleteFlagFalse();
         return promotionMapper.toPromotionResponseDTOs(promotions);
     }
@@ -101,11 +100,18 @@ public class PromotionService implements IPromotionService {
 
     @Override
     public PromotionResponseDTO findByProductId(String productId){
-        PromotionResponseDTO promotionResponseDTO = null;
+        PromotionResponseDTO promotionResponseDTO = new PromotionResponseDTO();
         Optional<PromotionProductEntity> promotionProductEntityOptional = promotionProductRepository.findByProductIdAndDeleteFlagFalse(productId);
         if(promotionProductEntityOptional.isPresent()) {
             PromotionEntity promotionEntity = promotionRepository.findByIdAndStatusTrue(promotionProductEntityOptional.get().getId()).get();
             promotionResponseDTO = promotionMapper.toPromotionResponseDTO(promotionEntity);
+           try {
+               ProductEntity product= productRepository.findById(productId).get();
+               List<ProductResponseDTO> products = Arrays.asList(productMapper.toProductResponseDTO(product));
+               promotionResponseDTO.setProducts(products);
+           }catch(Exception e){
+               log.error("Sản phẩm không tồn tại");
+           }
         }
         return promotionResponseDTO ;
     }
