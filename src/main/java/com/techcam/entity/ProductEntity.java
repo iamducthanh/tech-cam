@@ -57,6 +57,8 @@ public class ProductEntity extends BaseEntity {
     @Basic
     @Column(name = "THUMBNAIL")
     private String thumbnail;
+    @Column(name = "PROMOTION")
+    private Long promotion;
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private List<OrderdetailEntity> orderdetailEntities;
 

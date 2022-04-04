@@ -6,10 +6,13 @@ import com.techcam.dto.request.product.ProductEditRequest;
 import com.techcam.dto.request.product.ProductPropertyRequest;
 import com.techcam.dto.response.product.ProductPropertyResponse;
 import com.techcam.dto.response.product.ProductResponse;
+import com.techcam.dto.response.product.ProductResponseDTO;
 import com.techcam.entity.*;
+import com.techcam.mapper.ProductMapper;
 import com.techcam.repo.*;
 import com.techcam.service.IProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,6 +49,9 @@ public class ProductService implements IProductService {
     private final IImageRepo imageRepo;
 
     private final IBrandRepo brandRepo;
+
+    @Autowired
+    ProductMapper productMapper;
 
     private final IGoodsreceiptdetailRepo goodsreceiptdetailRepo;
 
@@ -240,6 +246,17 @@ public class ProductService implements IProductService {
         return (int) (sumInvoice - sumOrder);
     }
 
+    @Override
+    public List<ProductResponse> findAllByCategoryId(String categoryId){
+        return productRepo.findAllByCategoryIdAndDeleteFlagFalse(categoryId).stream()
+                .map(this::mapToResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductResponseDTO> getAll(){
+        return productMapper.toProductResponseDTOs(productRepo.findAllByDeleteFlagIsFalse());
+    }
+
     private ProductEntity mapToEntity(Object obj, ProductEntity s) {
         if (Objects.isNull(obj)) return null;
         if (obj instanceof ProductAddRequest) {
@@ -288,6 +305,7 @@ public class ProductService implements IProductService {
         s.setCreateDate(x.getCreateDate());
         s.setModifierDate(x.getModifierDate());
         s.setThumbnail(x.getThumbnail());
+        s.setPromotion(x.getPromotion() + "");
         s.setProductQuantity(sumQuantity);
         return s;
     }
