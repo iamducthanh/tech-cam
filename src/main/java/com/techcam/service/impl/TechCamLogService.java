@@ -43,6 +43,7 @@ public class TechCamLogService implements ITechCamLogService {
         techcamBlogEntity.setOperationDesc(request.getOperationDesc());
         techcamBlogEntity.setOperationAct(request.getOperationAct());
         techcamBlogEntity.setCreateBy(request.getCreateBy());
+        techcamBlogEntity.setOperationLink(request.getOperationLink());
         techCamBlogRepo.save(techcamBlogEntity);
     }
     @Override

@@ -1,0 +1,131 @@
+<div class="row" xmlns:th="http://www.thymeleaf.org">
+    <div class="col-lg-4">
+        <div class="mb-3 row">
+            <div class="col-lg-5">
+                <label for="ip-edit-invoice-code">
+                    Mã nhập hàng
+                </label>
+            </div>
+            <div class="col-lg-7">
+                <input type="text" id="ip-edit-invoice-code" placeholder="Mã nhập hàng...."
+                       class="form-control" th:value="${invoice.invoiceCode}"/>
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <div class="col-lg-5">
+                <label for="ip-edit-order-code">
+                    Mã đặt hàng
+                </label>
+            </div>
+            <div class="col-lg-7">
+                <select id="ip-edit-order-code" class="form-control select2"
+                        onchange="onChangeInvoiceOrderEdit(this)">
+                    <option value="">Chưa đặt</option>
+                    <option th:each="invoiceOrder : ${lstInvoiceOrder}"
+                            th:selected="${invoice.orderInvoiceId == invoiceOrder.invoiceOrderId}"
+                            th:value="${invoiceOrder.invoiceOrderId + '@' + invoiceOrder.invoiceSupplierId}"
+                            th:text="${invoiceOrder.invoiceOrderCode}">
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <div class="col-lg-5">
+                <label for="ip-edit-ship">
+                    Người giao hàng
+                </label>
+            </div>
+            <div class="col-lg-7">
+                <input type="text" id="ip-edit-ship" placeholder="Người giao hàng...."
+                       class="form-control" th:value="${invoice.shipper}"/>
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <div class="col-lg-5">
+                <label for="ip-edit-supplier">
+                    Nhà cung cấp
+                </label>
+            </div>
+            <div class="col-lg-7">
+                <select id="ip-edit-supplier" class="form-control select2">
+                    <option th:each="supplier : ${lstSupplier}"
+                            th:selected="${invoice.supplierId == supplier.id}"
+                            th:value="${supplier.id}"
+                            th:text="${supplier.name}">
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <div class="col-lg-5">
+                <label for="ip-edit-invoice-discount">
+                    Giảm giá
+                </label>
+            </div>
+            <div class="col-lg-7">
+                <input type="number" th:value="${invoice.discount}" min="0" id="ip-edit-invoice-discount"
+                       placeholder="Số tiền NCC giảm...." class="form-control"/>
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <div class="col-lg-5">
+                <label for="ip-edit-invoice-paid">
+                    Đã trả NCC
+                </label>
+            </div>
+            <div class="col-lg-7">
+                <input type="number" th:value="${invoice.paid}" min="0" id="ip-edit-invoice-paid"
+                       placeholder="Số tiền trả NCC...." class="form-control"/>
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <div class="col-lg-5"></div>
+            <div class="col-lg-7">
+                <input class="form-check-input mt-2" type="checkbox"
+                       id="ip-edit-invoice-status" th:checked="${invoice.status == 'ON'}"/>
+                <label for="ip-edit-invoice-status" class="col-form-label">
+                    Đã nhập hàng
+                </label>
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <div class="col-lg-5">
+                <label for="ip-edit-invoice-note">
+                    Ghi chú
+                </label>
+            </div>
+            <div class="col-lg-7">
+                <input type="text" id="ip-edit-invoice-note" placeholder="Ghi chú...."
+                       class="form-control" th:value="${invoice.note}"/>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="table-responsive" style="overflow-y: auto; max-height: 60vh">
+            <table class="table table-editable table-nowrap align-middle table-edits">
+                <thead>
+                <tr class="text-center">
+                    <th>Sản phẩm</th>
+                    <th>Số lượng HD</th>
+                    <th>Số lượng nhập</th>
+                    <th>Giá tiền</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody id="bodyAddProduct">
+
+                </tbody>
+            </table>
+        </div>
+        <div class="text-end">
+            <button class="btn btn-secondary" id="btnAddProduct" onclick="onAddProduct()">
+                Thêm sản phẩm
+            </button>
+        </div>
+    </div>
+    <script th:src="@{/assets/js/spectrum.min.js}"></script>
+    <script th:src="@{/assets/js/bootstrap-maxlength.min.js}"></script>
+    <script th:src="@{/assets/js/jquery.bootstrap-touchspin.min.js}"></script>
+    <script th:src="@{/assets/js/select2.min.js}"></script>
+    <script th:src="@{/assets/js/form-advanced.init.js}"></script>
+</div>

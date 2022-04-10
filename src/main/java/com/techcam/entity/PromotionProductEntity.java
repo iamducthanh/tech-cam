@@ -16,5 +16,5 @@ public class PromotionProductEntity extends BaseEntity{
     private String promotionId;
 
     @Column(name = "product_id", nullable = false)
-    private String product_id;
+    private String productId;
 }

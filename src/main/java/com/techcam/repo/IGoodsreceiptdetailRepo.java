@@ -22,4 +22,6 @@ public interface IGoodsreceiptdetailRepo extends JpaRepository<Goodsreceiptdetai
     List<GoodsreceiptdetailEntity> findAllByGoodsReceiptIdAndQuantityAndPriceAndDeleteFlagIsFalseAndProductId(String invoiceId, int quantity, BigDecimal price, String productId);
 
     List<GoodsreceiptdetailEntity> findAllByGoodsReceiptIdAndProductIdAndDeleteFlagIsFalse(String invoiceCode, String productId);
+
+    List<GoodsreceiptdetailEntity> findAllByProductIdAndDeleteFlagIsFalse(String id);
 }

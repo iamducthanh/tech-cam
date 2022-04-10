@@ -172,7 +172,7 @@
                                         <th><label for="birthdate" class="form-label">Ngày sinh</label><span class="required"> *</span></th>
                                         <td>
                                             <div class="input-daterange input-group" id="datepicker-dateOfBirth" data-date-format="dd/mm/yyyy" data-date-autoclose="true" data-provide="datepicker" data-date-container='#datepicker-dateOfBirth'>
-                                                <input type="text" name="dateOfBirth"  id="birthdate" class="form-control text-start" onblur="onType(this)" placeholder="dd/MM/yyyy">
+                                                <input type="text" name="dateOfBirth" id="birthdate" class="form-control text-start" onblur="onType(this)" placeholder="dd/MM/yyyy">
                                             </div>
                                         </td>
                                     </tr>
@@ -267,7 +267,7 @@
                                         <th><label for="birthdate-edit" class="form-label">Ngày sinh</label><span class="required"> *</span></th>
                                         <td>
                                             <div class="input-daterange input-group" id="datepicker6" data-date-format="dd/mm/yyyy" data-date-autoclose="true" data-provide="datepicker" data-date-container='#datepicker6'>
-                                                <input type="text" name="dateOfBirth"  id="birthdate-edit" class="form-control text-start" onblur="onType(this)" placeholder="dd/MM/yyyy">
+                                                <input type="text" name="dateOfBirth" id="birthdate-edit" class="form-control text-start" onblur="onType(this)" placeholder="dd/MM/yyyy">
                                             </div>
                                         </td>
                                     </tr>
@@ -429,12 +429,11 @@
         data["dateOfBirth"] = moment(data["dateOfBirth"], 'DD-MM-YYYY').format('YYYY-MM-DD');
         data["username"] = generateUsername(convertViToEn(data["fullName"])) + moment(data["dateOfBirth"], 'YYYY-MM-DD').format('DDMM');
 
-        console.log(data["username"]);
-        // if(validateForm('add')) {
-        //     addStaff(data);
-        // } else {
-        //     console.log("validate fail");
-        // }
+        if(validateForm('add')) {
+            addStaff(data);
+        } else {
+            console.log("validate fail");
+        }
     });
 
     // Event onKeyPress formAdd
@@ -446,6 +445,20 @@
             tag.removeClass('error');
         }
     }
+
+    // Event onBlur for input date
+    $('#birthdate').blur(function () {
+        setTimeout(function(){
+            onType($('#birthdate'));
+        }, 100); // delay 500 ms
+    });
+
+    // Event onBlur for input date
+    $('#birthdate-edit').blur(function () {
+        setTimeout(function(){
+            onType($('#birthdate-edit'));
+        }, 100); // delay 500 ms
+    });
 
     // Validation formAdd
     function validateForm(type) {
@@ -590,21 +603,14 @@
             dataType: 'json',
             success: function (result) {
                 $('.modal-add-staff').modal('hide');
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                    }
-                })
-                Toast.fire({
+                Swal.fire({
+                    position: 'center',
                     icon: 'success',
-                    title: 'Thêm thành công'
-                }).then(() => window.location.href = "/staff");
+                    title: 'Thêm thành công',
+                    showConfirmButton: true,
+                    timerProgressBar: true,
+                    timer: 2000
+                }).then(()=> window.location.reload());
             },
             error: function (error) {
                 const Toast = Swal.mixin({
@@ -652,21 +658,14 @@
             dataType: 'json',
             success: function (result) {
                 $('.modal-edit-staff').modal('hide');
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                    }
-                })
-                Toast.fire({
+                Swal.fire({
+                    position: 'center',
                     icon: 'success',
-                    title: 'Cập nhật thành công'
-                }).then(() => window.location.href = "/staff");
+                    title: 'Cập nhật thành công',
+                    showConfirmButton: true,
+                    timerProgressBar: true,
+                    timer: 2000
+                }).then(()=> window.location.reload());
             },
             error: function (error) {
                 const Toast = Swal.mixin({

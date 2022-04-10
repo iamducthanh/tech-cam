@@ -1,5 +1,8 @@
 package com.techcam.service;
 
+import com.techcam.dto.request.receiptvoucher.ReceiptVoucherRequest;
+import com.techcam.dto.response.receiptvoucher.ReceiptVoucherResponse;
+
 /**
  * Description:
  *
@@ -10,4 +13,10 @@ package com.techcam.service;
  */
 
 public interface IReceiptVoucherService {
+    ReceiptVoucherResponse resgistration(ReceiptVoucherRequest request);
+
+    //    public ReceiptVoucherResponse editReceiptById(){
+    //
+    //    }
+    String getInfoStaff();
 }

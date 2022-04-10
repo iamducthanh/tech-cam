@@ -103,7 +103,12 @@ public class OrdersApi {
 
     @GetMapping("/{id}")
     public GetInfoOrder findById(@PathVariable("id") String id) {
-        return orderService.findOrderById(id);
+        return orderService.findOrderById(Integer.parseInt(id));
+    }
+
+    @GetMapping("/list/{id}")
+    public List<GetInfoOrderDetails> findAllOrdersDetailsById(@PathVariable("id") Integer id) {
+        return orderService.findAllOrdersDetailsById(id);
     }
 
     public String getDevice(HttpServletRequest request) {

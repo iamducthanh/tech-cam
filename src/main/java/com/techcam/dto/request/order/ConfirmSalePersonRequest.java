@@ -20,11 +20,11 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class ConfirmSalePersonRequest {
-    private String id;
-    private String orderType;
+    private Integer id;
     private String recipientName;
     private String recipientPhone;
     private String recipientAddress;
     private Date deliveryDate;
+    private Integer feeDelivery;
     private String note;
 }

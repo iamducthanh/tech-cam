@@ -1,6 +1,7 @@
 package com.techcam.service;
 
 import com.techcam.dto.request.order.*;
+import com.techcam.dto.request.staff.StaffEditRequestDTO;
 import com.techcam.dto.response.order.GetInfoOrder;
 import com.techcam.dto.response.order.GetInfoOrderDetails;
 import com.techcam.dto.response.order.OrderResponse;
@@ -29,9 +30,9 @@ public interface IOrderService {
 
     List<GetInfoOrder> getAllOrderByDeleteFlag();
 
-    GetInfoOrder findOrderById(String id);
+    GetInfoOrder findOrderById(Integer id);
 
-    List<GetInfoOrderDetails> findAllOrdersDetailsById(String id);
+    List<GetInfoOrderDetails> findAllOrdersDetailsById(Integer id);
 
     OrderResponse resgistrationOrder(OrderRequest request, HttpServletRequest httpServletRequest);
 
@@ -48,4 +49,7 @@ public interface IOrderService {
     OrderResponse cancelOrder(String id);
 
     List<VoucherUseByOrderResponse> findAllByVoucherId(String voucherId);
+
+    // Edit Order
+    String editOrder(OrderRequest staff);
 }

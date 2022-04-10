@@ -102,18 +102,20 @@ public class CategoryService implements ICategoryService {
     @Override
     public void saveCategory(CategoryReqDto categoryDto) {
         if(categoryDto.getParentId().isEmpty()) categoryDto.setParentId(null);
-        if(categoryDto.getCategoryId().isEmpty()) {
-            categoryDto.setCategoryId(UUID.randomUUID().toString());
-        }
         if(categoryDto.getCategoryName().trim().length() == 0){
             throw new TechCamExp(ConstantsErrorCode.CATEGORY_NAME);
         } else {
-            List<CategoryEntity> categoryEntity = categoryRepo.findByNameAndParent(categoryDto.getCategoryName(), categoryDto.getParentId());
+            List<CategoryEntity> categoryEntity = new ArrayList<>();
+            if(categoryDto.getParentId() == null || categoryDto.getParentId().isEmpty()){
+                categoryEntity = categoryRepo.findByNameAndParentNull(categoryDto.getCategoryName());
+            } else {
+                categoryEntity = categoryRepo.findByNameAndParent(categoryDto.getCategoryName(), categoryDto.getParentId());
+            }
             if(!categoryEntity.isEmpty()) throw new TechCamExp(ConstantsErrorCode.CATEGORY_NAME_EXIST);
         }
 
         CategoryEntity categoryEntity = CategoryEntity.builder()
-                .id(categoryDto.getCategoryId())
+                .id(UUID.randomUUID().toString())
                 .name(categoryDto.getCategoryName())
                 .parentId(categoryDto.getParentId())
                 .status("")
@@ -124,27 +126,21 @@ public class CategoryService implements ICategoryService {
                 .deleteFlag(false)
                 .build();
 
-        List<AttributeEntity> attributeDel = attributeRepo.findAllByCategoryIdAndDeleteFlagIsFalse(categoryEntity.getId());
-        if(!attributeDel.isEmpty()){
-            attributeDel.forEach(o -> {
-                AttributeFixedValueEntity attributeFixedValues = attributeFixedValueRepo.findByAttributeId(o.getId());
-                if(attributeFixedValues != null){
-                    attributeFixedValueRepo.delete(attributeFixedValues);
-                }
-                attributeRepo.delete(o);
-            });
-        }
-
-
         List<AttributeEntity> attributes = new ArrayList<>();
         List<AttributeFixedValueEntity> attributeFixvalues = new ArrayList<>();
 
+        List<String> atbNameExist = new ArrayList<>();
+
         categoryDto.getAttributes().forEach(o -> {
+            if(atbNameExist.contains(o.getName())){
+                throw new TechCamExp(ConstantsErrorCode.ATB_NAME);
+            }
+            atbNameExist.add(o.getName());
             String id = UUID.randomUUID().toString();
             attributes.add(AttributeEntity.builder()
                     .id(id)
                     .attributeName(o.getName())
-                    .categoryId(categoryDto.getCategoryId())
+                    .categoryId(categoryEntity.getId())
                     .status("1")
                     .createDate(new Date())
                     .modifierDate(new Date())
@@ -154,18 +150,7 @@ public class CategoryService implements ICategoryService {
                     .build());
 
             if(!o.getValue().isEmpty()){
-                attributeFixvalues.add(AttributeFixedValueEntity.builder()
-                        .id(UUID.randomUUID().toString())
-                        .attributeId(id)
-                        .attributeFixedVal(o.getValue())
-                        .status("1")
-                        .note("1")
-                        .createDate(new Date())
-                        .modifierDate(new Date())
-                        .createBy((String) sessionUtil.getObject("username"))
-                        .modifierBy((String) sessionUtil.getObject("username"))
-                        .deleteFlag(false)
-                        .build());
+                saveAttributeFixed(attributeFixvalues, o.getValue(), id);
             }
         });
 
@@ -175,6 +160,166 @@ public class CategoryService implements ICategoryService {
             attributeFixedValueRepo.saveAll(attributeFixvalues);
         }
 
+    }
+
+    public void saveAttributeFixed(List<AttributeFixedValueEntity> attributeFixvalues, String props, String attributeId){
+        List<String> values = new ArrayList<>();
+        while (props.contains(";")) {
+            String newValue = props.substring(0, props.indexOf(";"));
+            if(!newValue.isEmpty()){
+                values.add(newValue);
+                props = props.substring(props.indexOf(";") + 1, props.length());
+            }
+        }
+        values.add(props);
+        values.forEach(a -> {
+            attributeFixvalues.add(AttributeFixedValueEntity.builder()
+                    .id(UUID.randomUUID().toString())
+                    .attributeId(attributeId)
+                    .attributeFixedVal(a.trim())
+                    .status("1")
+                    .note("1")
+                    .createDate(new Date())
+                    .modifierDate(new Date())
+                    .createBy((String) sessionUtil.getObject("username"))
+                    .modifierBy((String) sessionUtil.getObject("username"))
+                    .deleteFlag(false)
+                    .build());
+        });
+    }
+
+    @Override
+    public void updateCategory(CategoryDto categoryDto) {
+        System.out.println(categoryDto.getCategoryId());
+        if(categoryDto != null){
+            List<AttributeEntity> attributeUpdates = new ArrayList<>();
+            List<AttributeFixedValueEntity> attributeFixvalues = new ArrayList<>();
+
+            if(categoryDto.getCategoryName().trim().isEmpty()){
+                throw new TechCamExp(ConstantsErrorCode.CATEGORY_NAME);
+            } else {
+                List<CategoryEntity> categoryEntity = new ArrayList<>();
+                if(categoryDto.getParentId() == null || categoryDto.getParentId().isEmpty()){
+                    categoryEntity = categoryRepo.findByNameAndParentNull(categoryDto.getCategoryName());
+                } else {
+                    categoryEntity = categoryRepo.findByNameAndParent(categoryDto.getCategoryName(), categoryDto.getParentId());
+                }
+                if(!categoryEntity.isEmpty()) {
+                    System.out.println(categoryEntity.get(0).getId());
+                    System.out.println(!categoryEntity.get(0).getId().equals(categoryDto.getCategoryId()));
+                    if(!categoryEntity.get(0).getId().equals(categoryDto.getCategoryId())){
+                        throw new TechCamExp(ConstantsErrorCode.CATEGORY_NAME_EXIST);
+                    }
+                }
+            }
+            CategoryEntity categoryEntity = categoryRepo.getById(categoryDto.getCategoryId());
+            categoryEntity.setName(categoryDto.getCategoryName());
+            if(!categoryDto.getAttributes().isEmpty()){
+
+
+                categoryDto.getAttributes().forEach(o -> {
+                    if(o.getId().isEmpty()){
+                        List<AttributeEntity> attributeEntity = attributeRepo.findByNameAndCategory(o.getName(), categoryDto.getCategoryId());
+                        if(!attributeEntity.isEmpty()){
+                            o.setId(attributeEntity.get(0).getId());
+                        }
+                    }
+                });
+
+                System.out.println(categoryDto.getAttributes().size());
+                categoryDto.getAttributes().forEach(o -> {
+                    // nếu có tồn tại id => update tên
+                    if(!o.getId().isEmpty()){
+                        AttributeEntity attributeEntity = attributeRepo.getByIdAndDeleteFlagIsFalse(o.getId());
+                        attributeEntity.setAttributeName(o.getName());
+                        attributeUpdates.add(attributeEntity);
+
+                        // nếu giá trị mặc định nhập vào không rỗng
+                       if(!o.getValue().isEmpty()){
+                           List<AttributeFixedValueEntity> attributeFixedValueEntities = attributeFixedValueRepo.findAllByAttributeIdAndDeleteFlagIsFalse(attributeEntity.getId());
+                           // nếu thuộc tính này đã có sẵn giá trị mặc định
+                           if(!attributeFixedValueEntities.isEmpty()){
+                               List<String> values = new ArrayList<>();
+                               String props = o.getValue();
+                               while (props.contains(";")) {
+                                   String newValue = props.substring(0, props.indexOf(";"));
+                                   if(!newValue.isEmpty()){
+                                       values.add(newValue);
+                                       props = props.substring(props.indexOf(";") + 1, props.length());
+                                   }
+                               }
+                               values.add(props);
+
+                               attributeFixedValueEntities.forEach(o2 -> {
+                                   // nếu khi sửa và có sẵn giống nhau về giá trị -> không cần làm gì, xóa khỏi danh sách thêm mới
+                                    if(values.contains(o2.getAttributeFixedVal())){
+                                        values.remove(o2.getAttributeFixedVal());
+                                    } else { // nếu không có trong danh sách input -> remove
+                                        o2.setDeleteFlag(true);
+                                        attributeFixedValueRepo.save(o2);
+                                    }
+                               });
+
+                               values.forEach(o3-> {
+                                   attributeFixvalues.add(AttributeFixedValueEntity.builder()
+                                           .id(UUID.randomUUID().toString())
+                                           .attributeId(attributeEntity.getId())
+                                           .attributeFixedVal(o3.trim())
+                                           .status("1")
+                                           .note("1")
+                                           .createDate(new Date())
+                                           .modifierDate(new Date())
+                                           .createBy((String) sessionUtil.getObject("username"))
+                                           .modifierBy((String) sessionUtil.getObject("username"))
+                                           .deleteFlag(false)
+                                           .build());
+                               });
+
+
+                           } else { // nếu trước đó cũng không có giá trị mặc định nào
+                               saveAttributeFixed(attributeFixvalues, o.getValue(), attributeEntity.getId());
+                           }
+
+                       } else { // nếu rỗng
+                           // kiểm tra xem trước đó có lưu giá trị default hay không
+                           List<AttributeFixedValueEntity> attributeFixedValueEntities = attributeFixedValueRepo.findAllByAttributeIdAndDeleteFlagIsFalse(attributeEntity.getId());
+                           // nếu trước đó có lưu => xóa
+                           if(!attributeFixedValueEntities.isEmpty()){
+                               attributeFixedValueEntities.forEach(o1 -> {
+                                   o1.setDeleteFlag(true);
+                                   attributeFixvalues.add(o1);
+                               });
+                           }
+
+                       }
+
+
+                    } else { // nếu không tồn tại id => thêm mới thuộc tính
+                        String newId = UUID.randomUUID().toString();
+                        attributeUpdates.add(AttributeEntity.builder()
+                                .id(newId)
+                                .attributeName(o.getName())
+                                .categoryId(categoryEntity.getId())
+                                .status("1")
+                                .createDate(new Date())
+                                .modifierDate(new Date())
+                                .createBy((String) sessionUtil.getObject("username"))
+                                .modifierBy((String) sessionUtil.getObject("username"))
+                                .deleteFlag(false)
+                                .build());
+                        if(!o.getValue().isEmpty()){
+                            saveAttributeFixed(attributeFixvalues, o.getValue(), newId);
+                        }
+                    }
+                });
+            }
+            categoryRepo.save(categoryEntity);
+            attributeRepo.saveAll(attributeUpdates);
+            if(!attributeFixvalues.isEmpty()){
+                attributeFixedValueRepo.saveAll(attributeFixvalues);
+            }
+
+        }
     }
 
     @Override
@@ -189,12 +334,16 @@ public class CategoryService implements ICategoryService {
 
         if(!attributes.isEmpty()){
             attributes.forEach(o -> {
-                AttributeFixedValueEntity attributeFixedValueEntity = attributeFixedValueRepo.findByAttributeId(o.getId());
+                List<AttributeFixedValueEntity> attributeFixedValueEntities = attributeFixedValueRepo.findByAttributeId(o.getId());
                 String valueDefault = "";
-                if(attributeFixedValueEntity != null){
-                    valueDefault = attributeFixedValueEntity.getAttributeFixedVal();
+                if(!attributeFixedValueEntities.isEmpty()){
+                    for(AttributeFixedValueEntity a : attributeFixedValueEntities){
+                        valueDefault += (";" + a.getAttributeFixedVal());
+                    }
+                    valueDefault = valueDefault.substring(1, valueDefault.length());
                 }
                 attributeReq.add(AttributeReqDto.builder()
+                        .id(o.getId())
                         .name(o.getAttributeName())
                         .value(valueDefault)
                         .build());

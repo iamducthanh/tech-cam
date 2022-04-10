@@ -14,7 +14,7 @@ public interface DescLog {
     String LOG_INSERT_CUSTOMER = "%s vừa thêm mới khách hàng %s"; // tên viết createby, mã giao dịch
 
     //log order
-    String LOG_ORDER= "%s vừa % hóa đơn %s";
+    String LOG_ORDER= "%s vừa %s hóa đơn %s";
     String INSERT_ORDER="tạo";
     String EDIT_ORDER_VERIFY= "sửa";
     String CANCEL_ORDER="hủy";
