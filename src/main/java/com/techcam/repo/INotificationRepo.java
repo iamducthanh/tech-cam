@@ -1,0 +1,17 @@
+package com.techcam.repo;
+
+import com.techcam.entity.NotificationEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
+
+/**
+ * @author GMO_ThanhND
+ * @version 1.0
+ * @since 4/9/2022
+ */
+public interface INotificationRepo extends JpaRepository<NotificationEntity, Integer> {
+    @Query("select o from NotificationEntity o order by o.modifyDate desc ")
+    List<NotificationEntity> findAllNotifications();
+}
