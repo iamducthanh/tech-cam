@@ -14,6 +14,7 @@ import com.techcam.repo.IProductRepo;
 import com.techcam.repo.IPromotionProductRepo;
 import com.techcam.repo.IPromotionRepo;
 import com.techcam.service.IPromotionService;
+import com.techcam.type.DiscountType;
 import com.techcam.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -143,5 +144,21 @@ public class PromotionService implements IPromotionService {
            });
            promotionProductRepository.saveAll(promotionProducts);
        }
+    }
+
+    @Override
+    public double getPromotionProduct(String id) {
+        Double sale = 0.0;
+        PromotionResponseDTO promotionResponseDTO = this.findByProductId(id);
+        if(Objects.nonNull(promotionResponseDTO.getProducts()) && promotionResponseDTO.getProducts().size() > 0){
+            Long price = promotionResponseDTO.getProducts().stream().findFirst().get().getPrice();
+            if(promotionResponseDTO.getTypeDiscount().equals(DiscountType.MONEY.name())){
+                sale = Double.valueOf(promotionResponseDTO.getDiscount() / price * 100);
+            }
+            if(promotionResponseDTO.getTypeDiscount().equals(DiscountType.PERCENT.name())){
+                sale = Double.valueOf(promotionResponseDTO.getDiscount());
+            }
+        }
+        return sale;
     }
 }
