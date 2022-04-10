@@ -4,11 +4,6 @@ window.onload = function () {
         lengthChange: !1,
         "ordering": false,
 
-
-        // scrollY: "54vh",
-        // scrollX: false,
-        // scrollCollapse: true,
-
         info: false,
         columns: [
             {data: 'btn', className: "text-left"},
@@ -34,7 +29,7 @@ function getNotification(){
                     notReads.push(data.productId)
                 }
                 let row = {
-                    btn: '<button class="btn btn-primary" id="'+data.productId+'">Chi tiết</button>',
+                    btn: '<button onclick="viewDetail(\''+data.productId+'\')" class="btn btn-primary" id="'+data.productId+'">Chi tiết</button>',
                     productName: data.productName,
                     content: data.content,
                     time: data.time
@@ -49,6 +44,19 @@ function getNotification(){
                 document.getElementById(notRead).parentNode.parentNode.style.fontWeight = '900';
             }
 
+        },
+        error: function (error) {
+            console.log(error)
+        }
+    })
+}
+
+function viewDetail(productId){
+    $.ajax({
+        url: '/view-comment?productId=' + productId,
+        method: 'GET',
+        success: function (datas) {
+            window.location.href = datas
         },
         error: function (error) {
             console.log(error)

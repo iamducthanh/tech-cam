@@ -30,7 +30,7 @@ public class NotificationService implements INotificationService {
  private final IProductService productService;
  @Override
  public List<NotificationDto> getAllNotifications() {
-  DateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy hh:mm:ss");
+  DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
   List<NotificationEntity> notificationEntities = notificationRepo.findAllNotifications();
   List<NotificationDto> notificationDtos = new ArrayList<>();
   notificationEntities.forEach(o -> {
