@@ -823,16 +823,8 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     public double getSaleProduct(String id) {
-        Double sale = 0.0;
-        PromotionResponseDTO promotionResponseDTO = promotionService.findByProductId(id);
-        Long price = promotionResponseDTO.getProducts().stream().findFirst().get().getPrice();
-        if(promotionResponseDTO.getTypeDiscount().equals(DiscountType.MONEY.name())){
-            sale = Double.valueOf(promotionResponseDTO.getDiscount() / price * 100);
-        }
-        if(promotionResponseDTO.getTypeDiscount().equals(DiscountType.PERCENT.name())){
-            sale = Double.valueOf(promotionResponseDTO.getDiscount());
-        }
-        return sale;
+
+        return promotionService.getPromotionProduct(id);
     }
 
     public void saveLog(String typeMethod, String id) {
