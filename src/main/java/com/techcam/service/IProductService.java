@@ -4,6 +4,7 @@ import com.techcam.dto.request.product.ProductAddRequest;
 import com.techcam.dto.request.product.ProductEditRequest;
 import com.techcam.dto.response.product.ProductPropertyResponse;
 import com.techcam.dto.response.product.ProductResponse;
+import com.techcam.dto.response.product.ProductResponseDTO;
 import ognl.OgnlOps;
 
 import java.util.List;
@@ -33,4 +34,8 @@ public interface IProductService {
     List<String> findAllImagesByProductId(String productId);
 
     int getInventoryByProductId(String productId);
+
+    List<ProductResponse> findAllByCategoryId(String categoryId);
+
+    List<ProductResponseDTO> getAll();
 }

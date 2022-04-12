@@ -1,4 +1,8 @@
 $(document).ready(function() {
+    let href = window.location.href
+    if(href.indexOf('/orders')){
+        return;
+    }
     var table = $("#datatable").DataTable({
         paging: true,
         pageLength: 10,
