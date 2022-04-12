@@ -1,5 +1,6 @@
 package com.techcam.dto.response.notification;
 
+import com.techcam.type.NotificationType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,5 +25,5 @@ public class NotificationDto {
  private String content;
  private String time;
  private Boolean read;
- private String url;
+ private String type;
 }

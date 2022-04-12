@@ -102,7 +102,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     public static void main(String[] args) {
-        System.out.println(new BCryptPasswordEncoder().encode("0123456789"));
+        System.out.println(new BCryptPasswordEncoder().encode("1234"));
     }
 
 }
