@@ -13,4 +13,6 @@ import java.util.List;
 @Service
 public interface INotificationService {
     List<NotificationDto> getAllNotifications();
+    List<NotificationDto> getTop3();
+    Integer countRead();
 }

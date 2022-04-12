@@ -24,4 +24,15 @@ public class NotificationApi {
  public List<NotificationDto> getAllNotifications(){
   return notificationService.getAllNotifications();
  }
+
+
+ @GetMapping("/api/notification/top3")
+ public List<NotificationDto> getTop3(){
+  return notificationService.getTop3();
+ }
+
+ @GetMapping("/api/notification/count")
+ public Integer countRead(){
+  return notificationService.countRead();
+ }
 }
