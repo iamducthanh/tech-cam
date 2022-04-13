@@ -1,20 +1,7 @@
-let t1 = null
-window.onload = function () {
-    t1 = $('#datatable').DataTable({
-        lengthChange: !1,
-        "ordering": false,
 
-        info: false,
-        columns: [
-            {data: 'btn', className: "text-left"},
-            {data: 'productName', className: "text-left"},
-            {data: 'content', className: "text-left"},
-            {data: 'time', className: "text-left"}
-        ]
-    });
+// document.onload =  function () {
 
-    getNotification()
-}
+// }
 
 function getNotification(){
     $.ajax({
@@ -28,8 +15,14 @@ function getNotification(){
                 if(!data.read){
                     notReads.push(data.productId)
                 }
+                let button = ''
+                if(data.type === "ORDER"){
+                    button = '<a href="/orders" class="btn btn-primary" id="'+data.productId+'">Chi tiết</a>'
+                } else {
+                    button = '<button onclick="viewDetail(\''+data.productId+'\')" class="btn btn-primary" id="'+data.productId+'">Chi tiết</button>'
+                }
                 let row = {
-                    btn: '<button onclick="viewDetail(\''+data.productId+'\')" class="btn btn-primary" id="'+data.productId+'">Chi tiết</button>',
+                    btn: button,
                     productName: data.productName,
                     content: data.content,
                     time: data.time

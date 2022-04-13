@@ -6,6 +6,9 @@ import com.techcam.entity.StaffEntity;
 import com.techcam.util.EncodeUtil;
 import com.techcam.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,11 +24,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequiredArgsConstructor
-public class NotificationController {
+@PropertySource({"classpath:url-config.properties"})
+public class NotificationController extends SpringBootServletInitializer {
     private final SessionUtil sessionUtil;
     private final EncodeUtil encodeUtil;
 
-    private final String url = "http://localhost:8888";
+    @Value("${web.url}")
+    private String url;
 
     @GetMapping("/notification")
     public String notificationPage() {

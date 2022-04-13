@@ -46,8 +46,8 @@ public class NotificationEntity {
  @Column(name = "DELETE_FLAG")
  private Boolean deleteFlag;
 
- @Column(name = "URL")
- private String url;
+ @Column(name = "TYPE")
+ private String type;
 
  @Column(name = "READ")
  private Boolean read;
