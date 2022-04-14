@@ -245,6 +245,7 @@ function onClickAddInvoice() {
 function onClickOpenModalAdd() {
     $('#btnSubmitAddInvoice').show();
     $('#btnSubmitEditInvoice').hide();
+    $('#titleModal').html('Thêm hoá đơn nhập hàng')
     $.ajax({
         url: '/invoice/component/edit-invoice?id=',
         success: function (html) {
@@ -282,6 +283,7 @@ function onClickEditInvoice(e) {
     $('#btnSubmitAddInvoice').hide();
     $('#btnSubmitEditInvoice').show();
     $('#btnSubmitEditInvoice').attr('data-id', e.dataset.id)
+    $('#titleModal').html('Cập nhật hoá đơn nhập hàng')
     $.ajax({
         url: '/invoice/component/edit-invoice?id=' + e.dataset.id,
         success: function (html) {
