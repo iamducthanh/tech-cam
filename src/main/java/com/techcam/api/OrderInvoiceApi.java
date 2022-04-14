@@ -71,9 +71,9 @@ public class OrderInvoiceApi {
                 throw new TechCamExp(ERROR_EXISTS, "Mã đặt hàng");
             }
         }
-        if (ConvertUtil.get().strToDate(request.getDate(), "dd-MM-yyyy").compareTo(new Date()) < 0) {
-            throw new TechCamExp(VOUCHER_DATE_NOT_PAST);
-        }
+//        if (ConvertUtil.get().strToDate(request.getDate(), "dd-MM-yyyy").compareTo(new Date()) < 0) {
+//            throw new TechCamExp(VOUCHER_DATE_NOT_PAST);
+//        }
         if (request.getDetails().isEmpty()) {
             throw new TechCamExp(INVOICE_NOT_DETAIL);
         }
@@ -90,6 +90,16 @@ public class OrderInvoiceApi {
             e.printStackTrace();
         }
         throw new TechCamExp(ERROR_SAVE_FAILED);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findById(@PathVariable("id") String id) {
+        InvoiceOrderResponse invoiceOrderResponse = goodsOrderService.getByOrderId(id);
+        if (Objects.isNull(invoiceOrderResponse)) {
+            throw new TechCamExp(PRODUCT_NOT_EXISTS);
+        }
+        invoiceOrderResponse.setDetails(goodsOrderService.findAllOrderDetailByOrderId(id));
+        return ResponseEntity.ok(invoiceOrderResponse);
     }
 
 }
