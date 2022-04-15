@@ -1,5 +1,6 @@
 package com.techcam.dto.request.order;
 
+import com.techcam.entity.OrdersEntity;
 import lombok.Data;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
 @Data
 public class OrderdetailRequest {
     private String id;
-    private String orderId;
+    private OrdersEntity orders;
     private String productId;
     private List<String> imei;
     private int discount;

@@ -4,10 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.techcam.constants.ConstantsErrorCode;
 import com.techcam.dto.request.order.*;
-import com.techcam.dto.response.order.GetInfoOrder;
-import com.techcam.dto.response.order.GetInfoOrderDetails;
-import com.techcam.dto.response.order.OrderResponse;
-import com.techcam.dto.response.order.VNPAYResponse;
+import com.techcam.dto.response.order.*;
 import com.techcam.exception.TechCamExp;
 import com.techcam.service.IOrderService;
 import com.techcam.type.OrderType;
@@ -102,9 +99,13 @@ public class OrdersApi {
     }
 
     @PostMapping("/detail/add")
-    public ResponseEntity<String> addProductOrderdetail(@Valid @RequestBody OrderdetailRequest request) {
-        orderService.addProductOrderdetail(request);
-        return ResponseEntity.ok().body("oke");
+    public ResponseEntity<OrderdetailResponse> addProductOrderdetail(@Valid @RequestBody OrderdetailRequest request) {
+        return ResponseEntity.ok().body(orderService.addProductOrderdetail(request));
+    }
+
+    @DeleteMapping("/detail/{id}")
+    public ResponseEntity<OrderdetailResponse> deleteProductInOrderdetail(@PathVariable("id") String id) {
+        return ResponseEntity.ok().body(orderService.deleteProductOrderdetail(id));
     }
 
     @GetMapping("/{id}")

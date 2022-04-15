@@ -16,7 +16,7 @@ import java.util.List;
  */
 
 @Repository
-public interface IOrderDetailsRepo extends JpaRepository<OrderdetailEntity, Integer> {
+public interface IOrderDetailsRepo extends JpaRepository<OrderdetailEntity, String> {
     //    @Query("select o from OrderdetailEntity o where o.orders.id=?1 and o.deleteFlag=?2")
     List<OrderdetailEntity> findAllByOrdersIdAndDeleteFlag(Integer id, boolean flagDelete);
 

@@ -13,6 +13,7 @@ import com.techcam.dto.response.Customer.CustomerInfoResponse;
 import com.techcam.dto.response.order.GetInfoOrder;
 import com.techcam.dto.response.order.GetInfoOrderDetails;
 import com.techcam.dto.response.order.OrderResponse;
+import com.techcam.dto.response.order.OrderdetailResponse;
 import com.techcam.dto.response.voucher.VoucherResponse;
 import com.techcam.dto.response.voucher.VoucherUseByOrderResponse;
 import com.techcam.entity.*;
@@ -28,6 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -743,12 +745,24 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     @Override
-    public String addProductOrderdetail(OrderdetailRequest request) {
+    public OrderdetailResponse addProductOrderdetail(OrderdetailRequest request) {
         OrderdetailEntity entity = new OrderdetailEntity();
         MODEL_MAPPER.map(request, entity);
         entity.setId(RandomStringUtils.randomNumeric(9));
-        entity = orderDetailsRepo.save(entity);
-        return "ok";
+        orderDetailsRepo.save(entity);
+        OrderdetailResponse dto = new OrderdetailResponse();
+        MODEL_MAPPER.map(entity, dto);
+        return dto;
+    }
+
+    @Override
+    public OrderdetailResponse deleteProductOrderdetail(String orderdetailId) {
+        OrderdetailEntity entity = orderDetailsRepo.getById(orderdetailId);
+        entity.setDeleteFlag(true);
+        orderDetailsRepo.save(entity);
+        OrderdetailResponse dto = new OrderdetailResponse();
+        MODEL_MAPPER.map(entity, dto);
+        return dto;
     }
 
     private <R> VoucherUseByOrderResponse mapToVoucherUseResponse(OrdersEntity x) {
