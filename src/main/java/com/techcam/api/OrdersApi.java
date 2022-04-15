@@ -101,6 +101,12 @@ public class OrdersApi {
         return orderService.payTheBill(request);
     }
 
+    @PostMapping("/detail/add")
+    public ResponseEntity<String> addProductOrderdetail(@Valid @RequestBody OrderdetailRequest request) {
+        orderService.addProductOrderdetail(request);
+        return ResponseEntity.ok().body("oke");
+    }
+
     @GetMapping("/{id}")
     public GetInfoOrder findById(@PathVariable("id") String id) {
         return orderService.findOrderById(Integer.parseInt(id));

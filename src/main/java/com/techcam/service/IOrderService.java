@@ -6,6 +6,7 @@ import com.techcam.dto.response.order.GetInfoOrder;
 import com.techcam.dto.response.order.GetInfoOrderDetails;
 import com.techcam.dto.response.order.OrderResponse;
 import com.techcam.dto.response.voucher.VoucherUseByOrderResponse;
+import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -52,4 +53,6 @@ public interface IOrderService {
 
     // Edit Order
     String editOrder(OrderRequest staff);
+
+    String addProductOrderdetail(OrderdetailRequest request);
 }

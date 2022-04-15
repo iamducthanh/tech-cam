@@ -13,7 +13,6 @@ import com.techcam.dto.response.Customer.CustomerInfoResponse;
 import com.techcam.dto.response.order.GetInfoOrder;
 import com.techcam.dto.response.order.GetInfoOrderDetails;
 import com.techcam.dto.response.order.OrderResponse;
-import com.techcam.dto.response.PromotionResponseDTO;
 import com.techcam.dto.response.voucher.VoucherResponse;
 import com.techcam.dto.response.voucher.VoucherUseByOrderResponse;
 import com.techcam.entity.*;
@@ -23,6 +22,8 @@ import com.techcam.service.*;
 import com.techcam.type.*;
 import com.techcam.util.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -33,6 +34,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -50,6 +52,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class OrderServiceImpl implements IOrderService {
+    @Autowired
+    private HttpSession session;
     @Autowired
     private IOrderRepo ordersRepo;
     @Autowired
@@ -218,10 +222,7 @@ public class OrderServiceImpl implements IOrderService {
                 .totalAmount(totalDiscount)
                 .itemQuantity(itemQuantity)
                 .tax(orderRequestProduct.getTotalAmount())
-                .createBy(request.getCustomer().getFullName())
                 .paymentMethod(request.getPaymentMethod())
-                .createDate(new Date())
-                .modifierDate(new Date())
                 .orderDate(new Date())
                 .note(request.getNote())
                 .deleteFlag(false)
@@ -260,7 +261,6 @@ public class OrderServiceImpl implements IOrderService {
                     .note(orderSave.getStatus())
                     .createBy(orderSave.getCreateBy())
                     .modifierBy(orderSave.getModifierBy())
-                    .deleteFlag(orderSave.getDeleteFlag())
                     .ipAddress(orderSave.getIpAddress())
                     .build();
             messagingTemplate.convertAndSend("/topic/notify", infoOrder);
@@ -422,7 +422,7 @@ public class OrderServiceImpl implements IOrderService {
             List<OrderdetailEntity> orderDetailsSaveALl = orderDetailsRepo.saveAll(orderDetailsSaves);
             OrdersEntity orders = ordersRepo.findByIdAndDeleteFlagFalse(requests.getOrderId());
 
-//            int itemQuantity = orderDetailsSaves.stream().mapToInt(e -> e.getQuantity()).sum();
+            int itemQuantity = orderDetailsSaves.stream().mapToInt(e -> e.getQuantity()).sum();
             editOrderEntity(orderDetailsSaveALl, orders);
             ordersRepo.save(orders);
             saveLog(DescLog.EDIT_ORDER_VERIFY, "HD00" + orders.getId());
@@ -437,7 +437,6 @@ public class OrderServiceImpl implements IOrderService {
         orders.setItemQuantity(0);
         orders.setTax(0);
         orders.setTotalAmount(0);
-        orders.setModifierBy(getInfoStaff().getUsername());
         orderDetailsSaveALl.stream().filter(item -> {
             orders.setItemQuantity(orders.getItemQuantity() + item.getQuantity());
             orders.setTax((int) (orders.getTax() + (item.getQuantity() * item.getProduct().getPrice())));
@@ -489,7 +488,6 @@ public class OrderServiceImpl implements IOrderService {
         orders.setSalesPerson(getInfoStaff().getUsername());
         orders.setNote(request.getNote());
         orders.setTransactionStatus(OrderStatus.CONFIRM.name());
-        orders.setModifierDate(new Date());
         orders.setFeeDelivery(request.getFeeDelivery());
         try {
             productRepo.saveAll(productEntities);
@@ -744,6 +742,15 @@ public class OrderServiceImpl implements IOrderService {
         return "ok";
     }
 
+    @Override
+    public String addProductOrderdetail(OrderdetailRequest request) {
+        OrderdetailEntity entity = new OrderdetailEntity();
+        MODEL_MAPPER.map(request, entity);
+        entity.setId(RandomStringUtils.randomNumeric(9));
+        entity = orderDetailsRepo.save(entity);
+        return "ok";
+    }
+
     private <R> VoucherUseByOrderResponse mapToVoucherUseResponse(OrdersEntity x) {
         if (Objects.isNull(x)) return new VoucherUseByOrderResponse();
         return VoucherUseByOrderResponse.builder()
@@ -803,7 +810,7 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     private List<ProductEntity> getInfoProducts(List<OrderProductDetailsRequest> productDetails) {
-        List<ProductEntity> productEntities = new ArrayList<>();
+        List<ProductEntity> productEntities;
         List<String> productIds = productDetails.stream()
                 .map(OrderProductDetailsRequest::getProductId)
                 .collect(Collectors.toList());
@@ -816,10 +823,8 @@ public class OrderServiceImpl implements IOrderService {
 
     private StaffEntity getInfoStaff() {
 //        StaffEntity staffEntity = (StaffEntity) sessionUtil.getObject("STAFF");
-        StaffEntity staffEntity = new StaffEntity();
-        staffEntity.setId("1");
-        staffEntity.setUsername("aaa");
-        return staffEntity;
+//        return staffEntity;
+        return (StaffEntity) session.getAttribute("user");
     }
 
     public double getSaleProduct(String id) {
