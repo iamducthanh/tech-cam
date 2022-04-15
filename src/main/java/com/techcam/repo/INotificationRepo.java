@@ -12,7 +12,7 @@ import java.util.List;
  * @version 1.0
  * @since 4/9/2022
  */
-public interface INotificationRepo extends JpaRepository<NotificationEntity, Integer> {
+public interface INotificationRepo extends JpaRepository<NotificationEntity, String> {
     @Query("select o from NotificationEntity o order by o.modifyDate desc ")
     List<NotificationEntity> findAllNotifications();
 

@@ -55,6 +55,7 @@ function onError(error) {
 }
 
 function onNotifyReceived(payload) {
+    loadNotifyHead();
     console.log('đã nhân đc')
     toastInfo('Thông báo', 'Bạn vừa nhận được một đơn hàng mới!');
     var order = JSON.parse(payload.body);

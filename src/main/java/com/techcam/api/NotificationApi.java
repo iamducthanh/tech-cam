@@ -1,10 +1,10 @@
 package com.techcam.api;
 
 import com.techcam.dto.response.notification.NotificationDto;
+import com.techcam.entity.NotificationEntity;
 import com.techcam.service.impl.NotificationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -34,5 +34,10 @@ public class NotificationApi {
  @GetMapping("/api/notification/count")
  public Integer countRead(){
   return notificationService.countRead();
+ }
+
+ @PostMapping("/api/notification")
+ public void addNotification(@RequestBody NotificationDto notificationDto){
+  NotificationEntity notificationEntity = NotificationEntity.builder().build();
  }
 }

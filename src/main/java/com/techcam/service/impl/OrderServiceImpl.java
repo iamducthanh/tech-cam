@@ -19,10 +19,7 @@ import com.techcam.dto.response.voucher.VoucherUseByOrderResponse;
 import com.techcam.entity.*;
 import com.techcam.exception.TechCamExp;
 import com.techcam.repo.*;
-import com.techcam.service.ICustomerService;
-import com.techcam.service.IOrderService;
-import com.techcam.service.ITechCamLogService;
-import com.techcam.service.IVoucherService;
+import com.techcam.service.*;
 import com.techcam.type.*;
 import com.techcam.util.*;
 import lombok.extern.slf4j.Slf4j;
@@ -71,6 +68,8 @@ public class OrderServiceImpl implements IOrderService {
     private ITechCamLogService techCamLogService;
     @Autowired
     private IVoucherRepo voucherRepo;
+    @Autowired
+    private INotificationRepo notificationRepo;
     private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     private static final ModelMapper MODEL_MAPPER = new ModelMapper();
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -238,6 +237,23 @@ public class OrderServiceImpl implements IOrderService {
         }
         System.out.println(ordersEntity);
         OrdersEntity orderSave = ordersRepo.save(ordersEntity);
+        String content = "Khách hàng " + customerInfoResponse.getFullName() + " vừa thêm một đơn hàng";
+        NotificationEntity notificationEntity = NotificationEntity.builder()
+                .id(UUID.randomUUID().toString())
+                .productId(null)
+                .content("hello")
+                .createDate(new Date())
+                .modifyDate(new Date())
+                .createBy("System")
+                .modifyBy("System")
+                .deleteFlag(false)
+                .type("ORDER")
+                .read(false)
+                .build();
+        System.out.println(notificationEntity.toString());
+        notificationRepo.save(notificationEntity); // lỗi khi save
+
+
         if (request.getOrderType().equalsIgnoreCase(OrderType.ONLINE.name())) {
             GetInfoOrder infoOrder = GetInfoOrder.builder()
                     .id(orderSave.getId())

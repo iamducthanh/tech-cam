@@ -198,7 +198,7 @@ public class CategoryService implements ICategoryService {
             if(categoryDto.getCategoryName().trim().isEmpty()){
                 throw new TechCamExp(ConstantsErrorCode.CATEGORY_NAME);
             } else {
-                List<CategoryEntity> categoryEntity = new ArrayList<>();
+                List<CategoryEntity> categoryEntity = new ArrayList<>(); //?? ko đoạn này ko sao, chỗ lưu noti ý
                 if(categoryDto.getParentId() == null || categoryDto.getParentId().isEmpty()){
                     categoryEntity = categoryRepo.findByNameAndParentNull(categoryDto.getCategoryName());
                 } else {

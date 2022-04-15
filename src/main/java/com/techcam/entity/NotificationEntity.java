@@ -5,50 +5,44 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import java.util.Date;
 
 /**
  * Description:
  *
  * @author: GMO_ThanhND
  * @version: 1.0
- * @since 4/9/2022 9:34 PM
+ * @since 4/15/2022 9:50 PM
  */
 @Entity
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Table(name = "notification", schema = "poly_techcam", catalog = "")
 @Builder
-@Table(name = "notification")
+@NoArgsConstructor
+@AllArgsConstructor
 public class NotificationEntity {
  @Id
- @Column(name = "id")
- private Integer id;
-
+ private String id;
  @Column(name = "product_id")
  private String productId;
-
- @Column(name = "content")
  private String content;
-
- @Column(name = "CREATE_DATE")
- private java.sql.Timestamp createDate;
-
- @Column(name = "MODIFY_DATE")
- private java.sql.Timestamp modifyDate;
-
- @Column(name = "CREATE_BY")
- private String createBy;
-
- @Column(name = "MODIFY_BY")
- private String modifyBy;
-
- @Column(name = "DELETE_FLAG")
- private Boolean deleteFlag;
-
  @Column(name = "TYPE")
  private String type;
-
  @Column(name = "READ")
  private Boolean read;
+ @Column(name = "CREATE_DATE")
+ private Date createDate;
+ @Column(name = "MODIFY_DATE")
+ private Date modifyDate;
+ @Column(name = "CREATE_BY")
+ private String createBy;
+ @Column(name = "MODIFY_BY")
+ private String modifyBy;
+ @Column(name = "DELETE_FLAG")
+ private boolean deleteFlag;
+
 }
