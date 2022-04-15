@@ -1,64 +1,3 @@
-let t = null
-window.onload = function () {
-    t = $('#datatable').DataTable({
-        lengthChange: !1,
-        "columnDefs": [{
-            "searchable": false,
-            "orderable": false,
-            "targets": [0, 1],
-        }],
-        buttons: [{
-            extend: 'copy',
-            text: '<i class="fas fa-copy"></i>',
-            titleAttr: 'Sao chép'
-        },
-            {
-                extend: 'excel',
-                text: '<i class="fas fa-file-excel"></i>',
-                titleAttr: 'Excel'
-            },
-            {
-                extend: 'pdfHtml5',
-                orientation: 'landscape',
-                pageSize: 'LEGAL',
-                text: '<i class="fas fa-file-pdf"></i>',
-                titleAttr: 'PDF'
-            },
-            {
-                extend: 'colvis',
-                text: '<i class="fas fa-filter"></i>',
-                titleAttr: 'Hiển thị tuỳ chỉnh'
-            }],
-
-        scrollY: "54vh",
-        scrollX: true,
-        scrollCollapse: true,
-
-        info: false,
-        columns: [
-            {data: 'stt', className: "text-center"},
-            {data: 'action', className: "text-center"},
-            {data: 'orderId', className: "text-center order-id"},
-            {data: 'tax', className: "text-end order-tax"},
-            {data: 'createDate', className: "text-center"},
-            {data: 'type', className: "text-center"},
-            {data: 'payment', className: "text-center"},
-        ]
-    });
-
-    t.buttons().container().appendTo("#datatable_wrapper .col-md-6:eq(0)"),
-        $(".dataTables_length select").addClass("form-select form-select-sm");
-    $("body").find(".dataTables_scrollBody").addClass("scrollbar");
-
-    t.on('order.dt search.dt', function () {
-        t.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
-            cell.innerHTML = i + 1;
-        });
-    }).draw();
-
-    connect();
-
-}
 
 function onAddRow(order) {
     let dataOrderNew = new Array();
@@ -120,7 +59,11 @@ function onNotifyReceived(payload) {
     toastInfo('Thông báo', 'Bạn vừa nhận được một đơn hàng mới!');
     var order = JSON.parse(payload.body);
     console.log(order)
-    onAddRow(order);
+    let href = window.location.href;
+    if(href.indexOf('order') > -1){
+        onAddRow(order);
+    }
+
 }
 
 

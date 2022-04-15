@@ -38,4 +38,7 @@ public interface IProductService {
     List<ProductResponse> findAllByCategoryId(String categoryId);
 
     List<ProductResponseDTO> getAll();
+
+    // Find all products with the remaining quantity in stock
+    List<ProductResponse> findAllByKeyWords(String keyword);
 }

@@ -2,10 +2,6 @@ package com.techcam.dto.response.product;
 
 import lombok.Data;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Id;
-
 @Data
 public class ProductResponseDTO {
 

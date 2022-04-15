@@ -1,4 +1,4 @@
-package com.techcam.api.impl;
+package com.techcam.api;
 
 import com.techcam.dto.request.promotion.PromotionRequestDTO;
 import com.techcam.dto.response.PromotionResponseDTO;
@@ -41,6 +41,12 @@ public class PromotionApi {
 
         promotionService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/get-sale-product")
+    public Double getSaleProduct(@PathVariable("productId") String productId){
+
+        return  promotionService.getPromotionProduct(productId);
     }
 
 }

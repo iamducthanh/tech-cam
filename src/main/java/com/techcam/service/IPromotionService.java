@@ -20,4 +20,6 @@ public interface IPromotionService {
     PromotionResponseDTO update(String id, PromotionRequestDTO promotionRequestDTO);
 
     void delete(String id);
+
+    double getPromotionProduct(String id);
 }

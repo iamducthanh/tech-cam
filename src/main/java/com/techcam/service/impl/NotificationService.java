@@ -8,6 +8,7 @@ import com.techcam.repo.INotificationRepo;
 import com.techcam.service.INotificationService;
 import com.techcam.service.IProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;
@@ -39,10 +40,35 @@ public class NotificationService implements INotificationService {
            .productName(productEntity.getProductName())
            .productId(productEntity.getProductId())
            .content(o.getContent())
+           .type(o.getType())
            .time(dateFormat.format(o.getModifyDate()))
            .read(o.getRead())
            .build());
   });
   return notificationDtos;
+ }
+
+ @Override
+ public List<NotificationDto> getTop3() {
+  DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+  List<NotificationEntity> notificationEntities = notificationRepo.findTop3(PageRequest.of(0, 3));
+  List<NotificationDto> notificationDtos = new ArrayList<>();
+  notificationEntities.forEach(o -> {
+   ProductResponse productEntity = productService.getById(o.getProductId());
+   notificationDtos.add(NotificationDto.builder()
+           .productName(productEntity.getProductName())
+           .productId(productEntity.getProductId())
+           .content(o.getContent())
+           .time(dateFormat.format(o.getModifyDate()))
+           .type(o.getType())
+           .read(o.getRead())
+           .build());
+  });
+  return notificationDtos;
+ }
+
+ @Override
+ public Integer countRead() {
+  return notificationRepo.countRead();
  }
 }
