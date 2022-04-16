@@ -1,9 +1,14 @@
 package com.techcam.util;
 
+import com.techcam.entity.NotificationEntity;
+import com.techcam.repo.INotificationRepo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
+import java.util.UUID;
 
 /**
  * Description:
@@ -14,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 
 @Service
+@RequiredArgsConstructor
 public class SessionUtil {
  @Autowired
  private HttpServletRequest req;
@@ -29,4 +35,5 @@ public class SessionUtil {
  public void removeObject(String key){
   req.getSession().removeAttribute(key);
  }
+
 }

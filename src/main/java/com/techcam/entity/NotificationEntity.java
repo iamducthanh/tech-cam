@@ -20,7 +20,7 @@ import java.util.Date;
  */
 @Entity
 @Data
-@Table(name = "notification", schema = "poly_techcam", catalog = "")
+@Table(name = "notifications", schema = "poly_techcam", catalog = "")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,19 +30,19 @@ public class NotificationEntity {
  @Column(name = "product_id")
  private String productId;
  private String content;
- @Column(name = "TYPE")
+// @Column(name = "TYPE")
  private String type;
- @Column(name = "READ")
+// @Column(name = "READ")
  private Boolean read;
- @Column(name = "CREATE_DATE")
+ @Column(name = "create_date")
  private Date createDate;
- @Column(name = "MODIFY_DATE")
+ @Column(name = "modify_date")
  private Date modifyDate;
- @Column(name = "CREATE_BY")
+ @Column(name = "create_by")
  private String createBy;
- @Column(name = "MODIFY_BY")
+ @Column(name = "modify_by")
  private String modifyBy;
- @Column(name = "DELETE_FLAG")
+ @Column(name = "delete_flag")
  private boolean deleteFlag;
 
 }
