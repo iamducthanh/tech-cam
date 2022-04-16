@@ -54,3 +54,15 @@ function viewDetail(productId){
         }
     })
 }
+function viewOrderNoti(id){
+    $.ajax({
+        url: '/api/notification/read?id=' + id,
+        method: 'GET',
+        success: function (datas) {
+            window.location.href = '/orders'
+        },
+        error: function (error) {
+            console.log(error)
+        }
+    })
+}

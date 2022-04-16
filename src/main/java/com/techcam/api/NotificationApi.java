@@ -36,9 +36,14 @@ public class NotificationApi {
   return notificationService.countRead();
  }
 
+ @CrossOrigin(origins = "http://localhost:8888")
  @PostMapping("/api/notification")
  public void addNotification(@RequestBody NotificationDto notificationDto){
- // NotificationEntity notificationEntity = NotificationEntity.builder().build();
- // NotificationEntity notificationEntity = NotificationEntity.builder().build();
+  notificationService.addNotification(notificationDto);
+ }
+
+ @GetMapping("/api/notification/read")
+ public void readNoti(@RequestParam("id") String id){
+  notificationService.updateReadNoti(id);
  }
 }

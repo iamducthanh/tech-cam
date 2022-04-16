@@ -15,6 +15,9 @@ import java.util.List;
 public interface INotificationService {
     List<NotificationDto> getAllNotifications();
     List<NotificationDto> getTop3();
+    List<NotificationEntity> getAllByContent(String content, String productId);
     Integer countRead();
     void saveNotification(NotificationEntity notificationEntity);
+    void updateReadNoti(String id);
+    void addNotification(NotificationDto notificationDto);
 }
