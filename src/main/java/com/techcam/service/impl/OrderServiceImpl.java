@@ -391,8 +391,8 @@ public class OrderServiceImpl implements IOrderService {
                                 if (e.getQuantity() != item.getQuantity()) {
                                     e.setQuantity(item.getQuantity());
                                     e.setNote(item.getNote());
-                                    orderDetailsSaves.add(e);
                                 }
+                                orderDetailsSaves.add(e);
                             }
                             if (StringUtils.isBlank(item.getId())) {
                                 String id = UUID.randomUUID().toString();
@@ -421,13 +421,14 @@ public class OrderServiceImpl implements IOrderService {
             ).collect(Collectors.toList());
         }
         try {
-            List<OrderdetailEntity> orderDetailsSaveALl = orderDetailsRepo.saveAll(orderDetailsSaves);
-            OrdersEntity orders = ordersRepo.findByIdAndDeleteFlagFalse(requests.getOrderId());
+            if (!orderDetailsSaves.isEmpty()) {
+                List<OrderdetailEntity> orderDetailsSaveALl = orderDetailsRepo.saveAll(orderDetailsSaves);
+                OrdersEntity orders = ordersRepo.findByIdAndDeleteFlagFalse(requests.getOrderId());
 
-            int itemQuantity = orderDetailsSaves.stream().mapToInt(e -> e.getQuantity()).sum();
-            editOrderEntity(orderDetailsSaveALl, orders);
-            ordersRepo.save(orders);
-            saveLog(DescLog.EDIT_ORDER_VERIFY, "HD00" + orders.getId());
+                editOrderEntity(orderDetailsSaveALl, orders);
+                ordersRepo.save(orders);
+                saveLog(DescLog.EDIT_ORDER_VERIFY, "HD00" + orders.getId());
+            }
         } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(CommonStatus.FAIL.name());
