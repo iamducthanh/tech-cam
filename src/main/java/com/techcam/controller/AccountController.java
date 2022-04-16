@@ -10,13 +10,11 @@ import com.techcam.util.EncodeUtil;
 import com.techcam.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.Date;
-import java.util.UUID;
 
 /**
  * Description:
@@ -31,24 +29,9 @@ import java.util.UUID;
 public class AccountController {
     private final EncodeUtil encodeUtil;
     private final SessionUtil sessionUtil;
-    private final INotificationRepo notificationRepo;
 
     @GetMapping("/login")
     public String loginPage() {
-        NotificationEntity notificationEntity = NotificationEntity.builder()
-                .id(UUID.randomUUID().toString())
-                .productId("eeeeeeeeeeeeeee")
-                .content("hello")
-                .createDate(new Date())
-                .modifyDate(new Date())
-                .createBy("System")
-                .modifyBy("System")
-                .deleteFlag(false)
-                .type("ORDER")
-                .read(false)
-                .build();
-        System.out.println(notificationEntity.toString());
-        notificationRepo.save(notificationEntity); // lỗi khi save
         return "views/login";
     }
 

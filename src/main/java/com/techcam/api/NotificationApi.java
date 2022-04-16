@@ -38,6 +38,7 @@ public class NotificationApi {
 
  @PostMapping("/api/notification")
  public void addNotification(@RequestBody NotificationDto notificationDto){
-  NotificationEntity notificationEntity = NotificationEntity.builder().build();
+ // NotificationEntity notificationEntity = NotificationEntity.builder().build();
+ // NotificationEntity notificationEntity = NotificationEntity.builder().build();
  }
 }

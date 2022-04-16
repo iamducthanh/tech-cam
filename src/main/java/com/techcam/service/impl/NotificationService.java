@@ -40,7 +40,7 @@ public class NotificationService implements INotificationService {
            .productId(o.getProductId())
            .content(o.getContent())
            .type(o.getType())
-           .time(dateFormat.format(o.getModifyDate()))
+           .time(dateFormat.format(o.getModifierDate()))
            .read(o.getRead())
            .build());
   });
@@ -58,7 +58,7 @@ public class NotificationService implements INotificationService {
            .productName(productEntity.getProductName())
            .productId(productEntity.getProductId())
            .content(o.getContent())
-           .time(dateFormat.format(o.getModifyDate()))
+           .time(dateFormat.format(o.getModifierDate()))
            .type(o.getType())
            .read(o.getRead())
            .build());

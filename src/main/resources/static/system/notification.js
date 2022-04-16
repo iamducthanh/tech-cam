@@ -2,7 +2,6 @@
 // document.onload =  function () {
 
 // }
-
 function getNotification(){
     $.ajax({
         url: '/api/notification',

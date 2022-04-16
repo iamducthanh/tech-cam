@@ -1,14 +1,10 @@
 package com.techcam.util;
 
-import com.techcam.entity.NotificationEntity;
-import com.techcam.repo.INotificationRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.UUID;
 
 /**
  * Description:

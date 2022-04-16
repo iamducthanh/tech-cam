@@ -1,8 +1,6 @@
 package com.techcam.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -45,6 +43,6 @@ public abstract class BaseEntity {
     private String modifierBy;
 
     @Column(name = "DELETE_FLAG")
-    private boolean deleteFlag;
+    private boolean deleteFlag = false;
 
 }
