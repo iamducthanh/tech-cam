@@ -3,7 +3,6 @@ package com.techcam.service.impl;
 import com.techcam.dto.response.notification.NotificationDto;
 import com.techcam.dto.response.product.ProductResponse;
 import com.techcam.entity.NotificationEntity;
-import com.techcam.entity.ProductEntity;
 import com.techcam.repo.INotificationRepo;
 import com.techcam.service.INotificationService;
 import com.techcam.service.IProductService;
@@ -37,11 +36,11 @@ public class NotificationService implements INotificationService {
   notificationEntities.forEach(o -> {
    ProductResponse productEntity = productService.getById(o.getProductId());
    notificationDtos.add(NotificationDto.builder()
-           .productName(productEntity.getProductName())
-           .productId(productEntity.getProductId())
+//           .productName(productEntity.getProductName())
+           .productId(o.getProductId())
            .content(o.getContent())
            .type(o.getType())
-           .time(dateFormat.format(o.getModifyDate()))
+           .time(dateFormat.format(o.getModifierDate()))
            .read(o.getRead())
            .build());
   });
@@ -59,7 +58,7 @@ public class NotificationService implements INotificationService {
            .productName(productEntity.getProductName())
            .productId(productEntity.getProductId())
            .content(o.getContent())
-           .time(dateFormat.format(o.getModifyDate()))
+           .time(dateFormat.format(o.getModifierDate()))
            .type(o.getType())
            .read(o.getRead())
            .build());
@@ -67,8 +66,15 @@ public class NotificationService implements INotificationService {
   return notificationDtos;
  }
 
+
+
  @Override
  public Integer countRead() {
   return notificationRepo.countRead();
+ }
+
+ @Override
+ public void saveNotification(NotificationEntity notificationEntity) {
+  notificationRepo.save(notificationEntity);
  }
 }

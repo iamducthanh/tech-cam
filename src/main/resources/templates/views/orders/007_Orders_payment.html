@@ -653,7 +653,7 @@
                 orderDetail["id"] = $(this).find('input.order-detail-id').val();
                 orderDetail["quantity"] = $(this).find('.order-quantity').text();
                 orderDetail["note"] = "";
-                orderDetail["discount"] = $(this).find('.order-discount').text().substring(0, $(this).find('.order-discount').text().indexOf(" đ")).replace('.', '');
+                orderDetail["discount"] = removePoint($(this).find('.order-discount').text());
 
                 // Get list IMEI
                 orderDetail["imei"] = $(this).find('input.list-imei').val().split(',');
@@ -672,7 +672,7 @@
                     dataType: 'json',
                     success: function (result) {
                         $('.modal-info-order').modal('hide');
-                        confirmListOrderDetail('SHIPPING');
+                        // confirmListOrderDetail('SHIPPING');
                     },
                     error: function (error) {
                         const Toast = Swal.mixin({
@@ -715,6 +715,7 @@
             data["orderProductDetailsRequests"].push(detail);
             console.log(detail);
         });
+        console.log(data);
 
         if(validateForm()) {
             $.ajax({
@@ -724,31 +725,31 @@
                 data: JSON.stringify(data),
                 dataType: 'json',
                 success: function (result) {
-                    // $('.modal-info-order').modal('hide');
-                    //
-                    // // when confirming
-                    // if (status === 'CONFIRM') {
-                    //     Swal.fire({
-                    //         position: 'center',
-                    //         icon: 'success',
-                    //         title: 'Xác nhận đơn hàng thành công',
-                    //         showConfirmButton: true,
-                    //         timerProgressBar: true,
-                    //         timer: 2000
-                    //     }).then(()=> window.location.reload());
-                    // }
-                    //
-                    // // when shipping
-                    // else if (status === 'SHIPPING') {
-                    //     Swal.fire({
-                    //         position: 'center',
-                    //         icon: 'success',
-                    //         title: 'Xuất hàng thành công',
-                    //         showConfirmButton: true,
-                    //         timerProgressBar: true,
-                    //         timer: 2000
-                    //     }).then(()=> window.location.reload());
-                    // }
+                    $('.modal-info-order').modal('hide');
+
+                    // when confirming
+                    if (status === 'CONFIRM') {
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: 'Xác nhận đơn hàng thành công',
+                            showConfirmButton: true,
+                            timerProgressBar: true,
+                            timer: 2000
+                        }).then(()=> window.location.reload());
+                    }
+
+                    // when shipping
+                    else if (status === 'SHIPPING') {
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: 'Xuất hàng thành công',
+                            showConfirmButton: true,
+                            timerProgressBar: true,
+                            timer: 2000
+                        }).then(()=> window.location.reload());
+                    }
                 },
                 error: function (error) {
                     const Toast = Swal.mixin({
@@ -895,7 +896,7 @@
                                 }
 
                                 product.find('.order-discount').text(addPoint(res[i].discount) + " đ");
-                                product.find('.product-price').text(addPoint(res[i].product.price * res[i].quantity) + " đ");
+                                product.find('.product-price').text(addPoint(res[i].product.price) + " đ");
                                 product.find('.order-price').text(addPoint(res[i].product.price * res[i].quantity - res[i].discount) + " đ");
                             }
                         }

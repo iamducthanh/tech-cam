@@ -139,7 +139,7 @@
                             '            </a>'
                     } else {
                         containerNotify.innerHTML +=
-                            '<a href="#" class="text-reset notification-item">\n' +
+                            '<a href="/orders" class="text-reset notification-item">\n' +
                             '              <div class="d-flex">\n' +
                             '                <div class="avatar-xs me-3">\n' +
                             '                  <span class="avatar-title bg-warning rounded-circle font-size-16">\n' +
@@ -236,7 +236,7 @@
     let t = null
 
     let href = window.location.href;
-    if(href.indexOf('order') > -1){
+    if(href.indexOf('orders') > -1){
         t = $('#datatable').DataTable({
             lengthChange: !1,
             "columnDefs": [{
@@ -301,7 +301,6 @@
             info: false,
             columns: [
                 {data: 'btn', className: "text-left"},
-                {data: 'productName', className: "text-left"},
                 {data: 'content', className: "text-left"},
                 {data: 'time', className: "text-left"}
             ]

@@ -75,6 +75,8 @@ public class OrderServiceImpl implements IOrderService {
     @Autowired
     private IVoucherRepo voucherRepo;
     @Autowired
+    private INotificationRepo notificationRepo;
+    @Autowired
     private IPromotionService promotionService;
     private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     private static final ModelMapper MODEL_MAPPER = new ModelMapper();
@@ -240,6 +242,23 @@ public class OrderServiceImpl implements IOrderService {
         }
         System.out.println(ordersEntity);
         OrdersEntity orderSave = ordersRepo.save(ordersEntity);
+        String content = "Khách hàng " + customerInfoResponse.getFullName() + " vừa thêm một đơn hàng";
+//        NotificationEntity notificationEntity = NotificationEntity.builder()
+//                .id(UUID.randomUUID().toString())
+//                .productId(null)
+//                .content("hello")
+//                .createDate(new Date())
+//                .modifyDate(new Date())
+//                .createBy("System")
+//                .modifyBy("System")
+//                .deleteFlag(false)
+//                .type("ORDER")
+//                .read(false)
+//                .build();
+//        System.out.println(notificationEntity.toString());
+//        notificationRepo.save(notificationEntity); // lỗi khi save
+
+
         if (request.getOrderType().equalsIgnoreCase(OrderType.ONLINE.name())) {
             GetInfoOrder infoOrder = GetInfoOrder.builder()
                     .id(orderSave.getId())
@@ -391,8 +410,8 @@ public class OrderServiceImpl implements IOrderService {
                                 if (e.getQuantity() != item.getQuantity()) {
                                     e.setQuantity(item.getQuantity());
                                     e.setNote(item.getNote());
-                                    orderDetailsSaves.add(e);
                                 }
+                                orderDetailsSaves.add(e);
                             }
                             if (StringUtils.isBlank(item.getId())) {
                                 String id = UUID.randomUUID().toString();
@@ -421,13 +440,14 @@ public class OrderServiceImpl implements IOrderService {
             ).collect(Collectors.toList());
         }
         try {
-            List<OrderdetailEntity> orderDetailsSaveALl = orderDetailsRepo.saveAll(orderDetailsSaves);
-            OrdersEntity orders = ordersRepo.findByIdAndDeleteFlagFalse(requests.getOrderId());
+            if (!orderDetailsSaves.isEmpty()) {
+                List<OrderdetailEntity> orderDetailsSaveALl = orderDetailsRepo.saveAll(orderDetailsSaves);
+                OrdersEntity orders = ordersRepo.findByIdAndDeleteFlagFalse(requests.getOrderId());
 
-            int itemQuantity = orderDetailsSaves.stream().mapToInt(e -> e.getQuantity()).sum();
-            editOrderEntity(orderDetailsSaveALl, orders);
-            ordersRepo.save(orders);
-            saveLog(DescLog.EDIT_ORDER_VERIFY, "HD00" + orders.getId());
+                editOrderEntity(orderDetailsSaveALl, orders);
+                ordersRepo.save(orders);
+                saveLog(DescLog.EDIT_ORDER_VERIFY, "HD00" + orders.getId());
+            }
         } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(CommonStatus.FAIL.name());

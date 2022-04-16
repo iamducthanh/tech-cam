@@ -2,7 +2,6 @@
 // document.onload =  function () {
 
 // }
-
 function getNotification(){
     $.ajax({
         url: '/api/notification',
@@ -23,7 +22,6 @@ function getNotification(){
                 }
                 let row = {
                     btn: button,
-                    productName: data.productName,
                     content: data.content,
                     time: data.time
                 }
