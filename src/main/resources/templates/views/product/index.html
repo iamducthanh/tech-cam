@@ -44,6 +44,12 @@
         </div>
         <div class="col-lg-10" id="rightKH" style="height: 100%">
             <div class="row justify-content-end">
+                <a href="#modalAddOrderInvoice" type="button"
+                   class="btn btn-primary col-auto mb-3 waves-effect waves-light mx-3"
+                   data-bs-toggle="modal">
+                    <i class="fas fa-plus me-2"></i>
+                    Nhập hàng
+                </a>
                 <a href="#modal-add-product" type="button"
                    class="btn btn-primary col-auto mb-3 waves-effect waves-light"
                    data-bs-toggle="modal">
@@ -61,6 +67,10 @@
                                 <thead>
                                 <tr class="text-center">
                                     <th>STT</th>
+                                    <th class="text-center">
+                                        <input type="checkbox" class="form-check-input" id="chk-add-all-product"
+                                               onclick="onClickCheckAllProductAdd(this)"/>
+                                    </th>
                                     <th>Ảnh đại diện</th>
                                     <th>Chức năng</th>
                                     <th>Tên sản phẩm</th>
@@ -77,6 +87,12 @@
                                 <th:block th:each="product, theCount : ${lstProducts}">
                                     <tr>
                                         <td class="text-center" th:text="${theCount.index + 1}">STT</td>
+                                        <td class="text-center border-1">
+                                            <input type="checkbox" class="form-check-input chk-add-product"
+                                                   th:data-id="${product.productId}"
+                                                   onclick="onClickCheckProductAdd(this)"
+                                                   th:id="${'for-' + product.productId}"/>
+                                        </td>
                                         <td class="text-center">
                                             <img th:src="${product.thumbnail}" th:title="${product.productName}"
                                                  height="25px"
@@ -90,7 +106,10 @@
                                                 Chỉnh sửa
                                             </a>
                                         </td>
-                                        <td th:text="${product.productName}">Tên sản phẩm</td>
+                                        <td class="text-wrap">
+                                            <label th:for="${'for-' + product.productId}"
+                                                   th:text="${product.productName}"></label>
+                                        </td>
                                         <td th:text="${product.productQuantity}">
                                             Số lượng
                                         </td>
@@ -450,6 +469,112 @@
             </div>
         </div>
     </div>
+
+    <div id="modalAddOrderInvoice" class="modal fade show" style="display: block;" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title mt-0">Thêm đặt hàng NCC</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body row">
+                    <div class="col-lg-4">
+                        <div class="mb-3">
+                            <label for="ip-order-invoice-code">
+                                Mã đặt hàng:
+                            </label>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" id="ip-order-invoice-code" placeholder="Mã đặt hàng...."
+                                   class="form-control"/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="ip-order-invoice-date">
+                                Hẹn ngày nhận:
+                            </label>
+                        </div>
+                        <div class="mb-3 input-group" id="datepicker2">
+                            <input type="text" class="form-control" placeholder="dd-MM-yyyy"
+                                   data-date-format="dd-mm-yyyy" id="ip-order-invoice-date"
+                                   data-date-container='#datepicker2'
+                                   data-provide="datepicker"
+                                   data-date-autoclose="true"/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="ip-order-invoice-supplier">
+                                Nhà cung cấp:
+                            </label>
+                        </div>
+                        <div class="mb-3">
+                            <select id="ip-order-invoice-supplier" class="form-control select2">
+                                <option th:each="supplier : ${lstSupplier}"
+                                        th:value="${supplier.id}"
+                                        th:text="${supplier.name}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="ip-order-invoice-note">
+                                Ghi chú:
+                            </label>
+                        </div>
+                        <div class="mb-3">
+                            <textarea rows="5" placeholder="Ghi chú...." class="form-control"
+                                      id="ip-order-invoice-note"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-lg-8">
+                        <div class="d-flex flex-column-reverse">
+                            <input onkeyup="searchUser(this)" class="form-control-sm" type="text"
+                                   placeholder="Nhập tên sản phẩm tìm kiếm"/>
+                        </div>
+                        <div class="table-responsive" style="overflow-y: auto; max-height: 60vh">
+                            <table class="table table-nowrap align-middle">
+                                <thead>
+                                <tr class="text-center" style="overflow-y: auto">
+                                    <!--                                    <td colspan="1" class="text-center border-1">-->
+                                    <!--                                        <input type="checkbox" class="form-check-input"-->
+                                    <!--                                               onclick="onClickCheckAllProductAdd(this)" id="chk-add-all-product"/>-->
+                                    <!--                                    </td>-->
+                                    <th colspan="1" class="border-1">Sản phẩm</th>
+                                    <th colspan="1" class="border-1">Số lượng đặt</th>
+                                </tr>
+                                </thead>
+                                <tbody id="bodyAddProductOrderInvoice">
+                                <th:block th:each="product, theCount : ${lstProduct}">
+                                    <tr th:data-id="${theCount.index + 1}" th:id="${product.productId}"
+                                        class="tr-order-add-product">
+                                        <!--                                        <td class="text-center border-1">-->
+                                        <!--                                            <input type="checkbox" class="form-check-input chk-add-product"-->
+                                        <!--                                                   th:data-id="${product.productId}"-->
+                                        <!--                                                   onclick="onClickCheckProductAdd(this)"-->
+                                        <!--                                                   th:id="${'for-' + product.productId}"/>-->
+                                        <!--                                        </td>-->
+                                        <td class="text-left text-wrap border-1">
+                                            <label th:for="${'for-' + product.productId}"
+                                                   th:text="${product.productName}"></label>
+                                        </td>
+                                        <td colspan="1" class="ip-edit-quantity text-end border-1">
+                                            <input class="form-control-sm quantity-product" type="number" data-min="1"
+                                                   value="0" onchange="onChangeQuantity(this)"/>
+                                        </td>
+                                    </tr>
+                                </th:block>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-success waves-effect waves-light"
+                            onclick="onClickSubmitAddOrderInvoice()">
+                        Lưu
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 
     <script th:src="@{'/assets/ckeditor/ckeditor.js'}"></script>
 

@@ -4,6 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -44,11 +48,6 @@ public class OrdersEntity {
     private String shipmentId;
     private String status;
     private String note;
-    private Date createDate;
-    private Date modifierDate;
-    private String createBy;
-    private String modifierBy;
-    private Boolean deleteFlag;
     private String ipAddress;
     private Date deliveryDate;
     private CustomerEntity customer;
@@ -58,6 +57,20 @@ public class OrdersEntity {
     private Integer feeDelivery;
     private String shipperName;
     private String shipperPhone;
+
+    @CreatedDate
+    private Date createDate;
+
+    @LastModifiedDate
+    private Date modifierDate;
+
+    @CreatedBy
+    private String createBy;
+
+    @LastModifiedBy
+    private String modifierBy;
+    private Boolean deleteFlag;
+
 //    private List<ReceiptVoucherEntity> orReceiptVoucherEntities;
 //    @OneToMany(mappedBy = "orders")
 //    public List<ReceiptVoucherEntity> getOrReceiptVoucherEntities() {

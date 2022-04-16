@@ -495,3 +495,38 @@ function onStatusChange(element) {
         tag.parent().parent().show();
     }
 }
+
+function onClickCheckAllProductAdd(e) {
+    let getChk = document.getElementsByClassName('chk-add-product')
+    for (const chk of getChk) {
+        if (!chk.parentElement.parentElement.hidden) {
+            chk.checked = e.checked
+        }
+    }
+}
+
+function onClickCheckProductAdd(e) {
+    if (!e.checked) {
+        let getChkAll = document.getElementById('chk-add-all-product');
+        if (getChkAll !== null && getChkAll !== undefined) {
+            getChkAll.checked = false;
+        }
+    } else {
+        enableCheckBox();
+    }
+}
+
+function enableCheckBox() {
+    let getChkAll = document.getElementById('chk-add-all-product');
+    let countChecked = 0;
+    let countChk = 0;
+    let getChk = document.getElementsByClassName('chk-add-product')
+    for (const chk of getChk) {
+        if (!chk.parentElement.parentElement.hidden) {
+            countChk++;
+            if (chk.checked) countChecked++;
+        }
+    }
+    if (getChkAll !== null && getChkAll !== undefined)
+        getChkAll.checked = countChecked === countChk
+}

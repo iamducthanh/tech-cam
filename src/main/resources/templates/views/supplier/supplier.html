@@ -28,19 +28,22 @@
                     <h3 class="leftTitle">Trạng thái</h3>
                     <div class="boxLeftC">
                         <div class="form-group form-check">
-                            <input class="form-check-input" type="radio" name="status" id="statusAll" value="Tất cả" onchange="onStatusChange(this)" checked>
+                            <input class="form-check-input" type="radio" name="status" id="statusAll" value="Tất cả"
+                                   onchange="onStatusChange(this)" checked>
                             <label class="form-check-label" for="statusAll">
                                 Tất cả
                             </label>
                         </div>
                         <div class="form-group form-check">
-                            <input class="form-check-input" type="radio" name="status" id="statusActive" value="Đang hoạt động" onchange="onStatusChange(this)">
+                            <input class="form-check-input" type="radio" name="status" id="statusActive"
+                                   value="Đang hoạt động" onchange="onStatusChange(this)">
                             <label class="form-check-label" for="statusActive">
                                 Đang hoạt động
                             </label>
                         </div>
                         <div class="form-group form-check">
-                            <input class="form-check-input" type="radio" name="status" id="statusInactive" value="Ngừng hoạt động" onchange="onStatusChange(this)">
+                            <input class="form-check-input" type="radio" name="status" id="statusInactive"
+                                   value="Ngừng hoạt động" onchange="onStatusChange(this)">
                             <label class="form-check-label" for="statusInactive">
                                 Ngừng hoạt động
                             </label>
@@ -51,7 +54,8 @@
         </section>
         <section class="col-10 mainRight">
             <div class="row justify-content-end">
-                <button type="button" class="btn btn-primary col-auto mb-3 waves-effect waves-light" data-bs-toggle="modal" data-bs-target=".modal-add-supplier">
+                <button type="button" class="btn btn-primary col-auto mb-3 waves-effect waves-light"
+                        data-bs-toggle="modal" data-bs-target=".modal-add-supplier">
                     <i class="fas fa-plus me-2"></i>NHÀ CUNG CẤP
                 </button>
             </div>
@@ -70,28 +74,40 @@
                                     <div class="col-6 px-4">
                                         <table class="table-borderless w-100">
                                             <tr>
-                                                <th style="width: 140px"><label class="form-label" for="fullName">Tên nhà cung cấp</label><span class="required"> *</span></th>
-                                                <td><input class="form-control" type="text" name="name" id="fullName" onblur="onType(this)"></td>
+                                                <th style="width: 140px"><label class="form-label" for="fullName">Tên
+                                                    nhà cung cấp</label><span class="required"> *</span></th>
+                                                <td><input class="form-control" type="text" name="name" id="fullName"
+                                                           onblur="onType(this)"></td>
                                             </tr>
                                             <tr>
-                                                <th style="width: 140px;"><label for="email" class="form-label">Email</label><span class="required"> *</span></th>
-                                                <td><input type="email" name="email" id="email" class="form-control" onblur="onType(this)" placeholder="abc@email.com"></td>
+                                                <th style="width: 140px;"><label for="email"
+                                                                                 class="form-label">Email</label><span
+                                                        class="required"> *</span></th>
+                                                <td><input type="email" name="email" id="email" class="form-control"
+                                                           onblur="onType(this)" placeholder="abc@email.com"></td>
                                             </tr>
                                         </table>
                                     </div>
                                     <div class="col-6 px-4">
                                         <table class="table-borderless w-100">
                                             <tr>
-                                                <th><label for="phoneNumber" class="form-label">Điện thoại</label><span class="required"> *</span></th>
-                                                <td><input type="number" name="phoneNumber" id="phoneNumber" class="form-control" onblur="onType(this)" placeholder="0323456789"></td>
+                                                <th><label for="phoneNumber" class="form-label">Điện thoại</label><span
+                                                        class="required"> *</span></th>
+                                                <td><input type="number" name="phoneNumber" id="phoneNumber"
+                                                           class="form-control" onblur="onType(this)"
+                                                           placeholder="0323456789"></td>
                                             </tr>
                                             <tr>
-                                                <th><label for="address" class="form-label">Địa chỉ</label><span class="required"> *</span></th>
-                                                <td><input type="text" name="address" id="address" class="form-control" onblur="onType(this)"></td>
+                                                <th><label for="address" class="form-label">Địa chỉ</label><span
+                                                        class="required"> *</span></th>
+                                                <td><input type="text" name="address" id="address" class="form-control"
+                                                           onblur="onType(this)"></td>
                                             </tr>
-                                            
+
                                             <tr>
-                                                <th style="vertical-align: top; padding-top: 7px;"><label for="note" class="form-label">Ghi chú</label></th>
+                                                <th style="vertical-align: top; padding-top: 7px;"><label for="note"
+                                                                                                          class="form-label">Ghi
+                                                    chú</label></th>
                                                 <td><textarea name="note" id="note" cols="30" rows="3"></textarea></td>
                                             </tr>
                                         </table>
@@ -100,7 +116,8 @@
                             </div>
                         </form>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="resetForm()">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                    onclick="resetForm()">
                                 <i class="fas fa-ban me-2"></i>Đóng
                             </button>
                             <button type="button" class="btn btn-success" onclick="resetForm()">
@@ -116,39 +133,46 @@
                 <!-- /.modal-dialog -->
             </div>
             <!-- End Modal Add Staff -->
-
-            <table id="datatable" class="table table-striped table-hover table-bordered dt-responsive nowrap dataTable no-footer shadow">
-                <thead>
-                    <th><input type="checkbox" name="checkAll" id="checkAll" onclick="checkAllJquery('checkAll', 'check-item');"></th>
-                    <th>Chức năng</th>
-                    <th>ID</th>
-                    <th>Tên nhà cung cấp</th>
-                    <th>Số điện thoại</th>
-                    <th>Email</th>
-                    <th>Địa chỉ</th>
-                    <th>Ghi chú</th>
-                    <th>Trạng thái</th>
-                </thead>
-                <tbody>
-                    <tr th:each="supplier : ${suppliers}">
-                        <td><input type="checkbox" class="check-item" th:value="${supplier.getId()}"></td>
-                        <td class="row" th:switch="${staff.getStatus()}">
-                            <i class="col-4 fas fa-edit" style="color: darkblue;" title="Cập nhật" th:data-id="${supplier.id}" onclick="onBtnEdit(this)"></i>
-                            <i class="col-4 fas fa-user-times" style="color: red;" title="Xoá nhà cung cấp" th:data-id="${supplier.id}" onclick="onBtnDelete(this)"></i>
-                        </td>
-                        <td th:text="${supplier.getId()}"></td>
-                        <td th:text="${supplier.getName()}">Tên nhà cung cấp</td>
-                        <td th:text="${supplier.getPhoneNumber()}">Số điện thoại</td>
-                        <td th:text="${supplier.getEmail()}">Email</td>
-                        <td th:text="${supplier.getAddress()}">Địa chỉ</td>
-                        <td th:text="${supplier.getNote()}">Ghi chú</td>
-                        <td th:switch="${supplier.getStatus()}">
-                            <span th:case="1" style="color:green">Đang hoạt động</span>
-                            <span th:case="0" style="color:red">Ngừng hoạt động</span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="card">
+                <div class="card-body overflow-auto">
+                    <table id="datatable"
+                           class="table table-striped table-hover table-bordered dt-responsive nowrap dataTable no-footer shadow">
+                        <thead>
+                        <th><input type="checkbox" name="checkAll" id="checkAll"
+                                   onclick="checkAllJquery('checkAll', 'check-item');"></th>
+                        <th>Chức năng</th>
+                        <th>ID</th>
+                        <th>Tên nhà cung cấp</th>
+                        <th>Số điện thoại</th>
+                        <th>Email</th>
+                        <th>Địa chỉ</th>
+                        <th>Ghi chú</th>
+                        <th>Trạng thái</th>
+                        </thead>
+                        <tbody>
+                        <tr th:each="supplier : ${suppliers}">
+                            <td><input type="checkbox" class="check-item" th:value="${supplier.getId()}"></td>
+                            <td class="row" th:switch="${supplier.getStatus()}">
+                                <i class="col-4 fas fa-edit" style="color: darkblue;" title="Cập nhật"
+                                   th:data-id="${supplier.id}" onclick="onBtnEdit(this)"></i>
+                                <i class="col-4 fas fa-user-times" style="color: red;" title="Xoá nhà cung cấp"
+                                   th:data-id="${supplier.id}" onclick="onBtnDelete(this)"></i>
+                            </td>
+                            <td th:text="${supplier.getId()}"></td>
+                            <td th:text="${supplier.getName()}">Tên nhà cung cấp</td>
+                            <td th:text="${supplier.getPhoneNumber()}">Số điện thoại</td>
+                            <td th:text="${supplier.getEmail()}">Email</td>
+                            <td th:text="${supplier.getAddress()}">Địa chỉ</td>
+                            <td th:text="${supplier.getNote()}">Ghi chú</td>
+                            <!--                        <td th:switch="${supplier.getStatus()}">-->
+                            <!--                            <span th:case="1" style="color:green">Đang hoạt động</span>-->
+                            <!--                            <span th:case="0" style="color:red">Ngừng hoạt động</span>-->
+                            <!--                        </td>-->
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
             <!-- Modal Edit Staff -->
             <div class="modal fade modal-edit-supplier" tabindex="-1" style="display: none;" aria-hidden="true">
@@ -164,28 +188,39 @@
                                     <div class="col-6 px-4">
                                         <table class="table-borderless w-100">
                                             <tr>
-                                                <th><label class="form-label" for="fullName-edit">Tên nhà cung cấp</label><span class="required"> *</span></th>
-                                                <td><input class="form-control" type="text" name="name" id="fullName-edit" onblur="onType(this)"></td>
+                                                <th><label class="form-label" for="fullName-edit">Tên nhà cung
+                                                    cấp</label><span class="required"> *</span></th>
+                                                <td><input class="form-control" type="text" name="name"
+                                                           id="fullName-edit" onblur="onType(this)"></td>
                                             </tr>
                                             <tr>
-                                                <th><label for="email-edit" class="form-label">Email</label><span class="required"> *</span></th>
-                                                <td><input type="email" name="email" id="email-edit" class="form-control" </td>
+                                                <th><label for="email-edit" class="form-label">Email</label><span
+                                                        class="required"> *</span></th>
+                                                <td><input type="email" name="email" id="email-edit"
+                                                           class="form-control"></td>
                                             </tr>
                                         </table>
                                     </div>
                                     <div class="col-6 px-4">
                                         <table class="table-borderless w-100">
                                             <tr>
-                                                <th><label for="phoneNumber-edit" class="form-label">Điện thoại</label><span class="required"> *</span></th>
-                                                <td><input type="number" name="phoneNumber" id="phoneNumber-edit" class="form-control" onblur="onType(this)" placeholder="0323456789"></td>
+                                                <th><label for="phoneNumber-edit" class="form-label">Điện
+                                                    thoại</label><span class="required"> *</span></th>
+                                                <td><input type="number" name="phoneNumber" id="phoneNumber-edit"
+                                                           class="form-control" onblur="onType(this)"
+                                                           placeholder="0323456789"></td>
                                             </tr>
                                             <tr>
-                                                <th><label for="address-edit" class="form-label">Địa chỉ</label><span class="required"> *</span></th>
-                                                <td><input type="text" name="address" id="address-edit" class="form-control" onblur="onType(this)"></td>
+                                                <th><label for="address-edit" class="form-label">Địa chỉ</label><span
+                                                        class="required"> *</span></th>
+                                                <td><input type="text" name="address" id="address-edit"
+                                                           class="form-control" onblur="onType(this)"></td>
                                             </tr>
                                             <tr>
-                                                <th style="vertical-align: top; padding-top: 7px;"><label for="note-edit" class="form-label">Ghi chú</label></th>
-                                                <td><textarea name="note" id="note-edit" cols="30" rows="3"></textarea></td>
+                                                <th style="vertical-align: top; padding-top: 7px;"><label
+                                                        for="note-edit" class="form-label">Ghi chú</label></th>
+                                                <td><textarea name="note" id="note-edit" cols="30" rows="3"></textarea>
+                                                </td>
                                             </tr>
                                         </table>
                                     </div>
@@ -194,7 +229,8 @@
                             <input type="hidden" name="id" id="id">
                         </form>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="resetForm()">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                    onclick="resetForm()">
                                 <i class="fas fa-ban me-2"></i>
                                 Đóng
                             </button>
@@ -217,7 +253,7 @@
     </section>
 </div>
 
-<script layout:fragment="script" >
+<script layout:fragment="script">
     $(document).ready(function () {
         $('.roleFilter').chosen();
 
@@ -289,11 +325,11 @@
     function onStatusChange(element) {
         const value = $(element).val();
         const tagAll = $('#datatable tbody tr');
-        const tag = $('tr td').filter(function() {
-            return $(this).text()===value;
+        const tag = $('tr td').filter(function () {
+            return $(this).text() === value;
         });
 
-        if(value==='Tất cả') {
+        if (value === 'Tất cả') {
             tagAll.show();
         } else {
             tagAll.hide();
@@ -305,11 +341,11 @@
     function onRoleChange() {
         const tagAll = $('#datatable tbody tr');
         const role = $('select.roleFilter').val();
-        const tag = $('tr td span').filter(function() {
+        const tag = $('tr td span').filter(function () {
             return $(this).text() === role[0];
         });
 
-        if (role.length === 0 || role.length >=2) {
+        if (role.length === 0 || role.length >= 2) {
             tagAll.show();
         } else {
             tagAll.hide();
@@ -333,7 +369,7 @@
             data["" + v.name + ""] = v.value;
         });
 
-        if(validateForm('add')) {
+        if (validateForm('add')) {
             addStaff(data);
         } else {
             console.log("validate fail");
@@ -343,7 +379,7 @@
     // Event onKeyPress formAdd
     function onType(element) {
         const tag = $(element);
-        if(tag.val() === '') {
+        if (tag.val() === '') {
             tag.addClass('error');
         } else {
             tag.removeClass('error');
@@ -443,7 +479,6 @@
                 }).then(() => window.location.href = "/supplier");
             },
             error: function (error) {
-
                 const Toast = Swal.mixin({
                     toast: true,
                     position: 'top-end',
@@ -457,7 +492,7 @@
                 })
                 Toast.fire({
                     icon: 'error',
-                    title: `${error.vn}`,
+                    title: error.responseJSON.vn,
                 })
             }
         })
@@ -471,7 +506,7 @@
             data["" + v.name + ""] = v.value;
         });
 
-        if(validateForm('edit')) {
+        if (validateForm('edit')) {
             editSupplier(data);
         } else {
             console.log("validate fail");
@@ -501,7 +536,8 @@
                 Toast.fire({
                     icon: 'success',
                     title: 'Cập nhật thành công'
-                }).then(() => window.location.href = "/supplier");
+                })
+                //.then(() => window.location.href = "/supplier");
             },
             error: function (error) {
                 const Toast = Swal.mixin({
@@ -517,13 +553,13 @@
                 })
                 Toast.fire({
                     icon: 'error',
-                    title: "Lỗi hệ thống!\nVui lòng thử lại sau"
+                    title: error.responseJSON.vn,
                 })
             }
         })
     }
 
-    function onBtnEdit (e) {
+    function onBtnEdit(e) {
         console.log(e.dataset.id);
         const id = e.dataset.id;
         $.ajax({
@@ -547,7 +583,7 @@
         })
     }
 
-    function onBtnStatus (element) {
+    function onBtnStatus(element) {
         const tag = $(element).parent().parent();
         const lock = $(element).hasClass('fa-lock');
         const status = lock ? "0" : "1";
@@ -585,7 +621,7 @@
         })
     }
 
-    function onBtnDelete (e) {
+    function onBtnDelete(e) {
         const tag = $(e).parent().parent();
         const id = e.dataset.id;
         const swalWithBootstrapButtons = Swal.mixin({
@@ -619,7 +655,22 @@
                             window.location.href = "/supplier";
                         },
                         error: function (error) {
-                            console.log(error);
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                            })
+                            Toast.fire({
+                                icon: 'error',
+                                title: error.responseJSON.vn,
+                                // title: 'Lỗi khi thêm mới'
+                            })
                         }
                     })
                 );

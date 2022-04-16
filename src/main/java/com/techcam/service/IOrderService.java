@@ -5,7 +5,10 @@ import com.techcam.dto.request.staff.StaffEditRequestDTO;
 import com.techcam.dto.response.order.GetInfoOrder;
 import com.techcam.dto.response.order.GetInfoOrderDetails;
 import com.techcam.dto.response.order.OrderResponse;
+import com.techcam.dto.response.order.OrderdetailResponse;
 import com.techcam.dto.response.voucher.VoucherUseByOrderResponse;
+import com.techcam.entity.OrderdetailEntity;
+import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -52,4 +55,8 @@ public interface IOrderService {
 
     // Edit Order
     String editOrder(OrderRequest staff);
+
+    OrderdetailResponse addProductOrderdetail(OrderdetailRequest request);
+
+    OrderdetailResponse deleteProductOrderdetail(String orderdetailId);
 }

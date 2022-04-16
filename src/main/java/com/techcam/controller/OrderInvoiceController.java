@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static com.techcam.type.CustomerStatus.ON;
 
 /**
  * Description :
@@ -40,7 +43,13 @@ public class OrderInvoiceController {
     @GetMapping
     public String home(Model model) {
         List<InvoiceOrderResponse> lst = goodsOrderService.getAllInvoiceOrder();
+        List<SupplierResponseDTO> lstSupplier = supplierService.getAll();
+        List<ProductResponse> lstProduct = productService.getAllProduct();
+        lstProduct = lstProduct.stream().filter(e -> e.getProductStatus().equals(ON.name())).collect(Collectors.toList());
+//        lstSupplier = lstSupplier.stream().filter(e -> Objects.nonNull(e.getStatus()) && e.getStatus().equals(ON.name())).collect(Collectors.toList());
         model.addAttribute("lstOrderInvoice", lst);
+        model.addAttribute("lstSupplier", lstSupplier);
+        model.addAttribute("lstProduct", lstProduct);
         return "views/order-invoice/014_order_invoice";
     }
 
