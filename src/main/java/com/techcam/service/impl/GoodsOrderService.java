@@ -5,6 +5,7 @@ import com.techcam.dto.request.invoiceOrder.InvoiceOrderRequest;
 import com.techcam.dto.response.invoiceOrder.InvoiceOrderDetailResponse;
 import com.techcam.dto.response.invoiceOrder.InvoiceOrderResponse;
 import com.techcam.entity.*;
+import com.techcam.exception.TechCamExp;
 import com.techcam.repo.*;
 import com.techcam.service.IGoodsOrderService;
 import com.techcam.util.ConvertUtil;
@@ -19,8 +20,9 @@ import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.techcam.type.CustomerStatus.FAILED;
-import static com.techcam.type.CustomerStatus.ON;
+import static com.techcam.constants.ConstantsErrorCode.PRODUCT_NOT_EXISTS;
+import static com.techcam.constants.ConstantsErrorCode.VOUCHER_DATE_NOT_PAST;
+import static com.techcam.type.CustomerStatus.*;
 
 /**
  * Description :
@@ -42,6 +44,8 @@ public class GoodsOrderService implements IGoodsOrderService {
     private final ISupplierRepo supplierRepo;
 
     private final IGoodsreceiptRepo goodsreceiptRepo;
+
+    private final IGoodsreceiptdetailRepo goodsreceiptdetailRepo;
 
     private final IProductRepo productRepo;
 
@@ -82,7 +86,7 @@ public class GoodsOrderService implements IGoodsOrderService {
         for (InvoiceOrderDetailRequest x : request.getDetails()) {
             ProductEntity productEntity = productRepo.getByIdAndDeleteFlagIsFalse(x.getProductId());
             if (Objects.isNull(productEntity)) {
-                return FAILED.name();
+                throw new TechCamExp(PRODUCT_NOT_EXISTS);
             }
             GoodsOrderDetailEntity s = GoodsOrderDetailEntity.builder()
                     .id(UUID.randomUUID().toString())
@@ -97,6 +101,7 @@ public class GoodsOrderService implements IGoodsOrderService {
         try {
             goodsOrderRepo.save(goodsOrderEntity);
             goodsOrderDetailRepo.saveAll(lst);
+            return SUCCESS.name();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -105,9 +110,16 @@ public class GoodsOrderService implements IGoodsOrderService {
 
     @Override
     public String updateOrderInvoice(InvoiceOrderRequest request) {
+        GoodsOrderEntity find = goodsOrderRepo.getByIdAndDeleteFlagIsFalse(request.getId());
+        if (Objects.isNull(find)) {
+            throw new TechCamExp("ERROR_NOT_EXISTS", "Hoá đơn đặt hàng");
+        }
         GoodsOrderEntity goodsOrderEntity = mapToInvoiceOrderEntity(request);
         if (Objects.isNull(goodsOrderEntity)) {
             return FAILED.name();
+        }
+        if(goodsOrderEntity.getOrderDelivery().compareTo(find.getOrderDate()) < 0){
+            throw new TechCamExp(VOUCHER_DATE_NOT_PAST);
         }
         List<GoodsOrderDetailEntity> lst = new ArrayList<>();
         for (InvoiceOrderDetailRequest x : request.getDetails()) {
@@ -141,6 +153,7 @@ public class GoodsOrderService implements IGoodsOrderService {
             goodsOrderRepo.save(goodsOrderEntity);
             goodsOrderDetailRepo.saveAll(lst);
             goodsOrderDetailRepo.saveAll(lstFind);
+            return SUCCESS.name();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -151,6 +164,24 @@ public class GoodsOrderService implements IGoodsOrderService {
         if (Objects.isNull(x)) return InvoiceOrderResponse.builder().build();
         SupplierEntity supplierEntity = supplierRepo.getById(x.getSupplierId());
         List<GoodsreceiptEntity> lst = goodsreceiptRepo.findAllByOrderIdAndDeleteFlagIsFalse(x.getId());
+//        Integer status = 0;
+//        for (GoodsreceiptEntity s : lst) {
+//            List<GoodsreceiptdetailEntity> lstDetail = goodsreceiptdetailRepo.findAllByProductIdAndDeleteFlagIsFalse(s.getId());
+//            for (GoodsreceiptdetailEntity z : lstDetail) {
+//                List<GoodsOrderDetailEntity> lstOrderDetail = goodsOrderDetailRepo.findAllByProductIdAndDeleteFlagIsFalse(z.getProductId());
+//                int quantityInvoice = lstOrderDetail.stream().mapToInt(e -> e.getItemQuantity()).sum();
+//                if (quantityInvoice > z.getQuantityActual()) {
+//                    status = 1;
+//                    break;
+//                } else if (quantityInvoice < z.getQuantityActual()) {
+//                    status = -1;
+//                    break;
+//                }
+//            }
+//            if (status != 0) {
+//                break;
+//            }
+//        }
         Date dateInvoice = lst.stream().map(BaseEntity::getCreateDate).min(Timestamp::compareTo).orElse(null);
         return InvoiceOrderResponse.builder()
                 .invoiceOrderId(x.getId())
@@ -163,6 +194,7 @@ public class GoodsOrderService implements IGoodsOrderService {
                 .status(x.getStatus())
                 .note(x.getNote())
                 .dateInvoice(dateInvoice)
+//                .statusInvoice(status)
                 .build();
     }
 

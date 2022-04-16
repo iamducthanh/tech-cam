@@ -1,16 +1,12 @@
-package com.techcam.dto.response;
+package com.techcam.dto.request.promotion;
 
-import com.techcam.dto.response.product.ProductResponseDTO;
-import com.techcam.entity.CategoryEntity;
 import lombok.Data;
 
 import java.util.Date;
 import java.util.List;
 
 @Data
-public class PromotionResponseDTO {
-
-    private Long id;
+public class PromotionRequestDTO {
 
     private String name;
 
@@ -28,5 +24,7 @@ public class PromotionResponseDTO {
 
     private String note;
 
-    List<ProductResponseDTO> products;
+    private List<String> categoryIds;
+
+    private List<String> productIds;
 }

@@ -5,6 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Đặt hàng NCC - TechCam</title>
+    <link rel="stylesheet" th:href="@{/assets/css/bootstrap-datepicker.min.css}">
     <link rel="stylesheet" th:href="@{/assets/css/select2.min.css}">
 </head>
 <body>
@@ -43,7 +44,7 @@
         </div>
         <div class="col-lg-10" id="rightKH" style="height: 100%">
             <div class="row justify-content-end">
-                <a href="#modalOrderInvoice" type="button" onclick="onClickAddOrderInvoice()"
+                <a href="#modalAddOrderInvoice" type="button" onclick="onClickAddOrderInvoice()"
                    class="btn btn-primary col-auto mb-3 waves-effect waves-light"
                    data-bs-toggle="modal">
                     <i class="fas fa-plus me-2"></i>
@@ -63,17 +64,16 @@
                                     <th>Chức năng</th>
                                     <th>Mã đặt hàng</th>
                                     <th>NCC</th>
-                                    <td>Ngày đặt</td>
-                                    <td>Hạn nhập</td>
-                                    <td>Ngày nhận hàng</td>
-                                    <th>Trạng thái</th>
+                                    <th>Ngày đặt</th>
+                                    <th>Hẹn nhập</th>
+                                    <!--                                    <th>Đã nhập</th>-->
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:each="orderInvoice : ${lstOrderInvoice}" class="text-center">
                                     <td></td>
                                     <td class="text-center">
-                                        <a href="#modalOrderInvoice" class="btn btn-info btn-sm"
+                                        <a href="#modalEditOrderInvoice" class="btn btn-info btn-sm"
                                            th:data-id="${orderInvoice.invoiceOrderId}"
                                            data-bs-toggle="modal" onclick="onClickEditOrderInvoice(this)">
                                             Chi tiết
@@ -85,15 +85,7 @@
                                     </td>
                                     <td th:text="${#temporals.format(orderInvoice.orderDelivery, 'dd-MM-yyyy')}">
                                     </td>
-                                    <td th:text="${#dates.format(orderInvoice.dateInvoice, 'dd-MM-yyyy hh:mm')}"></td>
-                                    <td class="text-center">
-                                        <span th:if="${orderInvoice.dateInvoice != null}" class="badge bg-success">
-                                            Đã nhập
-                                        </span>
-                                        <span th:if="${orderInvoice.dateInvoice == null}" class="badge bg-danger">
-                                            Đã nhập
-                                        </span>
-                                    </td>
+                                    <!--                                    <td th:text="${#dates.format(orderInvoice.dateInvoice, 'dd-MM-yyyy hh:mm')}"></td>-->
                                 </tr>
                                 </tbody>
                             </table>
@@ -105,26 +97,209 @@
         </div>
     </div>
 
-    <div id="modalOrderInvoice" class="modal fade show" style="display: block;" tabindex="-1" aria-hidden="true">
+    <div id="modalAddOrderInvoice" class="modal fade show" style="display: block;" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title mt-0" id="titleModelOrderInvoice"></h5>
+                    <h5 class="modal-title mt-0">Thêm đặt hàng NCC</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body" id="bodyModalOrderInvoice">
-                    <!-- Tab panes -->
+                <div class="modal-body row">
+                    <div class="col-lg-4">
+                        <div class="mb-3">
+                            <label for="ip-order-invoice-code">
+                                Mã đặt hàng:
+                            </label>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" id="ip-order-invoice-code" placeholder="Mã đặt hàng...."
+                                   class="form-control"/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="ip-order-invoice-date">
+                                Hẹn ngày nhận:
+                            </label>
+                        </div>
+                        <div class="mb-3 input-group" id="datepicker2">
+                            <input type="text" class="form-control" placeholder="dd-MM-yyyy"
+                                   data-date-format="dd-mm-yyyy" id="ip-order-invoice-date"
+                                   data-date-container='#datepicker2'
+                                   data-provide="datepicker"
+                                   data-date-autoclose="true"/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="ip-order-invoice-supplier">
+                                Nhà cung cấp:
+                            </label>
+                        </div>
+                        <div class="mb-3">
+                            <select id="ip-order-invoice-supplier" class="form-control select2">
+                                <option th:each="supplier : ${lstSupplier}"
+                                        th:value="${supplier.id}"
+                                        th:text="${supplier.name}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="ip-order-invoice-note">
+                                Ghi chú:
+                            </label>
+                        </div>
+                        <div class="mb-3">
+                            <textarea rows="5" placeholder="Ghi chú...." class="form-control"
+                                      id="ip-order-invoice-note"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-lg-8">
+                        <div class="d-flex flex-column-reverse">
+                            <input onkeyup="searchUser(this)" class="form-control-sm" type="text"
+                                   placeholder="Nhập tên sản phẩm tìm kiếm"/>
+                        </div>
+                        <div class="table-responsive" style="overflow-y: auto; max-height: 60vh">
+                            <table class="table table-nowrap align-middle">
+                                <thead>
+                                <tr class="text-center" style="overflow-y: auto">
+                                    <!--                                    <td colspan="1" class="text-center border-1">-->
+                                    <!--                                        <input type="checkbox" class="form-check-input"-->
+                                    <!--                                               onclick="onClickCheckAllProductAdd(this)" id="chk-add-all-product"/>-->
+                                    <!--                                    </td>-->
+                                    <th colspan="1" class="border-1">Sản phẩm</th>
+                                    <th colspan="1" class="border-1">Số lượng đặt</th>
+                                </tr>
+                                </thead>
+                                <tbody id="bodyAddProductOrderInvoice">
+                                <th:block th:each="product, theCount : ${lstProduct}">
+                                    <tr th:data-id="${theCount.index + 1}" th:id="${product.productId}"
+                                        class="tr-order-add-product">
+                                        <!--                                        <td class="text-center border-1">-->
+                                        <!--                                            <input type="checkbox" class="form-check-input chk-add-product"-->
+                                        <!--                                                   th:data-id="${product.productId}"-->
+                                        <!--                                                   onclick="onClickCheckProductAdd(this)"-->
+                                        <!--                                                   th:id="${'for-' + product.productId}"/>-->
+                                        <!--                                        </td>-->
+                                        <td class="text-left text-wrap border-1">
+                                            <label th:for="${'for-' + product.productId}"
+                                                   th:text="${product.productName}"></label>
+                                        </td>
+                                        <td colspan="1" class="ip-edit-quantity text-end border-1">
+                                            <input class="form-control-sm quantity-product" type="number" data-min="1"
+                                                   value="0" onchange="onChangeQuantity(this)"/>
+                                        </td>
+                                    </tr>
+                                </th:block>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Đóng</button>
-                    <button type="button" id="btnSubmitEditOrderInvoice"
-                            class="btn btn-success waves-effect waves-light"
-                            data-id="" onclick="onClickSubmitEditOrderInvoice(this)">
-                        Cập nhật
-                    </button>
-                    <button type="button" id="btnSubmitAddOrderInvoice" class="btn btn-success waves-effect waves-light"
+                    <button type="button" class="btn btn-success waves-effect waves-light"
                             onclick="onClickSubmitAddOrderInvoice()">
                         Lưu
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <div id="modalEditOrderInvoice" class="modal fade show" style="display: block;" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title mt-0">Sửa đặt hàng NCC</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body row">
+                    <div class="col-lg-4">
+                        <div class="mb-3">
+                            <label for="ip-edit-order-invoice-code">
+                                Mã đặt hàng:
+                            </label>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" id="ip-edit-order-invoice-code" placeholder="Mã đặt hàng...."
+                                   class="form-control"/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="ip-edit-order-invoice-date">
+                                Hẹn ngày nhận:
+                            </label>
+                        </div>
+                        <div class="mb-3 input-group" id="datepicker3">
+                            <input type="text" class="form-control" placeholder="dd-MM-yyyy"
+                                   data-date-format="dd-mm-yyyy" id="ip-edit-order-invoice-date"
+                                   data-date-container='#datepicker3'
+                                   data-provide="datepicker"
+                                   data-date-autoclose="true"/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="ip-edit-order-invoice-supplier">
+                                Nhà cung cấp:
+                            </label>
+                        </div>
+                        <div class="mb-3">
+                            <select id="ip-edit-order-invoice-supplier" class="form-control select2">
+                                <option th:each="supplier : ${lstSupplier}"
+                                        th:value="${supplier.id}"
+                                        th:text="${supplier.name}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="ip-edit-order-invoice-note">
+                                Ghi chú:
+                            </label>
+                        </div>
+                        <div class="mb-3">
+                            <textarea rows="5" placeholder="Ghi chú...." class="form-control"
+                                      id="ip-edit-order-invoice-note"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-lg-8">
+                        <div class="d-flex flex-column-reverse">
+                            <input onkeyup="searchUser(this)" class="form-control-sm" type="text"
+                                   placeholder="Nhập tên sản phẩm tìm kiếm"/>
+                        </div>
+                        <div class="table-responsive" style="overflow-y: auto; max-height: 60vh">
+                            <table class="table table-nowrap align-middle">
+                                <thead>
+                                <tr class="text-center" style="overflow-y: auto">
+                                    <th colspan="1" class="border-1">Sản phẩm</th>
+                                    <th colspan="1" class="border-1">Số lượng đặt</th>
+                                </tr>
+                                </thead>
+                                <tbody id="bodyEditProductOrderInvoice">
+                                <th:block th:each="product, theCount : ${lstProduct}">
+                                    <tr th:data-id="${theCount.index + 1}" th:id="${product.productId}"
+                                        class="tr-order-edit-product">
+<!--                                                                                <td class="text-center border-1">-->
+<!--                                                                                    <input type="checkbox" class="form-check-input chk-add-product"-->
+<!--                                                                                           th:data-id="${product.productId}"-->
+<!--                                                                                           onclick="onClickCheckProductAdd(this)"-->
+<!--                                                                                           th:id="${'for-' + product.productId}"/>-->
+<!--                                                                                </td>-->
+                                        <td class="text-left text-wrap border-1">
+                                            <label th:for="${'for-' + product.productId}"
+                                                   th:text="${product.productName}"></label>
+                                        </td>
+                                        <td colspan="1" class="ip-edit-quantity text-end border-1">
+                                            <input th:class="${'form-control-sm edit-quantity-product ' + product.productId}"
+                                                   th:data-id-product="${product.productId}" type="number" data-min="1"
+                                                   value="0" onchange="onChangeQuantity(this)"/>
+                                        </td>
+                                    </tr>
+                                </th:block>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-success waves-effect waves-light" id="btnSubmitEditInvoice"
+                            data-id="" onclick="onClickSubmitEditOrderInvoice(this)">
+                        Cập nhật
                     </button>
                 </div>
             </div><!-- /.modal-content -->
@@ -134,8 +309,8 @@
 </div>
 <div layout:fragment="script">
     <script th:src="@{/assets/js/order_invoice_014.js}"></script>
-    <script th:src="@{/assets/js/table-edits.min.js}"></script>
-    <!--    <script th:src="@{/assets/js/table-editable.init.js}"></script>-->
+    <script th:src="@{/assets/js/select2.min.js}"></script>
+    <script th:src="@{/assets/js/form-advanced.init.js}"></script>
 </div>
 </body>
 </html>

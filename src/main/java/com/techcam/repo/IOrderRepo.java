@@ -30,4 +30,5 @@ public interface IOrderRepo extends JpaRepository<OrdersEntity, Integer> {
     List<OrdersEntity> findAllByVoucherCodeAndTransactionStatusNotInAndDeleteFlagFalse(String voucherId,String status);
     @Query("select o from OrdersEntity  o where o.voucher.code=?1 and o.customer.phoneNumber=?2 and o.transactionStatus not in ?3 and o.deleteFlag =false ")
     OrdersEntity findFirstByVoucherCodeAndCustomerPhoneNumberAndTransactionStatusNotIn(String code, String phoneNumber,String status);
+
 }
