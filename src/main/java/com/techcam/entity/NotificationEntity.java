@@ -11,6 +11,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -30,36 +31,23 @@ public class NotificationEntity {
     @Id
     @Column(name = "id")
     private String id;
-    @Basic
     @Column(name = "product_id")
     private String productId;
-    @Basic
     @Column(name = "content")
     private String content;
-    @Basic
     @Column(name = "type_col")
     private String type;
-    @Basic
     @Column(name = "read_col")
     private Boolean read;
-    @Basic
-    @CreatedDate
-    @Column(name = "CREATE_DATE", insertable = false)
-    private Timestamp createDate;
-    @Basic
-    @LastModifiedDate
-    @Column(name = "MODIFIER_DATE", insertable = false)
-    private Timestamp modifierDate;
-    @Basic
-    @CreatedBy
-    @Column(name = "CREATE_BY", insertable = false)
+    @Column(name = "CREATE_DATE")
+    private Date createDate;
+    @Column(name = "MODIFIER_DATE")
+    private Date modifierDate;
+    @Column(name = "CREATE_BY")
     private String createBy;
-    @Basic
-    @LastModifiedBy
-    @Column(name = "MODIFIER_BY", insertable = false)
+    @Column(name = "MODIFIER_BY")
     private String modifierBy;
-    @Basic
-    @Column(name = "DELETE_FLAG", insertable = false)
+    @Column(name = "DELETE_FLAG")
     private Boolean deleteFlag = false;
 
     public String getId() {
@@ -102,19 +90,19 @@ public class NotificationEntity {
         this.read = read;
     }
 
-    public Timestamp getCreateDate() {
+    public Date getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Timestamp createDate) {
+    public void setCreateDate(Date createDate) {
         this.createDate = createDate;
     }
 
-    public Timestamp getModifierDate() {
+    public Date getModifierDate() {
         return modifierDate;
     }
 
-    public void setModifierDate(Timestamp modifierDate) {
+    public void setModifierDate(Date modifierDate) {
         this.modifierDate = modifierDate;
     }
 

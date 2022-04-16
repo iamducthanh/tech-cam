@@ -56,15 +56,17 @@ function onError(error) {
 
 function onNotifyReceived(payload) {
     loadNotifyHead();
-    console.log('đã nhân đc')
-    toastInfo('Thông báo', 'Bạn vừa nhận được một đơn hàng mới!');
-    var order = JSON.parse(payload.body);
-    console.log(order)
-    let href = window.location.href;
-    if(href.indexOf('orders') > -1){
-        onAddRow(order);
+    var data = JSON.parse(payload.body);
+    if(data.type != null && data.type === 'COMMENT'){
+        toastInfo('Thông báo', data.content);
+    } else {
+        toastInfo('Thông báo', 'Bạn vừa nhận được một đơn hàng mới!');
+        console.log(data)
+        let href = window.location.href;
+        if(href.indexOf('orders') > -1){
+            onAddRow(data);
+        }
     }
-
 }
 
 

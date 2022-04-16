@@ -20,6 +20,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class NotificationDto {
+ private String id;
  private String productId;
  private String productName;
  private String content;

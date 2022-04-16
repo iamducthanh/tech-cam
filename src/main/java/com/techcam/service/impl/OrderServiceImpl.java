@@ -243,20 +243,20 @@ public class OrderServiceImpl implements IOrderService {
         System.out.println(ordersEntity);
         OrdersEntity orderSave = ordersRepo.save(ordersEntity);
         String content = "Khách hàng " + customerInfoResponse.getFullName() + " vừa thêm một đơn hàng";
-//        NotificationEntity notificationEntity = NotificationEntity.builder()
-//                .id(UUID.randomUUID().toString())
-//                .productId(null)
-//                .content("hello")
-//                .createDate(new Date())
-//                .modifyDate(new Date())
-//                .createBy("System")
-//                .modifyBy("System")
-//                .deleteFlag(false)
-//                .type("ORDER")
-//                .read(false)
-//                .build();
-//        System.out.println(notificationEntity.toString());
-//        notificationRepo.save(notificationEntity); // lỗi khi save
+        NotificationEntity notificationEntity = NotificationEntity.builder()
+                .id(UUID.randomUUID().toString())
+                .productId(null)
+                .content(content)
+                .createDate(new Date())
+                .modifierDate(new Date())
+                .createBy("System")
+                .modifierBy("System")
+                .deleteFlag(false)
+                .type("ORDER")
+                .read(false)
+                .build();
+        System.out.println(notificationEntity.toString());
+        notificationRepo.save(notificationEntity); // lỗi khi save
 
 
         if (request.getOrderType().equalsIgnoreCase(OrderType.ONLINE.name())) {
