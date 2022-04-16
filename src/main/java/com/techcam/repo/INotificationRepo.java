@@ -16,7 +16,10 @@ public interface INotificationRepo extends JpaRepository<NotificationEntity, Str
     @Query("select o from NotificationEntity o order by o.modifierDate desc ")
     List<NotificationEntity> findAllNotifications();
 
-    @Query("select o from NotificationEntity o where o.read = false  order by o.modifierDate desc")
+    @Query("select o from NotificationEntity o where o.content = ?1 and o.productId = ?2")
+    List<NotificationEntity> findAllByContent(String content, String productId);
+
+    @Query("select o from NotificationEntity o where o.read = false order by o.modifierDate desc")
     List<NotificationEntity> findTop3(Pageable pageable);
 
     @Query("select count(o)from NotificationEntity o where o.read = false order by o.modifierDate desc")

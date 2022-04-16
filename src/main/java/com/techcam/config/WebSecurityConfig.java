@@ -58,6 +58,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/count_login_false/**",
                 "/index",
                 "/api/voucher/**",
+                "/api/notification/**",
                 "/api/v1/orders/**",
                 "/vnp-pay/check-out/order/**",
                 "/api/receipt-voucher/**"
