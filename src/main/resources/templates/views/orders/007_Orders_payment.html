@@ -215,7 +215,7 @@
                                     <th><label for="createDate">Ngày mua</label></th>
                                     <td><span id="createDate"></span></td>
                                 </tr>
-                                <tr class="buyer-nonInput">
+                                <tr>
                                     <th><label for="price">Tổng thanh toán</label></th>
                                     <td><span id="price" class="fw-bolder text-danger"></span></td>
                                 </tr>
@@ -340,7 +340,7 @@
                         <i class="fas fa-ban me-2"></i>
                         Đóng
                     </button>
-                    <button type="button" id="btnSaveImei" class="btn btn-primary waves-effect waves-light" onclick="onBtnSaveImei(this)">
+                    <button type="button" id="btnSaveImei" class="btn btn-primary waves-effect waves-light" onclick="onBtnSaveIMEI(this)">
                         <i class="fas fa-save pe-2"></i>
                         <span>Xác nhận</span>
                     </button>
@@ -988,6 +988,7 @@
         onLockEditOrder(true);
 
         // Reset Modal before showing info
+        $('.receiver input, .receiver textarea, .buyer input, .buyer textarea').removeClass('error').val('');
         $('.order:not(:eq(0))').remove();
 
         // Change text button by transaction-status
@@ -1060,11 +1061,9 @@
             $('#fullName, #phoneNumber').removeClass('border-none').removeAttr('disabled', '');
             btnSave.find('span').text("Xác nhận đơn hàng");
             btnSave.removeClass('btn-primary btn-warning btn-danger btn-success btn-info btn-secondary').addClass('btn-primary');
-            // $('.modal-info-order').find('.receiver input
 
             // remove unnecessary information
             $('.buyer-nonInput, .btnEdit').hide();
-            $('.list-order-fn').addClass('d-none');
         }
 
         // Call API get info Order
@@ -1203,7 +1202,7 @@
         modalIMEI.find('.imei-row:not(:first)').remove();
     });
 
-    function onBtnSaveImei() {
+    function onBtnSaveIMEI() {
         // Validate IMEI
         let errorCount = 0;
         let dupplicate = false;
@@ -1215,8 +1214,6 @@
                 for (let i = index + 1; i < modalIMEI.find('.imei-value:not(:first)').length; i++) {
                     if ($(this).val() === modalIMEI.find('.imei-value:not(:first)').eq(i).val()) {
                         $(this).addClass('error');
-                        console.log($(this).val());
-                        console.log(modalIMEI.find('.imei-value:not(:first)').eq(i).val());
                         dupplicate = true;
                         errorCount++;
                     }
@@ -1526,60 +1523,104 @@
 
                 data["orders"] = orders;
 
-                // Call API add product to order
-                $.ajax({
-                    url: `/api/v1/orders/detail/add`,
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(data),
-                    dataType: 'json',
-                    success: function (response) {
-                        if (response !== null) {
-                            const productRow = res;
+                if ($('#btnSave span').text() === 'Xác nhận đơn hàng') {
+                    console.log(res);
 
-                            // Clone row product of order for table
-                            $('.order').eq(0).clone().appendTo('#list-order');
+                    // Clone row product of order for table
+                    $('.order').eq(0).clone().appendTo('#list-order');
 
-                            // Get recently added row
-                            const product = $('#list-order').find('.order').last().show();
+                    // Get recently added row
+                    const product = $('#list-order').find('.order').last().show();
 
-                            product.find('.btnQty').attr('onclick', `onBtnQty('${productRow.productId}', '${productRow.productName}', '${productRow.productQuantity}')`);
-                            product.find('.btnDelete').attr('onclick', `onBtnDelete('${productRow.productId}')`);
+                    product.find('.btnQty').attr('onclick', `onBtnQty('${res.productId}', '${res.productName}', '${res.productQuantity}')`);
+                    product.find('.btnDelete').attr('onclick', `onBtnDelete('${res.productId}')`);
 
-                            product.find('.product-id').val(productRow.productId);
-                            product.find('.order-detail-id').val($('.order-detail-id:not(:first)').val());
-                            product.find('.product-name').text(productRow.productName);
-                            product.find('.order-quantity').text(1);
-                            product.find('.product-quantity').text(productRow.productQuantity);
+                    product.find('.product-id').val(res.productId);
+                    product.find('.product-name').text(res.productName);
+                    product.find('.order-quantity').text(1);
+                    product.find('.product-quantity').text(res.productQuantity);
 
-                            product.find('.product-available').addClass("text-success").text("Còn hàng");
+                    product.find('.product-available').addClass("text-success").text("Còn hàng");
 
-                            product.find('.order-discount').text(addPoint(productRow.promotion) + " đ");
-                            product.find('.product-price').text(addPoint(productRow.productPrice) + " đ");
-                            product.find('.order-price').text(addPoint(productRow.productPrice - productRow.promotion) + " đ");
+                    product.find('.order-discount').text(addPoint(res.promotion) + " đ");
+                    product.find('.product-price').text(addPoint(res.productPrice) + " đ");
+                    product.find('.order-price').text(addPoint(res.productPrice - res.promotion) + " đ");
 
-                            // Reset index list product of order
-                            $('.product-index:not(:eq(0))').each(function (index) {
-                                $(this).text(index + 1)
-                            });
+                    // Reset index list product of order
+                    $('.product-index:not(:eq(0))').each(function (index) {
+                        $(this).text(index + 1)
+                    });
 
-                            $(tag).parent().parent().removeClass('text-success').addClass('text-warning').attr('title', 'Đã tồn tại trong hoá đơn');
-                            $(tag).hide();
+                    $(tag).parent().parent().removeClass('text-success').addClass('text-warning').attr('title', 'Đã tồn tại trong hoá đơn');
+                    $(tag).hide();
 
+                    Toast.fire({
+                        icon: 'success',
+                        title: `Thêm thành công sản phẩm<br>${res.productName}!`
+                    })
+                } else {
+                    // Call API add product to order
+                    $.ajax({
+                        url: `/api/v1/orders/detail/add`,
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(data),
+                        dataType: 'json',
+                        success: function (response) {
+                            if (response !== null) {
+                                const productRow = res;
+
+                                // Clone row product of order for table
+                                $('.order').eq(0).clone().appendTo('#list-order');
+
+                                // Get recently added row
+                                const product = $('#list-order').find('.order').last().show();
+
+                                product.find('.btnQty').attr('onclick', `onBtnQty('${productRow.productId}', '${productRow.productName}', '${productRow.productQuantity}')`);
+                                product.find('.btnDelete').attr('onclick', `onBtnDelete('${productRow.productId}')`);
+
+                                product.find('.product-id').val(productRow.productId);
+                                product.find('.order-detail-id').val($('.order-detail-id:not(:first)').val());
+                                product.find('.product-name').text(productRow.productName);
+                                product.find('.order-quantity').text(1);
+                                product.find('.product-quantity').text(productRow.productQuantity);
+
+                                product.find('.product-available').addClass("text-success").text("Còn hàng");
+
+                                product.find('.order-discount').text(addPoint(productRow.promotion) + " đ");
+                                product.find('.product-price').text(addPoint(productRow.productPrice) + " đ");
+                                product.find('.order-price').text(addPoint(productRow.productPrice - productRow.promotion) + " đ");
+
+                                // Reset index list product of order
+                                $('.product-index:not(:eq(0))').each(function (index) {
+                                    $(this).text(index + 1)
+                                });
+
+                                $(tag).parent().parent().removeClass('text-success').addClass('text-warning').attr('title', 'Đã tồn tại trong hoá đơn');
+                                $(tag).hide();
+
+                                Toast.fire({
+                                    icon: 'success',
+                                    title: `Thêm thành công sản phẩm<br>${productRow.productName}!`
+                                })
+                            }
+                        },
+                        error: function (error) {
+                            console.log(error);
                             Toast.fire({
-                                icon: 'success',
-                                title: `Thêm thành công sản phẩm<br>${productRow.productName}!`
+                                icon: 'error',
+                                title: `Lỗi hệ thống<br>Vui lòng thử lại sau!`
                             })
                         }
-                    },
-                    error: function (error) {
-                        console.log(error);
-                        Toast.fire({
-                            icon: 'error',
-                            title: `Lỗi hệ thống<br>Vui lòng thử lại sau!`
-                        })
-                    }
+                    })
+                }
+
+                // Modify total order
+                let sum = 0;
+                $('.order-price:not(:first)').each(function(){
+                    sum += +removePoint($(this).text());
                 })
+                $('#price').text(addPoint(sum) + " đ");
             },
             error: function (err) {
                 console.log(err);
