@@ -68,19 +68,25 @@
                         </div>
                         <div class="form-group form-check">
                             <input class="form-check-input" type="radio" name="status" id="statusVerify" value="Chờ xác nhận" onchange="onStatusChange(this)">
-                            <label class="form-check-label text-warning" for="statusVerify">
+                            <label class="form-check-label text-danger" for="statusVerify">
                                 Chờ xác nhận
                             </label>
                         </div>
                         <div class="form-group form-check">
                             <input class="form-check-input" type="radio" name="status" id="statusConfirm" value="Chờ xuất hàng" onchange="onStatusChange(this)">
-                            <label class="form-check-label text-info" for="statusConfirm">
+                            <label class="form-check-label text-warning" for="statusConfirm">
                                 Chờ xuất hàng
                             </label>
                         </div>
                         <div class="form-group form-check">
-                            <input class="form-check-input" type="radio" name="status" id="statusShipping" value="Đang giao hàng" onchange="onStatusChange(this)">
-                            <label class="form-check-label text-primary" for="statusShipping">
+                            <input class="form-check-input" type="radio" name="status" id="statusShipping" value="Chờ giao hàng" onchange="onStatusChange(this)">
+                            <label class="form-check-label text-info" for="statusShipping">
+                                Chờ giao hàng
+                            </label>
+                        </div>
+                        <div class="form-group form-check">
+                            <input class="form-check-input" type="radio" name="status" id="statusGoShipping" value="Đang giao hàng" onchange="onStatusChange(this)">
+                            <label class="form-check-label text-primary" for="statusGoShipping">
                                 Đang giao hàng
                             </label>
                         </div>
@@ -98,8 +104,9 @@
         <!-- End-Sidebar -->
         <div class="col-lg-10" id="rightKH">
             <div class="row justify-content-end">
-                <button type="button" class="btn btn-primary col-auto mb-3 me-2 waves-effect waves-light" data-bs-toggle="modal" data-bs-target=".modal-add-order">
-                    <i class="fas fa-plus me-2"></i>Đơn hàng
+                <button type="button" class="btn btn-primary col-auto mb-3 me-2 waves-effect waves-light" onclick="onBtnInfo(this)">
+                    <i class="fas fa-plus me-2"></i>
+                    <span>Đơn hàng</span>
                 </button>
             </div>
             <div class="card">
@@ -123,9 +130,10 @@
                                 </td>
                                 <td th:switch="${order.getTransactionStatus()}" class="text-center">
                                     <button th:case="CANCEL" class="status badge btn btn-secondary fs-6 waves-effect waves-light" onclick="onBtnInfo(this)">Huỷ</button>
-                                    <button th:case="VERIFY" class="status badge btn btn-warning fs-6 waves-effect waves-light" onclick="onBtnInfo(this)" onmouseover="$(this).text('Xác nhận')" onmouseleave="$(this).text('Chờ xác nhận')">Chờ xác nhận</button>
-                                    <button th:case="CONFIRM" class="status badge btn btn-info fs-6 waves-effect waves-light" onclick="onBtnInfo(this)" onmouseover="$(this).text('Xuất hàng')" onmouseleave="$(this).text('Chờ xuất hàng')">Chờ xuất hàng</button>
-                                    <button th:case="SHIPPING" class="status badge btn btn-primary fs-6 waves-effect waves-light" onclick="onBtnInfo(this)">Đang giao hàng</button>
+                                    <button th:case="VERIFY" class="status badge btn btn-danger fs-6 waves-effect waves-light" onclick="onBtnInfo(this)" onmouseover="$(this).text('Xác nhận')" onmouseleave="$(this).text('Chờ xác nhận')">Chờ xác nhận</button>
+                                    <button th:case="CONFIRM" class="status badge btn btn-warning fs-6 waves-effect waves-light" onclick="onBtnInfo(this)" onmouseover="$(this).text('Xuất hàng')" onmouseleave="$(this).text('Chờ xuất hàng')">Chờ xuất hàng</button>
+                                    <button th:case="SHIPPING" class="status badge btn btn-info fs-6 waves-effect waves-light" onclick="onBtnInfo(this)" onmouseover="$(this).text('Giao hàng')" onmouseleave="$(this).text('Chờ giao hàng')">Chờ giao hàng</button>
+                                    <button th:case="GOSHIPPING" class="status badge btn btn-primary fs-6 waves-effect waves-light" onclick="onBtnInfo(this)">Đang giao hàng</button>
                                     <button th:case="DONE" class="status badge btn btn-success fs-6 waves-effect waves-light" onclick="onBtnInfo(this)">Hoàn thành</button>
                                 </td>
                                 <td class="order-id" th:text="HD00 + ${order.getId()}">Mã hoá đơn</td>
@@ -163,7 +171,7 @@
                         <!-- Thông tin nhận hàng -->
                         <div class="col-lg-6">
                             <h3 class="fw-bolder text-decoration-underline">Nhận hàng</h3>
-                            <table class="none-border">
+                            <table class="none-border receiver">
                                 <tr>
                                     <th><label for="recipientName">Người nhận</label></th>
                                     <td><input class="border-none bg-white" type="text" name="recipientName" id="recipientName" onblur="onType(this)" disabled></td>
@@ -194,22 +202,41 @@
                         <!-- Thông tin mua hàng -->
                         <div class="col-lg-6">
                             <h3 class="fw-bolder text-decoration-underline">Mua hàng</h3>
-                            <table class="none-border">
+                            <table class="none-border buyer">
                                 <tr>
                                     <th><label for="fullName">Người mua</label></th>
-                                    <td><span id="fullName"></span></td>
+                                    <td><input id="fullName" name="fullName" class="bg-white" onblur="onType(this)"></td>
                                 </tr>
                                 <tr>
                                     <th><label for="phoneNumber">Số điện thoại</label></th>
-                                    <td><span id="phoneNumber" class="text-primary text-decoration-underline"></span></td>
+                                    <td><input id="phoneNumber" name="phoneNumber" class="bg-white text-primary text-decoration-underline" onblur="onType(this)"></td>
                                 </tr>
-                                <tr>
+                                <tr class="buyer-nonInput">
                                     <th><label for="createDate">Ngày mua</label></th>
                                     <td><span id="createDate"></span></td>
                                 </tr>
-                                <tr>
-                                    <th><label for="fullName">Tổng thanh toán</label></th>
+                                <tr class="buyer-nonInput">
+                                    <th><label for="price">Tổng thanh toán</label></th>
                                     <td><span id="price" class="fw-bolder text-danger"></span></td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- Thông tin shipper -->
+                        <div class="col-lg-6">
+                            <h3 class="fw-bolder text-decoration-underline">Vận chuyển</h3>
+                            <table class="none-border">
+                                <tr>
+                                    <th><label for="shipperName">Người giao hàng</label></th>
+                                    <td><input class="ship-info bg-white" type="text" name="shipperName" id="shipperName" onblur="onType(this)"></td>
+                                </tr>
+                                <tr>
+                                    <th><label for="shipperPhone">Số điện thoại</label></th>
+                                    <td><input class="ship-info bg-white text-primary text-decoration-underline" type="text" name="shipperPhone" id="shipperPhone" onblur="onType(this)"></td>
+                                </tr>
+                                <tr>
+                                    <th class="align-top"><label for="shipNote">Ghi chú</label></th>
+                                    <td><textarea class="ship-info bg-white" name="shipNote" id="shipNote" rows="6" style="resize: none" onblur="onType(this)"></textarea></td>
                                 </tr>
                             </table>
                         </div>
@@ -492,6 +519,63 @@
                 }
             }
         });
+
+        // Validate for "Giao hàng"
+        if ($('#btnSave span').text()==='Giao hàng') {
+            const shipperPhone = $('#shipperPhone');
+            shipperPhone.each(function(){
+                if ($(this).val() === '') {
+                    $(this).addClass('error');
+                    flag = false;
+                } else {
+                    const regexPhone = patternPhone.test($(this).val())
+                    if(!regexPhone) {
+                        flag = false;
+                        $(this).addClass('error');
+                        count++;
+                    }
+                }
+            });
+
+            const shipper = $('#shipperName, #shipNote');
+            shipper.each(function() {
+                if ($(this).val() === '') {
+                    $(this).addClass('error');
+                    flag = false;
+                }
+            });
+        }
+
+        // Validate for "Xác nhận đơn hàng"
+        if ($('#btnSave span').text()==='Xác nhận đơn hàng') {
+            const phoneNumber = $('#phoneNumber');
+            phoneNumber.each(function(){
+                if ($(this).val() === '') {
+                    $(this).addClass('error');
+                    flag = false;
+                } else {
+                    const regexPhone = patternPhone.test($(this).val())
+                    if(!regexPhone) {
+                        flag = false;
+                        $(this).addClass('error');
+                        count++;
+                    }
+                }
+            });
+
+            const buyerInfo = $('#fullName, #feeDelivery');
+            buyerInfo.each(function() {
+                if ($(this).val() === '') {
+                    $(this).addClass('error');
+                    flag = false;
+                }
+            });
+
+            if ($('.order:not(:first)').length !== 0) {
+
+            }
+        }
+
         if (count !== 0) errorMessage += 'Số điện thoại không hợp lệ!\n';
 
         if (flag) {
@@ -556,13 +640,20 @@
             confirmOrder();
         } else if (btnSubmit === 'Xuất hàng') {
             shippingOrder();
+        } else if (btnSubmit === 'Giao hàng') {
+            goShippingOrder();
+        }
+
+        // Submit thanh toán tại quầy
+        else if (btnSubmit === 'Xác nhận đơn hàng') {
+            addOrders();
         }
     }
 
     //API confirm order
     const feeDelivery = $('input[name=feeDelivery]');
     function confirmOrder() {
-        // Info Person order
+        // Info Receiver order
         let data = {};
 
         data["recipientName"] = $('input[name=recipientName]').val();
@@ -672,7 +763,14 @@
                     dataType: 'json',
                     success: function (result) {
                         $('.modal-info-order').modal('hide');
-                        // confirmListOrderDetail('SHIPPING');
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: 'Xuất hàng thành công',
+                            showConfirmButton: true,
+                            timerProgressBar: true,
+                            timer: 2000
+                        }).then(()=> window.location.reload());
                     },
                     error: function (error) {
                         const Toast = Swal.mixin({
@@ -696,6 +794,113 @@
             } else {
                 console.log("validate fail");
             }
+        }
+    }
+
+    //API Go shipping order
+    function goShippingOrder() {
+        // Get Order
+        let data = {};
+        data["id"] = $('input[id=order-id]').val();
+        data["note"] = $('#shipNote').val();
+        if (feeDelivery.val().indexOf(" đ") > 0) {
+            data["feeDelivery"] = removePoint(feeDelivery.val());
+        } else {
+            data["feeDelivery"] = feeDelivery.val();
+        }
+        data["shipperName"] = $('input[id=shipperName]').val();
+        data["shipperPhone"] = $('input[id=shipperPhone]').val();
+
+        if (validateForm()) {
+            $.ajax({
+                url: '/api/v1/orders/shipping',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                dataType: 'json',
+                success: function (result) {
+                    $('.modal-info-order').modal('hide');
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Giao hàng thành công',
+                        showConfirmButton: true,
+                        timerProgressBar: true,
+                        timer: 2000
+                    }).then(()=> window.location.reload());
+                },
+                error: function (error) {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+                    Toast.fire({
+                        icon: 'error',
+                        title: "Lỗi hệ thống!\nVui lòng thử lại sau"
+                    })
+                }
+            })
+            onLockEditOrder(true);
+        } else {
+            console.log("validate fail");
+        }
+    }
+
+    // Call API add new Orders
+    function addOrders() {
+        // Info Receiver order
+        let data = {};
+
+        data["recipientName"] = $('input[name=recipientName]').val();
+        data["recipientPhone"] = $('input[name=recipientPhone]').val();
+        data["recipientAddress"] = $('textarea[name=recipientAddress]').text();
+        data["deliveryDate"] = moment($('input[name=deliveryDate]').val(), 'DD-MM-YYYY').format('YYYY-MM-DD');
+        if (feeDelivery.val().indexOf(" đ") > 0) {
+            data["feeDelivery"] = +feeDelivery.val().substring(0, feeDelivery.val().indexOf(" đ")).replace('.', '');
+        } else {
+            data["feeDelivery"] = feeDelivery.val();
+        }
+        data["id"] = $('input[id=order-id]').val();
+
+        if(validateForm()) {
+            $.ajax({
+                url: '/api/v1/orders/confirm-order-sale-person',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                dataType: 'json',
+                success: function (result) {
+                    $('.modal-info-order').modal('hide');
+                    confirmListOrderDetail('CONFIRM');
+                },
+                error: function (error) {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+                    Toast.fire({
+                        icon: 'error',
+                        title: "Lỗi hệ thống!\nVui lòng thử lại sau"
+                    })
+                }
+            })
+            onLockEditOrder(true);
+        } else {
+            console.log("validate fail");
         }
     }
 
@@ -738,18 +943,6 @@
                             timer: 2000
                         }).then(()=> window.location.reload());
                     }
-
-                    // when shipping
-                    else if (status === 'SHIPPING') {
-                        Swal.fire({
-                            position: 'center',
-                            icon: 'success',
-                            title: 'Xuất hàng thành công',
-                            showConfirmButton: true,
-                            timerProgressBar: true,
-                            timer: 2000
-                        }).then(()=> window.location.reload());
-                    }
                 },
                 error: function (error) {
                     const Toast = Swal.mixin({
@@ -779,16 +972,20 @@
     function onBtnInfo (element) {
         const btnSave = $('#btnSave');
         const btnAddProduct = $('#btnAddProduct');
-        orderId = $(element).parent().parent().find('.order-id').text().substring(4);
 
         $('#loading-image').show();
+        // Hide Form input Info Go shipping
+        $('.modal-info-order .col-lg-4').removeClass('col-lg-4').addClass('col-lg-6');
+        $('.modal-info-order .col-lg-6:last').hide();
         $('.order-verify').removeClass('d-none');
         $('.order-imei').addClass('d-none');
+        $('#fullName, #phoneNumber').addClass('border-none').attr('disabled', '');
         $('.list-order-fn').removeClass('d-none');
         btnSave.removeClass('btn-primary btn-warning btn-success btn-info').addClass('btn-primary');
         btnSave.removeAttr('disabled');
         btnSave.show();
         btnAddProduct.show();
+        onLockEditOrder(true);
 
         // Reset Modal before showing info
         $('.order:not(:eq(0))').remove();
@@ -796,126 +993,181 @@
         // Change text button by transaction-status
         if ($(element).text() === "Xác nhận") {
             btnSave.find('span').text("Xác nhận");
-            btnSave.removeClass('btn-primary btn-warning btn-success btn-info btn-secondary').addClass('btn-warning');
+            btnSave.removeClass('btn-primary btn-warning btn-danger btn-success btn-info btn-secondary').addClass('btn-danger');
         } else if ($(element).text() === "Xuất hàng") {
             btnSave.find('span').text("Xuất hàng");
-            btnSave.removeClass('btn-primary btn-warning btn-success btn-info btn-secondary').addClass('btn-info');
+            btnSave.removeClass('btn-primary btn-warning btn-success btn-info btn-secondary').addClass('btn-warning');
             // show input imei
             $('.order-imei').removeClass('d-none');
             // remove unnecessary information
             $('.order-verify').addClass('d-none');
+        } else if ($(element).text() === "Giao hàng") {
+            btnSave.find('span').text("Giao hàng");
+            btnSave.removeClass('btn-primary btn-warning btn-danger btn-success btn-info btn-secondary').addClass('btn-info');
+            btnAddProduct.hide();
+
+            // Show Form input Info Go shipping
+            $('.modal-info-order .col-lg-6').removeClass('col-lg-6').addClass('col-lg-4');
+            $('.modal-info-order .ship-info').removeClass('border-none');
+            $('.modal-info-order .col-lg-4:last').show();
+
+            // remove unnecessary information
+            $('.list-order-fn').addClass('d-none');
+            $('.order-verify').addClass('d-none');
         } else if ($(element).text() === "Đang giao hàng") {
             btnSave.find('span').text("Đang giao hàng");
-            btnSave.removeClass('btn-primary btn-warning btn-success btn-info btn-secondary').addClass('btn-primary');
+            btnSave.removeClass('btn-primary btn-warning btn-danger btn-success btn-info btn-secondary').addClass('btn-primary');
             btnSave.attr('disabled', '');
             btnAddProduct.hide();
+
+            // Show Form input Info Go shipping
+            $('.modal-info-order .col-lg-6').removeClass('col-lg-6').addClass('col-lg-4');
+            $('.modal-info-order .ship-info').addClass('border-none').attr('disabled', '');
+            $('.modal-info-order .col-lg-4:last').show();
+
             // remove unnecessary information
             $('.list-order-fn').addClass('d-none');
             $('.order-verify').addClass('d-none');
         } else if ($(element).text() === "Hoàn thành") {
             btnSave.find('span').text("Hoàn thành");
-            btnSave.removeClass('btn-primary btn-warning btn-success btn-info btn-secondary').addClass('btn-success');
+            btnSave.removeClass('btn-primary btn-warning btn-danger btn-success btn-info btn-secondary').addClass('btn-success');
             btnSave.attr('disabled', '');
             btnAddProduct.hide();
+
+            // Show Form input Info Go shipping
+            $('.modal-info-order .col-lg-6').removeClass('col-lg-6').addClass('col-lg-4');
+            $('.modal-info-order .ship-info').addClass('border-none').attr('disabled', '');
+            $('.modal-info-order .col-lg-4:last').show();
+
             // remove unnecessary information
             $('.list-order-fn').addClass('d-none');
             $('.order-verify').addClass('d-none');
         } else if ($(element).text() === "Huỷ") {
             btnSave.hide();
             btnAddProduct.hide();
+
+            // Show Form input Info Go shipping
+            $('.modal-info-order .col-lg-6').removeClass('col-lg-6').addClass('col-lg-4');
+            $('.modal-info-order .ship-info').addClass('border-none').attr('disabled', '');
+            $('.modal-info-order .col-lg-4:last').show();
+        }
+
+        /**
+         * Chức năng thêm hoá đơn (thanh toán tại quầy)
+         */
+        else if ($(element).find('span').text() === "Đơn hàng") {
+            onLockEditOrder(false);
+            $('#fullName, #phoneNumber').removeClass('border-none').removeAttr('disabled', '');
+            btnSave.find('span').text("Xác nhận đơn hàng");
+            btnSave.removeClass('btn-primary btn-warning btn-danger btn-success btn-info btn-secondary').addClass('btn-primary');
+            // $('.modal-info-order').find('.receiver input
+
             // remove unnecessary information
+            $('.buyer-nonInput, .btnEdit').hide();
             $('.list-order-fn').addClass('d-none');
-            $('.order-verify').addClass('d-none');
         }
 
         // Call API get info Order
-        $.ajax({
-            url: `/api/v1/orders/${orderId}`,
-            type: 'GET',
-            contentType: 'application/json',
-            success: function (result) {
-                $('input[name=recipientName]').val(result.recipientName);
-                $('input[name=recipientPhone]').val(result.recipientPhone);
-                $('textarea[name=recipientAddress]').text(result.recipientAddress);
-                if (result.deliveryDate === null) {
-                    $('input[name=deliveryDate]').val("Chờ xác nhận");
-                } else {
-                    $('input[name=deliveryDate]').val(moment(result.deliveryDate, 'YYYY-MM-DD').format('DD/MM/YYYY'));
-                }
-                feeDelivery.val(addPoint(result.feeDelivery) + " đ");
-                $('#createDate').text(moment(result.orderDate).format('DD/MM/YYYY'));
-                $('#price').text(addPoint(`${result.tax - result.totalAmount}`) + ' đ');    // Tổng tiền thanh toán
-                $('#fullName').text(result.customer.fullName);
-                $('#phoneNumber').text(result.customer.phoneNumber);
-                $('input[id=order-id]').val(result.id);
-
-                // Show/Hide btnEdit
-                if (result.transactionStatus === 'CANCEL') {
-                    $('.modal-info-order').find('.btnEdit').hide();
-                } else {
-                    if (result.status === 'UNPAID') {
-                        // unlock edit product
-                        // $('.modal-info-order').find('.btnEdit').show();
-                        $('.btnQty').removeAttr('disabled');
-                        $('.btnDelete').removeAttr('disabled');
+        if ($(element).find('span').text() !== "Đơn hàng") {
+            orderId = $(element).parent().parent().find('.order-id').text().substring(4);
+            $.ajax({
+                url: `/api/v1/orders/${orderId}`,
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (result) {
+                    $('input[name=recipientName]').val(result.recipientName);
+                    $('input[name=recipientPhone]').val(result.recipientPhone);
+                    $('textarea[name=recipientAddress]').text(result.recipientAddress);
+                    if (result.deliveryDate === null) {
+                        $('input[name=deliveryDate]').val("Chờ xác nhận");
                     } else {
-                        // lock edit product
-                        $('.btnQty').attr('disabled', 'true');
-                        $('.btnDelete').attr('disabled', 'true');
+                        $('input[name=deliveryDate]').val(moment(result.deliveryDate, 'YYYY-MM-DD').format('DD/MM/YYYY'));
                     }
-                }
+                    feeDelivery.val(addPoint(result.feeDelivery) + " đ");
+                    $('#createDate').text(moment(result.orderDate).format('DD/MM/YYYY'));
+                    $('#price').text(addPoint(`${result.tax - result.totalAmount}`) + ' đ');    // Tổng tiền thanh toán
+                    $('input[name=fullName]').val(result.customer.fullName);
+                    $('input[name=phoneNumber]').val(result.customer.phoneNumber);
+                    $('input[id=order-id]').val(result.id);
 
-                // Call API get info Order details of customer
-                $.ajax({
-                    url: `/api/v1/orders/list/${result.id}`,
-                    type: 'GET',
-                    contentType: 'application/json',
-                    success: function (res) {
-                        if (res !== null && res.length > 0) {
-                            for (let i = 0; i < res.length; i++) {
+                    // Form input Go shipping
+                    $('input[name=shipperName]').val(result.shipperName);
+                    $('input[name=shipperPhone]').val(result.shipperPhone);
+                    $('textarea[name=shipNote]').text(result.note);
 
-                                // Clone row product of order for table
-                                $('.order').eq(0).clone().appendTo('#list-order');
-
-                                // Get row
-                                const product = $('#list-order').find('.order').eq(i + 1).show();
-
-                                product.find('.btnQty').attr('onclick', `onBtnQty('${res[i].id}', '${res[i].product.name}', '${res[i].product.quantity}')`);
-                                product.find('.btnDelete').attr('onclick', `onBtnDelete('${res[i].id}')`);
-
-                                product.find('.product-id').val(res[i].product.id);
-                                product.find('.order-detail-id').val(res[i].id);
-                                product.find('.product-name').text(res[i].product.name);
-                                product.find('.order-quantity').text(res[i].quantity);
-                                product.find('.product-quantity').text(res[i].product.quantity);
-
-                                if (res[i].quantity <= res[i].product.quantity) {
-                                    product.find('.product-available').addClass("text-success").text("Còn hàng");
-                                } else {
-                                    product.find('.product-available').addClass("text-danger").text("Hết hàng");
-                                }
-
-                                product.find('.order-discount').text(addPoint(res[i].discount) + " đ");
-                                product.find('.product-price').text(addPoint(res[i].product.price) + " đ");
-                                product.find('.order-price').text(addPoint(res[i].product.price * res[i].quantity - res[i].discount) + " đ");
-                            }
+                    // Show/Hide btnEdit
+                    if (result.transactionStatus === 'CANCEL') {
+                        $('.modal-info-order').find('.btnEdit').hide();
+                    } else {
+                        if (result.status === 'UNPAID') {
+                            // unlock edit product
+                            // $('.modal-info-order').find('.btnEdit').show();
+                            $('.btnQty').removeAttr('disabled');
+                            $('.btnDelete').removeAttr('disabled');
+                        } else {
+                            // lock edit product
+                            $('.btnQty').attr('disabled', 'true');
+                            $('.btnDelete').attr('disabled', 'true');
                         }
-
-                        // Reset index list product of order
-                        $('.product-index:not(:eq(0))').each(function(index){$(this).text(index + 1)});
-
-                        $('#loading-image').hide();
-                        $('.modal-info-order').modal('show');
-                    },
-                    error: function (err) {
-                        console.log(err);
                     }
-                })
-            },
-            error: function (error) {
-                console.log(error);
-            }
-        })
+
+                    // Call API get info Order details of customer
+                    $.ajax({
+                        url: `/api/v1/orders/list/${result.id}`,
+                        type: 'GET',
+                        contentType: 'application/json',
+                        success: function (res) {
+                            if (res !== null && res.length > 0) {
+                                for (let i = 0; i < res.length; i++) {
+
+                                    // Clone row product of order for table
+                                    $('.order').eq(0).clone().appendTo('#list-order');
+
+                                    // Get row
+                                    const product = $('#list-order').find('.order').eq(i + 1).show();
+
+                                    product.find('.btnQty').attr('onclick', `onBtnQty('${res[i].id}', '${res[i].product.name}', '${res[i].product.quantity}')`);
+                                    product.find('.btnDelete').attr('onclick', `onBtnDelete('${res[i].id}')`);
+
+                                    product.find('.product-id').val(res[i].product.id);
+                                    product.find('.order-detail-id').val(res[i].id);
+                                    product.find('.product-name').text(res[i].product.name);
+                                    product.find('.order-quantity').text(res[i].quantity);
+                                    product.find('.product-quantity').text(res[i].product.quantity);
+
+                                    if (res[i].quantity <= res[i].product.quantity) {
+                                        product.find('.product-available').addClass("text-success").text("Còn hàng");
+                                    } else {
+                                        product.find('.product-available').addClass("text-danger").text("Hết hàng");
+                                    }
+
+                                    product.find('.order-discount').text(addPoint(res[i].discount) + " đ");
+                                    product.find('.product-price').text(addPoint(res[i].product.price) + " đ");
+                                    product.find('.order-price').text(addPoint(res[i].product.price * res[i].quantity - res[i].discount) + " đ");
+                                }
+                            }
+
+                            // Reset index list product of order
+                            $('.product-index:not(:eq(0))').each(function (index) {
+                                $(this).text(index + 1)
+                            });
+
+                            $('#loading-image').hide();
+                            $('.modal-info-order').modal('show');
+                        },
+                        error: function (err) {
+                            console.log(err);
+                        }
+                    })
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            })
+        } else {
+            $('#loading-image').hide();
+            $('.modal-info-order').modal('show');
+        }
     }
 
     const modalIMEI = $('.modal-imei');
@@ -1183,6 +1435,10 @@
             contentType: 'application/json',
             success: function (res) {
                 if (res !== null && res.length > 0) {
+                    Toast.fire({
+                        icon: 'info',
+                        title: `Đã tìm thấy ${res.length} sản phẩm!`
+                    })
                     for (let i = 0; i < res.length; i++) {
 
                         // Clone row product of order for table
@@ -1380,11 +1636,6 @@
             onBtnSaveQuantityProduct();
         }
     });
-
-    // Event show Modal quantity
-    $('.modal-info-order').on('show.bs.modal', function () {
-        onLockEditOrder(true);
-    })
 
     // Script convert money to string
     function removePoint(nStr) {
