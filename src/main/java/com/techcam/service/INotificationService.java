@@ -1,6 +1,7 @@
 package com.techcam.service;
 
 import com.techcam.dto.response.notification.NotificationDto;
+import com.techcam.entity.NotificationEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,5 +15,9 @@ import java.util.List;
 public interface INotificationService {
     List<NotificationDto> getAllNotifications();
     List<NotificationDto> getTop3();
+    List<NotificationEntity> getAllByContent(String content, String productId);
     Integer countRead();
+    void saveNotification(NotificationEntity notificationEntity);
+    void updateReadNoti(String id);
+    void addNotification(NotificationDto notificationDto);
 }

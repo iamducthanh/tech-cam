@@ -59,4 +59,6 @@ public interface IOrderService {
     OrderdetailResponse addProductOrderdetail(OrderdetailRequest request);
 
     OrderdetailResponse deleteProductOrderdetail(String orderdetailId);
+
+    OrderResponse saveShippingOrder(ShippingOrderRequest request);
 }

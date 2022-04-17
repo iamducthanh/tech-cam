@@ -4,51 +4,130 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.Objects;
 
 /**
- * Description:
+ * Project_name : SMW_TECHCAM
  *
- * @author: GMO_ThanhND
- * @version: 1.0
- * @since 4/9/2022 9:34 PM
+ * @author : XuShiTa
+ * @version : 1.0
+ * @since : 16.4.2022
+ * Description :
  */
-@Entity
+@Entity@Builder
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@Table(name = "notification")
+@AllArgsConstructor
+@Table(name = "notification", schema = "poly_techcam", catalog = "")
 public class NotificationEntity {
- @Id
- @Column(name = "id")
- private Integer id;
+    @Id
+    @Column(name = "id")
+    private String id;
+    @Column(name = "product_id")
+    private String productId;
+    @Column(name = "content")
+    private String content;
+    @Column(name = "type_col")
+    private String type;
+    @Column(name = "read_col")
+    private Boolean read;
+    @Column(name = "CREATE_DATE")
+    private Date createDate;
+    @Column(name = "MODIFIER_DATE")
+    private Date modifierDate;
+    @Column(name = "CREATE_BY")
+    private String createBy;
+    @Column(name = "MODIFIER_BY")
+    private String modifierBy;
+    @Column(name = "DELETE_FLAG")
+    private Boolean deleteFlag = false;
 
- @Column(name = "product_id")
- private String productId;
+    public String getId() {
+        return id;
+    }
 
- @Column(name = "content")
- private String content;
+    public void setId(String id) {
+        this.id = id;
+    }
 
- @Column(name = "CREATE_DATE")
- private java.sql.Timestamp createDate;
+    public String getProductId() {
+        return productId;
+    }
 
- @Column(name = "MODIFY_DATE")
- private java.sql.Timestamp modifyDate;
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
 
- @Column(name = "CREATE_BY")
- private String createBy;
+    public String getContent() {
+        return content;
+    }
 
- @Column(name = "MODIFY_BY")
- private String modifyBy;
+    public void setContent(String content) {
+        this.content = content;
+    }
 
- @Column(name = "DELETE_FLAG")
- private Boolean deleteFlag;
+    public String getType() {
+        return type;
+    }
 
- @Column(name = "TYPE")
- private String type;
+    public void setType(String type) {
+        this.type = type;
+    }
 
- @Column(name = "READ")
- private Boolean read;
+    public Boolean getRead() {
+        return read;
+    }
+
+    public void setRead(Boolean read) {
+        this.read = read;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public Date getModifierDate() {
+        return modifierDate;
+    }
+
+    public void setModifierDate(Date modifierDate) {
+        this.modifierDate = modifierDate;
+    }
+
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
+    }
+
+    public String getModifierBy() {
+        return modifierBy;
+    }
+
+    public void setModifierBy(String modifierBy) {
+        this.modifierBy = modifierBy;
+    }
+
+    public Boolean getDeleteFlag() {
+        return deleteFlag;
+    }
+
+    public void setDeleteFlag(Boolean deleteFlag) {
+        this.deleteFlag = deleteFlag;
+    }
+
 }

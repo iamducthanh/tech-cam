@@ -1,5 +1,6 @@
 package com.techcam.util;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 
 @Service
+@RequiredArgsConstructor
 public class SessionUtil {
  @Autowired
  private HttpServletRequest req;
@@ -29,4 +31,5 @@ public class SessionUtil {
  public void removeObject(String key){
   req.getSession().removeAttribute(key);
  }
+
 }

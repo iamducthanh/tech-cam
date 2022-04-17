@@ -8,9 +8,9 @@ spring:
     rest:
       base-path: '/api'
   datasource:
-    url: 'jdbc:mysql://localhost:3306/poly_techcam'
-    username: root
-    password: 123
+    url: 'jdbc:mysql://xst.cffwmjxc8gy7.ap-east-1.rds.amazonaws.com/poly_techcam'
+    username: xst87
+    password: 12345678
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       idle-timeout: 600000
