@@ -17,11 +17,14 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.techcam.constants.ConstantsErrorCode.PRODUCT_NOT_EXISTS;
 import static com.techcam.constants.ConstantsErrorCode.VOUCHER_DATE_NOT_PAST;
+import static com.techcam.type.CustomerStatus.*;
+import static com.techcam.constants.ConstantsErrorCode.*;
 import static com.techcam.type.CustomerStatus.*;
 
 /**
@@ -118,7 +121,7 @@ public class GoodsOrderService implements IGoodsOrderService {
         if (Objects.isNull(goodsOrderEntity)) {
             return FAILED.name();
         }
-        if(goodsOrderEntity.getOrderDelivery().compareTo(find.getOrderDate()) < 0){
+        if (goodsOrderEntity.getOrderDelivery().compareTo(find.getOrderDate()) < 0) {
             throw new TechCamExp(VOUCHER_DATE_NOT_PAST);
         }
         List<GoodsOrderDetailEntity> lst = new ArrayList<>();
@@ -128,7 +131,8 @@ public class GoodsOrderService implements IGoodsOrderService {
                 return FAILED.name();
             }
             GoodsOrderDetailEntity f = goodsOrderDetailRepo.findAllByProductIdAndDeleteFlagIsFalse(x.getProductId())
-                    .stream().findFirst().orElse(null);
+                    .stream().filter(e -> e.getGoodsOrdersId().equals(request.getId()))
+                    .findFirst().orElse(null);
             if (Objects.nonNull(f)) {
                 f.setItemQuantity(x.getQuantity());
                 f.setNote("EDIT QUANTITY ORDER INVOICE");
@@ -147,7 +151,7 @@ public class GoodsOrderService implements IGoodsOrderService {
         }
         try {
             List<String> lstId = lst.stream().map(GoodsOrderDetailEntity::getId).collect(Collectors.toList());
-            List<GoodsOrderDetailEntity> lstFind = goodsOrderDetailRepo.findAllByGoodsOrdersIdAndDeleteFlagIsFalse(goodsOrderEntity.getOrderId());
+            List<GoodsOrderDetailEntity> lstFind = goodsOrderDetailRepo.findAllByGoodsOrdersIdAndDeleteFlagIsFalse(request.getId());
             lstFind = lstFind.stream().filter(e -> !lstId.contains(e.getId())).collect(Collectors.toList());
             lstFind.forEach(e -> e.setDeleteFlag(true));
             goodsOrderRepo.save(goodsOrderEntity);
@@ -158,6 +162,42 @@ public class GoodsOrderService implements IGoodsOrderService {
             e.printStackTrace();
         }
         return FAILED.name();
+    }
+
+    @Override
+    @Transactional
+    public void cancelOrderInvoice(String id) {
+        GoodsOrderEntity goodsOrderEntity = goodsOrderRepo.getByIdAndDeleteFlagIsFalse(id);
+        if (Objects.isNull(goodsOrderEntity)) {
+            throw new TechCamExp("ERROR_NOT_EXISTS", "Hoá đơn đặt hàng");
+        }
+        if (goodsOrderEntity.getStatus().equals(OFF.name())) {
+            throw new TechCamExp("Huỷ hoá đơn đặt hàng NCC thất bại");
+        }
+        goodsOrderEntity.setStatus(OFF.name());
+        try {
+            goodsOrderRepo.save(goodsOrderEntity);
+        } catch (Exception e) {
+            throw new TechCamExp(ERROR_SAVE_FAILED);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void reverseCancelOrderInvoice(String id) {
+        GoodsOrderEntity goodsOrderEntity = goodsOrderRepo.getByIdAndDeleteFlagIsFalse(id);
+        if (Objects.isNull(goodsOrderEntity)) {
+            throw new TechCamExp("ERROR_NOT_EXISTS", "Hoá đơn đặt hàng");
+        }
+        if (Objects.nonNull(goodsOrderEntity.getStatus()) && goodsOrderEntity.getStatus().equals(ON.name())) {
+            throw new TechCamExp(ERROR_SAVE_FAILED);
+        }
+        goodsOrderEntity.setStatus(ON.name());
+        try {
+            goodsOrderRepo.save(goodsOrderEntity);
+        } catch (Exception e) {
+            throw new TechCamExp(ERROR_SAVE_FAILED);
+        }
     }
 
     private InvoiceOrderResponse mapToInvoiceOrderResponse(GoodsOrderEntity x) {
@@ -188,9 +228,9 @@ public class GoodsOrderService implements IGoodsOrderService {
                 .invoiceOrderCode(x.getOrderId())
                 .invoiceSupplierId(x.getSupplierId())
                 .invoiceSupplierName(Objects.isNull(supplierEntity) ? "" : supplierEntity.getName())
-                .orderDate(x.getOrderDate())
+                .orderDate(DateTimeFormatter.ofPattern("dd-MM-yyyy").format(x.getOrderDate()))
                 .orderStaff(x.getOrderStaff())
-                .orderDelivery(x.getOrderDelivery())
+                .orderDelivery(DateTimeFormatter.ofPattern("dd-MM-yyyy").format(x.getOrderDelivery()))
                 .status(x.getStatus())
                 .note(x.getNote())
                 .dateInvoice(dateInvoice)
