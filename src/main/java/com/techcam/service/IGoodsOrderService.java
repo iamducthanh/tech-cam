@@ -28,4 +28,8 @@ public interface IGoodsOrderService {
     String createOrderInvoice(InvoiceOrderRequest request);
 
     String updateOrderInvoice(InvoiceOrderRequest request);
+
+    void cancelOrderInvoice(String id);
+
+    void reverseCancelOrderInvoice(String id);
 }
