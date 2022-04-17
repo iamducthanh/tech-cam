@@ -32,11 +32,11 @@ public class InvoiceOrderResponse {
 
     private String invoiceSupplierName;
 
-    private LocalDate orderDate;
+    private String orderDate;
 
     private String orderStaff;
 
-    private LocalDate orderDelivery;
+    private String orderDelivery;
 
     private String status;
 

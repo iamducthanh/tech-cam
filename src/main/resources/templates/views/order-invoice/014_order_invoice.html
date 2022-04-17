@@ -18,7 +18,7 @@
                     <h6 class="mx-2 mt-2 fs-14">Trạng thái</h6>
                     <div class="mx-2 mb-2">
                         <div class="form-group form-check">
-                            <input class="form-check-input" type="radio" name="status" id="statusAll" value=""
+                            <input class="form-check-input" type="radio" name="status" id="statusAll" value="Tất cả"
                                    onchange="onStatusChange(this)" checked>
                             <label class="form-check-label" for="statusAll">
                                 Tất cả
@@ -26,9 +26,9 @@
                         </div>
                         <div class="form-group form-check">
                             <input class="form-check-input" type="radio" name="status" id="statusActive"
-                                   value="Đã nhập" onchange="onStatusChange(this)">
+                                   value="Đã đặt" onchange="onStatusChange(this)">
                             <label class="form-check-label" for="statusActive">
-                                Đã nhập
+                                Đã đặt
                             </label>
                         </div>
                         <div class="form-group form-check">
@@ -44,7 +44,7 @@
         </div>
         <div class="col-lg-10" id="rightKH" style="height: 100%">
             <div class="row justify-content-end">
-                <a href="#modalAddOrderInvoice" type="button" onclick="onClickAddOrderInvoice()"
+                <a href="#modalAddOrderInvoice" type="button"
                    class="btn btn-primary col-auto mb-3 waves-effect waves-light"
                    data-bs-toggle="modal">
                     <i class="fas fa-plus me-2"></i>
@@ -66,13 +66,18 @@
                                     <th>NCC</th>
                                     <th>Ngày đặt</th>
                                     <th>Hẹn nhập</th>
-                                    <!--                                    <th>Đã nhập</th>-->
+                                    <th>Trạng thái</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:each="orderInvoice : ${lstOrderInvoice}" class="text-center">
                                     <td></td>
                                     <td class="text-center">
+                                        <button th:if="${orderInvoice.status == 'ON'}" class="btn btn-danger btn-sm"
+                                                th:data-id="${orderInvoice.invoiceOrderId}"
+                                                onclick="onClickCancelOrderInvoice(this)">
+                                            Huỷ
+                                        </button>
                                         <a href="#modalEditOrderInvoice" class="btn btn-info btn-sm"
                                            th:data-id="${orderInvoice.invoiceOrderId}"
                                            data-bs-toggle="modal" onclick="onClickEditOrderInvoice(this)">
@@ -81,9 +86,13 @@
                                     </td>
                                     <td th:text="${orderInvoice.invoiceOrderCode}">Mã đặt hàng</td>
                                     <td th:text="${orderInvoice.invoiceSupplierName}">NCC</td>
-                                    <td th:text="${#temporals.format(orderInvoice.orderDate, 'dd-MM-yyyy')}">
-                                    </td>
-                                    <td th:text="${#temporals.format(orderInvoice.orderDelivery, 'dd-MM-yyyy')}">
+                                    <td th:text="${orderInvoice.orderDate}"></td>
+                                    <td th:text="${orderInvoice.orderDelivery}"></td>
+                                    <td>
+                                        <span th:if="${orderInvoice.status == 'ON'}"
+                                              class="badge bg-success">Đã đặt</span>
+                                        <span th:unless="${orderInvoice.status == 'ON'}"
+                                              class="badge bg-danger">Đã huỷ</span>
                                     </td>
                                     <!--                                    <td th:text="${#dates.format(orderInvoice.dateInvoice, 'dd-MM-yyyy hh:mm')}"></td>-->
                                 </tr>
@@ -156,7 +165,7 @@
                                    placeholder="Nhập tên sản phẩm tìm kiếm"/>
                         </div>
                         <div class="table-responsive" style="overflow-y: auto; max-height: 60vh">
-                            <table class="table table-nowrap align-middle">
+                            <table class="table">
                                 <thead>
                                 <tr class="text-center" style="overflow-y: auto">
                                     <!--                                    <td colspan="1" class="text-center border-1">-->
@@ -262,7 +271,7 @@
                                    placeholder="Nhập tên sản phẩm tìm kiếm"/>
                         </div>
                         <div class="table-responsive" style="overflow-y: auto; max-height: 60vh">
-                            <table class="table table-nowrap align-middle">
+                            <table class="table">
                                 <thead>
                                 <tr class="text-center" style="overflow-y: auto">
                                     <th colspan="1" class="border-1">Sản phẩm</th>
@@ -273,12 +282,12 @@
                                 <th:block th:each="product, theCount : ${lstProduct}">
                                     <tr th:data-id="${theCount.index + 1}" th:id="${product.productId}"
                                         class="tr-order-edit-product">
-<!--                                                                                <td class="text-center border-1">-->
-<!--                                                                                    <input type="checkbox" class="form-check-input chk-add-product"-->
-<!--                                                                                           th:data-id="${product.productId}"-->
-<!--                                                                                           onclick="onClickCheckProductAdd(this)"-->
-<!--                                                                                           th:id="${'for-' + product.productId}"/>-->
-<!--                                                                                </td>-->
+                                        <!--                                                                                <td class="text-center border-1">-->
+                                        <!--                                                                                    <input type="checkbox" class="form-check-input chk-add-product"-->
+                                        <!--                                                                                           th:data-id="${product.productId}"-->
+                                        <!--                                                                                           onclick="onClickCheckProductAdd(this)"-->
+                                        <!--                                                                                           th:id="${'for-' + product.productId}"/>-->
+                                        <!--                                                                                </td>-->
                                         <td class="text-left text-wrap border-1">
                                             <label th:for="${'for-' + product.productId}"
                                                    th:text="${product.productName}"></label>
@@ -301,6 +310,10 @@
                             data-id="" onclick="onClickSubmitEditOrderInvoice(this)">
                         Cập nhật
                     </button>
+                    <button type="button" class="btn btn-success waves-effect waves-light" id="btnSubmitReverseCancel"
+                            data-id="" onclick="onClickCancelOrderInvoice(this)">
+                        Đặt lại
+                    </button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
@@ -309,6 +322,9 @@
 </div>
 <div layout:fragment="script">
     <script th:src="@{/assets/js/order_invoice_014.js}"></script>
+    <script th:src="@{/assets/js/spectrum.min.js}"></script>
+    <script th:src="@{/assets/js/bootstrap-maxlength.min.js}"></script>
+    <script th:src="@{/assets/js/jquery.bootstrap-touchspin.min.js}"></script>
     <script th:src="@{/assets/js/select2.min.js}"></script>
     <script th:src="@{/assets/js/form-advanced.init.js}"></script>
 </div>
