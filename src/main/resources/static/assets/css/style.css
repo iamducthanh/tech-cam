@@ -179,6 +179,7 @@ table.border th {
 
 td.number {
     text-align: right;
+    white-space: nowrap;
 }
 
 th,

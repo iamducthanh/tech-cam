@@ -257,6 +257,12 @@ public class ProductService implements IProductService {
         return productMapper.toProductResponseDTOs(productRepo.findAllByDeleteFlagIsFalse());
     }
 
+    @Override
+    public List<ProductResponse> findAllByKeyWords(String keyword) {
+        return productRepo.findAllByKeyWords(keyword)
+                .stream().map(this::mapToResponse).collect(Collectors.toList());
+    }
+
     private ProductEntity mapToEntity(Object obj, ProductEntity s) {
         if (Objects.isNull(obj)) return null;
         if (obj instanceof ProductAddRequest) {

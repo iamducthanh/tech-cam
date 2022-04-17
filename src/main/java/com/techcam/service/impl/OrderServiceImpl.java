@@ -13,7 +13,7 @@ import com.techcam.dto.response.Customer.CustomerInfoResponse;
 import com.techcam.dto.response.order.GetInfoOrder;
 import com.techcam.dto.response.order.GetInfoOrderDetails;
 import com.techcam.dto.response.order.OrderResponse;
-import com.techcam.dto.response.PromotionResponseDTO;
+import com.techcam.dto.response.order.OrderdetailResponse;
 import com.techcam.dto.response.voucher.VoucherResponse;
 import com.techcam.dto.response.voucher.VoucherUseByOrderResponse;
 import com.techcam.entity.*;
@@ -23,16 +23,20 @@ import com.techcam.service.*;
 import com.techcam.type.*;
 import com.techcam.util.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -51,6 +55,8 @@ import java.util.stream.Collectors;
 @Service
 public class OrderServiceImpl implements IOrderService {
     @Autowired
+    private HttpSession session;
+    @Autowired
     private IOrderRepo ordersRepo;
     @Autowired
     private IOrderDetailsRepo orderDetailsRepo;
@@ -68,6 +74,8 @@ public class OrderServiceImpl implements IOrderService {
     private ITechCamLogService techCamLogService;
     @Autowired
     private IVoucherRepo voucherRepo;
+    @Autowired
+    private INotificationRepo notificationRepo;
     @Autowired
     private IPromotionService promotionService;
     private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
@@ -218,10 +226,7 @@ public class OrderServiceImpl implements IOrderService {
                 .totalAmount(totalDiscount)
                 .itemQuantity(itemQuantity)
                 .tax(orderRequestProduct.getTotalAmount())
-                .createBy(request.getCustomer().getFullName())
                 .paymentMethod(request.getPaymentMethod())
-                .createDate(new Date())
-                .modifierDate(new Date())
                 .orderDate(new Date())
                 .note(request.getNote())
                 .deleteFlag(false)
@@ -237,6 +242,23 @@ public class OrderServiceImpl implements IOrderService {
         }
         System.out.println(ordersEntity);
         OrdersEntity orderSave = ordersRepo.save(ordersEntity);
+        String content = "Khách hàng " + customerInfoResponse.getFullName() + " vừa thêm một đơn hàng";
+        NotificationEntity notificationEntity = NotificationEntity.builder()
+                .id(UUID.randomUUID().toString())
+                .productId(null)
+                .content(content)
+                .createDate(new Date())
+                .modifierDate(new Date())
+                .createBy("System")
+                .modifierBy("System")
+                .deleteFlag(false)
+                .type("ORDER")
+                .read(false)
+                .build();
+        System.out.println(notificationEntity.toString());
+        notificationRepo.save(notificationEntity); // lỗi khi save
+
+
         if (request.getOrderType().equalsIgnoreCase(OrderType.ONLINE.name())) {
             GetInfoOrder infoOrder = GetInfoOrder.builder()
                     .id(orderSave.getId())
@@ -260,7 +282,6 @@ public class OrderServiceImpl implements IOrderService {
                     .note(orderSave.getStatus())
                     .createBy(orderSave.getCreateBy())
                     .modifierBy(orderSave.getModifierBy())
-                    .deleteFlag(orderSave.getDeleteFlag())
                     .ipAddress(orderSave.getIpAddress())
                     .build();
             messagingTemplate.convertAndSend("/topic/notify", infoOrder);
@@ -389,8 +410,8 @@ public class OrderServiceImpl implements IOrderService {
                                 if (e.getQuantity() != item.getQuantity()) {
                                     e.setQuantity(item.getQuantity());
                                     e.setNote(item.getNote());
-                                    orderDetailsSaves.add(e);
                                 }
+                                orderDetailsSaves.add(e);
                             }
                             if (StringUtils.isBlank(item.getId())) {
                                 String id = UUID.randomUUID().toString();
@@ -401,7 +422,7 @@ public class OrderServiceImpl implements IOrderService {
                                 orderdetailEntity.setDeleteFlag(false);
                                 orderdetailEntity.setNote(item.getNote());
                                 orderdetailEntity.setDeleteFlag(false);
-                                orderdetailEntity.setDiscount((int) getSaleProduct(item.getProductId()));
+                                orderdetailEntity.setDiscount((int) getSaleProduct(productRepo.getById(item.getProductId())));
                                 orderdetailEntity.setQuantity(item.getQuantity());
                                 OrdersEntity ordersEntity = new OrdersEntity();
                                 ordersEntity.setId(requests.getOrderId());
@@ -419,13 +440,14 @@ public class OrderServiceImpl implements IOrderService {
             ).collect(Collectors.toList());
         }
         try {
-            List<OrderdetailEntity> orderDetailsSaveALl = orderDetailsRepo.saveAll(orderDetailsSaves);
-            OrdersEntity orders = ordersRepo.findByIdAndDeleteFlagFalse(requests.getOrderId());
+            if (!orderDetailsSaves.isEmpty()) {
+                List<OrderdetailEntity> orderDetailsSaveALl = orderDetailsRepo.saveAll(orderDetailsSaves);
+                OrdersEntity orders = ordersRepo.findByIdAndDeleteFlagFalse(requests.getOrderId());
 
-//            int itemQuantity = orderDetailsSaves.stream().mapToInt(e -> e.getQuantity()).sum();
-            editOrderEntity(orderDetailsSaveALl, orders);
-            ordersRepo.save(orders);
-            saveLog(DescLog.EDIT_ORDER_VERIFY, "HD00" + orders.getId());
+                editOrderEntity(orderDetailsSaveALl, orders);
+                ordersRepo.save(orders);
+                saveLog(DescLog.EDIT_ORDER_VERIFY, "HD00" + orders.getId());
+            }
         } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(CommonStatus.FAIL.name());
@@ -437,7 +459,6 @@ public class OrderServiceImpl implements IOrderService {
         orders.setItemQuantity(0);
         orders.setTax(0);
         orders.setTotalAmount(0);
-        orders.setModifierBy(getInfoStaff().getUsername());
         orderDetailsSaveALl.stream().filter(item -> {
             orders.setItemQuantity(orders.getItemQuantity() + item.getQuantity());
             orders.setTax((int) (orders.getTax() + (item.getQuantity() * item.getProduct().getPrice())));
@@ -489,7 +510,6 @@ public class OrderServiceImpl implements IOrderService {
         orders.setSalesPerson(getInfoStaff().getUsername());
         orders.setNote(request.getNote());
         orders.setTransactionStatus(OrderStatus.CONFIRM.name());
-        orders.setModifierDate(new Date());
         orders.setFeeDelivery(request.getFeeDelivery());
         try {
             productRepo.saveAll(productEntities);
@@ -645,6 +665,7 @@ public class OrderServiceImpl implements IOrderService {
             orders.setModifierDate(new Date());
             orders.setModifierBy(getInfoStaff().getUsername());
             ordersRepo.save(orders);
+
             saveLog(DescLog.EDIT_ORDER_VERIFY, "HD00" + orders.getId());
         } catch (Exception e) {
             e.printStackTrace();
@@ -744,6 +765,50 @@ public class OrderServiceImpl implements IOrderService {
         return "ok";
     }
 
+    @Override
+    public OrderdetailResponse addProductOrderdetail(OrderdetailRequest request) {
+        OrderdetailEntity entity = new OrderdetailEntity();
+        MODEL_MAPPER.map(request, entity);
+        entity.setId(RandomStringUtils.randomNumeric(9));
+        orderDetailsRepo.save(entity);
+        OrderdetailResponse dto = new OrderdetailResponse();
+        MODEL_MAPPER.map(entity, dto);
+        return dto;
+    }
+
+    @Override
+    public OrderdetailResponse deleteProductOrderdetail(String orderdetailId) {
+        OrderdetailEntity entity = orderDetailsRepo.getById(orderdetailId);
+        entity.setDeleteFlag(true);
+        orderDetailsRepo.save(entity);
+        OrderdetailResponse dto = new OrderdetailResponse();
+        MODEL_MAPPER.map(entity, dto);
+        return dto;
+    }
+
+    @Override
+    public OrderResponse saveShippingOrder(ShippingOrderRequest request) {
+        OrderResponse response = new OrderResponse().builder().status(CommonStatus.SUCCESS.name()).build();
+        OrdersEntity ordersEntity = ordersRepo.findByIdAndDeleteFlagFalse(request.getId());
+        if(Objects.isNull(ordersEntity)){
+            throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
+        }
+        try {
+            ordersEntity.setFeeDelivery(request.getFeeDelivery());
+            ordersEntity.setShipperName(request.getShipperName());
+            ordersEntity.setShipperPhone(request.getShipperPhone());
+            if(StringUtils.isNotBlank(request.getNote())){
+                ordersEntity.setNote(request.getNote());
+            }
+            ordersEntity.setStatus(OrderStatus.GOSHIPPING.name());
+            ordersRepo.save(ordersEntity);
+        }catch (Exception e){
+            response.setStatus(CommonStatus.FAIL.name());
+            System.err.println(e);
+        }
+        return response;
+    }
+
     private <R> VoucherUseByOrderResponse mapToVoucherUseResponse(OrdersEntity x) {
         if (Objects.isNull(x)) return new VoucherUseByOrderResponse();
         return VoucherUseByOrderResponse.builder()
@@ -766,7 +831,7 @@ public class OrderServiceImpl implements IOrderService {
         productEntities.forEach(e -> {
             productDetails.stream().filter(item -> {
                         if (item.getProductId().equals(e.getId())) {
-                            item.setDiscount((int) (e.getPrice() * item.getQuantity() * getSaleProduct(item.getProductId())));
+                            item.setDiscount((int) (e.getPrice() * item.getQuantity() * getSaleProduct(e)));
                             orderRequest.setTotalDiscount((int) (orderRequest.getTotalDiscount() + item.getDiscount()));
                             orderRequest.setTotalAmount((int) (orderRequest.getTotalAmount() + e.getPrice() * item.getQuantity()));
                             orderProductDetailsRequests.add(item);
@@ -803,7 +868,7 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     private List<ProductEntity> getInfoProducts(List<OrderProductDetailsRequest> productDetails) {
-        List<ProductEntity> productEntities = new ArrayList<>();
+        List<ProductEntity> productEntities;
         List<String> productIds = productDetails.stream()
                 .map(OrderProductDetailsRequest::getProductId)
                 .collect(Collectors.toList());
@@ -816,15 +881,13 @@ public class OrderServiceImpl implements IOrderService {
 
     private StaffEntity getInfoStaff() {
 //        StaffEntity staffEntity = (StaffEntity) sessionUtil.getObject("STAFF");
-        StaffEntity staffEntity = new StaffEntity();
-        staffEntity.setId("1");
-        staffEntity.setUsername("aaa");
-        return staffEntity;
+//        return staffEntity;
+        return (StaffEntity) session.getAttribute("user");
     }
 
-    public double getSaleProduct(String id) {
+    public double getSaleProduct(ProductEntity product) {
 
-        return promotionService.getPromotionProduct(id);
+        return Objects.isNull(product.getPromotion()) ? 0 : product.getPromotion();
     }
 
     public void saveLog(String typeMethod, String id) {

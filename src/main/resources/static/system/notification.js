@@ -2,7 +2,6 @@
 // document.onload =  function () {
 
 // }
-
 function getNotification(){
     $.ajax({
         url: '/api/notification',
@@ -23,7 +22,6 @@ function getNotification(){
                 }
                 let row = {
                     btn: button,
-                    productName: data.productName,
                     content: data.content,
                     time: data.time
                 }
@@ -50,6 +48,18 @@ function viewDetail(productId){
         method: 'GET',
         success: function (datas) {
             window.location.href = datas
+        },
+        error: function (error) {
+            console.log(error)
+        }
+    })
+}
+function viewOrderNoti(id){
+    $.ajax({
+        url: '/api/notification/read?id=' + id,
+        method: 'GET',
+        success: function (datas) {
+            window.location.href = '/orders'
         },
         error: function (error) {
             console.log(error)
