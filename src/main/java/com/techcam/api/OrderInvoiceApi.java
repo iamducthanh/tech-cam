@@ -92,7 +92,21 @@ public class OrderInvoiceApi {
         throw new TechCamExp(ERROR_SAVE_FAILED);
     }
 
-    @GetMapping("/{id}")
+    @PutMapping(path = "/{id}", params = "cancel")
+    public ResponseEntity<?> cancelOrderInvoice(@PathVariable("id") String id, @RequestParam("cancel") String cancel) {
+        InvoiceOrderResponse invoiceOrderResponse = goodsOrderService.getByOrderId(id);
+        if (Objects.isNull(invoiceOrderResponse)) {
+            throw new TechCamExp(PRODUCT_NOT_EXISTS);
+        }
+        if (cancel.equals("true")) {
+            goodsOrderService.cancelOrderInvoice(id);
+        } else {
+            goodsOrderService.reverseCancelOrderInvoice(id);
+        }
+        return ResponseEntity.ok(invoiceOrderResponse);
+    }
+
+    @GetMapping(value = "/{id}")
     public ResponseEntity<?> findById(@PathVariable("id") String id) {
         InvoiceOrderResponse invoiceOrderResponse = goodsOrderService.getByOrderId(id);
         if (Objects.isNull(invoiceOrderResponse)) {

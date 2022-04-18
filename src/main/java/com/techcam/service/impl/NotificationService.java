@@ -41,9 +41,8 @@ public class NotificationService implements INotificationService {
   List<NotificationEntity> notificationEntities = notificationRepo.findAllNotifications();
   List<NotificationDto> notificationDtos = new ArrayList<>();
   notificationEntities.forEach(o -> {
-   ProductResponse productEntity = productService.getById(o.getProductId());
    notificationDtos.add(NotificationDto.builder()
-//           .productName(productEntity.getProductName())
+           .id(o.getId())
            .productId(o.getProductId())
            .content(o.getContent())
            .type(o.getType())

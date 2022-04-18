@@ -422,7 +422,7 @@ public class OrderServiceImpl implements IOrderService {
                                 orderdetailEntity.setDeleteFlag(false);
                                 orderdetailEntity.setNote(item.getNote());
                                 orderdetailEntity.setDeleteFlag(false);
-                                orderdetailEntity.setDiscount((int) getSaleProduct(item.getProductId()));
+                                orderdetailEntity.setDiscount((int) getSaleProduct(productRepo.getById(item.getProductId())));
                                 orderdetailEntity.setQuantity(item.getQuantity());
                                 OrdersEntity ordersEntity = new OrdersEntity();
                                 ordersEntity.setId(requests.getOrderId());
@@ -665,6 +665,7 @@ public class OrderServiceImpl implements IOrderService {
             orders.setModifierDate(new Date());
             orders.setModifierBy(getInfoStaff().getUsername());
             ordersRepo.save(orders);
+
             saveLog(DescLog.EDIT_ORDER_VERIFY, "HD00" + orders.getId());
         } catch (Exception e) {
             e.printStackTrace();
@@ -785,6 +786,29 @@ public class OrderServiceImpl implements IOrderService {
         return dto;
     }
 
+    @Override
+    public OrderResponse saveShippingOrder(ShippingOrderRequest request) {
+        OrderResponse response = new OrderResponse().builder().status(CommonStatus.SUCCESS.name()).build();
+        OrdersEntity ordersEntity = ordersRepo.findByIdAndDeleteFlagFalse(request.getId());
+        if(Objects.isNull(ordersEntity)){
+            throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
+        }
+        try {
+            ordersEntity.setFeeDelivery(request.getFeeDelivery());
+            ordersEntity.setShipperName(request.getShipperName());
+            ordersEntity.setShipperPhone(request.getShipperPhone());
+            if(StringUtils.isNotBlank(request.getNote())){
+                ordersEntity.setNote(request.getNote());
+            }
+            ordersEntity.setTransactionStatus(OrderStatus.GOSHIPPING.name());
+            ordersRepo.save(ordersEntity);
+        }catch (Exception e){
+            response.setStatus(CommonStatus.FAIL.name());
+            System.err.println(e);
+        }
+        return response;
+    }
+
     private <R> VoucherUseByOrderResponse mapToVoucherUseResponse(OrdersEntity x) {
         if (Objects.isNull(x)) return new VoucherUseByOrderResponse();
         return VoucherUseByOrderResponse.builder()
@@ -807,7 +831,7 @@ public class OrderServiceImpl implements IOrderService {
         productEntities.forEach(e -> {
             productDetails.stream().filter(item -> {
                         if (item.getProductId().equals(e.getId())) {
-                            item.setDiscount((int) (e.getPrice() * item.getQuantity() * getSaleProduct(item.getProductId())));
+                            item.setDiscount((int) (e.getPrice() * item.getQuantity() * getSaleProduct(e)));
                             orderRequest.setTotalDiscount((int) (orderRequest.getTotalDiscount() + item.getDiscount()));
                             orderRequest.setTotalAmount((int) (orderRequest.getTotalAmount() + e.getPrice() * item.getQuantity()));
                             orderProductDetailsRequests.add(item);
@@ -861,9 +885,9 @@ public class OrderServiceImpl implements IOrderService {
         return (StaffEntity) session.getAttribute("user");
     }
 
-    public double getSaleProduct(String id) {
+    public double getSaleProduct(ProductEntity product) {
 
-        return promotionService.getPromotionProduct(id);
+        return Objects.isNull(product.getPromotion()) ? 0 : product.getPromotion();
     }
 
     public void saveLog(String typeMethod, String id) {
