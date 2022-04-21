@@ -1,5 +1,6 @@
 package com.techcam.controller;
 
+import com.techcam.repo.IProductRepo;
 import com.techcam.service.IOrderService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +27,14 @@ public class IndexController {
 
     @Autowired
     private IOrderService orderService;
+    @Autowired
+    private IProductRepo productRepo;
 
     @GetMapping("/")
     public String index() {
+        productRepo.getTopProductSaleByMonth(4,4,2022).forEach((o) -> {
+            System.out.println(o.toString());
+        });
         return "views/index";
     }
 
