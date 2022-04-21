@@ -1,6 +1,6 @@
 $(document).ready(function() {
     let href = window.location.href
-    if(href.indexOf('/order') < 0 && href.indexOf('/notification') < 0) {
+    if(href.indexOf('/orders') < 0 && href.indexOf('/notification') < 0) {
         var table = $("#datatable").DataTable({
             paging: true,
             pageLength: 10,

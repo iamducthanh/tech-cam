@@ -32,6 +32,8 @@ public class GetInfoOrder {
     private String stockKeeper;
     private String recipientName;
     private String recipientPhone;
+    private String shipperName;
+    private String shipperPhone;
     private String paymentMethod;
     private String recipientAddress;
     private String shipmentStatus;

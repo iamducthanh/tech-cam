@@ -800,7 +800,7 @@ public class OrderServiceImpl implements IOrderService {
             if(StringUtils.isNotBlank(request.getNote())){
                 ordersEntity.setNote(request.getNote());
             }
-            ordersEntity.setStatus(OrderStatus.GOSHIPPING.name());
+            ordersEntity.setTransactionStatus(OrderStatus.GOSHIPPING.name());
             ordersRepo.save(ordersEntity);
         }catch (Exception e){
             response.setStatus(CommonStatus.FAIL.name());

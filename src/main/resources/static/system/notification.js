@@ -12,13 +12,13 @@ function getNotification(){
             let notReads = new Array();
             for(data of datas){
                 if(!data.read){
-                    notReads.push(data.productId)
+                    notReads.push(data.id)
                 }
                 let button = ''
                 if(data.type === "ORDER"){
-                    button = '<a href="/orders" class="btn btn-primary" id="'+data.productId+'">Chi tiết</a>'
+                    button = '<a href="#" onclick="viewOrderNoti(\''+data.id+'\')" class="btn btn-primary" id="'+data.id+'">Chi tiết</a>'
                 } else {
-                    button = '<button onclick="viewDetail(\''+data.productId+'\')" class="btn btn-primary" id="'+data.productId+'">Chi tiết</button>'
+                    button = '<button onclick="viewDetail(\''+data.productId+'\',\''+data.id+'\')" class="btn btn-primary" id="'+data.id+'">Chi tiết</button>'
                 }
                 let row = {
                     btn: button,
@@ -42,7 +42,17 @@ function getNotification(){
     })
 }
 
-function viewDetail(productId){
+function viewDetail(productId, id){
+    $.ajax({
+        url: '/api/notification/read?id=' + id,
+        method: 'GET',
+        success: function (datas) {
+
+        },
+        error: function (error) {
+            console.log(error)
+        }
+    })
     $.ajax({
         url: '/view-comment?productId=' + productId,
         method: 'GET',
