@@ -1,6 +1,8 @@
 package com.techcam.dto.request.promotion;
 
 import lombok.Data;
+import org.mapstruct.Mapper;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
@@ -27,4 +29,6 @@ public class PromotionRequestDTO {
     private List<String> categoryIds;
 
     private List<String> productIds;
+
+    private Boolean isAllProduct;
 }

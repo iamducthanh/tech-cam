@@ -33,4 +33,6 @@ public interface IProductRepo extends JpaRepository<ProductEntity, String> {
     @Query("SELECT p FROM ProductEntity p WHERE p.name LIKE %:keyword% OR p.productCode LIKE %:keyword%")
     List<ProductEntity> findAllByKeyWords(@Param("keyword") String keyword);
 
+    List<ProductEntity> findAllByCategoryIdInAndDeleteFlagFalse(List<String> categoryIds);
+
 }
