@@ -7,12 +7,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class TechCamApplicationTests {
-    @Autowired
-    IProductRepo productRepo;
 
     @Test
     void contextLoads() {
-        System.out.println(productRepo.getTopProductSaleByMonth(5, 4, 2022));
     }
 
 }

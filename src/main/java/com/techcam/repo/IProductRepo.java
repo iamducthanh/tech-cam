@@ -36,6 +36,6 @@ public interface IProductRepo extends JpaRepository<ProductEntity, String> {
     @Query("SELECT p FROM ProductEntity p WHERE p.name LIKE %:keyword% OR p.productCode LIKE %:keyword%")
     List<ProductEntity> findAllByKeyWords(@Param("keyword") String keyword);
 
-    @Query(value = "call PR_TOP_PRODUCT_SALE_BY_MONTH(?1, ?2, ?3)", nativeQuery = true)
-    List<TopProductSaleByMonth> getTopProductSaleByMonth(Integer top, Integer month, Integer year);
+//    @Query(value = "call PR_TOP_PRODUCT_SALE_BY_MONTH(?1, ?2, ?3)", nativeQuery = true)
+//    List<TopProductSaleByMonth> getTopProductSaleByMonth(Integer top, Integer month, Integer year);
 }

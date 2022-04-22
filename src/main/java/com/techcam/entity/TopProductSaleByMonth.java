@@ -1,10 +1,10 @@
 package com.techcam.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Description:
@@ -14,15 +14,37 @@ import javax.persistence.Id;
  * @since 4/21/2022 11:24 PM
  */
 @ToString
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@NamedNativeQuery(
+        name = "findTopProductSaleByMonth",
+        query = "call PR_TOP_PRODUCT_SALE_BY_MONTH(?1, ?2, ?3)",
+        resultSetMapping = "findTopProductSaleByMonth"
+)
+@SqlResultSetMapping(
+        name = "findTopProductSaleByMonth",
+        classes = @ConstructorResult(
+                targetClass = TopProductSaleByMonth.class,
+                columns = {
+                        @ColumnResult(name = "PRODUCT_CODE", type = String.class),
+                        @ColumnResult(name = "NAME", type = String.class),
+                        @ColumnResult(name = "price", type = Double.class),
+                        @ColumnResult(name = "total_quantity", type = Integer.class),
+                        @ColumnResult(name = "total_amout", type = Double.class)
+                }
+        )
+)
 public class TopProductSaleByMonth {
- @Column(name = "PRODUCT_CODE")
+ @Id
+ //@Column(name = "PRODUCT_CODE")
  private String productCode;
- @Column(name = "NAME")
+ //@Column(name = "NAME")
  private String name;
- @Column(name = "price")
+ //@Column(name = "price")
  private Double price;
- @Column(name = "total_quantity")
- private int totalQuantity;
- @Column(name = "total_amout")
+ //@Column(name = "total_quantity")
+ private Integer totalQuantity;
+ //@Column(name = "total_amout")
  private Double totalAmount;
 }

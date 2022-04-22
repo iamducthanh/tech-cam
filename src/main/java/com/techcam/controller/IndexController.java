@@ -1,6 +1,8 @@
 package com.techcam.controller;
 
+import com.techcam.entity.TopProductSaleByMonth;
 import com.techcam.repo.IProductRepo;
+import com.techcam.repo.ITopProductSaleByMonth;
 import com.techcam.service.IOrderService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.time.LocalDate;
+import java.util.List;
 
 /**
  * Project_name : SMW_TECHCAM
@@ -27,14 +31,10 @@ public class IndexController {
 
     @Autowired
     private IOrderService orderService;
-    @Autowired
-    private IProductRepo productRepo;
 
     @GetMapping("/")
     public String index() {
-        productRepo.getTopProductSaleByMonth(4,4,2022).forEach((o) -> {
-            System.out.println(o.toString());
-        });
+
         return "views/index";
     }
 
