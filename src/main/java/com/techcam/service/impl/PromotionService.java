@@ -131,6 +131,7 @@ public class PromotionService implements IPromotionService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void delete(String id){
         if(!promotionRepository.findById(id).isPresent()){
             throw new TechCamExp(ConstantsErrorCode.PROMOTION_NOT_FOUND);
@@ -160,5 +161,44 @@ public class PromotionService implements IPromotionService {
             }
         }
         return sale;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void activePromotion(String id){
+        if(!promotionRepository.findById(id).isPresent()){
+            throw new TechCamExp(ConstantsErrorCode.PROMOTION_NOT_FOUND);
+        }
+        PromotionEntity promotion = promotionRepository.getById(id);
+        Date now = new Date();
+        if (promotion.getStartDate().compareTo(now) >= 0 && DateUtil.addDays(promotion.getEndDate(), 1).compareTo(now) >= 0) {
+            promotion.setStatus(true);
+            List<String> productIds = promotionProductRepository.findAllByPromotionIdAndDeleteFlagFalse(promotion.getId())
+                    .stream().map(promotionProduct -> promotionProduct.getProductId()).collect(Collectors.toList());
+            List<ProductEntity> products = productRepository.findAllByIdInAndDeleteFlagFalse(productIds);
+            if (products.size() > 0) {
+                products.forEach(product -> {
+                    if (promotion.getTypeDiscount().equals(DiscountType.MONEY.name())) {
+                        product.setPromotion(product.getPrice() - promotion.getDiscount());
+                    }
+                    if (promotion.getTypeDiscount().equals(DiscountType.PERCENT.name())) {
+                        product.setPromotion(product.getPrice() - product.getPrice() * promotion.getDiscount() / 100);
+                    }
+                });
+                productRepository.saveAllAndFlush(products);
+            }
+        } else {
+            promotion.setStatus(false);
+            List<String> productIds = promotionProductRepository.findAllByPromotionIdAndDeleteFlagFalse(promotion.getId())
+                    .stream().map(promotionProduct -> promotionProduct.getProductId()).collect(Collectors.toList());
+            List<ProductEntity> products = productRepository.findAllByIdInAndDeleteFlagFalse(productIds);
+            if (products.size() > 0) {
+                products.forEach(product -> {
+                    product.setPromotion(0L);
+                });
+                productRepository.saveAllAndFlush(products);
+            }
+        }
+        promotionRepository.save(promotion);
     }
 }

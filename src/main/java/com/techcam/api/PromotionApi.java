@@ -49,4 +49,11 @@ public class PromotionApi {
         return  promotionService.getPromotionProduct(productId);
     }
 
+    @GetMapping("/active/{id}")
+    public ResponseEntity<Void> activePromotion(@PathVariable("id") String id){
+
+        promotionService.activePromotion(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }

@@ -585,7 +585,7 @@
             let id = e.dataset.id
             if (id !== null && id !== undefined && id !== '') {
                 $.ajax({
-                    url: '/api/voucher/active/' + id,
+                    url: '/api/promotion/active/' + id,
                     method: 'PUT',
                     contentType: 'application/json',
                     success: function (data) {

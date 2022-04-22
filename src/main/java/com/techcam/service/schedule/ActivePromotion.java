@@ -73,7 +73,7 @@ public class ActivePromotion {
                 List<ProductEntity> products = productRepository.findAllByIdInAndDeleteFlagFalse(productIds);
                 if (products.size() > 0) {
                     products.forEach(product -> {
-                        product.setPromotion(null);
+                        product.setPromotion(0L);
                     });
                     productRepository.saveAllAndFlush(products);
                 }
