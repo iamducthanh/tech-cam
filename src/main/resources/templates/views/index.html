@@ -112,6 +112,7 @@
                             <div class="card">
                                 <div class="card-body">
                                     <h4 class="mt-0 header-title">Top 10 sản phẩm bán chạy trong tháng</h4>
+                                    <input type="month">
                                     <div class="table-responsive mt-4">
                                         <table class="table table-hover mb-0">
                                             <thead>
@@ -239,34 +240,37 @@
         let now = new Date()
         console.log(now.getFullYear())
         console.log(now.getMonth()+1)
-        $.ajax({
-            url: '/top-product-sale?top='+10+'&month=' + Number(now.getMonth() + 1) + '&year=' + now.getFullYear(),
-            success: function (datas) {
-                let topProductSaleByMonth = document.getElementById("topProductSaleByMonth")
-                topProductSaleByMonth.innerHTML = ''
-                for(let data of datas){
-                    topProductSaleByMonth.innerHTML +=
-                        '<tr>\n' +
-                        '                                                <th scope="row">'+(datas.indexOf(data) + 1)+'</th>\n' +
-                        '                                                <td>\n' +
-                        '                                                    <div>\n' +
-                        '                                                        <img src="'+data.image+'" alt="" class="avatar-xs rounded-circle me-2"> Rafael Reardon\n' +
-                        '                                                    </div>\n' +
-                        '                                                </td>\n' +
-                        '                                                <td>'+data.name+'</td>\n' +
-                        '                                                <td>'+data.productCode+'</span></td>\n' +
-                        '                                                <td>'+data.price+'</td>\n' +
-                        '                                                <td>'+data.totalAmount.toLocaleString('vi-VN') + 'đ'+'</td>\n' +
-                        '                                                <td>'+data.totalQuantity+'</td>\n' +
+        getTopProductSaleByMonth((now.getMonth()+1),now.getFullYear())
+        function getTopProductSaleByMonth(month, year){
+            $.ajax({
+                url: '/top-product-sale?top='+10+'&month=' + month + '&year=' + year,
+                success: function (datas) {
+                    let topProductSaleByMonth = document.getElementById("topProductSaleByMonth")
+                    topProductSaleByMonth.innerHTML = ''
+                    for(let data of datas){
+                        topProductSaleByMonth.innerHTML +=
+                            '<tr>\n' +
+                            '                                                <th scope="row">'+(datas.indexOf(data) + 1)+'</th>\n' +
+                            '                                                <td>\n' +
+                            '                                                    <div>\n' +
+                            '                                                        <img src="'+data.image+'" alt="" class="avatar-xs rounded-circle me-2"> Rafael Reardon\n' +
+                            '                                                    </div>\n' +
+                            '                                                </td>\n' +
+                            '                                                <td>'+data.name+'</td>\n' +
+                            '                                                <td>'+data.productCode+'</span></td>\n' +
+                            '                                                <td>'+data.price+'</td>\n' +
+                            '                                                <td>'+data.totalAmount.toLocaleString('vi-VN') + 'đ'+'</td>\n' +
+                            '                                                <td>'+data.totalQuantity+'</td>\n' +
 
-                    '                                            </tr>'
+                            '                                            </tr>'
+                    }
+
+                },
+                error: function (error) {
+                    console.log(error)
                 }
-
-            },
-            error: function (error) {
-                console.log(error)
-            }
-        })
+            })
+        }
     </script>
 </div>
 </body>
