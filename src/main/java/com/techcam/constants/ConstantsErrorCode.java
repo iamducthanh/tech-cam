@@ -90,7 +90,7 @@ public interface ConstantsErrorCode {
     String PROMOTION_NOT_FOUND = "TC-012-002";
     String PROMOTION_PRODUCT_EXIST = "TC-012-003";
     String PROMOTION_PRODUCT_NOT_FOUND = "TC-012-004";
-
+    String PROMOTION_NOT_ACEPTED = "TC-012-007";
     String ATB_NAME = "TC-012-001";
 
 }

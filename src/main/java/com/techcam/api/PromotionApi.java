@@ -23,10 +23,10 @@ public class PromotionApi {
         return ResponseEntity.ok(promotionResponseDTO);
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<PromotionResponseDTO> update(@Valid @RequestBody PromotionRequestDTO promotionRequestDTO){
+    @PutMapping("/update/{id}")
+    public ResponseEntity<PromotionResponseDTO> update(@PathVariable("id") String id,@Valid @RequestBody PromotionRequestDTO promotionRequestDTO){
 
-        PromotionResponseDTO promotionResponseDTO = promotionService.create(promotionRequestDTO);
+        PromotionResponseDTO promotionResponseDTO = promotionService.update(id, promotionRequestDTO);
         return ResponseEntity.ok(promotionResponseDTO);
     }
 
@@ -47,6 +47,13 @@ public class PromotionApi {
     public Double getSaleProduct(@PathVariable("productId") String productId){
 
         return  promotionService.getPromotionProduct(productId);
+    }
+
+    @GetMapping("/active/{id}")
+    public ResponseEntity<Void> activePromotion(@PathVariable("id") String id){
+
+        promotionService.activePromotion(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }
