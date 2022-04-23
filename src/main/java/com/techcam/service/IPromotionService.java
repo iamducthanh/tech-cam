@@ -22,4 +22,7 @@ public interface IPromotionService {
     void delete(String id);
 
     double getPromotionProduct(String id);
+
+    @Transactional(rollbackFor = Exception.class)
+    void activePromotion(String id);
 }

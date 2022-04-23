@@ -5,108 +5,146 @@
       xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <title>Trang chủ</title>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/css/datepicker.min.css" rel="stylesheet">
+    <script th:src="@{/system/datepicker.min.js}"></script>
+
 </head>
 
 <body>
 <div layout:fragment="content" class="myContainer">
     <div class="row">
-        <div class="col-lg-3 h-100" id="leftKH">
-            <div class="card" id="formLeft">
-                <div class="h-100 w-100">
-                    <div id="sidebar-menu">
-                        <ul class="list-unstyled" id="side-menu">
-                            <li>
-                                <a class="has-arrow waves-effect">
-                                    <span> Nhóm đối tác giao hàng </span>
-                                </a>
-                                <ul class="sub-menu" style="padding: 0 10px 0 20px;">
-                                    <div class="row">
-                                        <div class="col-lg-10">
-                                            <select class="form-select myInputNoBorder">
-                                                <option selected>Tất cả nhóm</option>
-                                                <option value="1">Thêm nhóm</option>
-                                                <option value="2">Nhóm 1</option>
-                                                <option value="3">Nhóm 2</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <i class="fas fa-edit"></i>
-                                        </div>
-                                    </div>
-                                </ul>
-                            </li>
-                            <li>
-                                <a class="has-arrow waves-effect">
-                                    <span>Tổng phí giao hàng </span>
-                                </a>
-                                <ul class="sub-menu" style="padding: 0 10px 0 30px;">
-                                    <div class="row">
-                                        <label for="example-text-input" class="col-sm-4 col-form-label font-size-14">Từ:</label>
-                                        <div class="col-sm-8">
-                                            <input class="form-control myInputNoBorder" type="number" value="0">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <label for="example-text-input" class="col-sm-4 col-form-label font-size-14">Tới:</label>
-                                        <div class="col-sm-8">
-                                            <input class="form-control myInputNoBorder" type="number">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <label for="example-text-input" class="col-sm-4 col-form-label font-size-14">Bắt đầu:</label>
-                                        <div class="col-sm-8">
-                                            <input class="form-control myInputNoBorder" type="date" placeholder="Ngày sinh">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <label for="example-text-input" class="col-sm-4 col-form-label font-size-14">Kết thúc:</label>
-                                        <div class="col-sm-8">
-                                            <input class="form-control myInputNoBorder" type="date" placeholder="Ngày sinh">
-                                        </div>
-                                    </div>
-                                </ul>
-                            </li>
-                            <li>
-                                <a class="has-arrow waves-effect">
-                                    <span>Nợ hiện tại </span>
-                                </a>
-                                <ul class="sub-menu" style="padding: 0 10px 0 30px;">
-                                    <div class="row">
-                                        <label for="example-text-input" class="col-sm-4 col-form-label font-size-14">Từ:</label>
-                                        <div class="col-sm-8">
-                                            <input class="form-control myInputNoBorder" type="number" value="0">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <label for="example-text-input" class="col-sm-4 col-form-label font-size-14">Tới:</label>
-                                        <div class="col-sm-8">
-                                            <input class="form-control myInputNoBorder" type="number">
-                                        </div>
-                                    </div>
-                                </ul>
-                            </li>
-                            <li>
-                                <a class="has-arrow waves-effect">
-                                    <span>Lựa chọn hiển thị </span>
-                                </a>
-                                <ul class="sub-menu" style="padding: 0 10px 0 30px;">
-                                    <input class="form-check-input" style="margin-bottom: 10px;" type="radio" checked name="typeKH">&ensp; Tất cả <br/>
-                                    <input class="form-check-input" style="margin-bottom: 10px;" type="radio" name="typeKH">&ensp; Đang hoạt động<br/>
-                                    <input class="form-check-input" style="margin-bottom: 10px;" type="radio" name="typeKH">&ensp; Ngưng hoạt động<br/>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                    <!-- Sidebar -->
-                </div>
-                <div class="card-body">
-                    <div id="morris-donut-example" class="dash-chart morris-charts text-center"></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-9" id="rightKH">
+<!--        <div class="col-lg-3 h-100" id="leftKH">-->
+<!--            <div class="card" id="formLeft">-->
+<!--                <div class="h-100 w-100">-->
+<!--                    <div id="sidebar-menu">-->
+<!--                        <ul class="list-unstyled" id="side-menu">-->
+<!--                            <li>-->
+<!--                                <a class="has-arrow waves-effect">-->
+<!--                                    <span> Nhóm đối tác giao hàng </span>-->
+<!--                                </a>-->
+<!--                                <ul class="sub-menu" style="padding: 0 10px 0 20px;">-->
+<!--                                    <div class="row">-->
+<!--                                        <div class="col-lg-10">-->
+<!--                                            <select class="form-select myInputNoBorder">-->
+<!--                                                <option selected>Tất cả nhóm</option>-->
+<!--                                                <option value="1">Thêm nhóm</option>-->
+<!--                                                <option value="2">Nhóm 1</option>-->
+<!--                                                <option value="3">Nhóm 2</option>-->
+<!--                                            </select>-->
+<!--                                        </div>-->
+<!--                                        <div class="col-lg-2">-->
+<!--                                            <i class="fas fa-edit"></i>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </ul>-->
+<!--                            </li>-->
+<!--                            <li>-->
+<!--                                <a class="has-arrow waves-effect">-->
+<!--                                    <span>Tổng phí giao hàng </span>-->
+<!--                                </a>-->
+<!--                                <ul class="sub-menu" style="padding: 0 10px 0 30px;">-->
+<!--                                    <div class="row">-->
+<!--                                        <label for="example-text-input" class="col-sm-4 col-form-label font-size-14">Từ:</label>-->
+<!--                                        <div class="col-sm-8">-->
+<!--                                            <input class="form-control myInputNoBorder" type="number" value="0">-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div class="row">-->
+<!--                                        <label for="example-text-input" class="col-sm-4 col-form-label font-size-14">Tới:</label>-->
+<!--                                        <div class="col-sm-8">-->
+<!--                                            <input class="form-control myInputNoBorder" type="number">-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div class="row">-->
+<!--                                        <label for="example-text-input" class="col-sm-4 col-form-label font-size-14">Bắt đầu:</label>-->
+<!--                                        <div class="col-sm-8">-->
+<!--                                            <input class="form-control myInputNoBorder" type="date" placeholder="Ngày sinh">-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div class="row">-->
+<!--                                        <label for="example-text-input" class="col-sm-4 col-form-label font-size-14">Kết thúc:</label>-->
+<!--                                        <div class="col-sm-8">-->
+<!--                                            <input class="form-control myInputNoBorder" type="date" placeholder="Ngày sinh">-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </ul>-->
+<!--                            </li>-->
+<!--                            <li>-->
+<!--                                <a class="has-arrow waves-effect">-->
+<!--                                    <span>Nợ hiện tại </span>-->
+<!--                                </a>-->
+<!--                                <ul class="sub-menu" style="padding: 0 10px 0 30px;">-->
+<!--                                    <div class="row">-->
+<!--                                        <label for="example-text-input" class="col-sm-4 col-form-label font-size-14">Từ:</label>-->
+<!--                                        <div class="col-sm-8">-->
+<!--                                            <input class="form-control myInputNoBorder" type="number" value="0">-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div class="row">-->
+<!--                                        <label for="example-text-input" class="col-sm-4 col-form-label font-size-14">Tới:</label>-->
+<!--                                        <div class="col-sm-8">-->
+<!--                                            <input class="form-control myInputNoBorder" type="number">-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </ul>-->
+<!--                            </li>-->
+<!--                            <li>-->
+<!--                                <a class="has-arrow waves-effect">-->
+<!--                                    <span>Lựa chọn hiển thị </span>-->
+<!--                                </a>-->
+<!--                                <ul class="sub-menu" style="padding: 0 10px 0 30px;">-->
+<!--                                    <input class="form-check-input" style="margin-bottom: 10px;" type="radio" checked name="typeKH">&ensp; Tất cả <br/>-->
+<!--                                    <input class="form-check-input" style="margin-bottom: 10px;" type="radio" name="typeKH">&ensp; Đang hoạt động<br/>-->
+<!--                                    <input class="form-check-input" style="margin-bottom: 10px;" type="radio" name="typeKH">&ensp; Ngưng hoạt động<br/>-->
+<!--                                </ul>-->
+<!--                            </li>-->
+<!--                        </ul>-->
+<!--                    </div>-->
+<!--                    &lt;!&ndash; Sidebar &ndash;&gt;-->
+<!--                </div>-->
+<!--                <div class="card-body">-->
+<!--                    <div id="morris-donut-example" class="dash-chart morris-charts text-center"></div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+        <div class="col-lg-12" id="rightKH">
             <div class="card">
                 <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="mt-0 header-title">Top 10 sản phẩm bán chạy trong tháng</h4>
+                                    <div class="row mt-3">
+                                        <p style="width: 100px;margin-bottom: 0px;padding-top: 5px">Thời gian: </p><input type="text" class="form-control" style="width: 150px; margin-top: -10px" name="datepicker" id="datepicker" />
+                                        <button style="width: 110px; margin-left: 20px" class="btn btn-primary" onclick="onLoadTopProductSaleByMonth()">Tìm kiếm</button>
+                                    </div>
+
+
+                                    <div class="table-responsive mt-4">
+                                        <table class="table table-hover mb-0">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">Top</th>
+                                                <th scope="col">Hình ảnh</th>
+                                                <th scope="col">Tên sản phẩm</th>
+                                                <th scope="col">Mã sản phẩm</th>
+                                                <th scope="col">Giá</th>
+                                                <th scope="col">Tổng tiền bán</th>
+                                                <th scope="col">Tổng số lượng bán</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="topProductSaleByMonth">
+
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row">
                         <h1 class="header-title mb-4">
                             <i class="mdi mdi-menu" style="font-size: 16pt;" onclick="editMenuKH();"></i> &ensp;Đối tác giao hàng
@@ -207,6 +245,56 @@
             </div>
         </div>
     </div>
+    <script>
+        let now = new Date()
+        $("#datepicker").datepicker( {
+            format: "mm-yyyy",
+            startView: "months",
+            minViewMode: "months"
+        })
+
+        document.getElementById('datepicker').value = ((now.getMonth()+1) < 10 ? ('0' + (now.getMonth()+1)) : (now.getMonth()+1)) + '-' + now.getFullYear()
+        getTopProductSaleByMonth((now.getMonth()+1),now.getFullYear())
+
+        function onLoadTopProductSaleByMonth(){
+            let monthVal = document.getElementById('datepicker').value;
+            let month = monthVal.substring(0, 2)
+            let year = monthVal.substring(3, monthVal.length)
+            getTopProductSaleByMonth(month, year)
+        }
+
+
+        function getTopProductSaleByMonth(month, year){
+            $.ajax({
+                url: '/top-product-sale?top='+10+'&month=' + month + '&year=' + year,
+                success: function (datas) {
+                    let topProductSaleByMonth = document.getElementById("topProductSaleByMonth")
+                    topProductSaleByMonth.innerHTML = ''
+                    for(let data of datas){
+                        topProductSaleByMonth.innerHTML +=
+                            '<tr>\n' +
+                            '                                                <th scope="row">'+(datas.indexOf(data) + 1)+'</th>\n' +
+                            '                                                <td>\n' +
+                            '                                                    <div>\n' +
+                            '                                                        <img src="'+data.image+'" alt="" class="avatar-xs rounded-circle me-2">' +
+                            '                                                    </div>\n' +
+                            '                                                </td>\n' +
+                            '                                                <td>'+data.name+'</td>\n' +
+                            '                                                <td>'+data.productCode+'</span></td>\n' +
+                            '                                                <td>'+data.price+'</td>\n' +
+                            '                                                <td>'+data.totalAmount.toLocaleString('vi-VN') + 'đ'+'</td>\n' +
+                            '                                                <td>'+data.totalQuantity+'</td>\n' +
+
+                            '                                            </tr>'
+                    }
+
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            })
+        }
+    </script>
 </div>
 </body>
 </html>
