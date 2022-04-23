@@ -38,4 +38,6 @@ public interface IProductRepo extends JpaRepository<ProductEntity, String> {
 
 //    @Query(value = "call PR_TOP_PRODUCT_SALE_BY_MONTH(?1, ?2, ?3)", nativeQuery = true)
 //    List<TopProductSaleByMonth> getTopProductSaleByMonth(Integer top, Integer month, Integer year);
+    List<ProductEntity> findAllByCategoryIdInAndDeleteFlagFalse(List<String> categoryIds);
+
 }

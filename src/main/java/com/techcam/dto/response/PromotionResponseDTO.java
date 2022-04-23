@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 public class PromotionResponseDTO {
 
-    private Long id;
+    private String id;
 
     private String name;
 
@@ -29,4 +29,6 @@ public class PromotionResponseDTO {
     private String note;
 
     List<ProductResponseDTO> products;
+
+    List<String> productIds;
 }
