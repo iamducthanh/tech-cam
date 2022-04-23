@@ -166,6 +166,10 @@
                                                                                th:class="${'form-control ip-voucher-value' + promotion.id}"
                                                                                placeholder="Giá trị khuyến mại...."
                                                                                th:value="${promotion.discount}">
+                                                                        <span class="btn btn-info input-group-text"
+                                                                             th:class="${'form-control ip-voucher-type-discount' + promotion.id}"
+                                                                             onclick="onClickChangeTypeDiscount(this)"
+                                                                             style="cursor: pointer;" th:value="${promotion.typeDiscount}"></span>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -177,7 +181,7 @@
                                                                     <div class="col-lg-7">
                                                                         <div class="input-daterange input-group"
                                                                              id="datepicker6"
-                                                                             data-date-format="dd-mm-yyyy 00:00:00"
+                                                                             data-date-format="yyyy-mm-dd"
                                                                              data-date-autoclose="true"
                                                                              data-provide="datepicker"
                                                                              data-date-container='#datepicker6'>
@@ -198,7 +202,7 @@
                                                                             Danh mục sản phẩm
                                                                         </div>
                                                                         <div class="col-lg-7">
-                                                                            <select th:class="${'select2 form-control select2-multiple ip-type-discount-person' + promotion.id}"
+                                                                            <select th:class="${'select2 form-control select2-multiple ip-voucher-categories' + promotion.id}"
                                                                                     multiple="multiple"
                                                                                     data-placeholder="Chọn loại sản phẩm...">
                                                                                 <option th:each="category : ${categories}"
@@ -214,7 +218,7 @@
                                                                             Sản phẩm
                                                                         </div>
                                                                         <div class="col-lg-7">
-                                                                            <select th:class="${'select2 form-control select2-multiple ip-type-discount-person' + promotion.id}"
+                                                                            <select th:class="${'select2 form-control select2-multiple ip-voucher-products' + promotion.id}"
                                                                                     multiple="multiple"
                                                                                     data-placeholder="Chọn sản phẩm...">
                                                                                 <option th:each="product : ${products}"
@@ -291,7 +295,7 @@
                                         <input type="text" class="form-control" id="ip-voucher-discount">
                                         <span class="btn btn-info input-group-text" id="ip-voucher-type-discount"
                                               onclick="onClickChangeTypeDiscount(this)"
-                                              style="cursor: pointer;" >
+                                              style="cursor: pointer;">
                                             PERCENT
                                         </span>
                                     </div><!-- input-group -->
@@ -305,12 +309,12 @@
                                 </label>
                                 <div class="col-lg-7">
                                     <div class="input-daterange input-group" id="date-picker-add-voucher"
-                                         data-date-format="yyyy-mm-dd"  data-date-autoclose="true"
+                                         data-date-format="yyyy-mm-dd" data-date-autoclose="true"
                                          data-provide="datepicker"
                                          data-date-container='#date-picker-add-voucher'>
-                                        <input type="text"  class="form-control" id="ip-voucher-start-date"
+                                        <input type="text" class="form-control" id="ip-voucher-start-date"
                                                placeholder="Bắt đầu"/>
-                                        <input type="text"  class="form-control" id="ip-voucher-end-date"
+                                        <input type="text" class="form-control" id="ip-voucher-end-date"
                                                placeholder="Kết thúc"/>
                                     </div>
                                 </div>
@@ -500,7 +504,7 @@
             // get element tên chương trình
             let getElementVoucherName = document.querySelector('.ip-voucher-name' + id);
             // get element mệnh giá
-            let getElementVoucherDiscount = document.querySelector('.ip-voucher-discount' + id);
+            let getElementVoucherDiscount = document.querySelector('.ip-voucher-value' + id);
             // get element loại mệnh giá
             let getElementVoucherTypeDiscount = document.querySelector('.ip-voucher-type-discount' + id);
             // get element ngày bắt đầu

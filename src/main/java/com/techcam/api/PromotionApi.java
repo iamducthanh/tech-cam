@@ -23,10 +23,10 @@ public class PromotionApi {
         return ResponseEntity.ok(promotionResponseDTO);
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<PromotionResponseDTO> update(@Valid @RequestBody PromotionRequestDTO promotionRequestDTO){
+    @PutMapping("/update/{id}")
+    public ResponseEntity<PromotionResponseDTO> update(@PathVariable("id") String id,@Valid @RequestBody PromotionRequestDTO promotionRequestDTO){
 
-        PromotionResponseDTO promotionResponseDTO = promotionService.create(promotionRequestDTO);
+        PromotionResponseDTO promotionResponseDTO = promotionService.update(id, promotionRequestDTO);
         return ResponseEntity.ok(promotionResponseDTO);
     }
 
