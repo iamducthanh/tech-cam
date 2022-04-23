@@ -10,9 +10,12 @@ import java.util.Optional;
 @Repository
 public interface IPromotionProductRepo extends JpaRepository<PromotionProductEntity, String> {
 
-    Optional<PromotionProductEntity> findByProductIdAndDeleteFlagFalse(String productId);
 
     List<PromotionProductEntity> findAllByPromotionId(String promotionId);
 
     List<PromotionProductEntity> findAllByPromotionIdAndDeleteFlagFalse(String promotionId);
+
+    List<PromotionProductEntity> findAllByProductIdInAndDeleteFlagFalse(List<String> productIds);
+
+    List<PromotionProductEntity> findByProductIdAndDeleteFlagFalse(String productId);
 }
