@@ -106,8 +106,7 @@ public class OrderServiceImpl implements IOrderService {
         if (Objects.isNull(orders)) {
             response.setStatus(CommonStatus.FAIL.name());
         }
-        if (!StringUtils.equalsIgnoreCase(bankStatus, "00")) {
-            response.setStatus(CommonStatus.FAIL.name());
+        if (StringUtils.equalsIgnoreCase(bankStatus, "00")) {
             List<OrderdetailEntity> orderdetailEntities = orderDetailsRepo.findAllByOrdersIdAndDeleteFlag(orders.getId(), false);
             List<ProductEntity> productEntities = new ArrayList<>();
             orderdetailEntities.stream().filter(item -> {
