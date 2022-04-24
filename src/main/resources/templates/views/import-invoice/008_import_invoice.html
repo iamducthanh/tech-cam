@@ -8,34 +8,29 @@
     <link rel="stylesheet" th:href="@{/assets/css/select2.min.css}">
 </head>
 <body>
-<div layout:fragment="content" class="container-fluid" style="max-width: 98%">
+<div layout:fragment="content" class="container-fluid" style="max-width: 98%; height: 80vh">
     <div class="row container1">
         <div class="col-lg-2 h-100" id="leftKH">
             <h1 class="heading-page">Quản lý nhập hàng</h1>
             <div class="filter-report">
                 <div class="card" style="padding-left: 15px; padding-top: 15px">
-                    <h6 class="mx-2 mt-2 fs-14">Trạng thái</h6>
+                    <h6 class="mx-2 mt-2 fs-14">Lọc theo:</h6>
                     <div class="mx-2 mb-2">
-                        <div class="form-group form-check">
-                            <input class="form-check-input" type="radio" name="status" id="statusAll" value=""
-                                   onchange="onStatusChange(this)" checked>
-                            <label class="form-check-label" for="statusAll">
-                                Tất cả
-                            </label>
+                        <div class="mb-3">
+                            <label>Nhà cung cấp:</label>
+                            <select class="select2 form-select" onchange="onChangeFilerSupplier(this)">
+                                <option th:each="supplie : ${lstSupplier}" th:value="${supplie.id}"
+                                        th:text="${supplie.name}"></option>
+                            </select>
                         </div>
-                        <div class="form-group form-check">
-                            <input class="form-check-input" type="radio" name="status" id="statusActive"
-                                   value="Đã nhập" onchange="onStatusChange(this)">
-                            <label class="form-check-label" for="statusActive">
-                                Đã nhập
-                            </label>
-                        </div>
-                        <div class="form-group form-check">
-                            <input class="form-check-input" type="radio" name="status" id="statusInActive"
-                                   value="Đã huỷ" onchange="onStatusChange(this)">
-                            <label class="form-check-label" for="statusInActive">
-                                Đã huỷ
-                            </label>
+                        <div class="mb-3">
+                            <label>Chọn ngày:</label>
+                            <div class="input-group" id="datepicker2">
+                                <input type="text" class="form-control" placeholder="dd-mm-yyyy"
+                                       data-date-format="dd-mm-yyyy" data-date-container='#datepicker2'
+                                       data-provide="datepicker" onchange="onChangeFilterDate(this)"
+                                       data-date-autoclose="true">
+                            </div><!-- input-group -->
                         </div>
                     </div>
                 </div>
@@ -69,7 +64,7 @@
                                     <th>Đã thanh toán</th>
                                     <th>Phải trả NCC</th>
                                     <th>Người giao</th>
-                                    <th>Trạng thái</th>
+                                    <th>Ngày nhập</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -82,7 +77,9 @@
                                             Chi tiết
                                         </a>
                                     </td>
-                                    <td th:text="${invoice.supplierName}">NCC</td>
+                                    <td class="ncc" th:data-id="${invoice.supplierId}"
+                                        th:text="${invoice.supplierName}">NCC
+                                    </td>
                                     <td th:text="${invoice.orderInvoiceCode}">Mã đặt hàng</td>
                                     <td th:text="${invoice.invoiceCode}">Mã phiếu nhập</td>
                                     <td class="text-end"
@@ -104,13 +101,17 @@
                                     <td th:text="${invoice.shipper}">
                                         Phải trả NCC
                                     </td>
-                                    <td class="text-center">
-                                        <span th:if="${invoice.status == 'ON'}" class="badge bg-success">
-                                            Đã nhập
-                                        </span>
-                                        <span th:unless="${invoice.status == 'ON'}" class="badge bg-danger">
-                                            Đã huỷ
-                                        </span>
+                                    <!--                                    <td class="text-center">-->
+                                    <!--                                        <span th:if="${invoice.status == 'ON'}" class="badge bg-success">-->
+                                    <!--                                            Đã nhập-->
+                                    <!--                                        </span>-->
+                                    <!--                                        <span th:unless="${invoice.status == 'ON'}" class="badge bg-danger">-->
+                                    <!--                                            Đã huỷ-->
+                                    <!--                                        </span>-->
+                                    <!--                                    </td>-->
+                                    <td class="dateInvoice"
+                                        th:data-date="${#dates.format(invoice.createDate, 'dd-MM-yyyy')}"
+                                        th:text="${#dates.format(invoice.createDate, 'dd-MM-yyyy hh:mm')}">
                                     </td>
                                 </tr>
                                 </tbody>
@@ -147,7 +148,19 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
+    <script>
+        function onChangeFilerSupplier(e) {
+            let value = e.value;
+            $('.ncc').parent().hide();
+            $('.ncc[data-id="' + value + '"]').parent().show();
+        }
 
+        function onChangeFilterDate(e) {
+            let value = e.value;
+            $('.dateInvoice').parent().hide();
+            $('.dateInvoice[data-date="' + value + '"]').parent().show();
+        }
+    </script>
 </div>
 <div layout:fragment="script">
     <script th:src="@{/assets/js/invoice_008.js}"></script>
