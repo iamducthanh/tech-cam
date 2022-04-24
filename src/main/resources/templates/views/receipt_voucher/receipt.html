@@ -643,8 +643,8 @@
     }
 
     function onBtnEdit(element) {
-        const id = element.parentElement.parentElement.children[1].innerText;
-        var url = "http://localhost:8080/api/v1/customer/find-by-id/" + id;
+        const id = element.parentElement.parentElement.children[2].innerText;
+        var url = "http://localhost:8080api/receipt-voucher/find/" + id;
         $.ajax({
             url: url,
             type: 'GET',

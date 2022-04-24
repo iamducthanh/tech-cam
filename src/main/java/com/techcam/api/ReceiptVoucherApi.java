@@ -1,13 +1,11 @@
 package com.techcam.api;
 
 import com.techcam.dto.request.receiptvoucher.ReceiptVoucherRequest;
+import com.techcam.dto.response.receiptvoucher.GetInfoReceiptVoucher;
 import com.techcam.dto.response.receiptvoucher.ReceiptVoucherResponse;
 import com.techcam.service.IReceiptVoucherService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -28,5 +26,8 @@ public class ReceiptVoucherApi {
     public ReceiptVoucherResponse registration(@Valid @RequestBody ReceiptVoucherRequest request){
         return iReceiptVoucherService.resgistration(request);
     }
-
+    @GetMapping("find/{id}")
+    public GetInfoReceiptVoucher getInfoReceiptVoucher(@PathVariable Integer id){
+        return iReceiptVoucherService.getInfoReceiptVoucher(id);
+    }
 }

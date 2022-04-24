@@ -18,6 +18,8 @@ import java.util.List;
 public interface IReceiptVoucherService {
     ReceiptVoucherResponse resgistration(ReceiptVoucherRequest request);
 
+    GetInfoReceiptVoucher getInfoReceiptVoucher(Integer id);
+
     //    public ReceiptVoucherResponse editReceiptById(){
     //
     //    }
