@@ -2,8 +2,8 @@ $(document).ready(function() {
     let href = window.location.href
     if(href.indexOf('/orders') < 0 && href.indexOf('/notification') < 0) {
         var table = $("#datatable").DataTable({
-            paging: true,
-            pageLength: 10,
+            paging: false,
+            // pageLength: 10,
             // lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'Todos']],
             lengthChange: !1,
             buttons: [{
@@ -29,7 +29,7 @@ $(document).ready(function() {
                     titleAttr: 'Hiển thị tuỳ chỉnh'
                 }],
 
-            scrollY: "54vh",
+            scrollY: "58vh",
             scrollX: true,
             scrollCollapse: true,
 
