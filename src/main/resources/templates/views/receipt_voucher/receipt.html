@@ -4,7 +4,7 @@
       layout:decorate="~{layout/weblayout}"
       xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Quản lý Khách Hàng- TechCam</title>
+    <title>Quản lý Phiếu Thu Chi- TechCam</title>
     <!-- SweetAlert2-->
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
@@ -13,7 +13,7 @@
 <div layout:fragment="content" class="container-fluid">
     <section class="row main-page">
         <section class="col-2 mainLeft">
-            <h1 class="heading-page">Khách Hàng</h1>
+            <h1 class="heading-page">Thu Chi</h1>
             <div class="filter-report">
                 <div class="boxLeft">
                     <h3 class="leftTitle">Trạng thái</h3>
@@ -79,7 +79,7 @@
             <div class="row justify-content-end">
                 <button type="button" class="btn btn-primary col-auto mb-3 waves-effect waves-light"
                         data-bs-toggle="modal" data-bs-target=".modal-add-staff">
-                    <i class="fas fa-plus me-2"></i>Khách Hàng
+                    <i class="fas fa-plus me-2"></i>Thu chi
                 </button>
             </div>
 
@@ -88,7 +88,7 @@
                 <div class="modal-dialog modal-xl">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title mt-0">Thêm Khánh Hàng</h5>
+                            <h5 class="modal-title mt-0">Thêm Thu Chi</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <form id="formAdd">
@@ -97,46 +97,58 @@
                                     <div class="col-6 px-4">
                                         <table class="table-borderless w-100">
                                             <tr>
-                                                <th style="width: 140px"><label class="form-label" for="fullName">Họ và
-                                                    tên</label><span class="required"> *</span></th>
-                                                <td><input class="form-control" type="text" name="fullName"
-                                                           id="fullName" onblur="onType(this)"></td>
+                                                <th style="width: 140px"><label class="form-label" for="payer">Người Nộp Tiền</label><span class="required"> *</span></th>
+                                                <td><input class="form-control" type="text" name="payer"
+                                                           id="payer" onblur="onType(this)"></td>
                                             </tr>
                                             <tr>
-                                                <th style="width: 140px;"><label for="email"
-                                                                                 class="form-label">Email</label><span
+                                                <th style="width: 140px;"><label for="payerPhone"
+                                                                                 class="form-label">Số điện thoại</label><span
                                                         class="required"> *</span></th>
-                                                <td><input type="email" name="email" id="email" class="form-control"
-                                                           onblur="onType(this)" placeholder="abc@email.com"></td>
+                                                <td><input type="email" name="payerPhone" id="payerPhone" class="form-control"
+                                                           onblur="onType(this)" ></td>
+                                            </tr>
+                                            <tr>
+                                                <th style="width: 140px;"><label for="description"
+                                                                                 class="form-label">Múc đích</label><span
+                                                        class="required"></span></th>
+                                                <td><input type="email" name="description" id="description" class="form-control"
+                                                           onblur="onType(this)" ></td>
+                                            </tr>
+                                            <tr>
+                                                <th style="width: 140px;"><label for="note"
+                                                                                 class="form-label">Ghi chú</label><span
+                                                        class="required"></span></th>
+                                                <td><textarea  name="note" id="note" class="form-control"
+                                                           onblur="onType(this)" >
+                                                    </textarea>
+                                                </td>
                                             </tr>
                                         </table>
                                     </div>
                                     <div class="col-6 px-4">
                                         <table class="table-borderless w-100">
                                             <tr>
-                                                <th><label for="phoneNumber" class="form-label">Điện thoại</label><span
+                                                <th><label for="receiptValue" class="form-label">Số Tiền Cần Nộp</label><span
                                                         class="required"> *</span></th>
-                                                <td><input type="number" name="phoneNumber" id="phoneNumber"
-                                                           class="form-control" onblur="onType(this)"
-                                                           placeholder="0323456789"></td>
+                                                <td><input type="number" name="receiptValue" id="receiptValue"
+                                                           class="form-control"  min="0" onblur="onType(this)"></td>
                                             </tr>
                                             <tr>
-                                                <th><label for="address" class="form-label">Địa chỉ</label><span
+                                                <th><label for="givenMoney" class="form-label">Số tiền người nộp gửi </label><span
                                                         class="required"> *</span></th>
-                                                <td><input type="text" name="address" id="address" class="form-control"
-                                                           onblur="onType(this)"></td>
+                                                <td><input type="number" name="givenMoney" min="0" id="givenMoney" class="form-control" onchange="editMoneyReceipt()"
+                                                           onblur="onType(this)">
+                                                <p id="errorGiveMoney" class="text-danger"></p>
+                                                </td>
                                             </tr>
                                             <tr>
-                                                <th><label for="birthdate" class="form-label">Ngày sinh</label><span
+                                                <th><label for="returnMoney" class="form-label">Số tiền gửi lại khách hàng</label><span
                                                         class="required"> *</span></th>
                                                 <td>
-                                                    <div class="input-daterange input-group" id="datepicker-dateOfBirth"
-                                                         data-date-format="dd/mm/yyyy" data-date-autoclose="true"
-                                                         data-provide="datepicker"
-                                                         data-date-container='#datepicker-dateOfBirth'>
-                                                        <input type="text" name="dateOfBirth" id="birthdate"
-                                                               class="form-control" onblur="onType(this)"
-                                                               placeholder="dd/MM/yyyy" style="text-align:left;">
+                                                    <div class="input-daterange input-group" id="returnMoney1" style="text-align: left">
+                                                        <input type="text" name="returnMoney" id="returnMoney"
+                                                               class="form-control" disabled>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -162,47 +174,6 @@
                 </div>
                 <!-- /.modal-dialog -->
             </div>
-            <!-- End Modal Add Staff -->
-            <!--            <div class="card">-->
-            <!--                <div class="card-body overflow-auto">-->
-            <!--                    <table id="datatable"-->
-            <!--                           class="table table-striped table-hover table-bordered nowrap dataTable no-footer shadow"-->
-            <!--                           style="border-collapse: collapse; border-spacing: 0; width: 100%;">-->
-            <!--                        <thead>-->
-            <!--                        &lt;!&ndash;                <th><input type="checkbox" name="checkAll" id="checkAll" onclick="checkAllJquery('checkAll', 'check-item');"></th>&ndash;&gt;-->
-            <!--                        <th>STT</th>-->
-            <!--                        <th>Chức năng</th>-->
-            <!--&lt;!&ndash;                        <th style="display: none">ID</th>&ndash;&gt;-->
-            <!--                        <th>Họ tên</th>-->
-            <!--                        <th>Ngày sinh</th>-->
-            <!--                        <th>Số điện thoại</th>-->
-            <!--                        <th>Email</th>-->
-            <!--                        <th>Địa chỉ</th>-->
-            <!--                        </thead>-->
-            <!--                        <tbody>-->
-            <!--                        <tr th:each="item,index : ${customers}">-->
-            <!--&lt;!&ndash;                                                <td><input type="checkbox" class="check-item" th:value="${item.id}"></td>&ndash;&gt;-->
-            <!--                            <td th:text="${index.index +1}"></td>-->
-            <!--                            <td class="row" style="width: 100px;">-->
-            <!--                                <i class="col-4 fas fa-edit" style="color: darkblue;" title="Cập nhật"-->
-            <!--                                   onclick="onBtnEdit(this)"></i>-->
-            <!--                                &lt;!&ndash;                        &ndash;&gt;-->
-            <!--                                &lt;!&ndash;                        <i th:case="1" class="col-4 fas fa-lock-open" style="color: green;" title="Khoá " onclick="onBtnStatus(this)"></i>&ndash;&gt;-->
-            <!--                                &lt;!&ndash;                        <i class="col-4 fas fa-lock" style="color: red;" title="Mở khoá tài khoản" onclick="onBtnStatus(this)"></i>&ndash;&gt;-->
-            <!--                                <i class="col-4 fas fa-user-times" style="color: red;" title="Xoá khách hàng"-->
-            <!--                                   onclick="onBtnDelete(this)"></i>-->
-            <!--                            </td>-->
-            <!--                            <td style="display: none" th:text="${item.id}">Mã nhân viên</td>-->
-            <!--                            <td th:text="${item.fullName}">Họ tên</td>-->
-            <!--                            <td th:text="${#dates.format(item.dateOfBirth, 'dd/MM/yyyy')}">Ngày Sinh</td>-->
-            <!--                            <td th:text="${item.phoneNumber}">Số điện thoại</td>-->
-            <!--                            <td th:text="${item.email}">Email</td>-->
-            <!--                            <td th:text="${item.address}">Địa chỉ</td>-->
-            <!--                        </tr>-->
-            <!--                        </tbody>-->
-            <!--                    </table>-->
-            <!--                </div>-->
-            <!--            </div>-->
             <div class="card">
                 <div class="card-body overflow-auto">
                     <table id="datatable"
@@ -210,34 +181,43 @@
                            style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead class="text-center">
                         <th>STT</th>
-                        <th style="display: none">id</th>
                         <th>Chức năng</th>
-                        <th>Họ tên</th>
-                        <th>Ngày sinh</th>
-                        <th>Số điện thoại</th>
-                        <th>Email</th>
-                        <th>Địa chỉ</th>
+                        <th>Mã Hóa đơn</th>
+                        <th>Người Thu Chi</th>
+                        <th>Người Nộp Tiền</th>
+<!--                        <th>Số điện thoại</th>-->
+                        <th>Tiền cần thu</th>
+                        <th>Tiền Nhận</th>
+                        <th>Tiền Gửi Lại</th>
+                        <th>Ngày Thu Chi</th>
+                        <th>Mục Đích</th>
+<!--                        <th>Trạng thái</th>-->
                         </thead>
                         <tbody style="vertical-align: middle;">
-                        <tr th:each="item, iterator : ${customers}">
+                        <tr th:each="item, iterator : ${receipt_voucher}">
                             <td class="text-end">
                                 <span th:text="${iterator.index + 1}"></span>
                             </td>
-                            <td th:text="${item.id}" style="display: none"></td>
                             <td class="row" style="width: 100px;">
                                 <i class="col-4 fas fa-edit" style="color: darkblue;" title="Cập nhật"
                                    onclick="onBtnEdit(this)"></i>
                                 <!--                        -->
                                 <!--                        <i th:case="1" class="col-4 fas fa-lock-open" style="color: green;" title="Khoá " onclick="onBtnStatus(this)"></i>-->
                                 <!--                        <i class="col-4 fas fa-lock" style="color: red;" title="Mở khoá tài khoản" onclick="onBtnStatus(this)"></i>-->
-                                <i class="col-4 fas fa-user-times" style="color: red;" title="Xoá khách hàng"
+                                <i class="col-4 fas fa-user-times" style="color: red;" title="Xoá Hóa đơn"
                                    onclick="onBtnDelete(this)"></i>
                             </td>
-                            <td th:text="${item.fullName}">Họ tên</td>
-                            <td th:text="${#dates.format(item.dateOfBirth, 'dd/MM/yyyy')}">Ngày Sinh</td>
-                            <td th:text="${item.phoneNumber}">Số điện thoại</td>
-                            <td th:text="${item.email}">Email</td>
-                            <td th:text="${item.address}">Địa chỉ</td>
+                            <td th:text="${item.id}" ></td>
+                            <td th:text="${item.createBy}"></td>
+                            <td th:text="${item.payer}"></td>
+<!--                            <td th:text="${item.payerPhone}"></td>-->
+                            <td th:text="${item.receiptValue}"></td>
+                            <td th:text="${item.givenMoney}"></td>
+                            <td th:text="${item.returnMoney}"></td>
+                            <td th:text="${#dates.format(item.createDate, 'dd/MM/yyyy')}"></td>
+                            <td th:text="${item.description}"></td>
+<!--                            <td th:text="${item.deleteFlag " }"></td>-->
+
                         </tr>
                         </tbody>
                     </table>
@@ -249,7 +229,7 @@
                 <div class="modal-dialog modal-xl">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title mt-0">Cập nhật Khách Hàng</h5>
+                            <h5 class="modal-title mt-0">Cập nhật phiếu thu chi</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <form id="formEdit">
@@ -293,7 +273,7 @@
                                                     <div class="input-daterange input-group" id="datepicker6"
                                                          data-date-format="dd/mm/yyyy" data-date-autoclose="true"
                                                          data-provide="datepicker" data-date-container='#datepicker6'>
-<!--                                                        dateOfBirth-->
+                                                        <!--                                                        dateOfBirth-->
                                                         <input type="text" name="dateOfBirth" id="birthdate-edit"
                                                                class="form-control" onblur="onType(this)"
                                                                placeholder="dd/MM/yyyy" style="text-align:left;">
@@ -459,16 +439,15 @@
             data["" + v.name + ""] = v.value;
         });
         // data["dateOfBirth"] = moment(formData.dateOfBirth).format('YYYY-MM-DD');
-        data["dateOfBirth"] = formatDate(data["dateOfBirth"]);
         // alert(  data["dateOfBirth"])
         // return
         // data["username"] = generateUsername(convertViToEn(data["fullName"])) + moment(formData.dateOfBirth).format('DDMM');
 
-        if (validateForm('add')) {
+        // if (!validateForm('add')) {
             addStaff(data);
-        } else {
-            console.log("validate fail");
-        }
+        // } else {
+        //     console.log("validate fail");
+        // }
     });
 
     function formatDate(date) {
@@ -556,7 +535,7 @@
     //API add Staff
     function addStaff(data) {
         $.ajax({
-            url: 'http://localhost:8080/api/v1/customer/registration-customer',
+            url: 'http://localhost:8080/api/receipt-voucher/registration',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
@@ -576,10 +555,9 @@
                 Toast.fire({
                     icon: 'success',
                     title: 'Thêm thành công'
-                }).then(() => window.location.href = "/customer");
+                }).then(() => window.location.href = "/receipt-voucher");
             },
             error: function (error) {
-                console.log(error.responseJSON)
                 const Toast = Swal.mixin({
                     toast: true,
                     position: 'top-end',
@@ -751,7 +729,7 @@
         })
 
         swalWithBootstrapButtons.fire({
-            title: 'Bạn chắc chắn muốn xoá khách hàng chứ?',
+            title: 'Bạn chắc chắn muốn xoá Phiếu chứ?',
             text: "Chú ý không thể hoàn tác sau khi thực hiện tác vụ này!",
             icon: 'warning',
             showCancelButton: true,
@@ -816,7 +794,18 @@
         })
 
     }
+    function editMoneyReceipt(){
+        var receiptValue = document.getElementById('receiptValue').value;
+        var receiptMonetyGive= document.getElementById('givenMoney').value;
+        if(receiptValue == '' || receiptValue<1000){
 
+        }else if(receiptMonetyGive< receiptValue){
+            document.getElementById('errorGiveMoney').innerText="Vui lòng nhập số tiền đưa lơn hơn số tiền cần nôp!"
+        }else {
+            document.getElementById('returnMoney').value= (receiptMonetyGive-receiptValue)
+            document.getElementById('errorGiveMoney').innerText=""
+        }
+    }
     function onStatusTuyChon() {
 
         document.getElementById("tuyChon").style.display = "block";

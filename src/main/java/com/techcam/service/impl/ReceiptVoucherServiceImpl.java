@@ -3,6 +3,7 @@ package com.techcam.service.impl;
 import com.techcam.constants.ConstantsErrorCode;
 import com.techcam.dto.request.MailDto;
 import com.techcam.dto.request.receiptvoucher.ReceiptVoucherRequest;
+import com.techcam.dto.response.receiptvoucher.GetInfoReceiptVoucher;
 import com.techcam.dto.response.receiptvoucher.ReceiptVoucherResponse;
 import com.techcam.entity.ReceiptVoucherEntity;
 import com.techcam.entity.StaffEntity;
@@ -14,16 +15,19 @@ import com.techcam.type.CommonStatus;
 import com.techcam.type.ReceiptVoucherStatus;
 import com.techcam.util.MailerUtil;
 import com.techcam.util.MessageUtil;
-import com.techcam.util.SessionUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.MailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpSession;
+import java.lang.reflect.Type;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Description:
@@ -42,19 +46,20 @@ public class ReceiptVoucherServiceImpl implements IReceiptVoucherService {
     @Autowired
     private IStaffRepo staffRepo;
     @Autowired
-    private SessionUtil sessionUtil;
+    private HttpSession sessionUtil;
     private final ModelMapper MODEL_MAPPER = new ModelMapper();
 
     @Override
     public ReceiptVoucherResponse resgistration(ReceiptVoucherRequest request) {
         ReceiptVoucherResponse response = new ReceiptVoucherResponse().builder().status(CommonStatus.SUCCESS.name()).build();
         ReceiptVoucherEntity receiptVoucher = MODEL_MAPPER.map(request, ReceiptVoucherEntity.class);
-        receiptVoucher.setId(UUID.randomUUID().toString());
+//        receiptVoucher.setId(UUID.randomUUID().toString());
         receiptVoucher.setCreateDate(new Date());
         receiptVoucher.setModifierDate(new Date());
         receiptVoucher.setDeleteFlag(false);
+        receiptVoucher.setReturnMoney(receiptVoucher.getGivenMoney()- receiptVoucher.getReceiptValue());
 //        receiptVoucher.setCreateBy(getInfoStaff());
-        receiptVoucher.setCreateBy("oke");
+        receiptVoucher.setCreateBy(getInfoStaff());
         receiptVoucher.setStatus(ReceiptVoucherStatus.PAID.name());
         try {
             receiptVoucherRepo.save(receiptVoucher);
@@ -108,11 +113,22 @@ public class ReceiptVoucherServiceImpl implements IReceiptVoucherService {
     }
     @Override
     public String getInfoStaff() {
-        StaffEntity staffEntity = (StaffEntity) sessionUtil.getObject("STAFF");
+        StaffEntity staffEntity = (StaffEntity) sessionUtil.getAttribute("user");
         if (Objects.isNull(staffEntity)) {
             throw new TechCamExp(ConstantsErrorCode.INTERNAL_SERVER_ERROR);
         }
         return staffEntity.getUsername();
+    }
+
+    @Override
+    public List<GetInfoReceiptVoucher> getAllReceiptVoucher(){
+        List<ReceiptVoucherEntity> receiptVoucherEntities  = receiptVoucherRepo.findAllByDeleteFlagFalseOrOrderByCreateDate();
+        Type type = new TypeToken<List<GetInfoReceiptVoucher>>(){}.getType();
+        if(CollectionUtils.isEmpty(receiptVoucherEntities)){
+            return  new ArrayList<>();
+        }
+        List<GetInfoReceiptVoucher> list = MODEL_MAPPER.map(receiptVoucherEntities,type);
+        return list;
     }
     @Async
     public void sendMail(String id, String note){
