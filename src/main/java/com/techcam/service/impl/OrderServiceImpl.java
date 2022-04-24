@@ -197,6 +197,8 @@ public class OrderServiceImpl implements IOrderService {
         if (Objects.nonNull(voucherResponse)) {
             totalDiscount = valueVoucher(voucherResponse, orderRequestProduct.getTotalAmount()) + orderRequestProduct.getTotalDiscount();
             voucher.setId(voucherResponse.getVoucherId());
+        }else {
+            totalDiscount=orderRequestProduct.getTotalDiscount();
         }
         String orderStratus = "";
         if (request.getOrderType().equals(OrderType.COUNTER.name()) || request.getPaymentMethod().equals(OrderMethod.PAYMENT.name())) {
