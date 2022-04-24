@@ -122,13 +122,13 @@ public class ReceiptVoucherServiceImpl implements IReceiptVoucherService {
 
     @Override
     public List<GetInfoReceiptVoucher> getAllReceiptVoucher(){
-        List<ReceiptVoucherEntity> receiptVoucherEntities  = receiptVoucherRepo.findAllByDeleteFlagFalse();
+        List<ReceiptVoucherEntity> receiptVoucherEntities  = receiptVoucherRepo.findAllByDeleteFlagFalseOrOrderByCreateDate();
         Type type = new TypeToken<List<GetInfoReceiptVoucher>>(){}.getType();
         if(CollectionUtils.isEmpty(receiptVoucherEntities)){
             return  new ArrayList<>();
         }
         List<GetInfoReceiptVoucher> list = MODEL_MAPPER.map(receiptVoucherEntities,type);
-        return list.stream().sorted(Comparator.comparingInt(GetInfoReceiptVoucher::getId)).collect(Collectors.toList());
+        return list;
     }
     @Async
     public void sendMail(String id, String note){

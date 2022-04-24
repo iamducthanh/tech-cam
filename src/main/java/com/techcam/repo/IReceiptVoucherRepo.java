@@ -18,5 +18,5 @@ import java.util.List;
 public interface IReceiptVoucherRepo extends JpaRepository<ReceiptVoucherEntity,String> {
     ReceiptVoucherEntity findFirstByIdAndDeleteFlagFalse(String id);
 
-    List<ReceiptVoucherEntity> findAllByDeleteFlagFalse();
+    List<ReceiptVoucherEntity> findAllByDeleteFlagFalseOrOrderByCreateDate();
 }

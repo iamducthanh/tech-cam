@@ -208,7 +208,7 @@ public class OrderServiceImpl implements IOrderService {
 //        else if(request.getOrderType().equals(OrderType.COUNTER.name())){
 //            orderStratus = OrderStatus.CONFIRM.name();
 //        }
-        if (request.getOrderType().equals(OrderType.COUNTER.name())) {
+        if (request.getOrderType().equals(OrderType.COUNTER.name()) || OrderType.ORDER_ONLINE.name().equals(request.getOrderType())) {
             orderStratus = OrderStatus.CONFIRM.name();
         } else {
             orderStratus = OrderStatus.VERIFY.name();
@@ -231,6 +231,7 @@ public class OrderServiceImpl implements IOrderService {
                 .note(request.getNote())
                 .deleteFlag(false)
                 .feeDelivery(request.getFeeDelivery())
+                .deliveryDate(Objects.isNull(request.getDeliveryDate()) ? null : request.getDeliveryDate())
 //                .salesPerson(request.getOrderType().equals(OrderType.COUNTER.name()) ? "Quang" : null)
                 .status(OrderStatus.UNPAID.name())
                 .transactionStatus(orderStratus)
