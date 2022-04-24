@@ -234,6 +234,7 @@ public class GoodsOrderService implements IGoodsOrderService {
                 .note(x.getNote())
                 .dateInvoice(dateInvoice)
 //                .statusInvoice(status)
+                .createDate(x.getCreateDate())
                 .build();
     }
 

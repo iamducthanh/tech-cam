@@ -52,6 +52,7 @@ public class ProductController {
         List<BrandResponse> lstBrands = brandService.getAllBrand();
         List<CategoryResponse> lstCategories = categoryService.getAllCategory();
         List<SupplierResponseDTO> lstSupplier = supplierService.getAll();
+        lstProducts.sort((o1, o2) -> o2.getCreateDate().compareTo(o1.getCreateDate()));
         model.addAttribute("lstProducts", lstProducts);
         model.addAttribute("lstBrands", lstBrands);
         model.addAttribute("lstCategories", lstCategories);
