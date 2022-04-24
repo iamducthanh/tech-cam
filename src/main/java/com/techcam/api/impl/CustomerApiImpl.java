@@ -40,15 +40,25 @@ public class CustomerApiImpl implements CustomerApi {
     @Override
     public List<CustomerInfoResponse> findCustomers(String keyWord) {
         List<CustomerInfoResponse> customerInfoResponses;
-        if (StringUtils.isBlank(keyWord)){
-            customerInfoResponses= customerService.getCustomers();
+        if (StringUtils.isBlank(keyWord)) {
+            customerInfoResponses = customerService.getCustomers();
         }
-        customerInfoResponses= customerService.findCustomers(keyWord);
-       return customerInfoResponses;
+        customerInfoResponses = customerService.findCustomers(keyWord);
+        return customerInfoResponses;
     }
 
     @Override
-    public CustomerInfoResponse findCustomerById(@PathVariable  String id) {
+    public List<CustomerInfoResponse> findCustomersByAll(String keyWord) {
+        List<CustomerInfoResponse> customerInfoResponses;
+        if (StringUtils.isBlank(keyWord)) {
+            customerInfoResponses = customerService.getCustomers();
+        }
+        customerInfoResponses = customerService.findCustomersByAll(keyWord);
+        return customerInfoResponses;
+    }
+
+    @Override
+    public CustomerInfoResponse findCustomerById(@PathVariable String id) {
         return customerService.getCustomerById(id);
     }
 

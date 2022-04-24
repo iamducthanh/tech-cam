@@ -239,6 +239,7 @@
     let href = window.location.href;
     if(href.indexOf('orders') > -1){
         t = $('#datatable').DataTable({
+            paging: false,
             lengthChange: !1,
             "columnDefs": [{
                 "searchable": false,

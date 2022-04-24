@@ -6,9 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import java.util.Date;
 
 /**
  * Description:
@@ -23,6 +21,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 public class CustomerRequest {
+
     private String id;
     @NotBlank
     @Pattern(regexp = "[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ ]{0,50}$")
@@ -35,6 +34,6 @@ public class CustomerRequest {
     private String email;
     @NotBlank
     private String address;
-//    @NotNull
+    //    @NotNull
     private String dateOfBirth;
 }
