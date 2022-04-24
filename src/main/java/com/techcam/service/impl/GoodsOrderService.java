@@ -8,6 +8,7 @@ import com.techcam.entity.*;
 import com.techcam.exception.TechCamExp;
 import com.techcam.repo.*;
 import com.techcam.service.IGoodsOrderService;
+import com.techcam.util.ConvertDateUtil;
 import com.techcam.util.ConvertUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,9 +22,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.techcam.constants.ConstantsErrorCode.PRODUCT_NOT_EXISTS;
-import static com.techcam.constants.ConstantsErrorCode.VOUCHER_DATE_NOT_PAST;
-import static com.techcam.type.CustomerStatus.*;
 import static com.techcam.constants.ConstantsErrorCode.*;
 import static com.techcam.type.CustomerStatus.*;
 
@@ -85,6 +83,7 @@ public class GoodsOrderService implements IGoodsOrderService {
         }
         goodsOrderEntity.setId(UUID.randomUUID().toString());
         goodsOrderEntity.setStatus(ON.name());
+        goodsOrderEntity.setOrderId(ConvertDateUtil.generationCode("DH"));
         List<GoodsOrderDetailEntity> lst = new ArrayList<>();
         for (InvoiceOrderDetailRequest x : request.getDetails()) {
             ProductEntity productEntity = productRepo.getByIdAndDeleteFlagIsFalse(x.getProductId());
@@ -254,7 +253,7 @@ public class GoodsOrderService implements IGoodsOrderService {
         Date date = ConvertUtil.get().strToDate(x.getDate(), "dd-MM-yyyy");
         return GoodsOrderEntity.builder()
                 .id(x.getId())
-                .orderId(x.getCode())
+//                .orderId(x.getCode())
                 .supplierId(Objects.isNull(supplierEntity) ? null : x.getSupplierId())
                 .orderDate(LocalDate.now())
                 .orderDelivery(Instant.ofEpochMilli(date.getTime())

@@ -40,10 +40,10 @@ public class InvoiceApi {
     @PostMapping
     public ResponseEntity<?> createInvoice(@Validated @RequestBody InvoiceRequest invoiceRequest, Errors errors) {
         validateInvoice(invoiceRequest, errors);
-        if (!goodsreceiptService.findAllByInvoiceCode(invoiceRequest.getInvoiceCode()).isEmpty()) {
-            // mã nhập hàng đã tồn tại rồi
-            throw new TechCamExp(ERROR_EXISTS, "Mã nhập hàng");
-        }
+//        if (!goodsreceiptService.findAllByInvoiceCode(invoiceRequest.getInvoiceCode()).isEmpty()) {
+//            // mã nhập hàng đã tồn tại rồi
+//            throw new TechCamExp(ERROR_EXISTS, "Mã nhập hàng");
+//        }
         if (invoiceRequest.getDetails().isEmpty()) {
             throw new TechCamExp(INVOICE_NOT_DETAIL);
         }
@@ -76,13 +76,13 @@ public class InvoiceApi {
         InvoiceResponse invoiceResponse = goodsreceiptService.getByInvoiceId(invoiceRequest.getInvoiceId());
         if (Objects.isNull(invoiceResponse) || Objects.isNull(invoiceResponse.getInvoiceId()))
             throw new TechCamExp(ERROR_NOT_EXISTS, "Hoá đơn nhập hàng");
-        if (!invoiceRequest.getInvoiceCode().equals(invoiceResponse.getInvoiceCode())) {
-            List<InvoiceResponse> invoiceFindByCode = goodsreceiptService.findAllByInvoiceCode(invoiceRequest.getInvoiceCode());
-            if (!invoiceFindByCode.isEmpty()) {
-                // mã nhập hàng đã tồn tại rồi
-                throw new TechCamExp(ERROR_EXISTS, "Mã nhập hàng");
-            }
-        }
+//        if (!invoiceRequest.getInvoiceCode().equals(invoiceResponse.getInvoiceCode())) {
+//            List<InvoiceResponse> invoiceFindByCode = goodsreceiptService.findAllByInvoiceCode(invoiceRequest.getInvoiceCode());
+//            if (!invoiceFindByCode.isEmpty()) {
+//                // mã nhập hàng đã tồn tại rồi
+//                throw new TechCamExp(ERROR_EXISTS, "Mã nhập hàng");
+//            }
+//        }
         if (invoiceRequest.getDetails().isEmpty()) {
             throw new TechCamExp(INVOICE_NOT_DETAIL);
         }
@@ -147,9 +147,9 @@ public class InvoiceApi {
             // không có chi tiết nhập hàng  = không có sản phẩm nhập
             throw new TechCamExp(INVOICE_NOT_DETAIL);
         }
-        if (invoiceRequest.getInvoiceCode().length() > 50) {
-            throw new TechCamExp(ERROR_LENGTH, 1, 50);
-        }
+//        if (invoiceRequest.getInvoiceCode().length() > 50) {
+//            throw new TechCamExp(ERROR_LENGTH, 1, 50);
+//        }
         if (invoiceRequest.getDiscount() < 0) {
             throw new TechCamExp(ERROR_MIN_MONEY, "giảm giá", 0);
         }
