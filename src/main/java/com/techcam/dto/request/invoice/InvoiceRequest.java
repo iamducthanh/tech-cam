@@ -35,10 +35,10 @@ public class InvoiceRequest {
      */
     private String shipper;
 
-    /**
-     * mã nhập hàng
-     */
-    private String invoiceCode;
+//    /**
+//     * mã nhập hàng
+//     */
+//    private String invoiceCode;
 
     /**
      * mã đặt hàng

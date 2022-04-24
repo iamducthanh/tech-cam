@@ -36,9 +36,9 @@ public class OrderInvoiceApi {
 
     @PostMapping
     public ResponseEntity<?> createOrderInvoice(@Validated @RequestBody InvoiceOrderRequest request, Errors errors) {
-        if (!goodsOrderService.findAllOrderDetailByOrderId(request.getId()).isEmpty()) {
-            throw new TechCamExp(ERROR_EXISTS, "Mã đặt hàng");
-        }
+//        if (!goodsOrderService.findAllOrderDetailByOrderId(request.getId()).isEmpty()) {
+//            throw new TechCamExp(ERROR_EXISTS, "Mã đặt hàng");
+//        }
         if (ConvertUtil.get().strToDate(request.getDate(), "dd-MM-yyyy").compareTo(new Date()) < 0) {
             throw new TechCamExp(VOUCHER_DATE_NOT_PAST);
         }
@@ -66,11 +66,11 @@ public class OrderInvoiceApi {
         if (Objects.isNull(invoiceOrderResponse)) {
             throw new TechCamExp(ERROR_NOT_EXISTS, "Hoá đơn đặt hàng");
         }
-        if (!invoiceOrderResponse.getInvoiceOrderCode().equals(request.getCode())) {
-            if (!goodsOrderService.findAllOrderDetailByOrderId(request.getId()).isEmpty()) {
-                throw new TechCamExp(ERROR_EXISTS, "Mã đặt hàng");
-            }
-        }
+//        if (!invoiceOrderResponse.getInvoiceOrderCode().equals(request.getCode())) {
+//            if (!goodsOrderService.findAllOrderDetailByOrderId(request.getId()).isEmpty()) {
+//                throw new TechCamExp(ERROR_EXISTS, "Mã đặt hàng");
+//            }
+//        }
 //        if (ConvertUtil.get().strToDate(request.getDate(), "dd-MM-yyyy").compareTo(new Date()) < 0) {
 //            throw new TechCamExp(VOUCHER_DATE_NOT_PAST);
 //        }

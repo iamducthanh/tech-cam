@@ -3,7 +3,6 @@ package com.techcam.api;
 import com.techcam.dto.request.product.ProductAddRequest;
 import com.techcam.dto.request.product.ProductEditRequest;
 import com.techcam.dto.response.product.ProductResponse;
-import com.techcam.dto.response.product.ProductResponseDTO;
 import com.techcam.exception.TechCamExp;
 import com.techcam.service.IProductService;
 import lombok.RequiredArgsConstructor;
