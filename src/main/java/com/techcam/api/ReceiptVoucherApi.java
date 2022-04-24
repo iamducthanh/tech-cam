@@ -28,4 +28,5 @@ public class ReceiptVoucherApi {
     public ReceiptVoucherResponse registration(@Valid @RequestBody ReceiptVoucherRequest request){
         return iReceiptVoucherService.resgistration(request);
     }
+
 }
