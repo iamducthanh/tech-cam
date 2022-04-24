@@ -1,8 +1,10 @@
 package com.techcam.controller;
 
 import com.techcam.entity.LogEntity;
+import com.techcam.entity.StatisProfit;
 import com.techcam.entity.TopProductSaleByMonth;
 import com.techcam.repo.IProductRepo;
+import com.techcam.repo.IStatisProfitRepo;
 import com.techcam.repo.ITopProductSaleByMonth;
 import com.techcam.service.ILogService;
 import com.techcam.service.IOrderService;
@@ -34,11 +36,18 @@ public class IndexController {
 
     @Autowired
     private ILogService logService;
+    @Autowired
+    private IStatisProfitRepo statisProfitRepo;
 
     @GetMapping("/")
     public String index(Model model) {
         List<LogEntity> list = logService.findAllLog̣();
         model.addAttribute("logs",list);
+
+        List<StatisProfit> statisProfits = statisProfitRepo.findProfit(2022);
+        statisProfits.forEach(o -> {
+            System.out.println(o.toString());
+        });
         return "views/index";
     }
 

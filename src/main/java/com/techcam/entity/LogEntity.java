@@ -39,4 +39,5 @@ public class LogEntity {
     public String getTimeString(){
         return new SimpleDateFormat("dd-MM-yyyy HH:mm").format(this.createDate);
     }
+
 }

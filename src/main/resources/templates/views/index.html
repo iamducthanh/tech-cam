@@ -17,10 +17,10 @@
     <div class="row">
         <div class="col-lg-3 h-20">
             <div class="card">
-                <div class="card-body" style="height: 800px;overflow: auto;">
+                <div class="card-body" style="height: 805px;overflow: auto;">
 
                     <table id="tableLog" class="table table-striped table-hover"
-                           style="border-collapse: collapse; border-spacing: 0; width: 100%; height: 800px;overflow: auto;">
+                           style="border-collapse: collapse; border-spacing: 0; width: 100%; height: 805px;overflow: auto;">
                         <thead>
                         <tr class="text-center">
                             <th>Nội dung</th>
@@ -83,105 +83,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <h1 class="header-title mb-4">
-                            <i class="mdi mdi-menu" style="font-size: 16pt;" onclick="editMenuKH();"></i> &ensp;Đối tác
-                            giao hàng
-                        </h1>
-                        <div class="row gap-2">
-                            <div class="col-auto p-0 dropdown myDropdown myBtn" style="margin-left: 30px;">
-                                <button class="btn btn-primary" id="dropdownMenuButton"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fas fa-filter"></i>
-                                    <i class="mdi mdi-chevron-down"></i>
-                                </button>
-                                <div class="dropdown-menu dropdown-menu-end" style="width: 650%;">
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="loc">
-                                                <input class="form-check-input" type="checkbox"> Mã đối tác
-                                            </div>
-                                            <div class="loc">
-                                                <input class="form-check-input" type="checkbox"> Tên đối tác
-                                            </div>
-                                            <div class="loc">
-                                                <input class="form-check-input" type="checkbox"> Điện
-                                                thoại
-                                            </div>
-                                            <div class="loc">
-                                                <input class="form-check-input" type="checkbox"> Email
-                                            </div>
-                                            <div class="loc">
-                                                <input class="form-check-input" type="checkbox">
-                                                Tổng đơn hàng
-                                            </div>
 
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="loc">
-                                                <input class="form-check-input" type="checkbox"> Cần thu hộ
-                                            </div>
-                                            <div class="loc">
-                                                <input class="form-check-input" type="checkbox"> Tổng trọng lượng
-                                            </div>
-                                            <div class="loc">
-                                                <input class="form-check-input" type="checkbox"> Nợ cần trả hiện tại
-                                            </div>
-                                            <div class="loc">
-                                                <input class="form-check-input" type="checkbox"> Tổng phí giao hàng
-                                            </div>
-                                            <div class="loc">
-                                                <input class="form-check-input" type="checkbox"> Trạng
-                                                thái
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <button class="col-auto btn btn-primary myBtn"><i class="fas fa-file-export"></i> Export
-                            </button>
-                            <button class="col-auto btn btn-primary myBtn"><i class="fas fa-file-import"></i> Import
-                            </button>
-                            <button class="col-auto btn btn-primary myBtn" onclick="onModalAddDTGH()"><b>+ Thêm đối
-                                tác</b></button>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="card">
-                                <div class="card-body">
-                                    <table id="datatable-buttons"
-                                           class="table table-striped table-bordered dt-responsive nowrap"
-                                           style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                                        <thead>
-                                        <tr>
-                                            <th><input class="form-check-input" type="checkbox">
-                                            </th>
-                                            <th>Mã đối tác</th>
-                                            <th>Tên đối tác</th>
-                                            <th>Số điện thoại</th>
-                                            <th>Tổng đơn hàng</th>
-                                            <th>Nợ cần trả hiện tại</th>
-                                            <th>Tổng phí giao hàng</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody id="dataTest">
-                                        <tr onclick="onModalDTGH()">
-                                            <td><input class="form-check-input" type="checkbox">
-                                            </td>
-                                            <td>Tiger Nixon</td>
-                                            <td>System Architect</td>
-                                            <td>Edinburgh</td>
-                                            <td>61</td>
-                                            <td>2011/04/25</td>
-                                            <td>$320,800</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     <!-- <div id="morris-bar-stacked" class="morris-chart-height morris-charts"></div> -->
                 </div>
             </div>
@@ -197,12 +99,25 @@
 
         document.getElementById('datepicker').value = ((now.getMonth() + 1) < 10 ? ('0' + (now.getMonth() + 1)) : (now.getMonth() + 1)) + '-' + now.getFullYear()
         getTopProductSaleByMonth((now.getMonth() + 1), now.getFullYear())
+        getStatisProfit(now.getFullYear())
 
         function onLoadTopProductSaleByMonth() {
             let monthVal = document.getElementById('datepicker').value;
             let month = monthVal.substring(0, 2)
             let year = monthVal.substring(3, monthVal.length)
             getTopProductSaleByMonth(month, year)
+        }
+
+        function getStatisProfit(year){
+            $.ajax({
+                url: '/statis-profit?year=' + year,
+                success: function (datas) {
+                    console.log(datas)
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            })
         }
 
 
@@ -223,8 +138,8 @@
                             '                                                </td>\n' +
                             '                                                <td>' + data.name + '</td>\n' +
                             '                                                <td>' + data.productCode + '</span></td>\n' +
-                            '                                                <td>' + data.price + '</td>\n' +
-                            '                                                <td>' + data.totalAmount.toLocaleString('vi-VN') + 'đ' + '</td>\n' +
+                            '                                                <td>' + data.price.toLocaleString('vi-VN') + ' đ' + '</td>\n' +
+                            '                                                <td>' + data.totalAmount.toLocaleString('vi-VN') + ' đ' + '</td>\n' +
                             '                                                <td>' + data.totalQuantity + '</td>\n' +
 
                             '                                            </tr>'
@@ -234,21 +149,6 @@
                     console.log(error)
                 }
             })
-        }
-
-        function initTableLog() {
-            var tableLog = $("#tableLog").DataTable({
-                paging: false,
-                "searching": false,
-                // pageLength: 10,
-                lengthChange: !1,
-                "ordering": false,
-                scrollY: "54vh",
-                // scrollX: true,
-                // scrollCollapse: true
-
-            });
-
         }
     </script>
 </div>
