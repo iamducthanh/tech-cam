@@ -15,8 +15,8 @@ import java.util.List;
  * Project_name: Tech-cam
  */
 @Repository
-public interface IReceiptVoucherRepo extends JpaRepository<ReceiptVoucherEntity,String> {
-    ReceiptVoucherEntity findFirstByIdAndDeleteFlagFalse(String id);
+public interface IReceiptVoucherRepo extends JpaRepository<ReceiptVoucherEntity,Integer> {
+    ReceiptVoucherEntity findFirstByIdAndDeleteFlagFalse(Integer id);
 
-    List<ReceiptVoucherEntity> findAllByDeleteFlagFalseOrOrderByCreateDate();
+    List<ReceiptVoucherEntity> findAllByDeleteFlagFalseOrderByCreateDate();
 }

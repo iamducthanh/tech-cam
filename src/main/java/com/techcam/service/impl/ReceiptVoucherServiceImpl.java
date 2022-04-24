@@ -71,9 +71,14 @@ public class ReceiptVoucherServiceImpl implements IReceiptVoucherService {
 
     }
 
+    @Override
+    public GetInfoReceiptVoucher getInfoReceiptVoucher(Integer id){
+        ReceiptVoucherEntity receiptVoucherEntity = receiptVoucherRepo.findFirstByIdAndDeleteFlagFalse(id);
+        return Objects.isNull(receiptVoucherEntity) ? null : MODEL_MAPPER.map(receiptVoucherEntity,GetInfoReceiptVoucher.class);
+    }
     public ReceiptVoucherResponse editReceiptById(ReceiptVoucherRequest request) {
         ReceiptVoucherResponse response = new ReceiptVoucherResponse().builder().status(CommonStatus.SUCCESS.name()).build();
-        if(Objects.isNull(request) || StringUtils.isBlank(request.getId())){
+        if(Objects.isNull(request) ){
             throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
         }
         ReceiptVoucherEntity receiptVoucherEntity = receiptVoucherRepo.findFirstByIdAndDeleteFlagFalse(request.getId());
@@ -91,9 +96,9 @@ public class ReceiptVoucherServiceImpl implements IReceiptVoucherService {
         }
         return response;
     }
-    public ReceiptVoucherResponse deleteReceiptVoucher(String id, String note){
+    public ReceiptVoucherResponse deleteReceiptVoucher(Integer id, String note){
         ReceiptVoucherResponse response = new ReceiptVoucherResponse().builder().status(CommonStatus.SUCCESS.name()).build();
-        if( StringUtils.isBlank(id)){
+        if( Objects.isNull(id)){
             throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
         }
         ReceiptVoucherEntity receiptVoucherEntity = receiptVoucherRepo.findFirstByIdAndDeleteFlagFalse(id);
@@ -122,7 +127,7 @@ public class ReceiptVoucherServiceImpl implements IReceiptVoucherService {
 
     @Override
     public List<GetInfoReceiptVoucher> getAllReceiptVoucher(){
-        List<ReceiptVoucherEntity> receiptVoucherEntities  = receiptVoucherRepo.findAllByDeleteFlagFalseOrOrderByCreateDate();
+        List<ReceiptVoucherEntity> receiptVoucherEntities  = receiptVoucherRepo.findAllByDeleteFlagFalseOrderByCreateDate();
         Type type = new TypeToken<List<GetInfoReceiptVoucher>>(){}.getType();
         if(CollectionUtils.isEmpty(receiptVoucherEntities)){
             return  new ArrayList<>();
