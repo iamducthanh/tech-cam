@@ -99,8 +99,8 @@
                                 <div class="header_chart  mb-4">
                                     <h5>Thống kê lợi nhuận năm</h5>
                                     <div class="select_chart">
-                                        <select class="form-select" style="width:200px">
-                                            <option selected>2022</option>
+                                        <select class="form-select" onchange="getStatisProfit(this.value)" style="width:200px">
+                                            <option th:each="year : ${years}" th:text="${year}" th:value="${year}"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -172,7 +172,7 @@
                         })
                     }
                     console.log(dataChart)
-                    myChart02.data.datasets[0].data = 0;
+                    myChart02.data.datasets[0].data = new Array();
                     for(let profit of dataChart){
                         myChart02.data.datasets[0].data.push(profit.profit);
                     }
