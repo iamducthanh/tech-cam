@@ -9,7 +9,6 @@ window.onload = function () {
     let getSelectPersonApply = document.getElementsByClassName('ip-voucher-person-apply')
     if (getSelectPersonApply !== null && getSelectPersonApply !== undefined) {
         for (let index = 0; index < getSelectPersonApply.length; index++) {
-            console.log(getSelectPersonApply[index])
             onChangePersonApply(getSelectPersonApply[index])
         }
     }
@@ -18,11 +17,9 @@ window.onload = function () {
 
 function loadUsedByVoucherId() {
     $('.voucher-used').each(function () {
-        console.log()
         $.ajax({
             url: '/api/voucher/' + $(this).attr('data-id') + '/used',
             success: function (data) {
-                console.log(data)
                 let html = '';
                 for (let i = 0; i < data.length; i++) {
                     html += '<tr>\n' +
@@ -98,7 +95,6 @@ function onClickSaveVoucher() {
         , getElementVoucherDescription
         , getElementVoucherPromo
     );
-    console.log(objVoucher);
     if (objVoucher !== null && objVoucher !== undefined) {
         $.ajax({
             url: '/api/voucher',
@@ -106,7 +102,6 @@ function onClickSaveVoucher() {
             contentType: 'application/json',
             data: JSON.stringify(objVoucher),
             success: function (data) {
-                console.log(data);
                 toastSuccess('Thành công', 'Đã tạo mã giảm giá')
                 setTimeout(function () {
                     location.reload()
@@ -167,7 +162,6 @@ function onClickUpdateVoucher(e) {
         , getElementVoucherDescription
         , getElementVoucherPromo
     );
-    console.log(objVoucher);
     if (objVoucher !== null && objVoucher !== undefined) {
         $.ajax({
             url: '/api/voucher',
@@ -175,7 +169,6 @@ function onClickUpdateVoucher(e) {
             contentType: 'application/json',
             data: JSON.stringify(objVoucher),
             success: function (data) {
-                console.log(data);
                 toastSuccess('Thành công', 'Đã cập nhật mã giảm giá')
                 setTimeout(function () {
                     location.reload()
@@ -198,7 +191,6 @@ function onClickActiveVoucher(e) {
             method: 'PUT',
             contentType: 'application/json',
             success: function (data) {
-                console.log(data);
                 toastSuccess('Thành công', 'Đã kích hoạt mã giảm giá')
                 setTimeout(function () {
                     location.reload()
@@ -239,7 +231,6 @@ function onClickDeleteVoucher(e) {
                     method: 'DELETE',
                     contentType: 'application/json',
                     success: function (data) {
-                        console.log(data);
                         toastSuccess('Thành công', 'Đã xoá mã giảm giá')
                         setTimeout(function () {
                             location.reload()

@@ -81,6 +81,17 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
+    public List<CustomerInfoResponse> findCustomersByAll(String keyword) {
+        Type customersType = new TypeToken<List<CustomerInfoResponse>>() {
+        }.getType();
+        List<CustomerEntity> customerEntities = customerRepo.findByKeyword(keyword);
+        if (!CollectionUtils.isEmpty(customerEntities)) {
+            return MODEL_MAPPER.map(customerEntities, customersType);
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
     public CustomerInfoResponse getCustomerByEmail(String email) {
         CustomerEntity customerEntity = customerRepo.findByEmailAndStatus(email, CustomerStatus.ON.name());
         if (Objects.isNull(customerEntity)) {

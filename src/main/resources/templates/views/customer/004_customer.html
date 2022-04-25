@@ -163,24 +163,67 @@
                 <!-- /.modal-dialog -->
             </div>
             <!-- End Modal Add Staff -->
+            <!--            <div class="card">-->
+            <!--                <div class="card-body overflow-auto">-->
+            <!--                    <table id="datatable"-->
+            <!--                           class="table table-striped table-hover table-bordered nowrap dataTable no-footer shadow"-->
+            <!--                           style="border-collapse: collapse; border-spacing: 0; width: 100%;">-->
+            <!--                        <thead>-->
+            <!--                        &lt;!&ndash;                <th><input type="checkbox" name="checkAll" id="checkAll" onclick="checkAllJquery('checkAll', 'check-item');"></th>&ndash;&gt;-->
+            <!--                        <th>STT</th>-->
+            <!--                        <th>Chức năng</th>-->
+            <!--&lt;!&ndash;                        <th style="display: none">ID</th>&ndash;&gt;-->
+            <!--                        <th>Họ tên</th>-->
+            <!--                        <th>Ngày sinh</th>-->
+            <!--                        <th>Số điện thoại</th>-->
+            <!--                        <th>Email</th>-->
+            <!--                        <th>Địa chỉ</th>-->
+            <!--                        </thead>-->
+            <!--                        <tbody>-->
+            <!--                        <tr th:each="item,index : ${customers}">-->
+            <!--&lt;!&ndash;                                                <td><input type="checkbox" class="check-item" th:value="${item.id}"></td>&ndash;&gt;-->
+            <!--                            <td th:text="${index.index +1}"></td>-->
+            <!--                            <td class="row" style="width: 100px;">-->
+            <!--                                <i class="col-4 fas fa-edit" style="color: darkblue;" title="Cập nhật"-->
+            <!--                                   onclick="onBtnEdit(this)"></i>-->
+            <!--                                &lt;!&ndash;                        &ndash;&gt;-->
+            <!--                                &lt;!&ndash;                        <i th:case="1" class="col-4 fas fa-lock-open" style="color: green;" title="Khoá " onclick="onBtnStatus(this)"></i>&ndash;&gt;-->
+            <!--                                &lt;!&ndash;                        <i class="col-4 fas fa-lock" style="color: red;" title="Mở khoá tài khoản" onclick="onBtnStatus(this)"></i>&ndash;&gt;-->
+            <!--                                <i class="col-4 fas fa-user-times" style="color: red;" title="Xoá khách hàng"-->
+            <!--                                   onclick="onBtnDelete(this)"></i>-->
+            <!--                            </td>-->
+            <!--                            <td style="display: none" th:text="${item.id}">Mã nhân viên</td>-->
+            <!--                            <td th:text="${item.fullName}">Họ tên</td>-->
+            <!--                            <td th:text="${#dates.format(item.dateOfBirth, 'dd/MM/yyyy')}">Ngày Sinh</td>-->
+            <!--                            <td th:text="${item.phoneNumber}">Số điện thoại</td>-->
+            <!--                            <td th:text="${item.email}">Email</td>-->
+            <!--                            <td th:text="${item.address}">Địa chỉ</td>-->
+            <!--                        </tr>-->
+            <!--                        </tbody>-->
+            <!--                    </table>-->
+            <!--                </div>-->
+            <!--            </div>-->
             <div class="card">
-                <div class="card-body">
+                <div class="card-body overflow-auto">
                     <table id="datatable"
-                           class="table table-striped table-hover table-bordered dt-responsive nowrap dataTable no-footer shadow"
-                           style="width: 100%">
-                        <thead>
-                        <!--                <th><input type="checkbox" name="checkAll" id="checkAll" onclick="checkAllJquery('checkAll', 'check-item');"></th>-->
+                           class="table table-striped table-hover table-bordered nowrap dataTable no-footer shadow"
+                           style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                        <thead class="text-center">
+                        <th>STT</th>
+                        <th style="display: none">id</th>
                         <th>Chức năng</th>
-                        <th style="display: none">ID</th>
                         <th>Họ tên</th>
                         <th>Ngày sinh</th>
                         <th>Số điện thoại</th>
                         <th>Email</th>
                         <th>Địa chỉ</th>
                         </thead>
-                        <tbody>
-                        <tr th:each="item,index : ${customers}">
-                            <!--                    <td><input type="checkbox" class="check-item" th:value="${item.id}"></td>-->
+                        <tbody style="vertical-align: middle;">
+                        <tr th:each="item, iterator : ${customers}">
+                            <td class="text-end">
+                                <span th:text="${iterator.index + 1}"></span>
+                            </td>
+                            <td th:text="${item.id}" style="display: none"></td>
                             <td class="row" style="width: 100px;">
                                 <i class="col-4 fas fa-edit" style="color: darkblue;" title="Cập nhật"
                                    onclick="onBtnEdit(this)"></i>
@@ -190,7 +233,6 @@
                                 <i class="col-4 fas fa-user-times" style="color: red;" title="Xoá khách hàng"
                                    onclick="onBtnDelete(this)"></i>
                             </td>
-                            <td style="display: none" th:text="${item.id}">Mã nhân viên</td>
                             <td th:text="${item.fullName}">Họ tên</td>
                             <td th:text="${#dates.format(item.dateOfBirth, 'dd/MM/yyyy')}">Ngày Sinh</td>
                             <td th:text="${item.phoneNumber}">Số điện thoại</td>
@@ -251,6 +293,7 @@
                                                     <div class="input-daterange input-group" id="datepicker6"
                                                          data-date-format="dd/mm/yyyy" data-date-autoclose="true"
                                                          data-provide="datepicker" data-date-container='#datepicker6'>
+<!--                                                        dateOfBirth-->
                                                         <input type="text" name="dateOfBirth" id="birthdate-edit"
                                                                class="form-control" onblur="onType(this)"
                                                                placeholder="dd/MM/yyyy" style="text-align:left;">
@@ -416,7 +459,7 @@
             data["" + v.name + ""] = v.value;
         });
         // data["dateOfBirth"] = moment(formData.dateOfBirth).format('YYYY-MM-DD');
-        data["dateOfBirth"] =formatDate(data["dateOfBirth"]);
+        data["dateOfBirth"] = formatDate(data["dateOfBirth"]);
         // alert(  data["dateOfBirth"])
         // return
         // data["username"] = generateUsername(convertViToEn(data["fullName"])) + moment(formData.dateOfBirth).format('DDMM');
@@ -564,7 +607,7 @@
         $.each(formData, function (i, v) {
             data["" + v.name + ""] = v.value;
         });
-        data["dateOfBirth"] =formatDate(data["dateOfBirth"]);
+        data["dateOfBirth"] = formatDate(data["dateOfBirth"]);
         data["id"] = idEdit;
 
         if (validateForm('edit')) {

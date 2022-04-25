@@ -1,5 +1,7 @@
 package com.techcam.util;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -13,10 +15,20 @@ import java.util.Date;
  */
 
 public class ConvertDateUtil {
-    private final static String DATE_TIME="dd-MM-yyyy hh:mm:ss";
-//    private final static String DATE_UTIL="yyyy"
-    public static String convertDateTime(Date date){
+    private final static String DATE_TIME = "dd-MM-yyyy hh:mm:ss";
+
+    //    private final static String DATE_UTIL="yyyy"
+    public static String convertDateTime(Date date) {
         SimpleDateFormat format = new SimpleDateFormat(DATE_TIME);
         return format.format(date);
+    }
+
+    public static String convertDateTime(Date date, String patient) {
+        SimpleDateFormat format = new SimpleDateFormat(patient);
+        return format.format(date);
+    }
+
+    public static String generationCode(String startCode) {
+        return startCode + convertDateTime(new Date(), "yyyyMMdd") + Integer.parseInt(RandomStringUtils.randomNumeric(4));
     }
 }

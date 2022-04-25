@@ -25,5 +25,6 @@ public class OrderProductDetailsRequest {
     private int quantity;
     private String note;
     private int discount;
+    private Integer importPrice;
 
 }

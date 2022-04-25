@@ -22,6 +22,8 @@ public interface ICustomerService {
 
     List<CustomerInfoResponse> findCustomers(String keyWord);
 
+    List<CustomerInfoResponse> findCustomersByAll(String keyword);
+
     CustomerInfoResponse getCustomerByEmail(String email);
 
     CustomerInfoResponse getCustomerByPhoneNumber(String phoneNumber);

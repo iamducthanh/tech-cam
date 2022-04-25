@@ -46,6 +46,8 @@ public class InvoiceOrderResponse {
 
     private Integer statusInvoice;
 
+    private Date createDate;
+
     private List<InvoiceOrderDetailResponse> details;
 
 }

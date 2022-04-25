@@ -24,12 +24,10 @@ import com.techcam.type.*;
 import com.techcam.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -108,12 +106,11 @@ public class OrderServiceImpl implements IOrderService {
         if (Objects.isNull(orders)) {
             response.setStatus(CommonStatus.FAIL.name());
         }
-        if (!StringUtils.equalsIgnoreCase(bankStatus, "00")) {
-            response.setStatus(CommonStatus.FAIL.name());
+        if (StringUtils.equalsIgnoreCase(bankStatus, "00")) {
             List<OrderdetailEntity> orderdetailEntities = orderDetailsRepo.findAllByOrdersIdAndDeleteFlag(orders.getId(), false);
             List<ProductEntity> productEntities = new ArrayList<>();
             orderdetailEntities.stream().filter(item -> {
-                item.getProduct().setQuantity(item.getProduct().getQuantity() + item.getQuantity());
+                item.getProduct().setQuantity(item.getProduct().getQuantity() - item.getQuantity());
                 productEntities.add(item.getProduct());
                 return false;
             }).collect(Collectors.toList());
@@ -121,7 +118,7 @@ public class OrderServiceImpl implements IOrderService {
             orders.setStatus(OrderStatus.PAID.name());
             orders.setDeleteFlag(false);
             ordersRepo.save(orders);
-        }else {
+        } else {
             response.setStatus(CommonStatus.FAIL.name());
         }
         return response;
@@ -200,6 +197,8 @@ public class OrderServiceImpl implements IOrderService {
         if (Objects.nonNull(voucherResponse)) {
             totalDiscount = valueVoucher(voucherResponse, orderRequestProduct.getTotalAmount()) + orderRequestProduct.getTotalDiscount();
             voucher.setId(voucherResponse.getVoucherId());
+        }else {
+            totalDiscount=orderRequestProduct.getTotalDiscount();
         }
         String orderStratus = "";
         if (request.getOrderType().equals(OrderType.COUNTER.name()) || request.getPaymentMethod().equals(OrderMethod.PAYMENT.name())) {
@@ -208,7 +207,7 @@ public class OrderServiceImpl implements IOrderService {
 //        else if(request.getOrderType().equals(OrderType.COUNTER.name())){
 //            orderStratus = OrderStatus.CONFIRM.name();
 //        }
-        if (request.getOrderType().equals(OrderType.COUNTER.name())) {
+        if (request.getOrderType().equals(OrderType.COUNTER.name()) || OrderType.ORDER_ONLINE.name().equals(request.getOrderType())) {
             orderStratus = OrderStatus.CONFIRM.name();
         } else {
             orderStratus = OrderStatus.VERIFY.name();
@@ -217,7 +216,7 @@ public class OrderServiceImpl implements IOrderService {
         OrdersEntity ordersEntity = new OrdersEntity().builder()
 //                .id(UUID.randomUUID().toString())
                 .customer(MODEL_MAPPER.map(customerInfoResponse, CustomerEntity.class))
-                .voucher(Objects.isNull(voucher.getId())? null : voucher)
+                .voucher(Objects.isNull(voucher.getId()) ? null : voucher)
                 .ipAddress(request.getIpAddress())
                 .orderType(request.getOrderType())
                 .recipientName(StringUtils.isNotBlank(request.getRecipientName()) ? request.getRecipientName() : request.getCustomer().getFullName())
@@ -231,6 +230,7 @@ public class OrderServiceImpl implements IOrderService {
                 .note(request.getNote())
                 .deleteFlag(false)
                 .feeDelivery(request.getFeeDelivery())
+                .deliveryDate(Objects.isNull(request.getDeliveryDate()) ? null : request.getDeliveryDate())
 //                .salesPerson(request.getOrderType().equals(OrderType.COUNTER.name()) ? "Quang" : null)
                 .status(OrderStatus.UNPAID.name())
                 .transactionStatus(orderStratus)
@@ -296,6 +296,7 @@ public class OrderServiceImpl implements IOrderService {
                     orderdetailEntity.setNote(e.getNote());
                     orderdetailEntity.setDeleteFlag(false);
                     orderdetailEntity.setDiscount(e.getDiscount());
+                    orderdetailEntity.setImportPrice(e.getImportPrice());
                     orderdetailEntity.setQuantity(e.getQuantity());
                     orderdetailEntity.setProduct(new ProductEntity().toBuilder().id(e.getProductId()).build());
                     orderdetailEntities.add(orderdetailEntity);
@@ -315,7 +316,7 @@ public class OrderServiceImpl implements IOrderService {
 //            }
             if (request.getOrderType().equals(OrderType.ONLINE.name())) {
                 if (request.getPaymentMethod().equalsIgnoreCase(OrderMethod.PAYMENT.name())) {
-                    String vnpay = VNPAYService.payments(ordersEntity.getTax() - ordersEntity.getTotalAmount()+ordersEntity.getFeeDelivery(), vnp_ref, httpServletRequest);
+                    String vnpay = VNPAYService.payments(ordersEntity.getTax() - ordersEntity.getTotalAmount() + ordersEntity.getFeeDelivery(), vnp_ref, httpServletRequest);
                     response.setVnpay(vnpay);
                 }
                 if (Objects.nonNull(customerInfoResponse.getEmail())) {
@@ -363,7 +364,7 @@ public class OrderServiceImpl implements IOrderService {
 
     private int valueVoucher(VoucherResponse voucherResponse, int sumMoney) {
         if (voucherResponse.getVoucherTypeDiscount().equals("%")) {
-            return (int) ((sumMoney * voucherResponse.getVoucherDiscount())/100);
+            return (int) ((sumMoney * voucherResponse.getVoucherDiscount()) / 100);
         }
         int sum = Math.toIntExact(voucherResponse.getVoucherDiscount());
         return sum;
@@ -414,6 +415,7 @@ public class OrderServiceImpl implements IOrderService {
                                 orderDetailsSaves.add(e);
                             }
                             if (StringUtils.isBlank(item.getId())) {
+                                ProductEntity productEntity = productRepo.getById(item.getProductId());
                                 String id = UUID.randomUUID().toString();
                                 item.setId(id);
                                 OrderdetailEntity orderdetailEntity = new OrderdetailEntity();
@@ -422,8 +424,10 @@ public class OrderServiceImpl implements IOrderService {
                                 orderdetailEntity.setDeleteFlag(false);
                                 orderdetailEntity.setNote(item.getNote());
                                 orderdetailEntity.setDeleteFlag(false);
-                                orderdetailEntity.setDiscount((int) getSaleProduct(productRepo.getById(item.getProductId())));
+                                orderdetailEntity.setDiscount((int) getSaleProduct(productEntity));
                                 orderdetailEntity.setQuantity(item.getQuantity());
+                                // todo sửa import price
+                                orderdetailEntity.setImportPrice((int) productEntity.getPrice());
                                 OrdersEntity ordersEntity = new OrdersEntity();
                                 ordersEntity.setId(requests.getOrderId());
                                 ProductEntity product = new ProductEntity();
@@ -592,7 +596,6 @@ public class OrderServiceImpl implements IOrderService {
         orders.setTransactionStatus(OrderStatus.DONE.name());
         orders.setStatus(OrderStatus.PAID.name());
         ReceiptVoucherEntity receiptVoucherEntity = new ReceiptVoucherEntity();
-        receiptVoucherEntity.setId(UUID.randomUUID().toString());
         receiptVoucherEntity.setCreateDate(new Date());
         receiptVoucherEntity.setModifierDate(new Date());
         receiptVoucherEntity.setReceiptValue(orders.getTax() - orders.getTotalAmount());
@@ -790,19 +793,19 @@ public class OrderServiceImpl implements IOrderService {
     public OrderResponse saveShippingOrder(ShippingOrderRequest request) {
         OrderResponse response = new OrderResponse().builder().status(CommonStatus.SUCCESS.name()).build();
         OrdersEntity ordersEntity = ordersRepo.findByIdAndDeleteFlagFalse(request.getId());
-        if(Objects.isNull(ordersEntity)){
+        if (Objects.isNull(ordersEntity)) {
             throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
         }
         try {
             ordersEntity.setFeeDelivery(request.getFeeDelivery());
             ordersEntity.setShipperName(request.getShipperName());
             ordersEntity.setShipperPhone(request.getShipperPhone());
-            if(StringUtils.isNotBlank(request.getNote())){
+            if (StringUtils.isNotBlank(request.getNote())) {
                 ordersEntity.setNote(request.getNote());
             }
             ordersEntity.setTransactionStatus(OrderStatus.GOSHIPPING.name());
             ordersRepo.save(ordersEntity);
-        }catch (Exception e){
+        } catch (Exception e) {
             response.setStatus(CommonStatus.FAIL.name());
             System.err.println(e);
         }
@@ -827,12 +830,13 @@ public class OrderServiceImpl implements IOrderService {
         orderRequest.setTotalDiscount(0);
         orderRequest.setTotalAmount(0);
         List<OrderProductDetailsRequest> orderProductDetailsRequests = new ArrayList<>();
-        // todo 1 tạm thời lài khuyến mại lấy sau có thể là tiền mặt
+        // todo sửa import price
         productEntities.forEach(e -> {
             productDetails.stream().filter(item -> {
                         if (item.getProductId().equals(e.getId())) {
-                            item.setDiscount((int) (e.getPrice() * item.getQuantity() * getSaleProduct(e)));
-                            orderRequest.setTotalDiscount((int) (orderRequest.getTotalDiscount() + item.getDiscount()));
+                            item.setDiscount((int) (getSaleProduct(e)));
+                            item.setImportPrice((int) e.getPrice());
+                            orderRequest.setTotalDiscount((orderRequest.getTotalDiscount() + item.getDiscount()));
                             orderRequest.setTotalAmount((int) (orderRequest.getTotalAmount() + e.getPrice() * item.getQuantity()));
                             orderProductDetailsRequests.add(item);
                         }

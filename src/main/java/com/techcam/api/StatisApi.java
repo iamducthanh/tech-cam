@@ -1,6 +1,8 @@
 package com.techcam.api;
 
+import com.techcam.entity.StatisProfit;
 import com.techcam.entity.TopProductSaleByMonth;
+import com.techcam.repo.IStatisProfitRepo;
 import com.techcam.repo.ITopProductSaleByMonth;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StatisApi {
     private final ITopProductSaleByMonth topProductSaleByMonth;
+    private final IStatisProfitRepo statisProfitRepo;
     @GetMapping("/top-product-sale")
     public ResponseEntity<List<TopProductSaleByMonth>> getTopProductSaleByMonth(
             @RequestParam("top") String top,
@@ -24,5 +27,11 @@ public class StatisApi {
         List<TopProductSaleByMonth> topProductSaleByMonthList = topProductSaleByMonth.findTopProductSaleByMonth(Integer.valueOf(top),Integer.valueOf(month),Integer.valueOf(year));
         return ResponseEntity.ok(topProductSaleByMonthList);
 
+    }
+
+    @GetMapping("/statis-profit")
+    public ResponseEntity<List<StatisProfit>> getStatisProfit(@RequestParam("year") String year){
+        List<StatisProfit> statisProfits = statisProfitRepo.findProfit(Integer.valueOf(year));
+        return ResponseEntity.ok(statisProfits);
     }
 }
