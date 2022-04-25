@@ -1305,7 +1305,7 @@
                         }
                     }
                     // Show/Hide btnCancel
-                    if ((result.orderType === 'ONLINE' || result.paymentMethod === 'CASH') && result.status === 'PAID' && $(element).text() === "Xác nhận") {
+                    if ((result.orderType === 'ONLINE' || result.paymentMethod === 'CASH') && result.status === 'UNPAID' && $('#btnSave').find('span').text() === "Xác nhận") {
                         btnCancel.show();
                     }
 
