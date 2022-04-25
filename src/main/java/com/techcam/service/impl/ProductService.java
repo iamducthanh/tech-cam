@@ -314,7 +314,8 @@ public class ProductService implements IProductService {
         s.setModifierDate(x.getModifierDate());
         s.setThumbnail(x.getThumbnail());
         s.setPromotion(x.getPromotion() + "");
-        s.setProductQuantity(sumQuantity);
+//        s.setProductQuantity(sumQuantity);
+        s.setProductQuantity(x.getQuantity());
         return s;
     }
 }

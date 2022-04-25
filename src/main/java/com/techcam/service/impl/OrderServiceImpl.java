@@ -142,7 +142,7 @@ public class OrderServiceImpl implements IOrderService {
 
     @Override
     public GetInfoOrder findOrderById(Integer id) {
-        OrdersEntity orderEntity = ordersRepo.findByIdAndDeleteFlagFalse(id);
+        OrdersEntity orderEntity = ordersRepo.findById(id).get();
         Type listType = new TypeToken<GetInfoOrder>() {
         }.getType();
 
@@ -732,7 +732,7 @@ public class OrderServiceImpl implements IOrderService {
             orders.setDeleteFlag(true);
             orders.setModifierDate(new Date());
             orders.setModifierBy(getInfoStaff().getUsername());
-            orders.setStatus(OrderStatus.CANCEL.name());
+            orders.setTransactionStatus(OrderStatus.CANCEL.name());
             ordersRepo.save(orders);
             // mới thêm để cộng lại voucher
             if (Objects.nonNull(orders.getVoucher())) {
