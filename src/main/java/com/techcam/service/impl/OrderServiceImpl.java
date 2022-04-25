@@ -229,6 +229,8 @@ public class OrderServiceImpl implements IOrderService {
                 .orderDate(new Date())
                 .note(request.getNote())
                 .deleteFlag(false)
+                .createDate(new Date())
+                .modifierDate(new Date())
                 .feeDelivery(request.getFeeDelivery())
                 .deliveryDate(Objects.isNull(request.getDeliveryDate()) ? null : request.getDeliveryDate())
 //                .salesPerson(request.getOrderType().equals(OrderType.COUNTER.name()) ? "Quang" : null)
@@ -836,7 +838,7 @@ public class OrderServiceImpl implements IOrderService {
                         if (item.getProductId().equals(e.getId())) {
                             item.setDiscount((int) (getSaleProduct(e)));
                             item.setImportPrice((int) e.getPrice());
-                            orderRequest.setTotalDiscount((orderRequest.getTotalDiscount() + item.getDiscount()));
+                            orderRequest.setTotalDiscount((orderRequest.getTotalDiscount() + item.getDiscount()*item.getQuantity()));
                             orderRequest.setTotalAmount((int) (orderRequest.getTotalAmount() + e.getPrice() * item.getQuantity()));
                             orderProductDetailsRequests.add(item);
                         }
