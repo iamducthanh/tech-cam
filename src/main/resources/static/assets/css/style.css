@@ -155,3 +155,84 @@ ul {
 .required {
     color: red;
 }
+
+table.none-border, table.none-border td {
+    padding: 5px 5px 5px 20px;
+}
+
+
+
+table.border,
+table.border td,
+table.border th {
+    border: 1px solid;
+}
+
+table.border {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table.border th {
+    text-align: center;
+}
+
+td.number {
+    text-align: right;
+    white-space: nowrap;
+}
+
+th,
+td {
+    padding: 7px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.border-none {
+    border: 0;
+}
+
+#loading-image {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+}
+
+#loading-image>img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#loading-image>#bg-color {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    opacity: 0.5;
+    background-image: linear-gradient(to top, #30cfd0 0%, #330867 100%);
+}
+
+/* Hide spinner input number */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none!important;
+    margin: 0!important;
+}
+
+.status {
+    min-width: 145px;
+}
+
+.modal-body .col-lg-6>table {
+    width: 80%;
+}

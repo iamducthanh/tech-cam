@@ -24,6 +24,9 @@ public interface CustomerApi {
     @GetMapping("find-customers/{keyWord}")
     List<CustomerInfoResponse> findCustomers(@PathVariable String keyWord);
 
+    @GetMapping("search/{keyWord}")
+    List<CustomerInfoResponse> findCustomersByAll(@PathVariable String keyWord);
+
     @GetMapping("find-by-id/{id}")
     CustomerInfoResponse findCustomerById(@PathVariable String id);
 

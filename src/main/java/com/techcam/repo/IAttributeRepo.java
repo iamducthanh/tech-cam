@@ -2,6 +2,7 @@ package com.techcam.repo;
 
 import com.techcam.entity.AttributeEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -19,5 +20,8 @@ public interface IAttributeRepo extends JpaRepository<AttributeEntity, String> {
     AttributeEntity getByIdAndDeleteFlagIsFalse(String propertyId);
 
     List<AttributeEntity> findAllByCategoryIdAndDeleteFlagIsFalse(String categoryId);
+
+    @Query("select o from AttributeEntity o where o.attributeName = ?1 and o.categoryId = ?2 and o.deleteFlag = false ")
+    List<AttributeEntity> findByNameAndCategory(String name, String categoryId);
 
 }

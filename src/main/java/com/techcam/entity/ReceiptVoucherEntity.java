@@ -16,7 +16,7 @@ import java.util.Date;
 @Entity
 @Table(name = "receipt_voucher", schema = "poly_techcam", catalog = "")
 public class ReceiptVoucherEntity {
-    private String id;
+    private Integer id;
     private String payer;
     private String payerPhone;
     private String receiptName;
@@ -35,11 +35,12 @@ public class ReceiptVoucherEntity {
 
     @Id
     @Column(name = "ID")
-    public String getId() {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

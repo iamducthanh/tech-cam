@@ -1,5 +1,6 @@
 package com.techcam.controller;
 
+import com.techcam.dto.response.SupplierResponseDTO;
 import com.techcam.dto.response.brand.BrandResponse;
 import com.techcam.dto.response.category.CategoryResponse;
 import com.techcam.dto.response.product.ProductPropertyResponse;
@@ -40,6 +41,8 @@ public class ProductController {
 
     private final ICategoryService categoryService;
 
+    private final ISupplierService supplierService;
+
     @GetMapping
     public String productManager(Model model) {
         List<ProductResponse> lstProducts = productService.getAllProduct();
@@ -48,9 +51,12 @@ public class ProductController {
         }
         List<BrandResponse> lstBrands = brandService.getAllBrand();
         List<CategoryResponse> lstCategories = categoryService.getAllCategory();
+        List<SupplierResponseDTO> lstSupplier = supplierService.getAll();
+        lstProducts.sort((o1, o2) -> o2.getCreateDate().compareTo(o1.getCreateDate()));
         model.addAttribute("lstProducts", lstProducts);
         model.addAttribute("lstBrands", lstBrands);
         model.addAttribute("lstCategories", lstCategories);
+        model.addAttribute("lstSupplier", lstSupplier);
         return "views/product/index";
     }
 

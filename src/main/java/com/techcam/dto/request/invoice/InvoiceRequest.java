@@ -31,9 +31,14 @@ public class InvoiceRequest {
     private String supplierId;
 
     /**
-     * mã nhập hàng
+     * người giao hàng
      */
-    private String invoiceCode;
+    private String shipper;
+
+//    /**
+//     * mã nhập hàng
+//     */
+//    private String invoiceCode;
 
     /**
      * mã đặt hàng

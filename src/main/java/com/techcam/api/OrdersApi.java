@@ -4,10 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.techcam.constants.ConstantsErrorCode;
 import com.techcam.dto.request.order.*;
-import com.techcam.dto.response.order.GetInfoOrder;
-import com.techcam.dto.response.order.GetInfoOrderDetails;
-import com.techcam.dto.response.order.OrderResponse;
-import com.techcam.dto.response.order.VNPAYResponse;
+import com.techcam.dto.response.order.*;
 import com.techcam.exception.TechCamExp;
 import com.techcam.service.IOrderService;
 import com.techcam.type.OrderType;
@@ -101,11 +98,30 @@ public class OrdersApi {
         return orderService.payTheBill(request);
     }
 
-    @GetMapping("/{id}")
-    public GetInfoOrder findById(@PathVariable("id") String id) {
-        return orderService.findOrderById(id);
+    @PostMapping("/detail/add")
+    public ResponseEntity<OrderdetailResponse> addProductOrderdetail(@Valid @RequestBody OrderdetailRequest request) {
+        return ResponseEntity.ok().body(orderService.addProductOrderdetail(request));
     }
 
+    @DeleteMapping("/detail/{id}")
+    public ResponseEntity<OrderdetailResponse> deleteProductInOrderdetail(@PathVariable("id") String id) {
+        return ResponseEntity.ok().body(orderService.deleteProductOrderdetail(id));
+    }
+
+    @GetMapping("/{id}")
+    public GetInfoOrder findById(@PathVariable("id") String id) {
+        return orderService.findOrderById(Integer.parseInt(id));
+    }
+
+    @GetMapping("/list/{id}")
+    public List<GetInfoOrderDetails> findAllOrdersDetailsById(@PathVariable("id") Integer id) {
+        return orderService.findAllOrdersDetailsById(id);
+    }
+    @PostMapping("/shipping")
+    public OrderResponse saveShipping(@Valid @RequestBody ShippingOrderRequest request ){
+        return orderService.saveShippingOrder(request);
+
+    }
     public String getDevice(HttpServletRequest request) {
         String ipAddress = request.getHeader("X-Forwarded-For");
         if (StringUtils.isEmpty(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {

@@ -1,8 +1,6 @@
 package com.techcam.dto.response.order;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.techcam.entity.CustomerEntity;
-import com.techcam.entity.VoucherEntity;
+import com.techcam.dto.response.Customer.CustomerInfoResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,7 +21,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class GetInfoOrder {
-    private String id;
+    private Integer id;
     private Date orderDate;
     private Integer tax;
     private String transactionStatus;
@@ -34,6 +32,8 @@ public class GetInfoOrder {
     private String stockKeeper;
     private String recipientName;
     private String recipientPhone;
+    private String shipperName;
+    private String shipperPhone;
     private String paymentMethod;
     private String recipientAddress;
     private String shipmentStatus;
@@ -42,17 +42,15 @@ public class GetInfoOrder {
     private String shipmentId;
     private String status;
     private String note;
+    private Date deliveryDate;
+    private String feeDelivery;
+    private String ipAddress;
+    private String bankTransaction;
+    private CustomerInfoResponse customer;
+    private String voucherCustomerId;
     private Date createDate;
     private Date modifierDate;
     private String createBy;
     private String modifierBy;
     private Boolean deleteFlag;
-    private String ipAddress;
-
-    @JsonIgnore
-    private CustomerEntity customer;
-
-    @JsonIgnore
-    private VoucherEntity voucher;
-    private String bankTransaction;
 }

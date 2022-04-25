@@ -57,14 +57,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/change-res    et-password/**",
                 "/api/count_login_false/**",
                 "/index",
-//                "/api/v1/orders",
+                "/api/voucher/**",
+                "/api/notification/**",
                 "/api/v1/orders/**",
                 "/vnp-pay/check-out/order/**",
-                "/api/staff/**",
-                "/staff/**",
-                "/api/v1/customer/**",
-                "/customer/**",
-                "/customer"
+                "/api/receipt-voucher/**"
         ).permitAll();
 
         http.authorizeRequests().antMatchers("/**").access("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')");
@@ -106,7 +103,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     public static void main(String[] args) {
-        System.out.println(new BCryptPasswordEncoder().encode("0123456789"));
+        System.out.println(new BCryptPasswordEncoder().encode("1234"));
     }
 
 }

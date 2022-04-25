@@ -1,5 +1,8 @@
 package com.techcam.controller;
 
+import com.techcam.entity.TopProductSaleByMonth;
+import com.techcam.repo.IProductRepo;
+import com.techcam.repo.ITopProductSaleByMonth;
 import com.techcam.service.IOrderService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.time.LocalDate;
+import java.util.List;
 
 /**
  * Project_name : SMW_TECHCAM
@@ -29,15 +34,16 @@ public class IndexController {
 
     @GetMapping("/")
     public String index() {
+
         return "views/index";
     }
 
-    @GetMapping("/index")
-    public String index1(HttpServletRequest request) {
-        System.out.println(getDevice(request));
-        System.out.println(orderService.findAllOrdersDetailsById("39f49e48-3d80-4065-ab06-79a26c22a3a3").size());
-        return "test_vnpay";
-    }
+//    @GetMapping("/index")
+//    public String index1(HttpServletRequest request) {
+//        System.out.println(getDevice(request));
+//        System.out.println(orderService.findAllOrdersDetailsById("39f49e48-3d80-4065-ab06-79a26c22a3a3").size());
+//        return "test_vnpay";
+//    }
 
     public String getDevice(HttpServletRequest request) {
         String ipAddress = request.getHeader("X-Forwarded-For");

@@ -4,6 +4,8 @@ import com.techcam.entity.ReceiptVoucherEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Description:
  *
@@ -13,5 +15,8 @@ import org.springframework.stereotype.Repository;
  * Project_name: Tech-cam
  */
 @Repository
-public interface IReceiptVoucherRepo extends JpaRepository<ReceiptVoucherEntity,String> {
+public interface IReceiptVoucherRepo extends JpaRepository<ReceiptVoucherEntity,Integer> {
+    ReceiptVoucherEntity findFirstByIdAndDeleteFlagFalse(Integer id);
+
+    List<ReceiptVoucherEntity> findAllByDeleteFlagFalseOrderByCreateDate();
 }

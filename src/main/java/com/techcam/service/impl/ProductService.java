@@ -6,10 +6,14 @@ import com.techcam.dto.request.product.ProductEditRequest;
 import com.techcam.dto.request.product.ProductPropertyRequest;
 import com.techcam.dto.response.product.ProductPropertyResponse;
 import com.techcam.dto.response.product.ProductResponse;
+import com.techcam.dto.response.product.ProductResponseDTO;
 import com.techcam.entity.*;
+import com.techcam.mapper.ProductMapper;
 import com.techcam.repo.*;
 import com.techcam.service.IProductService;
+import com.techcam.util.ConvertDateUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,6 +51,13 @@ public class ProductService implements IProductService {
 
     private final IBrandRepo brandRepo;
 
+    @Autowired
+    ProductMapper productMapper;
+
+    private final IGoodsreceiptdetailRepo goodsreceiptdetailRepo;
+
+    private final IOrderDetailsRepo orderDetailsRepo;
+
     @Override
     public List<ProductPropertyResponse> findAllPropertyByProductId(String productId) {
         // TODO trả về list thuộc tính sản phẩm
@@ -54,7 +65,7 @@ public class ProductService implements IProductService {
                 .map(this::mapToProductPropertyResponse).collect(Collectors.toList());
     }
 
-    private <R> ProductPropertyResponse mapToProductPropertyResponse(ProductPropertyEntity x) {
+    private ProductPropertyResponse mapToProductPropertyResponse(ProductPropertyEntity x) {
         if (Objects.isNull(x)) return new ProductPropertyResponse();
         AttributeEntity a = attributeRepo.getByIdAndDeleteFlagIsFalse(x.getAttributeId());
         if (Objects.isNull(a)) return new ProductPropertyResponse();
@@ -74,15 +85,16 @@ public class ProductService implements IProductService {
         if (Objects.isNull(productRequest)) {
             return ConstantsErrorCode.ERROR_DATA_REQUEST;
         }
-        if (!productRepo.findALlByProductCodeAndDeleteFlagIsFalse(productRequest.getProductCode()).isEmpty()) {
-            return ConstantsErrorCode.PRODUCT_CODE_DUPLICATE;
-        }
+//        if (!productRepo.findALlByProductCodeAndDeleteFlagIsFalse(productRequest.getProductCode()).isEmpty()) {
+//            return ConstantsErrorCode.PRODUCT_CODE_DUPLICATE;
+//        }
         ProductEntity productEntity = new ProductEntity();
         productEntity = mapToEntity(productRequest, productEntity);
         if (Objects.isNull(productEntity)) {
             return ConstantsErrorCode.ERROR_DATA_REQUEST;
         }
         productEntity.setId(UUID.randomUUID().toString());
+        productEntity.setProductCode(ConvertDateUtil.generationCode("SP"));
         List<ImagesEntity> lstImage = new ArrayList<>();
         for (String x : productRequest.getProductImages()) {
             ImagesEntity imagesEntity = ImagesEntity.builder()
@@ -112,6 +124,7 @@ public class ProductService implements IProductService {
             lstProductPropertyEntities.add(productPropertyEntity);
         }
         try {
+            productEntity.setImportPrice(0.0);
             productRepo.save(productEntity);
             productPropertyRepo.saveAll(lstProductPropertyEntities);
             for (ImagesEntity x : lstImage) {
@@ -130,10 +143,10 @@ public class ProductService implements IProductService {
         if (Objects.isNull(productRequest)) {
             return ConstantsErrorCode.ERROR_DATA_REQUEST;
         }
-        if (productRepo.findALlByProductCodeAndDeleteFlagIsFalse(productRequest.getProductCode())
-                .stream().anyMatch(e -> !e.getId().equals(productRequest.getProductId()))) {
-            return ConstantsErrorCode.PRODUCT_CODE_DUPLICATE;
-        }
+//        if (productRepo.findALlByProductCodeAndDeleteFlagIsFalse(productRequest.getProductCode())
+//                .stream().anyMatch(e -> !e.getId().equals(productRequest.getProductId()))) {
+//            return ConstantsErrorCode.PRODUCT_CODE_DUPLICATE;
+//        }
         ProductEntity productEntity = productRepo.getByIdAndDeleteFlagIsFalse(productRequest.getProductId());
         if (Objects.isNull(productEntity)) {
             return ConstantsErrorCode.ERROR_DATA_REQUEST;
@@ -227,26 +240,51 @@ public class ProductService implements IProductService {
                 .map(ImagesEntity::getImagesLink).collect(Collectors.toList());
     }
 
+    @Override
+    public int getInventoryByProductId(String productId) {
+        List<GoodsreceiptdetailEntity> lstInvoiceDetail = goodsreceiptdetailRepo.findAllByProductIdAndDeleteFlagIsFalse(productId);
+        List<OrderdetailEntity> lstOrderDetail = orderDetailsRepo.findAllByProductIdAndDeleteFlagIsFalse(productId);
+        Long sumInvoice = lstInvoiceDetail.stream().mapToLong(GoodsreceiptdetailEntity::getQuantityActual).sum();
+        Long sumOrder = lstOrderDetail.stream().mapToLong(OrderdetailEntity::getQuantity).sum();
+        return (int) (sumInvoice - sumOrder);
+    }
+
+    @Override
+    public List<ProductResponse> findAllByCategoryId(String categoryId) {
+        return productRepo.findAllByCategoryIdAndDeleteFlagFalse(categoryId).stream()
+                .map(this::mapToResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductResponseDTO> getAll() {
+        return productMapper.toProductResponseDTOs(productRepo.findAllByDeleteFlagIsFalse());
+    }
+
+    @Override
+    public List<ProductResponse> findAllByKeyWords(String keyword) {
+        return productRepo.findAllByKeyWords(keyword)
+                .stream().map(this::mapToResponse).collect(Collectors.toList());
+    }
+
     private ProductEntity mapToEntity(Object obj, ProductEntity s) {
         if (Objects.isNull(obj)) return null;
         if (obj instanceof ProductAddRequest) {
             ProductAddRequest x = (ProductAddRequest) obj;
-            return mapToEntity(s, x.getProductCategory(), x.getProductBrand(), x.getProductName(), x.getProductCode(), x.getProductPrice(), x.getProductDescription(), x.getProductStatus());
+            return mapToEntity(s, x.getProductCategory(), x.getProductBrand(), x.getProductName(), x.getProductPrice(), x.getProductDescription(), x.getProductStatus());
         } else if (obj instanceof ProductEditRequest) {
             ProductEditRequest x = (ProductEditRequest) obj;
-            return mapToEntity(s, x.getProductCategory(), x.getProductBrand(), x.getProductName(), x.getProductCode(), x.getProductPrice(), x.getProductDescription(), x.getProductStatus());
+            return mapToEntity(s, x.getProductCategory(), x.getProductBrand(), x.getProductName(), x.getProductPrice(), x.getProductDescription(), x.getProductStatus());
         }
         return null;
     }
 
-    private ProductEntity mapToEntity(ProductEntity s, String productCategory, String productBrand, String productName, String productCode, String productPrice, String productDescription, String productStatus) {
+    private ProductEntity mapToEntity(ProductEntity s, String productCategory, String productBrand, String productName, String productPrice, String productDescription, String productStatus) {
         CategoryEntity categoryEntity = categoryRepo.getByIdAndDeleteFlagIsFalse(productCategory);
         BrandEntity brandEntity = brandRepo.getByIdAndDeleteFlagIsFalse(productBrand);
         return s.toBuilder()
                 .name(productName)
                 .categoryId(Objects.isNull(categoryEntity) ? null : categoryEntity.getId())
                 .brandId(Objects.isNull(brandEntity) ? null : brandEntity.getId())
-                .productCode(productCode)
                 .quantity(0)
                 .price(Long.parseLong(productPrice))
                 .detail("")
@@ -255,8 +293,13 @@ public class ProductService implements IProductService {
                 .build();
     }
 
-    private <R> ProductResponse mapToResponse(ProductEntity x) {
+    private ProductResponse mapToResponse(ProductEntity x) {
         if (Objects.isNull(x)) return new ProductResponse();
+        List<GoodsreceiptdetailEntity> lstInvoiceDetail = goodsreceiptdetailRepo.findAllByProductIdAndDeleteFlagIsFalse(x.getId());
+        List<OrderdetailEntity> lstOrderDetail = orderDetailsRepo.findAllByProductIdAndDeleteFlagIsFalse(x.getId());
+        Long sumInvoice = lstInvoiceDetail.stream().mapToLong(GoodsreceiptdetailEntity::getQuantityActual).sum();
+        Long sumOrder = lstOrderDetail.stream().mapToLong(OrderdetailEntity::getQuantity).sum();
+        int sumQuantity = (int) (sumInvoice - sumOrder);
         ProductResponse s = new ProductResponse();
         s.setProductId(x.getId());
         s.setProductCode(x.getProductCode());
@@ -270,6 +313,8 @@ public class ProductService implements IProductService {
         s.setCreateDate(x.getCreateDate());
         s.setModifierDate(x.getModifierDate());
         s.setThumbnail(x.getThumbnail());
+        s.setPromotion(x.getPromotion() + "");
+        s.setProductQuantity(sumQuantity);
         return s;
     }
 }

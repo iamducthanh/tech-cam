@@ -97,65 +97,18 @@
                 id="page-header-notifications-dropdown" data-bs-toggle="dropdown" aria-haspopup="true"
                 aria-expanded="false">
           <i class="mdi mdi-bell-outline"></i>
-          <span class="badge bg-danger rounded-pill">3</span>
+          <span id="countNoti" class="badge bg-danger rounded-pill">3</span>
         </button>
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
              aria-labelledby="page-header-notifications-dropdown">
           <div class="p-3">
             <div class="row align-items-center">
               <div class="col">
-                <h5 class="m-0 font-size-16"> Notification (3) </h5>
+                <h5 class="m-0 font-size-16"> Thông báo </h5>
               </div>
             </div>
           </div>
-          <div data-simplebar style="max-height: 230px;">
-            <a href="" class="text-reset notification-item">
-              <div class="d-flex">
-                <div class="avatar-xs me-3">
-                  <span class="avatar-title bg-success rounded-circle font-size-16">
-                    <i class="mdi mdi-cart-outline"></i>
-                  </span>
-                </div>
-                <div class="flex-1">
-                  <h6 class="mt-0 font-size-15 mb-1">Your order is placed</h6>
-                  <div class="font-size-12 text-muted">
-                    <p class="mb-1">Dummy text of the printing and typesetting industry.</p>
-                  </div>
-                </div>
-              </div>
-            </a>
-
-            <a href="" class="text-reset notification-item">
-              <div class="d-flex">
-                <div class="avatar-xs me-3">
-                  <span class="avatar-title bg-danger rounded-circle font-size-16">
-                    <i class="mdi mdi-message-text-outline"></i>
-                  </span>
-                </div>
-                <div class="flex-1">
-                  <h6 class="mt-0 font-size-15 mb-1">New Message received</h6>
-                  <div class="font-size-12 text-muted">
-                    <p class="mb-1">You have 87 unread messages</p>
-                  </div>
-                </div>
-              </div>
-            </a>
-
-            <a href="" class="text-reset notification-item">
-              <div class="d-flex">
-                <div class="avatar-xs me-3">
-                  <span class="avatar-title bg-info rounded-circle font-size-16">
-                    <i class="mdi mdi-glass-cocktail"></i>
-                  </span>
-                </div>
-                <div class="flex-1">
-                  <h6 class="mt-0 font-size-15 mb-1">Your item is shipped</h6>
-                  <div class="font-size-12 text-muted">
-                    <p class="mb-1">It is a long established fact that a reader will</p>
-                  </div>
-                </div>
-              </div>
-            </a>
+          <div id="container-notify" data-simplebar style="max-height: 530px;">
             <a href="" class="text-reset notification-item">
               <div class="d-flex">
                 <div class="avatar-xs me-3">
@@ -190,8 +143,8 @@
           </div>
 
           <div class="p-2 border-top">
-            <a class="btn btn-sm btn-link font-size-14 btn-block" href="javascript:void(0)">
-              View all
+            <a class="btn btn-sm btn-link font-size-14 btn-block" href="/notification">
+              Xem toàn bộ
             </a>
           </div>
         </div>
@@ -290,13 +243,13 @@
                     <i class="fas fa-file-invoice-dollar me-2"></i>
                     Nhập hàng
                   </a>
-                  <a th:href="@{/order}" class="dropdown-item">
-                    <i class="fas fa-reply-all me-2"></i>
-                    Đặt hàng
-                  </a>
-                  <a href="#" class="dropdown-item">
+                  <a href="/order-invoice" class="dropdown-item">
                     <i class="fas fa-dolly-flatbed me-2"></i>
                     Đặt hàng NCC
+                  </a>
+                  <a href="/receipt-voucher" class="dropdown-item">
+                    <i class="fas fa-dolly-flatbed me-2"></i>
+                    Thu Chi
                   </a>
                 </div>
               </li>
@@ -311,7 +264,7 @@
                   <a href="/staff" class="dropdown-item">
                     <i class="fas fa-user-secret me-2"></i>Nhân viên
                   </a>
-                  <a href="#" class="dropdown-item">
+                  <a href="/customer" class="dropdown-item">
                     <i class="fas fa-user-alt me-2"></i>Khách hàng
                   </a>
                   <a href="/supplier" class="dropdown-item">
@@ -332,14 +285,8 @@
                   <div class="arrow-down"></div>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="topnav-user-Interface">
-                  <a href="#" class="dropdown-item">
-                    <i class="fas fa-chart-pie me-2"></i>Cuối ngày
-                  </a>
-                  <a href="#" class="dropdown-item">
-                    <i class="fas fas fa-paste me-2"></i>Bán hàng
-                  </a>
-                  <a href="#" class="dropdown-item">
-                    <i class="fas fa-cube me-2"></i>Hàng hoá
+                  <a href="/daily-sales" class="dropdown-item">
+                    <i class="fas fa-chart-pie me-2"></i>Hàng ngày
                   </a>
                 </div>
               </li>
@@ -357,6 +304,14 @@
                   <a th:href="@{/voucher}" class="dropdown-item">
                     <i class="bi bi-card-text me-2"></i>
                     Mã giảm giá
+                  </a>
+                  <a th:href="@{/brand}" class="dropdown-item">
+                    <i class="bi bi-card-text me-2"></i>
+                    Thương hiệu
+                  </a>
+                  <a th:href="@{/promotion}" class="dropdown-item">
+                    <i class="bi-award-fill"></i>
+                    Chương trình khuyến mại
                   </a>
                 </div>
               </li>

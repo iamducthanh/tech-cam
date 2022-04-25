@@ -15,6 +15,8 @@ public enum OrderStatus {
 
     VERIFY,     // Chờ xác nhận
     CONFIRM,    // Chờ xuất hàng
-    SHIPPING,   // Đang giao hàng
+    SHIPPING,   // Chờ giao hàng
+    GOSHIPPING, // đang đi giao hàng
     DONE,       // Hoàn thành
+    CANCEL
 }

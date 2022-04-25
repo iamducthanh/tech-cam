@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.UUID;
 
 @Entity
 @Table(name = "promotion")
@@ -11,7 +12,7 @@ import java.util.Date;
 public class PromotionEntity extends BaseEntity{
     @Id
     @Column(name = "id", nullable = false)
-    private String id;
+    private String id = UUID.randomUUID().toString();
 
     @Column(name = "NAME")
     private String name;

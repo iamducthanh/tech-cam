@@ -19,15 +19,18 @@ import java.util.List;
  */
 @Repository
 public interface ICustomerRepo extends JpaRepository<CustomerEntity, String> {
+
     List<CustomerEntity> findAllByStatus(String status);
+
     @Query(value = "select o.* from Customer o where o.status=:status and month(o.DATE_OF_BIRTH)= :month and day (o.DATE_OF_BIRTH)= :day ", nativeQuery = true)
-    List<CustomerEntity> findAllBySendBirthDay(@Param("status") String status, @Param("month") String month , @Param("day") String day);
+    List<CustomerEntity> findAllBySendBirthDay(@Param("status") String status, @Param("month") String month, @Param("day") String day);
 
 //    List<CustomerEntity> findAllBy(String status, int dateOfBirth_day);
 
     List<CustomerEntity> findAllByPhoneNumberStartsWithAndStatus(String phoneNumber, String status);
 
     List<CustomerEntity> findAllByFullNameStartingWithAndStatus(String fullName, String status);
+
     @Query("select o from CustomerEntity o where o.createDate >= ?1 and o.createDate <= ?2 and o.status = ?3")
     List<CustomerEntity> findAllByCreateDateBetweenAndStatus(Date startDate, Date endDate, String status);
 
@@ -36,5 +39,8 @@ public interface ICustomerRepo extends JpaRepository<CustomerEntity, String> {
     CustomerEntity findByPhoneNumberAndStatus(String phoneNumber, String status);
 
     CustomerEntity findByIdAndStatus(String id, String status);
+
+    @Query("SELECT o FROM CustomerEntity o WHERE o.fullName LIKE %:keyword% OR o.phoneNumber LIKE %:keyword% OR o.email LIKE %:keyword% OR o.address LIKE %:keyword%")
+    List<CustomerEntity> findByKeyword(@Param("keyword") String keyword);
 
 }

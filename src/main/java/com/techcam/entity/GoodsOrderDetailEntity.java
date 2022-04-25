@@ -1,8 +1,6 @@
 package com.techcam.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
@@ -13,6 +11,9 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class GoodsOrderDetailEntity extends BaseEntity {
     @Id
     @Column(name = "id", nullable = false, length = 64)

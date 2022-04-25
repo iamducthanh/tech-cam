@@ -26,6 +26,7 @@ public interface ConstantsErrorCode {
     String PHONE_NUMBER_EXIST = "TC-000-003";
     String CATEGORY_NAME_EXIST = "TC-LG-011";
     String CATEGORY_NAME = "TC-LG-010";
+    String DATE_ERROR = "TC-000-005";
 
 
     // lỗi customer
@@ -82,5 +83,14 @@ public interface ConstantsErrorCode {
     String IMEI_DUPLICATE = "TC-007-004";
 
     String INVOICE_NOT_DETAIL = "TC-008-001";
+    String INVOICE_NOT_ZERO = "TC-008-002";
+    String INVOICE_INVENTORY = "TC-008-003";
+
+    String PROMOTION_EXIST = "TC-012-001";
+    String PROMOTION_NOT_FOUND = "TC-012-002";
+    String PROMOTION_PRODUCT_EXIST = "TC-012-003";
+    String PROMOTION_PRODUCT_NOT_FOUND = "TC-012-004";
+    String PROMOTION_NOT_ACEPTED = "TC-012-007";
+    String ATB_NAME = "TC-012-001";
 
 }

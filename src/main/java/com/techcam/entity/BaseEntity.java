@@ -13,7 +13,6 @@ import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import java.sql.Timestamp;
-import java.util.Date;
 
 /**
  * @author DucBV
@@ -30,7 +29,7 @@ public abstract class BaseEntity {
 
     @CreatedDate
     @Column(name = "create_date")
-    private Timestamp createDate = new Timestamp(new Date().getTime());
+    private Timestamp createDate;
 
     @LastModifiedDate
     @Column(name = "MODIFIER_DATE")
@@ -45,6 +44,6 @@ public abstract class BaseEntity {
     private String modifierBy = "ADMIN";
 
     @Column(name = "DELETE_FLAG")
-    private boolean deleteFlag;
+    private boolean deleteFlag = false;
 
 }
