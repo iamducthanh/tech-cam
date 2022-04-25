@@ -46,4 +46,9 @@ public class NotificationApi {
  public void readNoti(@RequestParam("id") String id){
   notificationService.updateReadNoti(id);
  }
+
+@PutMapping("/api/notification/read-all")
+ public void setReadAllNotification() {
+  notificationService.setReadAllNotification();
+ }
 }

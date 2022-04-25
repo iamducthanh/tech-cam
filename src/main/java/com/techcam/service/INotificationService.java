@@ -20,4 +20,6 @@ public interface INotificationService {
     void saveNotification(NotificationEntity notificationEntity);
     void updateReadNoti(String id);
     void addNotification(NotificationDto notificationDto);
+
+    void setReadAllNotification();
 }
