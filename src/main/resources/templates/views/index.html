@@ -172,6 +172,7 @@
                         })
                     }
                     console.log(dataChart)
+                    myChart02.data.datasets[0].data = 0;
                     for(let profit of dataChart){
                         myChart02.data.datasets[0].data.push(profit.profit);
                     }
