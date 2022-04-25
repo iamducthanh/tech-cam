@@ -1,6 +1,5 @@
 window.onload = function () {
     $('.modal').hide()
-    editData();
 }
 
 function onClickSubmitEditOrderInvoice(e) {
@@ -73,6 +72,7 @@ function onClickSubmitEditOrderInvoice(e) {
         "note": note,
         "details": lstDetails
     }
+    console.log(obj)
     $.ajax({
         url: '/api/order-invoice',
         method: 'PUT',
@@ -200,6 +200,44 @@ function onClickSubmitAddOrderInvoice() {
     console.log(obj);
 }
 
+function onClickCancelOrderInvoice(e) {
+    let id = e.dataset.id
+    let url = '/api/order-invoice/' + id;
+    let cancel = false;
+    if (e.innerHTML.includes('Huỷ')) {
+        cancel = true;
+    }
+    if (cancel) {
+        url += '?cancel=true';
+    } else {
+        url += '?cancel=false';
+    }
+    $.ajax({
+        url: url,
+        method: 'PUT',
+        success: function (data) {
+            if (cancel) {
+                toastSuccess('Thành công', 'Đã huỷ hoá đơn đặt hàng NCC');
+            } else {
+                toastSuccess('Thành công', 'Đã thực hiện đặt lại hàng hoá từ NCC');
+            }
+            setTimeout(function () {
+                location.reload();
+            }, 2000)
+        },
+        error: function (error) {
+            if (error.responseJSON.vn === null || error.responseJSON.vn === undefined) {
+                let message = error.responseJSON.message + '';
+                message = message.substring(message.indexOf(':') + 1)
+                console.log(message)
+                toastDanger('Lỗi', message);
+                return;
+            }
+            toastDanger('Lỗi', error.responseJSON.vn);
+        }
+    })
+}
+
 function onClickEditOrderInvoice(e) {
     $.ajax({
         url: '/api/order-invoice/' + e.dataset.id,
@@ -216,12 +254,20 @@ function onClickEditOrderInvoice(e) {
             if (getSupplier !== null && getSupplier !== undefined) {
                 $(getSupplier).val(data.invoiceSupplierId).change();
             }
+            $('#ip-edit-order-invoice-note').val(data.note);
             $('.edit-quantity-product').val(0);
             for (const detail of data.details) {
-                let getQuantity = $('.' + detail.productId).val(detail.quantity)
-                console.log(getQuantity);
+                $('.' + detail.productId).val(detail.quantity)
             }
-            $('#btnSubmitEditInvoice').attr("data-id", e.dataset.id)
+            if (data.status === 'ON') {
+                $('#btnSubmitEditInvoice').show();
+                $('#btnSubmitReverseCancel').hide();
+                $('#btnSubmitEditInvoice').attr("data-id", e.dataset.id)
+            } else {
+                $('#btnSubmitEditInvoice').hide();
+                $('#btnSubmitReverseCancel').show();
+                $('#btnSubmitReverseCancel').attr("data-id", e.dataset.id)
+            }
         }
     })
 }
@@ -239,25 +285,6 @@ function onAddProductOrderInvoice(e) {
             $(e).hide();
         }
     }
-}
-
-function editData() {
-    let e = {};
-    $(".table-edits tr").editable({
-        dropdowns: {product: [{"value": "1234", "text": "234"}, "Female"]},
-        edit: function (t) {
-            $(".edit i", this).removeClass("fa-pencil-alt").addClass("fa-save btnProductSave").attr("title", "Save")
-        },
-        save: function (t) {
-            $(".edit i", this).removeClass("fa-save btnProductSave").addClass("fa-pencil-alt").attr("title", "Edit"), this in e && (e[this].destroy(), delete e[this])
-        },
-        cancel: function (t) {
-            $(".edit i", this).removeClass("fa-save btnProductSave").addClass("fa-pencil-alt").attr("title", "Edit"), this in e && (e[this].destroy(), delete e[this])
-        }
-    })
-    setTimeout(function () {
-        editData();
-    }, 10);
 }
 
 function searchUser(e) {
@@ -312,4 +339,20 @@ function nonAccentVietnamese(str) {
     str = str.replace(/\u0300|\u0301|\u0303|\u0309|\u0323/g, ""); // Huyền sắc hỏi ngã nặng
     str = str.replace(/\u02C6|\u0306|\u031B/g, ""); // Â, Ê, Ă, Ơ, Ư
     return str;
+}
+
+// event filter table by status
+function onStatusChange(element) {
+    const value = $(element).val();
+    const tagAll = $('#datatable tbody tr');
+    const tag = $('tr td').filter(function () {
+        return $(this).text() === value;
+    });
+
+    if (value === 'Tất cả') {
+        tagAll.show();
+    } else {
+        tagAll.hide();
+        tag.parent().show();
+    }
 }

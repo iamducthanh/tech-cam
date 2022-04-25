@@ -9,15 +9,13 @@ import com.techcam.exception.TechCamExp;
 import com.techcam.repo.*;
 import com.techcam.service.IGoodsreceiptService;
 import com.techcam.service.IProductService;
+import com.techcam.util.ConvertDateUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.techcam.constants.ConstantsErrorCode.INVOICE_INVENTORY;
@@ -51,6 +49,8 @@ public class GoodsreceiptService implements IGoodsreceiptService {
     private final IBrandRepo brandRepo;
 
     private final IProductService productService;
+
+    private final IOrderDetailsRepo orderDetailsRepo;
 
     @Override
     public List<InvoiceResponse> findAllByInvoiceCode(String invoiceCode) {
@@ -97,9 +97,11 @@ public class GoodsreceiptService implements IGoodsreceiptService {
             SupplierEntity supplierEntity = supplierRepo.getByIdAndDeleteFlagIsFalse(invoiceRequest.getSupplierId());
             if (Objects.isNull(supplierEntity)) return FAILED.name();
             long totalMoney = invoiceRequest.getDetails().stream()
-                    .mapToLong(e -> e.getQuantityActual() * e.getPrice()).sum();
+                    .mapToLong(e -> (long) (e.getQuantityActual() * e.getPrice())).sum();
             goodsreceiptEntity.setTotalAmount(Math.toIntExact(totalMoney));
             goodsreceiptEntity.setId(UUID.randomUUID().toString());
+            goodsreceiptEntity.setStatus(ON.name());
+            goodsreceiptEntity.setReceiptId(ConvertDateUtil.generationCode("NH"));
             List<GoodsreceiptdetailEntity> lstDetails = new ArrayList<>();
             for (InvoiceDetailRequest x : invoiceRequest.getDetails()) {
                 if (x.getQuantityActual() < 1) return FAILED.name();
@@ -110,12 +112,31 @@ public class GoodsreceiptService implements IGoodsreceiptService {
                         .productId(x.getProductId())
                         .quantity(x.getQuantity())
                         .quantityActual(x.getQuantityActual())
-                        .price(BigDecimal.valueOf(x.getPrice()))
+                        .price(x.getPrice())
                         .status(ON.name())
                         .note("import invoice")
                         .build());
             }
+
             goodsreceiptRepo.save(goodsreceiptEntity);
+            List<GoodsreceiptdetailEntity> lstInvoiceDetail;
+            List<OrderdetailEntity> lstOrderDetail;
+            Long sumInvoice;
+            Long sumOrder;
+            int sumQuantity;
+            ProductEntity productEntity;
+            Double importPriceToProduct;
+            for (GoodsreceiptdetailEntity x : lstDetails) {
+                lstInvoiceDetail = goodsreceiptdetailRepo.findAllByProductIdAndDeleteFlagIsFalse(x.getProductId());
+                lstOrderDetail = orderDetailsRepo.findAllByProductIdAndDeleteFlagIsFalse(x.getProductId());
+                sumInvoice = lstInvoiceDetail.stream().mapToLong(GoodsreceiptdetailEntity::getQuantityActual).sum();
+                sumOrder = lstOrderDetail.stream().mapToLong(OrderdetailEntity::getQuantity).sum();
+                sumQuantity = (int) (sumInvoice - sumOrder);
+                productEntity = productRepo.getByIdAndDeleteFlagIsFalse(x.getProductId());
+                importPriceToProduct = (((productEntity.getImportPrice() * sumQuantity)) + (x.getPrice() * x.getQuantityActual())) / (sumQuantity + x.getQuantityActual());
+                productEntity.setImportPrice(importPriceToProduct);
+                productRepo.save(productEntity);
+            }
             goodsreceiptdetailRepo.saveAll(lstDetails);
             return SUCCESS.name();
         } catch (Exception e) {
@@ -133,18 +154,18 @@ public class GoodsreceiptService implements IGoodsreceiptService {
             SupplierEntity supplierEntity = supplierRepo.getByIdAndDeleteFlagIsFalse(invoiceRequest.getSupplierId());
             if (Objects.isNull(supplierEntity)) return FAILED.name();
             long totalMoney = invoiceRequest.getDetails().stream()
-                    .mapToLong(e -> e.getQuantityActual() * e.getPrice()).sum();
+                    .mapToLong(e -> (long) (e.getQuantityActual() * e.getPrice())).sum();
             goodsreceiptEntity.setTotalAmount(Math.toIntExact(totalMoney));
             List<GoodsreceiptdetailEntity> lstDetails = new ArrayList<>();
             for (InvoiceDetailRequest x : invoiceRequest.getDetails()) {
                 if (x.getQuantityActual() < 1) return FAILED.name();
                 GoodsreceiptdetailEntity goodsreceiptdetailEntity = goodsreceiptdetailRepo.findAllByGoodsReceiptIdAndProductIdAndDeleteFlagIsFalse(
-                        invoiceRequest.getInvoiceCode(),
+                        goodsreceiptEntity.getReceiptId(),
                         x.getProductId()
                 ).stream().findFirst().orElse(null);
                 if (Objects.nonNull(goodsreceiptdetailEntity)) {
                     goodsreceiptdetailEntity.setQuantity(x.getQuantity());
-                    goodsreceiptdetailEntity.setPrice(BigDecimal.valueOf(x.getPrice()));
+                    goodsreceiptdetailEntity.setPrice(x.getPrice());
                     lstDetails.add(goodsreceiptdetailEntity);
                     continue;
                 }
@@ -155,22 +176,62 @@ public class GoodsreceiptService implements IGoodsreceiptService {
                         .productId(x.getProductId())
                         .quantity(x.getQuantity())
                         .quantityActual(x.getQuantityActual())
-                        .price(BigDecimal.valueOf(x.getPrice()))
+                        .price(x.getPrice())
                         .status(ON.name())
                         .note("import invoice")
                         .build());
             }
             goodsreceiptRepo.save(goodsreceiptEntity);
+
             List<GoodsreceiptdetailEntity> lstFind = goodsreceiptdetailRepo.findAllByGoodsReceiptIdAndDeleteFlagIsFalse(invoiceRequest.getInvoiceId());
+            List<GoodsreceiptdetailEntity> lstInvoiceDetail;
+            List<OrderdetailEntity> lstOrderDetail;
+            Long sumInvoice;
+            Long sumOrder;
+            int sumQuantity;
+            ProductEntity productEntity;
+            Double importPriceToProduct;
+
+            for (GoodsreceiptdetailEntity x : lstFind) {
+                lstInvoiceDetail = goodsreceiptdetailRepo.findAllByProductIdAndDeleteFlagIsFalse(x.getProductId());
+                lstOrderDetail = orderDetailsRepo.findAllByProductIdAndDeleteFlagIsFalse(x.getProductId());
+                sumInvoice = lstInvoiceDetail.stream().mapToLong(GoodsreceiptdetailEntity::getQuantityActual).sum();
+                sumOrder = lstOrderDetail.stream().mapToLong(OrderdetailEntity::getQuantity).sum();
+                sumQuantity = (int) (sumInvoice - sumOrder);
+                productEntity = productRepo.getByIdAndDeleteFlagIsFalse(x.getProductId());
+                importPriceToProduct = ((sumQuantity * productEntity.getImportPrice()) + x.getQuantityActual() * (productEntity.getImportPrice() - x.getPrice())) / x.getQuantityActual();
+//                if (((productEntity.getImportPrice() * sumQuantity - x.getQuantityActual()) - (x.getPrice() * x.getQuantityActual())) == 0) {
+//                    importPriceToProduct = 0.0;
+//                } else {
+//                    importPriceToProduct = ((productEntity.getImportPrice() * sumQuantity - x.getQuantityActual()) - (x.getPrice() * x.getQuantityActual())) / (sumQuantity - x.getQuantityActual());
+//                }
+                productEntity.setImportPrice(importPriceToProduct);
+                productRepo.save(productEntity);
+            }
+
+            for (GoodsreceiptdetailEntity x : lstDetails) {
+                lstInvoiceDetail = goodsreceiptdetailRepo.findAllByProductIdAndDeleteFlagIsFalse(x.getProductId());
+                lstOrderDetail = orderDetailsRepo.findAllByProductIdAndDeleteFlagIsFalse(x.getProductId());
+                sumInvoice = lstInvoiceDetail.stream().mapToLong(GoodsreceiptdetailEntity::getQuantityActual).sum();
+                sumOrder = lstOrderDetail.stream().mapToLong(OrderdetailEntity::getQuantity).sum();
+                sumQuantity = (int) (sumInvoice - sumOrder);
+                productEntity = productRepo.getByIdAndDeleteFlagIsFalse(x.getProductId());
+                importPriceToProduct = (((productEntity.getImportPrice() * sumQuantity)) + (x.getPrice() * x.getQuantityActual())) / (sumQuantity + x.getQuantityActual());
+                productEntity.setImportPrice(importPriceToProduct);
+                productRepo.save(productEntity);
+            }
+
             List<String> lstInvoiceDetailId = lstDetails.stream().map(GoodsreceiptdetailEntity::getId).collect(Collectors.toList());
             lstFind = lstFind.stream().filter(e -> !lstInvoiceDetailId.contains(e.getId())).collect(Collectors.toList());
             lstFind.forEach(e -> e.setDeleteFlag(true));
             goodsreceiptdetailRepo.saveAll(lstDetails);
             goodsreceiptdetailRepo.saveAll(lstFind);
-            for (GoodsreceiptdetailEntity x : lstDetails) {
-                int inventory = productService.getInventoryByProductId(x.getProductId());
+            // kiểm tra số lượng tồn khi nếu như số lượng < 0 (tương ứng số bán nhiều hơn số nhập) sẽ báo lỗi không được phép sửa
+            Set<String> lstProductId = lstDetails.stream().map(e -> e.getProductId()).collect(Collectors.toSet());
+            for (String x : lstProductId) {
+                int inventory = productService.getInventoryByProductId(x);
                 if (inventory < 0) {
-                    ProductEntity productEntity = productRepo.getByIdAndDeleteFlagIsFalse(x.getProductId());
+                    productEntity = productRepo.getByIdAndDeleteFlagIsFalse(x);
                     throw new TechCamExp(INVOICE_INVENTORY, productEntity.getName());
                 }
             }
@@ -191,7 +252,7 @@ public class GoodsreceiptService implements IGoodsreceiptService {
                 .status(x.getStatus() ? ON.name() : OFF.name())
                 .note(x.getNote())
                 .orderId(Objects.isNull(x.getInvoiceOrderId()) || x.getInvoiceOrderId().isEmpty() ? null : x.getInvoiceOrderId())
-                .receiptId(x.getInvoiceCode().toUpperCase())
+//                .receiptId(x.getInvoiceCode().toUpperCase())
                 .discount(BigDecimal.valueOf(x.getDiscount()))
                 .deliverier(x.getShipper())
                 .receiptStatus(ON.name())
@@ -215,7 +276,7 @@ public class GoodsreceiptService implements IGoodsreceiptService {
                 .brandName(Objects.nonNull(brandEntity) ? brandEntity.getName() : "")
                 .quantity(x.getQuantity())
                 .quantityActual(x.getQuantityActual())
-                .price(Long.parseLong(String.valueOf(x.getPrice())))
+                .price(x.getPrice())
                 .build();
     }
 
@@ -238,6 +299,7 @@ public class GoodsreceiptService implements IGoodsreceiptService {
                 .paid(paid)
                 .shipper(x.getDeliverier())
                 .note(x.getNote())
+                .createDate(x.getCreateDate())
                 .build();
     }
 

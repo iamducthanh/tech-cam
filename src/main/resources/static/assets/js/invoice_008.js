@@ -100,12 +100,9 @@ function onChangeAddProduct(e) {
 
 function onChangeInvoiceOrderEdit(e) {
     let value = e.value + '';
-    console.log(e)
-    console.log(value)
     let id, supplierId;
     if (value !== null && value !== undefined && value !== '') {
-        id = value.substring(0, value.indexOf('@'));
-        supplierId = value.substring(value.includes('@') + 1)
+        id = value;
     } else {
         return;
     }
@@ -114,7 +111,6 @@ function onChangeInvoiceOrderEdit(e) {
         url: '/api/invoice?orderId=' + id,
         method: 'GET',
         success: function (data) {
-            console.log(data)
             $(data).each((index, obj) => {
                 $('#bodyAddProduct').html('');
                 $.ajax({
@@ -135,7 +131,6 @@ function onChangeInvoiceOrderEdit(e) {
 
 function onChangeAddProductEdit(e) {
     let arrSelect = getSelectValues(e);
-    console.log(arrSelect)
     $(arrSelect).each((index, data) => {
         let invoiceDetail = $('#invoice-edit-detail');
         if (invoiceDetail.children('#edit' + data.id).length === 0) {
@@ -215,7 +210,6 @@ function onClickAddInvoice() {
         getAllProductQuantityActual,
         getAllProductPrice
     )
-    console.log(obj)
     if (obj !== null && obj !== undefined) {
         $.ajax({
             url: '/api/invoice',
@@ -232,7 +226,6 @@ function onClickAddInvoice() {
                 if (error.responseJSON.vn === null || error.responseJSON.vn === undefined) {
                     let message = error.responseJSON.message + '';
                     message = message.substring(message.indexOf(':') + 1)
-                    console.log(message)
                     toastDanger('Lỗi', message);
                     return;
                 }
@@ -287,7 +280,6 @@ function onClickEditInvoice(e) {
     $.ajax({
         url: '/invoice/component/edit-invoice?id=' + e.dataset.id,
         success: function (html) {
-            console.log(html)
             $('#editInvoice').html(html)
             $.ajax({
                 url: '/api/invoice?invoiceId=' + e.dataset.id,
@@ -342,7 +334,6 @@ function onClickSubmitEditInvoice(e) {
         getAllProductQuantityActual,
         getAllProductPrice
     )
-    console.log(obj)
     if (obj !== null && obj !== undefined) {
         $.ajax({
             url: '/api/invoice',
@@ -350,7 +341,6 @@ function onClickSubmitEditInvoice(e) {
             contentType: 'application/json',
             data: JSON.stringify(obj),
             success: function (data) {
-                console.log(data);
                 toastSuccess('Thành công', 'Đã cập nhật thông tin nhập hàng')
                 setTimeout(function () {
                     location.reload()
@@ -379,14 +369,14 @@ function valueDateInvoice(
     getAllProductQuantityActual,
     getAllProductPrice,
 ) {
-    if (getInvoiceCode === null || getInvoiceCode === undefined || getInvoiceCode.value === '') {
-        toastDanger('Lỗi', 'Vui lòng nhập mã nhập hàng');
-        return;
-    }
-    if (getInvoiceCode.value.length < 5 || getInvoiceCode.value.length > 50) {
-        toastDanger('Lỗi', 'Mã nhập hàng phải từ 10 đến 50 ký tự');
-        return;
-    }
+    // if (getInvoiceCode === null || getInvoiceCode === undefined || getInvoiceCode.value === '') {
+    //     toastDanger('Lỗi', 'Vui lòng nhập mã nhập hàng');
+    //     return;
+    // }
+    // if (getInvoiceCode.value.length < 5 || getInvoiceCode.value.length > 50) {
+    //     toastDanger('Lỗi', 'Mã nhập hàng phải từ 10 đến 50 ký tự');
+    //     return;
+    // }
     if (getSupplier === null || getSupplier === undefined || getSupplier.value === '') {
         toastDanger('Lỗi', 'Vui lòng chọn nhà cung cấp');
         return;
@@ -429,7 +419,6 @@ function valueDateInvoice(
                 "quantityActual": getAllProductQuantityActual[i].innerHTML,
                 "price": getAllProductPrice[i].innerHTML,
             };
-            console.log(obj)
             let flag = true;
             if (obj.productId === null || obj.productId === undefined || obj.productId === '' || obj.productId === 'null') {
                 flag = false;

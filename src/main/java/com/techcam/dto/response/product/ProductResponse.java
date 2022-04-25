@@ -1,10 +1,15 @@
 package com.techcam.dto.response.product;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.techcam.dto.ProductDto;
 import lombok.*;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
+
+import static com.techcam.constants.ConstantsErrorCode.ERROR_BLANK;
 
 /**
  * Description :
@@ -23,6 +28,8 @@ import java.util.List;
 public class ProductResponse extends ProductDto {
 
     private String productId;
+
+    private String productCode;
 
     private String createBy;
 

@@ -32,11 +32,11 @@ public class InvoiceOrderResponse {
 
     private String invoiceSupplierName;
 
-    private LocalDate orderDate;
+    private String orderDate;
 
     private String orderStaff;
 
-    private LocalDate orderDelivery;
+    private String orderDelivery;
 
     private String status;
 
@@ -45,6 +45,8 @@ public class InvoiceOrderResponse {
     private Date dateInvoice;
 
     private Integer statusInvoice;
+
+    private Date createDate;
 
     private List<InvoiceOrderDetailResponse> details;
 

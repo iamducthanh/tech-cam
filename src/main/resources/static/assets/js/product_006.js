@@ -290,20 +290,20 @@ function validateObjectProduct(
     }
 
     // validate mã sản phẩm
-    if (productCode === null || productCode === undefined || productCode === '') {
-        toastDanger('Lỗi', 'Vui lòng nhập mã sản phẩm');
-        return;
-    }
-    if (!/^[a-zA-Z0-9\-]+$/.test(productCode)) {
-        console.log('Mã sản phẩm không đúng');
-        toastDanger('Lỗi', 'Mã sản phẩm không đúng');
-        return;
-    }
-    if (productCode.length < 10 || productCode.length > 50) {
-        console.log('Mã sản phẩm chỉ từ 10 đến 50 ký tự');
-        toastDanger('Lỗi', 'Mã sản phẩm chỉ từ 10 đến 50 ký tự');
-        return;
-    }
+    // if (productCode === null || productCode === undefined || productCode === '') {
+    //     toastDanger('Lỗi', 'Vui lòng nhập mã sản phẩm');
+    //     return;
+    // }
+    // if (!/^[a-zA-Z0-9\-]+$/.test(productCode)) {
+    //     console.log('Mã sản phẩm không đúng');
+    //     toastDanger('Lỗi', 'Mã sản phẩm không đúng');
+    //     return;
+    // }
+    // if (productCode.length < 10 || productCode.length > 50) {
+    //     console.log('Mã sản phẩm chỉ từ 10 đến 50 ký tự');
+    //     toastDanger('Lỗi', 'Mã sản phẩm chỉ từ 10 đến 50 ký tự');
+    //     return;
+    // }
 
     // validate tên sản phẩm
     if (productName === null || productName === undefined || productName === '') {
@@ -311,7 +311,7 @@ function validateObjectProduct(
         toastDanger('Lỗi', 'Vui lòng nhập tên sản phẩm');
         return;
     }
-    if (productCode.length < 10 || productCode.length > 100) {
+    if (productName.length < 10 || productName.length > 100) {
         console.log('Tên sản phẩm chỉ từ 10 đến 100 ký tự');
         toastDanger('Lỗi', 'Tên sản phẩm chỉ từ 10 đến 100 ký tự');
         return;
@@ -465,6 +465,7 @@ function onClickEditProduct(e) {
             if (getElementProductCategory !== null) {
                 getElementProductCategory.value = data.productCategory;
                 getElementProductCategory.dataset.id = id
+                $('#ip-edit-product-category').change();
                 $.ajax({
                     url: '/product/property/edit?category=' + data.productCategory + '&product=' + id,
                     method: 'GET',
@@ -522,11 +523,128 @@ function enableCheckBox() {
     let countChk = 0;
     let getChk = document.getElementsByClassName('chk-add-product')
     for (const chk of getChk) {
-        if (!chk.parentElement.parentElement.hidden) {
+        if (!chk.hidden && !chk.parentElement.parentElement.hidden) {
             countChk++;
             if (chk.checked) countChecked++;
         }
     }
     if (getChkAll !== null && getChkAll !== undefined)
         getChkAll.checked = countChecked === countChk
+}
+
+function onClickOrderInvoice() {
+    $('.tr-order-add-product').hide();
+    $('.quantity-product').val(0);
+    $('.chk-add-product').each((index, product) => {
+        if (product.checked) {
+            // $('.tr-order-add-product').show();
+            // console.log($('.tr-order-add-product').show())
+            // console.log($('.tr-order-add-product[data-id-product="' + product.id + '"]'))
+            // console.log($('.tr-order-add-product[data-id-product="' + product.id + '"]').show())
+            $('.tr-order-add-product[data-id-product="' + product.id + '"]').show()
+        }
+    })
+}
+
+
+function onChangeQuantity(e) {
+    let value = e.value;
+    if (value === null || value === undefined || value === '' || !Number(value) || Number(value) < 0) {
+        e.value = 0;
+    } else if (Number(value) < Number(e.dataset.min)) {
+        e.value = Number(e.dataset.min);
+    } else {
+        e.value = Number(value);
+    }
+}
+
+function onClickSubmitAddOrderInvoice() {
+    let getOrderCode = document.getElementById('ip-order-invoice-code');
+    let orderCode;
+    if (getOrderCode !== null && getOrderCode !== undefined) {
+        orderCode = getOrderCode.value;
+        if (orderCode === null || orderCode === undefined || orderCode === '') {
+            toastDanger('Lỗi', 'Vui lòng nhập mã đặt hàng');
+            return;
+        }
+        if (orderCode.length < 5 || orderCode.length > 50) {
+            toastDanger('Lỗi', 'Mã đặt hàng từ 5 đến 50 ký tự');
+            return;
+        }
+    }
+    let getDate = document.getElementById('ip-order-invoice-date');
+    let orderDate;
+    if (getDate !== null && getDate !== undefined) {
+        orderDate = getDate.value;
+        if (orderDate === null || orderDate === undefined || orderDate === '') {
+            toastDanger('Lỗi', 'Vui lòng chọn ngày hẹn nhận');
+            return;
+        }
+    }
+    let getSupplier = document.getElementById('ip-order-invoice-supplier');
+    let idSupplier;
+    if (getSupplier !== null && getSupplier !== undefined) {
+        idSupplier = getSupplier.value;
+        if (idSupplier === null || idSupplier === undefined) {
+            toastDanger('Lỗi', 'Vui long chọn nhà cung cấp');
+            return;
+        }
+    }
+    let getNote = document.getElementById('ip-order-invoice-note');
+    let note;
+    if (getNote !== null && getNote !== undefined) {
+        note = getNote.value;
+    }
+    let lstDetails = [];
+    let getTrProduct = document.getElementsByClassName('tr-order-add-product');
+    if (getTrProduct !== null && getTrProduct !== undefined) {
+        for (const $tr of getTrProduct) {
+            let idProduct = $tr.dataset.id;
+            let quantity;
+            let getQuantity = $tr.getElementsByClassName('quantity-product');
+            if (getQuantity !== null && getQuantity !== undefined) {
+                quantity = getQuantity[0].value;
+                if (quantity === null || quantity === undefined || !Number(quantity) || Number(quantity) < 1) {
+                    // toastDanger('Lỗi', 'Vui lòng nhập số lượng đặt lớn hơn 0');
+                    // return;
+                } else {
+                    lstDetails.push({
+                        "productId": idProduct,
+                        "quantity": quantity
+                    })
+                }
+            }
+        }
+    }
+    if (lstDetails.length === 0) {
+        toastDanger('Lỗi', 'Vui lòng nhập số lượng ít nhất 1 sản phẩm');
+        return;
+    }
+    let obj = {
+        "code": orderCode,
+        "date": orderDate,
+        "supplierId": idSupplier,
+        "note": note,
+        "details": lstDetails
+    }
+    $.ajax({
+        url: '/api/order-invoice',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(obj),
+        success: function (data) {
+            toastSuccess('Thành công', 'Đã tạo mới hoá đơn đặt hàng NCC');
+            $('.btn-close').click();
+        },
+        error: function (error) {
+            if (error.responseJSON.vn === null || error.responseJSON.vn === undefined) {
+                let message = error.responseJSON.message + '';
+                message = message.substring(message.indexOf(':') + 1)
+                toastDanger('Lỗi', message);
+                return;
+            }
+            toastDanger('Lỗi', error.responseJSON.vn);
+        }
+    })
+    console.log(obj);
 }

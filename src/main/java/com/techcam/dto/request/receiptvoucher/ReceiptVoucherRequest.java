@@ -20,7 +20,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 public class ReceiptVoucherRequest {
-    private String id;
+    private Integer id;
     private String payer;
     private String payerPhone;
     private String receiptName;

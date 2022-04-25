@@ -22,6 +22,7 @@ public class OrderdetailEntity extends BaseEntity {
     private Integer quantity;
     private OrdersEntity orders;
     private ProductEntity product;
+    private Integer importPrice;
 
     @Id
     @Column(name = "ID")
@@ -40,6 +41,16 @@ public class OrderdetailEntity extends BaseEntity {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    @Basic
+    @Column(name = "import_price")
+    public Integer getImportPrice() {
+        return importPrice;
+    }
+
+    public void setImportPrice(Integer importPrice) {
+        this.importPrice = importPrice;
     }
 
     @Basic
@@ -71,6 +82,7 @@ public class OrderdetailEntity extends BaseEntity {
     public void setDiscount(Integer discount) {
         this.discount = discount;
     }
+
 
     @ManyToOne
     @JoinColumn(name = "order_id")
