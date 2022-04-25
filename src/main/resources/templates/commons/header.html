@@ -22,7 +22,7 @@
       <!-- For normal screen -->
       <ul class="list-inline d-none d-lg-block mb-0">
         <li class="list-inline-item me-3 help-number">
-          <span class="font-size-13 header-item">Hỗ trợ : +012 3456 789</span>
+          <span class="font-size-13 header-item">Hỗ trợ : 0944485575</span>
         </li>
         <!-- List languages-->
         <li class="list-inline-item">
@@ -30,40 +30,40 @@
             <button type="button" class="btn header-item waves-effect" data-bs-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
               <img class="me-2" src="assets/img/vn_flag.jpg" alt="Header Language" height="14"><span
-                    class="mdi mdi-chevron-down">Vietnam</span>
+                    class="mdi mdi-chevron-down">Tiếng việt</span>
             </button>
-            <div class="dropdown-menu dropdown-menu-end">
+<!--            <div class="dropdown-menu dropdown-menu-end">-->
 
-              <!-- item-->
-              <a href="javascript:void(0);" class="dropdown-item notify-item">
-                <img src="assets/img/us_flag.jpg" alt="user-image" class="me-1" height="12"> <span
-                      class="align-middle"> United States </span>
-              </a>
+<!--              &lt;!&ndash; item&ndash;&gt;-->
+<!--              <a href="javascript:void(0);" class="dropdown-item notify-item">-->
+<!--                <img src="assets/img/us_flag.jpg" alt="user-image" class="me-1" height="12"> <span-->
+<!--                      class="align-middle"> United States </span>-->
+<!--              </a>-->
 
-              <!-- item-->
-              <a href="javascript:void(0);" class="dropdown-item notify-item">
-                <img src="assets/img/french_flag.jpg" alt="user-image" class="me-1" height="12">
-                <span class="align-middle"> French </span>
-              </a>
+<!--              &lt;!&ndash; item&ndash;&gt;-->
+<!--              <a href="javascript:void(0);" class="dropdown-item notify-item">-->
+<!--                <img src="assets/img/french_flag.jpg" alt="user-image" class="me-1" height="12">-->
+<!--                <span class="align-middle"> French </span>-->
+<!--              </a>-->
 
-              <!-- item-->
-              <a href="javascript:void(0);" class="dropdown-item notify-item">
-                <img src="assets/img/germany_flag.jpg" alt="user-image" class="me-1" height="12">
-                <span class="align-middle"> German </span>
-              </a>
+<!--              &lt;!&ndash; item&ndash;&gt;-->
+<!--              <a href="javascript:void(0);" class="dropdown-item notify-item">-->
+<!--                <img src="assets/img/germany_flag.jpg" alt="user-image" class="me-1" height="12">-->
+<!--                <span class="align-middle"> German </span>-->
+<!--              </a>-->
 
-              <!-- item-->
-              <a href="javascript:void(0);" class="dropdown-item notify-item">
-                <img src="assets/img/italy_flag.jpg" alt="user-image" class="me-1" height="12">
-                <span class="align-middle"> Italian </span>
-              </a>
+<!--              &lt;!&ndash; item&ndash;&gt;-->
+<!--              <a href="javascript:void(0);" class="dropdown-item notify-item">-->
+<!--                <img src="assets/img/italy_flag.jpg" alt="user-image" class="me-1" height="12">-->
+<!--                <span class="align-middle"> Italian </span>-->
+<!--              </a>-->
 
-              <!-- item-->
-              <a href="javascript:void(0);" class="dropdown-item notify-item">
-                <img src="assets/img/spain_flag.jpg" alt="user-image" class="me-1" height="12">
-                <span class="align-middle"> Spanish </span>
-              </a>
-            </div>
+<!--              &lt;!&ndash; item&ndash;&gt;-->
+<!--              <a href="javascript:void(0);" class="dropdown-item notify-item">-->
+<!--                <img src="assets/img/spain_flag.jpg" alt="user-image" class="me-1" height="12">-->
+<!--                <span class="align-middle"> Spanish </span>-->
+<!--              </a>-->
+<!--            </div>-->
           </div>
         </li>
         <!-- End List languages-->
@@ -145,6 +145,9 @@
           <div class="p-2 border-top">
             <a class="btn btn-sm btn-link font-size-14 btn-block" href="/notification">
               Xem toàn bộ
+            </a>
+            <a class="btn btn-sm btn-link font-size-14 btn-block" onclick="readAllNotification()" href="#">
+              Đánh dấu tất cả là đã đọc
             </a>
           </div>
         </div>
@@ -391,6 +394,20 @@
       </div>
     </div>
   </div>
+  <script>
+    function readAllNotification(){
+      $.ajax({
+        url: '/api/notification/read-all',
+        success: function (datas) {
+          loadNotifyHead();
+        },
+        error: function (error) {
+          console.log(error)
+        },
+        method: 'PUT'
+      })
+    }
+  </script>
   <!-- End Change password -->
 </header>
 
