@@ -122,4 +122,13 @@ public class NotificationService implements INotificationService {
   messagingTemplate.convertAndSend("/topic/notify", notificationDto);
 
  }
+
+ @Override
+ public void setReadAllNotification() {
+  List<NotificationEntity> notifications = notificationRepo.findAllByReadIsFalse();
+  notifications.forEach(o -> {
+   o.setRead(true);
+  });
+  notificationRepo.saveAll(notifications);
+ }
 }

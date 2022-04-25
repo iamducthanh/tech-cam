@@ -66,7 +66,7 @@
                             <th>Ảnh đại diện</th>
                             <th>Mã nhân viên</th>
                             <th>Tên đăng nhập</th>
-                            <th>Họ tên</th>
+                            <th class="header-name">Họ tên</th>
                             <th>Ngày sinh</th>
                             <th>Số điện thoại</th>
                             <th>Email</th>
@@ -78,7 +78,7 @@
                         </thead>
                         <tbody style="vertical-align: middle;">
                             <tr th:each="staff, iterator : ${staffs}">
-                                <td class="text-end">
+                                <td class="text-end info-index">
                                     <!-- <span th:text="${iterator.index + 1}"></span>-->
                                 </td>
                                 <td th:switch="${staff.getStatus()}" class="text-center">
@@ -325,6 +325,17 @@
             .html("<i class=\"fas fa-user-alt text-success text-center fs-3\" title=\"Thông tin\" onclick=\"onBtnEdit(this)\"></i>");
     });
 
+    // resize datatable and remark index row table
+    function resizeTable() {
+        $('th.header-name:first').click();
+        $('th.header-name:first').click();
+        $('th.header-name:first').click();
+
+        $('#datatable tbody tr:not(:hidden) .info-index').each(function (index) {
+            $(this).text(index + 1);
+        });
+    }
+
     function hoverIconLock() {
         $('.fa-lock-open').hover(function () {
             $(this).removeClass('fa-lock-open').addClass('fa-lock').css('color', 'red');
@@ -388,6 +399,7 @@
             rows.hide();
             rows.find(`.status:contains(${status})`).parent().parent().show();
         }
+        resizeTable();
     }
 
     // event filter table by role
@@ -401,6 +413,7 @@
             rows.hide();
             rows.find(`.role:contains(${role[0]})`).parent().parent().show();
         }
+        resizeTable();
     }
 
     // event reset form

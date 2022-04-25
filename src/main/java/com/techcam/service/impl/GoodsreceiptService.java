@@ -100,6 +100,7 @@ public class GoodsreceiptService implements IGoodsreceiptService {
                     .mapToLong(e -> (long) (e.getQuantityActual() * e.getPrice())).sum();
             goodsreceiptEntity.setTotalAmount(Math.toIntExact(totalMoney));
             goodsreceiptEntity.setId(UUID.randomUUID().toString());
+            goodsreceiptEntity.setStatus(ON.name());
             goodsreceiptEntity.setReceiptId(ConvertDateUtil.generationCode("NH"));
             List<GoodsreceiptdetailEntity> lstDetails = new ArrayList<>();
             for (InvoiceDetailRequest x : invoiceRequest.getDetails()) {
@@ -298,6 +299,7 @@ public class GoodsreceiptService implements IGoodsreceiptService {
                 .paid(paid)
                 .shipper(x.getDeliverier())
                 .note(x.getNote())
+                .createDate(x.getCreateDate())
                 .build();
     }
 

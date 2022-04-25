@@ -18,6 +18,7 @@ public class GetProductByOrderId {
 
     private String id;
     private String name;
+    private String thumbnail;
     private String productCode;
     private int quantity;
     private long price;

@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -72,6 +73,8 @@ public class InvoiceResponse {
      * người giao hàng
      */
     private String shipper;
+
+    private Date createDate;
 
     /**
      * chi tiết nhập hàng
