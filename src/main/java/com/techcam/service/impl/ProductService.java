@@ -11,6 +11,7 @@ import com.techcam.entity.*;
 import com.techcam.mapper.ProductMapper;
 import com.techcam.repo.*;
 import com.techcam.service.IProductService;
+import com.techcam.util.ConvertDateUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -84,15 +85,16 @@ public class ProductService implements IProductService {
         if (Objects.isNull(productRequest)) {
             return ConstantsErrorCode.ERROR_DATA_REQUEST;
         }
-        if (!productRepo.findALlByProductCodeAndDeleteFlagIsFalse(productRequest.getProductCode()).isEmpty()) {
-            return ConstantsErrorCode.PRODUCT_CODE_DUPLICATE;
-        }
+//        if (!productRepo.findALlByProductCodeAndDeleteFlagIsFalse(productRequest.getProductCode()).isEmpty()) {
+//            return ConstantsErrorCode.PRODUCT_CODE_DUPLICATE;
+//        }
         ProductEntity productEntity = new ProductEntity();
         productEntity = mapToEntity(productRequest, productEntity);
         if (Objects.isNull(productEntity)) {
             return ConstantsErrorCode.ERROR_DATA_REQUEST;
         }
         productEntity.setId(UUID.randomUUID().toString());
+        productEntity.setProductCode(ConvertDateUtil.generationCode("SP"));
         List<ImagesEntity> lstImage = new ArrayList<>();
         for (String x : productRequest.getProductImages()) {
             ImagesEntity imagesEntity = ImagesEntity.builder()
@@ -122,6 +124,7 @@ public class ProductService implements IProductService {
             lstProductPropertyEntities.add(productPropertyEntity);
         }
         try {
+            productEntity.setImportPrice(0.0);
             productRepo.save(productEntity);
             productPropertyRepo.saveAll(lstProductPropertyEntities);
             for (ImagesEntity x : lstImage) {
@@ -140,10 +143,10 @@ public class ProductService implements IProductService {
         if (Objects.isNull(productRequest)) {
             return ConstantsErrorCode.ERROR_DATA_REQUEST;
         }
-        if (productRepo.findALlByProductCodeAndDeleteFlagIsFalse(productRequest.getProductCode())
-                .stream().anyMatch(e -> !e.getId().equals(productRequest.getProductId()))) {
-            return ConstantsErrorCode.PRODUCT_CODE_DUPLICATE;
-        }
+//        if (productRepo.findALlByProductCodeAndDeleteFlagIsFalse(productRequest.getProductCode())
+//                .stream().anyMatch(e -> !e.getId().equals(productRequest.getProductId()))) {
+//            return ConstantsErrorCode.PRODUCT_CODE_DUPLICATE;
+//        }
         ProductEntity productEntity = productRepo.getByIdAndDeleteFlagIsFalse(productRequest.getProductId());
         if (Objects.isNull(productEntity)) {
             return ConstantsErrorCode.ERROR_DATA_REQUEST;
@@ -247,13 +250,13 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public List<ProductResponse> findAllByCategoryId(String categoryId){
+    public List<ProductResponse> findAllByCategoryId(String categoryId) {
         return productRepo.findAllByCategoryIdAndDeleteFlagFalse(categoryId).stream()
                 .map(this::mapToResponse).collect(Collectors.toList());
     }
 
     @Override
-    public List<ProductResponseDTO> getAll(){
+    public List<ProductResponseDTO> getAll() {
         return productMapper.toProductResponseDTOs(productRepo.findAllByDeleteFlagIsFalse());
     }
 
@@ -267,22 +270,21 @@ public class ProductService implements IProductService {
         if (Objects.isNull(obj)) return null;
         if (obj instanceof ProductAddRequest) {
             ProductAddRequest x = (ProductAddRequest) obj;
-            return mapToEntity(s, x.getProductCategory(), x.getProductBrand(), x.getProductName(), x.getProductCode(), x.getProductPrice(), x.getProductDescription(), x.getProductStatus());
+            return mapToEntity(s, x.getProductCategory(), x.getProductBrand(), x.getProductName(), x.getProductPrice(), x.getProductDescription(), x.getProductStatus());
         } else if (obj instanceof ProductEditRequest) {
             ProductEditRequest x = (ProductEditRequest) obj;
-            return mapToEntity(s, x.getProductCategory(), x.getProductBrand(), x.getProductName(), x.getProductCode(), x.getProductPrice(), x.getProductDescription(), x.getProductStatus());
+            return mapToEntity(s, x.getProductCategory(), x.getProductBrand(), x.getProductName(), x.getProductPrice(), x.getProductDescription(), x.getProductStatus());
         }
         return null;
     }
 
-    private ProductEntity mapToEntity(ProductEntity s, String productCategory, String productBrand, String productName, String productCode, String productPrice, String productDescription, String productStatus) {
+    private ProductEntity mapToEntity(ProductEntity s, String productCategory, String productBrand, String productName, String productPrice, String productDescription, String productStatus) {
         CategoryEntity categoryEntity = categoryRepo.getByIdAndDeleteFlagIsFalse(productCategory);
         BrandEntity brandEntity = brandRepo.getByIdAndDeleteFlagIsFalse(productBrand);
         return s.toBuilder()
                 .name(productName)
                 .categoryId(Objects.isNull(categoryEntity) ? null : categoryEntity.getId())
                 .brandId(Objects.isNull(brandEntity) ? null : brandEntity.getId())
-                .productCode(productCode)
                 .quantity(0)
                 .price(Long.parseLong(productPrice))
                 .detail("")

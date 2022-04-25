@@ -43,6 +43,6 @@ public class InvoiceDetailRequest {
     /**
      * giá tiền
      */
-    private Long price;
+    private Double price;
 
 }

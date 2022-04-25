@@ -63,6 +63,6 @@ public class InvoiceDetailResponse {
     /**
      * giá tiền
      */
-    private Long price;
+    private Double price;
 
 }

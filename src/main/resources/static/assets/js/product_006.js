@@ -290,20 +290,20 @@ function validateObjectProduct(
     }
 
     // validate mã sản phẩm
-    if (productCode === null || productCode === undefined || productCode === '') {
-        toastDanger('Lỗi', 'Vui lòng nhập mã sản phẩm');
-        return;
-    }
-    if (!/^[a-zA-Z0-9\-]+$/.test(productCode)) {
-        console.log('Mã sản phẩm không đúng');
-        toastDanger('Lỗi', 'Mã sản phẩm không đúng');
-        return;
-    }
-    if (productCode.length < 10 || productCode.length > 50) {
-        console.log('Mã sản phẩm chỉ từ 10 đến 50 ký tự');
-        toastDanger('Lỗi', 'Mã sản phẩm chỉ từ 10 đến 50 ký tự');
-        return;
-    }
+    // if (productCode === null || productCode === undefined || productCode === '') {
+    //     toastDanger('Lỗi', 'Vui lòng nhập mã sản phẩm');
+    //     return;
+    // }
+    // if (!/^[a-zA-Z0-9\-]+$/.test(productCode)) {
+    //     console.log('Mã sản phẩm không đúng');
+    //     toastDanger('Lỗi', 'Mã sản phẩm không đúng');
+    //     return;
+    // }
+    // if (productCode.length < 10 || productCode.length > 50) {
+    //     console.log('Mã sản phẩm chỉ từ 10 đến 50 ký tự');
+    //     toastDanger('Lỗi', 'Mã sản phẩm chỉ từ 10 đến 50 ký tự');
+    //     return;
+    // }
 
     // validate tên sản phẩm
     if (productName === null || productName === undefined || productName === '') {
@@ -311,7 +311,7 @@ function validateObjectProduct(
         toastDanger('Lỗi', 'Vui lòng nhập tên sản phẩm');
         return;
     }
-    if (productCode.length < 10 || productCode.length > 100) {
+    if (productName.length < 10 || productName.length > 100) {
         console.log('Tên sản phẩm chỉ từ 10 đến 100 ký tự');
         toastDanger('Lỗi', 'Tên sản phẩm chỉ từ 10 đến 100 ký tự');
         return;
@@ -465,6 +465,7 @@ function onClickEditProduct(e) {
             if (getElementProductCategory !== null) {
                 getElementProductCategory.value = data.productCategory;
                 getElementProductCategory.dataset.id = id
+                $('#ip-edit-product-category').change();
                 $.ajax({
                     url: '/product/property/edit?category=' + data.productCategory + '&product=' + id,
                     method: 'GET',
@@ -633,13 +634,12 @@ function onClickSubmitAddOrderInvoice() {
         data: JSON.stringify(obj),
         success: function (data) {
             toastSuccess('Thành công', 'Đã tạo mới hoá đơn đặt hàng NCC');
-            $('.modal').hide();
+            $('.btn-close').click();
         },
         error: function (error) {
             if (error.responseJSON.vn === null || error.responseJSON.vn === undefined) {
                 let message = error.responseJSON.message + '';
                 message = message.substring(message.indexOf(':') + 1)
-                console.log(message)
                 toastDanger('Lỗi', message);
                 return;
             }

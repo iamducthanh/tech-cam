@@ -1,16 +1,16 @@
 <div class="row" xmlns:th="http://www.thymeleaf.org">
     <div class="col-lg-4">
-        <div class="mb-3 row">
-            <div class="col-lg-5">
-                <label for="ip-edit-invoice-code">
-                    Mã nhập hàng
-                </label>
-            </div>
-            <div class="col-lg-7">
-                <input type="text" id="ip-edit-invoice-code" placeholder="Mã nhập hàng...."
-                       class="form-control" th:value="${invoice.invoiceCode}"/>
-            </div>
-        </div>
+<!--        <div class="mb-3 row">-->
+<!--            <div class="col-lg-5">-->
+<!--                <label for="ip-edit-invoice-code">-->
+<!--                    Mã nhập hàng-->
+<!--                </label>-->
+<!--            </div>-->
+<!--            <div class="col-lg-7">-->
+<!--                <input type="text" id="ip-edit-invoice-code" placeholder="Mã nhập hàng...."-->
+<!--                       class="form-control" th:value="${invoice.invoiceCode}"/>-->
+<!--            </div>-->
+<!--        </div>-->
         <div class="mb-3 row">
             <div class="col-lg-5">
                 <label for="ip-edit-order-code">
@@ -23,7 +23,7 @@
                     <option value="">Chưa đặt</option>
                     <option th:each="invoiceOrder : ${lstInvoiceOrder}"
                             th:selected="${invoice.orderInvoiceId == invoiceOrder.invoiceOrderId}"
-                            th:value="${invoiceOrder.invoiceOrderId + '@' + invoiceOrder.invoiceSupplierId}"
+                            th:value="${invoiceOrder.invoiceOrderId}"
                             th:text="${invoiceOrder.invoiceOrderCode}">
                     </option>
                 </select>
@@ -76,16 +76,6 @@
             <div class="col-lg-7">
                 <input type="number" th:value="${invoice.paid}" min="0" id="ip-edit-invoice-paid"
                        placeholder="Số tiền trả NCC...." class="form-control"/>
-            </div>
-        </div>
-        <div class="mb-3 row">
-            <div class="col-lg-5"></div>
-            <div class="col-lg-7">
-                <input class="form-check-input mt-2" type="checkbox"
-                       id="ip-edit-invoice-status" th:checked="${invoice.status == 'ON'}"/>
-                <label for="ip-edit-invoice-status" class="col-form-label">
-                    Đã nhập hàng
-                </label>
             </div>
         </div>
         <div class="mb-3 row">

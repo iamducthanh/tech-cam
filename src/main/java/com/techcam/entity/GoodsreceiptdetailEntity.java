@@ -40,7 +40,7 @@ public class GoodsreceiptdetailEntity extends BaseEntity {
     private Integer quantityActual;
 
     @Column(name = "Price", nullable = false, precision = 10)
-    private BigDecimal price;
+    private Double price;
 
     @Column(name = "STATUS", nullable = false, length = 50)
     private String status;

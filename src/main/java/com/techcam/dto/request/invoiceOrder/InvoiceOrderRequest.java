@@ -24,7 +24,7 @@ public class InvoiceOrderRequest {
 
     private String id;
 
-    private String code;
+//    private String code;
 
     private String date;
 

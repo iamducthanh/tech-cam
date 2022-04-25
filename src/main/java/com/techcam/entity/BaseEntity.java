@@ -1,6 +1,8 @@
 package com.techcam.entity;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -11,7 +13,6 @@ import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import java.sql.Timestamp;
-import java.util.Date;
 
 /**
  * @author DucBV
@@ -36,11 +37,11 @@ public abstract class BaseEntity {
 
     @CreatedBy
     @Column(name = "CREATE_BY")
-    private String createBy;
+    private String createBy = "ADMIN";
 
     @LastModifiedBy
     @Column(name = "MODIFIER_BY")
-    private String modifierBy;
+    private String modifierBy = "ADMIN";
 
     @Column(name = "DELETE_FLAG")
     private boolean deleteFlag = false;
