@@ -145,7 +145,7 @@ public class OrderServiceImpl implements IOrderService {
 
     @Override
     public GetInfoOrder findOrderById(Integer id) {
-        OrdersEntity orderEntity = ordersRepo.findByIdAndDeleteFlagFalse(id);
+        OrdersEntity orderEntity = ordersRepo.findById(id).get();
         Type listType = new TypeToken<GetInfoOrder>() {
         }.getType();
 

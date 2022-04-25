@@ -1140,6 +1140,7 @@
     let orderId = "";
     function onBtnInfo (element) {
         const btnSave = $('#btnSave');
+        const btnEdit = $('.btnEdit');
         const btnAddProduct = $('#btnAddProduct');
         const btnSearchCustomer = $('#btnSearchCustomer');
         const btnCancel = $('.btnCancel');
@@ -1172,16 +1173,11 @@
 
         // Change text button by transaction-status
         if ($(element).text() === "Xác nhận") {
+            btnEdit.show();
             btnSave.find('span').text("Xác nhận");
             btnSave.removeClass('btn-primary btn-warning btn-danger btn-success btn-info btn-secondary').addClass('btn-danger');
-
-            // Show/Hide btnCancel
-            if (result.status === 'PAID') {
-                btnCancel.hide();
-            } else if (result.orderType === 'ONLINE' || result.paymentMethod === 'CASH') {
-                btnCancel.show();
-            }
         } else if ($(element).text() === "Xuất hàng") {
+            btnEdit.show();
             btnSave.find('span').text("Xuất hàng");
             btnSave.removeClass('btn-primary btn-warning btn-success btn-info btn-secondary').addClass('btn-warning');
             // show input imei
@@ -1189,6 +1185,7 @@
             // remove unnecessary information
             $('.order-verify').addClass('d-none');
         } else if ($(element).text() === "Giao hàng") {
+            btnEdit.show();
             btnSave.find('span').text("Giao hàng");
             btnSave.removeClass('btn-primary btn-warning btn-danger btn-success btn-info btn-secondary').addClass('btn-info');
             btnAddProduct.hide();
@@ -1202,6 +1199,7 @@
             $('.list-order-fn').addClass('d-none');
             $('.order-verify').addClass('d-none');
         } else if ($(element).text() === "Đang giao hàng") {
+            btnEdit.show();
             btnSave.find('span').text("Đang giao hàng");
             btnSave.removeClass('btn-primary btn-warning btn-danger btn-success btn-info btn-secondary').addClass('btn-primary');
             btnSave.attr('disabled', '');
@@ -1216,6 +1214,7 @@
             $('.list-order-fn').addClass('d-none');
             $('.order-verify').addClass('d-none');
         } else if ($(element).text() === "Hoàn thành") {
+            btnEdit.hide();
             btnSave.find('span').text("Hoàn thành");
             btnSave.removeClass('btn-primary btn-warning btn-danger btn-success btn-info btn-secondary').addClass('btn-success');
             btnSave.attr('disabled', '');
@@ -1230,6 +1229,7 @@
             $('.list-order-fn').addClass('d-none');
             $('.order-verify').addClass('d-none');
         } else if ($(element).text() === "Huỷ") {
+            btnEdit.hide();
             btnSave.hide();
             btnAddProduct.hide();
 
@@ -1303,6 +1303,10 @@
                             $('.btnQty').attr('disabled', 'true');
                             $('.btnDelete').attr('disabled', 'true');
                         }
+                    }
+                    // Show/Hide btnCancel
+                    if ((result.orderType === 'ONLINE' || result.paymentMethod === 'CASH') && result.status === 'PAID' && $(element).text() === "Xác nhận") {
+                        btnCancel.show();
                     }
 
                     if ($('#feeDelivery').val() === '0 đ') {
