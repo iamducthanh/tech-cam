@@ -97,9 +97,11 @@
                         <div class="col-lg-12">
                             <div class="box_border">
                                 <div class="header_chart  mb-4">
-                                    <h5>Mức độ đầy Free Area</h5>
+                                    <h5>Thống kê lợi nhuận năm</h5>
                                     <div class="select_chart">
-                                        <select class="form-select" style="width:200px"><option>Tất cả khu vực FA</option></select>
+                                        <select class="form-select" style="width:200px">
+                                            <option selected>2022</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div style="height: 600px;">
@@ -122,8 +124,8 @@
             data: {
                 labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
                 datasets: [{
-                    label: 'Mức độ đầy FA',
-                    data: [12,-300,45,25,12,30,45,25,48,67,24,100],
+                    label: 'Lợi nhuận',
+                    data: [],
                     borderColor: 'rgb(82, 0, 255)',
                 }]
             },
@@ -162,12 +164,37 @@
             $.ajax({
                 url: '/statis-profit?year=' + year,
                 success: function (datas) {
-                    console.log(datas)
+                    let dataChart = new Array();
+                    for(let i=1;i<=12;i++){
+                        dataChart.push({
+                            month: i,
+                            profit: getProfitMonth(i, datas)
+                        })
+                    }
+                    console.log(dataChart)
+                    for(let profit of dataChart){
+                        myChart02.data.datasets[0].data.push(profit.profit);
+                    }
+
+                    console.log(myChart02.data.datasets[0].data)
+                    myChart02.update();
+
                 },
                 error: function (error) {
                     console.log(error)
                 }
             })
+        }
+
+        function getProfitMonth(i, datas){
+            let profit = 0;
+            for(let data of datas){
+                if(data.month == i){
+                    profit = data.profit;
+                    break;
+                }
+            }
+            return profit;
         }
 
 
