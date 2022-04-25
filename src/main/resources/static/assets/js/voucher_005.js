@@ -1,4 +1,5 @@
 window.onload = function () {
+
     $('.modal').hide();
     let hiddenInfoVoucher = $('.hidden-info-voucher');
     if (hiddenInfoVoucher !== null) {

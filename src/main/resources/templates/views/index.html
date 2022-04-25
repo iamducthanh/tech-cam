@@ -89,6 +89,56 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-lg-12" >
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="box_border">
+                                <div class="header_chart  mb-4">
+                                    <h5>Mức độ đầy Free Area</h5>
+                                    <div class="select_chart">
+                                        <select class="form-select" style="width:200px"><option>Tất cả khu vực FA</option></select>
+                                    </div>
+                                </div>
+                                <div style="height: 600px;">
+                                    <canvas id="chartContainer" style=" width: 100% !important; height: 600px !important;" ></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <div id="morris-bar-stacked" class="morris-chart-height morris-charts"></div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx02 = document.getElementById('chartContainer');
+        const myChart02 = new Chart(ctx02, {
+            type: 'line',
+            data: {
+                labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
+                datasets: [{
+                    label: 'Mức độ đầy FA',
+                    data: [12,-300,45,25,12,30,45,25,48,67,24,100],
+                    borderColor: 'rgb(82, 0, 255)',
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            }
+        });
+
+    </script>
     <script>
         let now = new Date()
         $("#datepicker").datepicker({

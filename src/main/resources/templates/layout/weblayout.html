@@ -115,6 +115,11 @@
 
 <script>
     function loadNotifyHead(){
+        var myChart = new Chart("chartContainer", {
+            type: "line",
+            data: {},
+            options: {}
+        });
         $.ajax({
             url: '/api/notification/top3',
             method: 'GET',
