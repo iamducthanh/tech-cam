@@ -727,7 +727,7 @@ public class OrderServiceImpl implements IOrderService {
             orders.setDeleteFlag(true);
             orders.setModifierDate(new Date());
             orders.setModifierBy(getInfoStaff().getUsername());
-            orders.setStatus(OrderStatus.CANCEL.name());
+            orders.setTransactionStatus(OrderStatus.CANCEL.name());
             ordersRepo.save(orders);
             // mới thêm để cộng lại voucher
             if (Objects.nonNull(orders.getVoucher())) {

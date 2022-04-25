@@ -137,7 +137,7 @@
                                     <button th:case="DONE" class="status badge btn btn-success fs-6 waves-effect waves-light" onclick="onBtnInfo(this)">Hoàn thành</button>
                                 </td>
                                 <td class="order-id" th:text="HD00 + ${order.getId()}">Mã hoá đơn</td>
-                                <td class="text-end order-tax" th:text="${#numbers.formatDecimal(order.getTax() - order.getTotalAmount(), 0, 'POINT', 0, 'COMMA') + ' đ'}">Tổng tiền hàng</td>
+                                <td class="text-end order-tax" th:text="${#numbers.formatDecimal(order.getTax() - order.getTotalAmount() + order.getFeeDelivery(), 0, 'POINT', 0, 'COMMA') + ' đ'}">Tổng tiền hàng</td>
                                 <td class="text-center" th:text="${#dates.format(order.getCreateDate(), 'dd/MM/yyyy HH:mm:ss')}">Ngày đặt đơn</td>
                                 <td class="text-center" th:switch="${order.getOrderType()}">
                                     <span th:case="ONLINE" class="order-type">Online</span>
@@ -236,7 +236,15 @@
                                 </tr>
                                 <tr class="buyer-nonInput">
                                     <th><label for="createDate">Ngày mua</label></th>
-                                    <td><span id="createDate"></span></td>
+                                    <td><span id="createDate" class="ps-2"></span></td>
+                                </tr>
+                                <tr>
+                                    <th><label for="inputVoucher">Mã voucher</label></th>
+                                    <td><input id="inputVoucher" name="inputVoucher" class="ps-2 bg-white" onblur="onType(this)"></td>
+                                </tr>
+                                <tr>
+                                    <th><label for="priceVoucher">Giảm giá voucher</label></th>
+                                    <td><span id="priceVoucher" class="ps-2 fw-bolder"></span></td>
                                 </tr>
                                 <tr>
                                     <th><label for="price">Tổng thanh toán</label></th>
@@ -329,6 +337,10 @@
                     <button type="button" class="btn btn-secondary waves-effect waves-light" data-bs-dismiss="modal" onclick="onLockEditOrder(true)">
                         <i class="fas fa-ban me-2"></i>
                         Đóng
+                    </button>
+                    <button type="button" class="btn btn-secondary waves-effect waves-light btnCancel" onclick="onBtnCancel()">
+                        <i class="fas fa-trash me-2"></i>
+                        Huỷ đơn
                     </button>
                     <button type="button" class="btn btn-success waves-effect waves-light btnEdit" onclick="onLockEditOrder(false)">
                         <i class="fas fa-edit me-2"></i>
@@ -612,6 +624,10 @@
         } else if (!patternDate.test(deliveryDate.val())) {
             deliveryDate.addClass('error');
             errorMessage += 'Ngày giao hàng không hợp lệ!\n';
+            flag = false;
+        } else if (deliveryDate.val() <= moment(new Date()).format('DD/MM/YYYY')) {
+            deliveryDate.addClass('error');
+            errorMessage += 'Ngày giao hàng phải lớn hơn ngày hiện tại!\n';
             flag = false;
         }
 
@@ -1126,6 +1142,7 @@
         const btnSave = $('#btnSave');
         const btnAddProduct = $('#btnAddProduct');
         const btnSearchCustomer = $('#btnSearchCustomer');
+        const btnCancel = $('.btnCancel');
 
         $('#loading-image').show();
         // Hide Form input Info Go shipping
@@ -1141,18 +1158,29 @@
         btnAddProduct.show();
         btnSwitch.parent().hide();
         btnSearchCustomer.hide();
+        btnCancel.hide();
         onLockEditOrder(true);
 
         // Reset Modal before showing info
         $('.receiver input, .receiver textarea, .buyer input, .buyer textarea').removeClass('error').val('');
         $('.order:not(:eq(0))').remove();
         $('#price').text('');
+        $('#inputVoucher').val('');
+        $('#priceVoucher').text('');
         $('#order-id, #customer-id').val('');
+        $('.modal-info-order').find('h5>span').text('Chi tiết hoá đơn');
 
         // Change text button by transaction-status
         if ($(element).text() === "Xác nhận") {
             btnSave.find('span').text("Xác nhận");
             btnSave.removeClass('btn-primary btn-warning btn-danger btn-success btn-info btn-secondary').addClass('btn-danger');
+
+            // Show/Hide btnCancel
+            if (result.status === 'PAID') {
+                btnCancel.hide();
+            } else if (result.orderType === 'ONLINE' || result.paymentMethod === 'CASH') {
+                btnCancel.show();
+            }
         } else if ($(element).text() === "Xuất hàng") {
             btnSave.find('span').text("Xuất hàng");
             btnSave.removeClass('btn-primary btn-warning btn-success btn-info btn-secondary').addClass('btn-warning');
@@ -1236,9 +1264,10 @@
                 type: 'GET',
                 contentType: 'application/json',
                 success: function (result) {
+                    $('.modal-info-order').find('h5>span').html(`Chi tiết hoá đơn <i>HD00${orderId}</i>`);
                     $('input[name=recipientName]').val(result.recipientName);
                     $('input[name=recipientPhone]').val(result.recipientPhone);
-                    $('textarea[name=recipientAddress]').text(result.recipientAddress);
+                    $('textarea[name=recipientAddress]').val(result.recipientAddress);
                     if (result.deliveryDate === null) {
                         $('input[name=deliveryDate]').val("Chờ xác nhận");
                     } else {
@@ -1246,7 +1275,7 @@
                     }
                     feeDelivery.val(addPoint(result.feeDelivery) + " đ");
                     $('#createDate').text(moment(result.orderDate).format('DD/MM/YYYY'));
-                    $('#price').text(addPoint(`${result.tax - result.totalAmount}`) + ' đ');    // Tổng tiền thanh toán
+                    $('#price').text(addPoint(`${result.tax - result.totalAmount + (+result.feeDelivery)}`) + ' đ');    // Tổng tiền thanh toán
                     $('input[name=fullName]').val(result.customer.fullName);
                     $('input[name=phoneNumber]').val(result.customer.phoneNumber);
                     $('input[id=order-id]').val(result.id);
@@ -1255,6 +1284,10 @@
                     $('input[name=shipperName]').val(result.shipperName);
                     $('input[name=shipperPhone]').val(result.shipperPhone);
                     $('textarea[name=shipNote]').text(result.note);
+                    if (result.voucher !== null) {
+                        $('#inputVoucher').val(result.voucher.voucherCode);
+                        $('#priceVoucher').text(result.voucher.voucherDiscount + ' ' + result.voucher.voucherTypeDiscount);
+                    }
 
                     // Show/Hide btnEdit
                     if (result.transactionStatus === 'CANCEL') {
@@ -1271,6 +1304,7 @@
                             $('.btnDelete').attr('disabled', 'true');
                         }
                     }
+
                     if ($('#feeDelivery').val() === '0 đ') {
                         $('#inside').prop('checked', true);
                     } else if ($('#feeDelivery').val() === '30.000 đ') {
@@ -1310,7 +1344,7 @@
 
                                     product.find('.order-discount').text(addPoint(res[i].discount) + " đ");
                                     product.find('.product-price').text(addPoint(res[i].product.price) + " đ");
-                                    product.find('.order-price').text(addPoint(res[i].product.price * res[i].quantity - res[i].discount) + " đ");
+                                    product.find('.order-price').text(addPoint((res[i].product.price - res[i].discount) * res[i].quantity) + " đ");
                                 }
                             }
 
@@ -1587,9 +1621,10 @@
             const row = $('#list-order').find(`.order input[value=${orderDetailId}]`).parent().parent();
             row.find('.order-quantity').text(productQty);
             row.find('.order-price').text(addPoint(
-                removePoint(row.find('.product-price').text())
-                * productQty
-                - removePoint(row.find('.order-discount').text())) + " đ");
+                (removePoint(row.find('.product-price').text())
+                - removePoint(row.find('.order-discount').text()))
+                * row.find('.order-quantity').text()
+            ) + " đ");
             let sum = 0;
             $('.order-price:not(:first)').each(function(){
                 sum += +removePoint($(this).text());
@@ -1621,6 +1656,7 @@
             type: 'GET',
             contentType: 'application/json',
             success: function (res) {
+                console.log(res)
                 if (res !== null && res.length > 0) {
                     Toast.fire({
                         icon: 'info',
@@ -1715,8 +1751,6 @@
                 data["orders"] = orders;
 
                 if ($('#btnSave span').text() === 'Xác nhận đơn hàng') {
-                    console.log(res);
-
                     // Clone row product of order for table
                     $('.order').eq(0).clone().appendTo('#list-order');
 
@@ -1736,7 +1770,7 @@
 
                     product.find('.order-discount').text(addPoint(res.promotion) + " đ");
                     product.find('.product-price').text(addPoint(res.productPrice) + " đ");
-                    product.find('.order-price').text(addPoint(res.productPrice - res.promotion) + " đ");
+                    product.find('.order-price').text(addPoint((res.productPrice - res.promotion) * product.find('.order-quantity').text()) + " đ");
 
                     // Reset index list product of order
                     $('.product-index:not(:eq(0))').each(function (index) {
@@ -1782,7 +1816,7 @@
 
                                 product.find('.order-discount').text(addPoint(productRow.promotion) + " đ");
                                 product.find('.product-price').text(addPoint(productRow.productPrice) + " đ");
-                                product.find('.order-price').text(addPoint(productRow.productPrice - productRow.promotion) + " đ");
+                                product.find('.order-price').text(addPoint((productRow.productPrice - productRow.promotion) * productRow.productQuantity) + " đ");
 
                                 // Reset index list product of order
                                 $('.product-index:not(:eq(0))').each(function (index) {
@@ -1920,6 +1954,52 @@
         Toast.fire({
             icon: 'success',
             title: `Nhập thông tin khách hàng<br><b>${$('#fullName').val()}</b> thành công!`
+        })
+    }
+
+    function onBtnCancel() {
+        const orderId = $('#order-id').val();
+
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success mx-2',
+                cancelButton: 'btn btn-danger mx-2'
+            },
+            buttonsStyling: false
+        })
+        swalWithBootstrapButtons.fire({
+            title: `Bạn chắc chắn muốn huỷ <br> Hoá đơn có mã "${orderId}" chứ?`,
+            text: "Chú ý không thể hoàn tác sau khi thực hiện tác vụ này!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Vâng, tôi chắc chắn!',
+            cancelButtonText: 'Không, huỷ bỏ tác vụ!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let data = {}
+                data['id'] = orderId;
+
+                $.ajax({
+                    url: `/api/v1/orders/cancel-order`,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function (res) {
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: 'Huỷ đơn hàng thành công',
+                            showConfirmButton: true,
+                            timerProgressBar: true,
+                            timer: 2000
+                        }).then(()=> window.location.reload());
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                })
+            }
         })
     }
 
