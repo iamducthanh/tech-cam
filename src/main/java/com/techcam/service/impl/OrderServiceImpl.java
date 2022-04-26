@@ -295,6 +295,7 @@ public class OrderServiceImpl implements IOrderService {
                     OrderdetailEntity orderdetailEntity = new OrderdetailEntity();
                     orderdetailEntity.setId(UUID.randomUUID().toString());
                     orderdetailEntity.setOrders(orderSave);
+                    orderdetailEntity.setPrice(e.getPrice());
                     orderdetailEntity.setNote(e.getNote());
                     orderdetailEntity.setDeleteFlag(false);
                     orderdetailEntity.setDiscount(e.getDiscount());
@@ -428,8 +429,9 @@ public class OrderServiceImpl implements IOrderService {
                                 orderdetailEntity.setDeleteFlag(false);
                                 orderdetailEntity.setDiscount((int) getSaleProduct(productEntity));
                                 orderdetailEntity.setQuantity(item.getQuantity());
+                                orderdetailEntity.setPrice((int) productEntity.getPrice());
                                 // todo sửa import price
-                                orderdetailEntity.setImportPrice((int) productEntity.getPrice());
+                                orderdetailEntity.setImportPrice(productEntity.getImportPrice());
                                 OrdersEntity ordersEntity = new OrdersEntity();
                                 ordersEntity.setId(requests.getOrderId());
                                 ProductEntity product = new ProductEntity();
@@ -447,11 +449,17 @@ public class OrderServiceImpl implements IOrderService {
         }
         try {
             if (!orderDetailsSaves.isEmpty()) {
-                List<OrderdetailEntity> orderDetailsSaveALl = orderDetailsRepo.saveAll(orderDetailsSaves);
+
                 OrdersEntity orders = ordersRepo.findByIdAndDeleteFlagFalse(requests.getOrderId());
 
-                editOrderEntity(orderDetailsSaveALl, orders);
+                editOrderEntity(orderDetailsSaves, orders,requests.getCheckVoucherCode());
                 ordersRepo.save(orders);
+
+                List<OrderdetailEntity> orderDetailsSaveALl = orderDetailsRepo.saveAll(orderDetailsSaves);
+//                OrdersEntity orders = ordersRepo.findByIdAndDeleteFlagFalse(requests.getOrderId());
+//
+//                editOrderEntity(orderDetailsSaveALl, orders);
+//                ordersRepo.save(orders);
                 saveLog(DescLog.EDIT_ORDER_VERIFY, "HD00" + orders.getId());
             }
         } catch (Exception e) {
@@ -461,17 +469,30 @@ public class OrderServiceImpl implements IOrderService {
         return response;
     }
 
-    private void editOrderEntity(List<OrderdetailEntity> orderDetailsSaveALl, OrdersEntity orders) {
+    private void editOrderEntity(List<OrderdetailEntity> orderDetailsSaveALl, OrdersEntity orders, String checkVoucherCode) {
         orders.setItemQuantity(0);
         orders.setTax(0);
         orders.setTotalAmount(0);
         orderDetailsSaveALl.stream().filter(item -> {
             orders.setItemQuantity(orders.getItemQuantity() + item.getQuantity());
-            orders.setTax((int) (orders.getTax() + (item.getQuantity() * item.getProduct().getPrice())));
+            orders.setTax((orders.getTax() + (item.getQuantity() * item.getPrice())));
             // todo chưa sửa khuyến mại
-            orders.setTotalAmount((int) (orders.getTotalAmount() + (item.getQuantity() * item.getProduct().getPrice() * 0.1)));
+            orders.setTotalAmount((int) (orders.getTotalAmount() + (item.getQuantity() *  item.getDiscount())));
             return false;
         }).collect(Collectors.toList());
+        if(Objects.nonNull(orders.getVoucher()) && orders.getVoucher().getMinAmount()<(orders.getTax())){
+            if(orders.getVoucher().getTypeDiscount().equalsIgnoreCase("%")){
+                orders.setTotalAmount((int) (orders.getTotalAmount()+orders.getVoucher().getDiscount()*orders.getTax()));
+            }else {
+                orders.setTotalAmount((int) (orders.getTotalAmount()+orders.getVoucher().getDiscount()));
+            }
+        }else if(Objects.nonNull(orders.getVoucher())) {
+            if(checkVoucherCode.equals("OKE")){
+                orders.setVoucher(null);
+            }else {
+                throw new TechCamExp(ConstantsErrorCode.VOUCHER_EXIT_DISCOUNT);
+            }
+        }
     }
 
     @Override
@@ -608,6 +629,7 @@ public class OrderServiceImpl implements IOrderService {
         receiptVoucherEntity.setDescription(String.format(MessageUtil.SAVE_ORDER_CUSTOMER_DONE, orders.getId()));
         receiptVoucherEntity.setGivenMoney(Objects.isNull(request.getGivenMoney()) ? (orders.getTax() - orders.getTotalAmount()) : request.getGivenMoney());
         receiptVoucherEntity.setReturnMoney(Objects.isNull(request.getGivenMoney()) ? 0 : request.getGivenMoney() - receiptVoucherEntity.getReceiptValue());
+
 //        receiptVoucherEntity.setOrders(orders);
         try {
             ordersRepo.save(orders);
@@ -666,7 +688,7 @@ public class OrderServiceImpl implements IOrderService {
             productRepo.save(productEntity);
             // todo chưa có cái trường lưu sản phẩm lỗi
             List<OrderdetailEntity> orderdetailEntities = orderDetailsRepo.findAllByOrdersIdAndDeleteFlag(request.getOrderId(), false);
-            editOrderEntity(orderdetailEntities, orders);
+            editOrderEntity(orderdetailEntities, orders,request.getCheckVoucherCode());
             orders.setModifierDate(new Date());
             orders.setModifierBy(getInfoStaff().getUsername());
             ordersRepo.save(orders);
@@ -837,7 +859,8 @@ public class OrderServiceImpl implements IOrderService {
             productDetails.stream().filter(item -> {
                         if (item.getProductId().equals(e.getId())) {
                             item.setDiscount((int) (getSaleProduct(e)));
-                            item.setImportPrice((int) e.getPrice());
+                            item.setImportPrice( e.getImportPrice());
+                            item.setPrice((int) e.getPrice());
                             orderRequest.setTotalDiscount((orderRequest.getTotalDiscount() + item.getDiscount()*item.getQuantity()));
                             orderRequest.setTotalAmount((int) (orderRequest.getTotalAmount() + e.getPrice() * item.getQuantity()));
                             orderProductDetailsRequests.add(item);

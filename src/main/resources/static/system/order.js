@@ -6,7 +6,7 @@ function onAddRow(order) {
     if (status === 'CANCEL') {
         orderNew.action = '<button class="status badge btn btn-secondary fs-6 waves-effect waves-light" onclick="onBtnInfo(this)">Huỷ</button>';
     } else if (status === 'VERIFY') {
-        orderNew.action = '<button class="status badge btn btn-warning fs-6 waves-effect waves-light" onclick="onBtnInfo(this)" onmouseover="$(this).text(\'Xác nhận\')" onmouseleave="$(this).text(\'Chờ xác nhận\')">Chờ xác nhận</button>';
+        orderNew.action = '<button class="status badge btn btn-danger fs-6 waves-effect waves-light" onclick="onBtnInfo(this)" onmouseover="$(this).text(\'Xác nhận\')" onmouseleave="$(this).text(\'Chờ xác nhận\')">Chờ xác nhận</button>';
     } else if (status === 'CONFIRM') {
         orderNew.action = '<button class="status badge btn btn-info fs-6 waves-effect waves-light" onclick="onBtnInfo(this)" onmouseover="$(this).text(\'Xuất hàng\')" onmouseleave="$(this).text(\'Chờ xuất hàng\')">Chờ xuất hàng</button>';
     } else if (status === 'SHIPPING') {
@@ -29,8 +29,8 @@ function onAddRow(order) {
 
     orderNew.stt = 1;
     orderNew.orderId = '<p style="font-weight: 700">' + 'HD00' + order.id + '</p>';
-    orderNew.tax = '<p style="font-weight: 700">' + order.tax.toLocaleString('vi-VN') + 'đ' + '</p>';
-    orderNew.createDate = '<p style="font-weight: 700">' + moment(order.orderDate).format('DD/MM/YYYY hh:mm:ss') + '</p>';
+    orderNew.tax = '<p style="font-weight: 700">' + (order.tax - order.totalAmount).toLocaleString('vi-VN') + 'đ' + '</p>';
+    orderNew.createDate = '<p style="font-weight: 700">' + moment(order.orderDate).format('DD/MM/YYYY HH:mm:ss') + '</p>';
 
     console.log(orderNew)
 

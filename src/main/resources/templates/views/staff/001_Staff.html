@@ -19,6 +19,8 @@
                     <select class="roleFilter w-100" multiple style="width: 100%" onchange="onRoleChange(this)">
                         <option value="Quản trị viên">Quản trị viên</option>
                         <option value="Nhân viên">Nhân viên</option>
+                        <option value="Kiểm kho">Kiểm kho</option>
+                        <option value="Kế toán">Kế toán</option>
                     </select>
                 </div>
                 <div style="border: 1px solid #e3e3e3;margin: 12px 12px;border-radius: 8px;">
@@ -103,6 +105,8 @@
                                 <td th:switch="${staff.getRole()}" class="text-center">
                                     <span th:case="ROLE_ADMIN" class="role">Quản trị viên</span>
                                     <span th:case="ROLE_USER" class="role">Nhân viên</span>
+                                    <span th:case="ROLE_STOCK" class="role">Kiểm kho</span>
+                                    <span th:case="ROLE_ACC" class="role">Kế toán</span>
                                 </td>
                                 <td th:text="${staff.getIdentityNumber()}">CMND/CCCD</td>
                                 <td th:text="${#dates.format(staff.getCreateDate(), 'dd/MM/yyyy HH:mm:ss')}" class="text-center">Ngày bắt đầu</td>
@@ -407,11 +411,13 @@
         const role = $('select.roleFilter').val();
         const rows = $('table#datatable tr');
 
-        if (role.length === 0 || role.length >=2) {
+        if (role.length === 0) {
             rows.show();
         } else {
             rows.hide();
-            rows.find(`.role:contains(${role[0]})`).parent().parent().show();
+            role.forEach(e => {
+                rows.find(`.role:contains(${e})`).parent().parent().show();
+            })
         }
         resizeTable();
     }
