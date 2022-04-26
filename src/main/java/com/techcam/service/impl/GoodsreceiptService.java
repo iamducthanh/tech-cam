@@ -228,7 +228,7 @@ public class GoodsreceiptService implements IGoodsreceiptService {
     private GoodsreceiptEntity mapToInvoiceEntity(InvoiceRequest x) {
         if (Objects.isNull(x)) return null;
         GoodsreceiptEntity goodsOrderEntity = goodsreceiptRepo.getByIdAndDeleteFlagIsFalse(x.getInvoiceId());
-        if (Objects.isNull(goodsOrderEntity)) return null;
+        if (Objects.isNull(goodsOrderEntity)) goodsOrderEntity = new GoodsreceiptEntity();
         GoodsreceiptEntity goodsreceiptEntity = goodsOrderEntity.toBuilder()
                 .id(x.getInvoiceId())
                 .supplierId(x.getSupplierId())
@@ -240,7 +240,7 @@ public class GoodsreceiptService implements IGoodsreceiptService {
                 .deliverier(x.getShipper())
                 .receiptStatus(ON.name())
                 .build();
-        return goodsOrderEntity;
+        return goodsreceiptEntity;
     }
 
     private InvoiceDetailResponse mapToInvoiceDetailReponse(GoodsreceiptdetailEntity x) {
