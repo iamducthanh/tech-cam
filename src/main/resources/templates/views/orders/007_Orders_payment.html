@@ -1109,7 +1109,7 @@
 
         data["recipientName"] = $('input[name=recipientName]').val();
         data["recipientPhone"] = $('input[name=recipientPhone]').val();
-        data["recipientAddress"] = $('textarea[name=recipientAddress]').text();
+        data["recipientAddress"] = $('textarea[name=recipientAddress]').val();
         data["deliveryDate"] = moment($('input[name=deliveryDate]').val(), 'DD-MM-YYYY').format('YYYY-MM-DD');
         if (feeDelivery.val().indexOf(" đ") > 0) {
             data["feeDelivery"] = +feeDelivery.val().substring(0, feeDelivery.val().indexOf(" đ")).replace('.', '');
@@ -1297,6 +1297,7 @@
         btnSave.show();
         btnTempSave.show();
         btnAddProduct.show();
+        btnCancel.hide();
         btnSwitch.parent().hide();
         btnSearchCustomer.hide();
         onLockEditOrder(true);
@@ -1399,7 +1400,6 @@
             // remove unnecessary information
             $('.buyer-nonInput, .btnEdit').hide();
             btnTempSave.hide();
-            btnCancel.hide();
         }
 
         // Call API get info Order
@@ -1450,10 +1450,10 @@
                             $('.btnDelete').attr('disabled', 'true');
                         }
                     }
-                    // // Show/Hide btnCancel if exists function "BẢO HÀNH"
-                    // if ((result.orderType === 'ONLINE' || result.paymentMethod === 'CASH') && result.status === 'UNPAID') {
-                    //     btnCancel.show();
-                    // }
+                    // Show/Hide btnCancel if exists function "BẢO HÀNH"
+                    if ((result.orderType === 'ONLINE' || result.paymentMethod === 'CASH') && result.status === 'UNPAID') {
+                        btnCancel.show();
+                    }
 
                     if ($('#feeDelivery').val() === '0 đ') {
                         $('#inside').prop('checked', true);
@@ -2044,11 +2044,6 @@
                 })
             }
         })
-    }
-
-    // Save temporal item in order
-    function onTempSave() {
-
     }
 
     // Event on key press Add Product
