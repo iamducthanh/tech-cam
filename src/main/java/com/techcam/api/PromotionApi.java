@@ -56,4 +56,10 @@ public class PromotionApi {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping("/inactive/{id}")
+    public ResponseEntity<Void> inActivePromotion(@PathVariable("id") String id){
+        promotionService.inActivePromotion(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }
