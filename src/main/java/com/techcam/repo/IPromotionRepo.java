@@ -18,6 +18,5 @@ public interface IPromotionRepo extends JpaRepository<PromotionEntity, String> {
 
     Optional<PromotionEntity> findByIdAndDeleteFlagFalse(String id);
 
-
     List<PromotionEntity> findAllByStatusTrueAndIdIn(List<String> ids);
 }

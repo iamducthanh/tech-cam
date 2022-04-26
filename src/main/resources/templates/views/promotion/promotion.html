@@ -83,7 +83,7 @@
                                                     onclick="onClickInfoVoucher(this)">
                                                 Chi tiết
                                             </button>
-                                            <button th:data-id="${promotion.id}" class="btn btn-danger btn-sm"
+                                            <button th:data-id="${promotion.id}" th:data-name="${promotion.name}" class="btn btn-danger btn-sm"
                                                     onclick="onClickDeletePromotion(this)">
                                                 Xoá
                                             </button>
@@ -175,24 +175,26 @@
                                                             </div>
                                                             <div class="col-lg-7">
                                                                 <div class="mb-3 row">
-                                                                    <div class="col-lg-5">
-                                                                        Thời gian áp dụng:
-                                                                    </div>
-                                                                    <div class="col-lg-7">
-                                                                        <div class="input-daterange input-group"
-                                                                             id="datepicker6"
-                                                                             data-date-format="yyyy-mm-dd"
-                                                                             data-date-autoclose="true"
-                                                                             data-provide="datepicker"
-                                                                             data-date-container='#datepicker6'>
-                                                                            <input type="text"
-                                                                                   th:class="${'form-control ip-voucher-start-date' + promotion.id}"
-                                                                                   placeholder=" Bắt đầu"
-                                                                                   th:value="${#dates.format(promotion.startDate, 'dd-MM-yyyy 00:00:00')}"/>
-                                                                            <input type="text"
-                                                                                   th:class="${'form-control ip-voucher-end-date' + promotion.id}"
-                                                                                   placeholder="Kết thúc"
-                                                                                   th:value="${#dates.format(promotion.endDate, 'dd-MM-yyyy 00:00:00')}"/>
+                                                                    <div class="mb-3 row">
+                                                                        <div class="col-lg-5">
+                                                                            Thời gian áp dụng:
+                                                                        </div>
+                                                                        <div class="col-lg-7">
+                                                                            <div class="input-daterange input-group"
+                                                                                 id="datepicker6"
+                                                                                 data-date-format="dd-mm-yyyy"
+                                                                                 data-date-autoclose="true"
+                                                                                 data-provide="datepicker"
+                                                                                 data-date-container='#datepicker6'>
+                                                                                <input type="text"
+                                                                                       th:class="${'form-control ip-voucher-start-date' + promotion.id}"
+                                                                                       placeholder=" Bắt đầu"
+                                                                                       th:value="${#dates.format(promotion.startDate, 'dd-MM-yyyy')}" />
+                                                                                <input type="text"
+                                                                                       th:class="${'form-control ip-voucher-end-date' + promotion.id}"
+                                                                                       placeholder="Kết thúc"
+                                                                                       th:value="${#dates.format(promotion.endDate, 'dd-MM-yyyy')}"/>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -222,7 +224,7 @@
                                                                                     multiple="multiple"
                                                                                     data-placeholder="Chọn sản phẩm...">
                                                                                 <option th:each="product : ${products}"
-                                                                                        th:selected="${promotion.products != null && #lists.contains(promotion.products, product.id)}"
+                                                                                        th:selected="${promotion.productIds != null && #lists.contains(promotion.productIds, product.id)}"
                                                                                         th:value="${product.id}"
                                                                                         th:text="${product.name}"></option>
                                                                             </select>
@@ -393,46 +395,46 @@
         </div><!-- /.modal-dia(log) -->
     </div><!-- /.modal -->
     <script>
-        window.onload = function () {
-            $('.modal').hide();
-            let hiddenInfoVoucher = $('.hidden-info-voucher');
-            if (hiddenInfoVoucher !== null) {
-                for (let i = 0; i < hiddenInfoVoucher.length; i++) {
-                    hiddenInfoVoucher[i].hidden = 'true'
-                }
-            }
-            let getSelectPersonApply = document.getElementsByClassName('ip-voucher-products')
-            if (getSelectPersonApply !== null && getSelectPersonApply !== undefined) {
-                for (let index = 0; index < getSelectPersonApply.length; index++) {
-                    console.log(getSelectPersonApply[index])
-                    onChangePersonApply(getSelectPersonApply[index])
-                }
-            }
-            loadUsedByVoucherId();
-        }
+        // window.onload = function () {
+        //     $('.modal').hide();
+        //     let hiddenInfoVoucher = $('.hidden-info-voucher');
+        //     if (hiddenInfoVoucher !== null) {
+        //         for (let i = 0; i < hiddenInfoVoucher.length; i++) {
+        //             hiddenInfoVoucher[i].hidden = 'true'
+        //         }
+        //     }
+        //     let getSelectPersonApply = document.getElementsByClassName('ip-voucher-products')
+        //     if (getSelectPersonApply !== null && getSelectPersonApply !== undefined) {
+        //         for (let index = 0; index < getSelectPersonApply.length; index++) {
+        //             console.log(getSelectPersonApply[index])
+        //             onChangePersonApply(getSelectPersonApply[index])
+        //         }
+        //     }
+        //     loadUsedByVoucherId();
+        // }
 
-        function loadUsedByVoucherId() {
-            $('.voucher-used').each(function () {
-                console.log()
-                $.ajax({
-                    url: '/api/voucher/' + $(this).attr('data-id') + '/used',
-                    success: function (data) {
-                        console.log(data)
-                        let html = '';
-                        for (let i = 0; i < data.length; i++) {
-                            html += '<tr>\n' +
-                                '    <td class="text-center">' + (i + 1) + '</td>\n' +
-                                '    <td>' + data[i].name + '</td>\n' +
-                                '    <td class="text-end">' + data[i].totalMoney + '</td>\n' +
-                                '    <td>' + data[i].dateUsed + '</td>\n' +
-                                '</tr>'
-                        }
-                        $('.voucher-used-content').html(html);
-                    }
-                })
-                // console.log($(this).children('.voucher-used-content'))
-            });
-        }
+        // function loadUsedByVoucherId() {
+        //     $('.voucher-used').each(function () {
+        //         console.log()
+        //         $.ajax({
+        //             url: '/api/voucher/' + $(this).attr('data-id') + '/used',
+        //             success: function (data) {
+        //                 console.log(data)
+        //                 let html = '';
+        //                 for (let i = 0; i < data.length; i++) {
+        //                     html += '<tr>\n' +
+        //                         '    <td class="text-center">' + (i + 1) + '</td>\n' +
+        //                         '    <td>' + data[i].name + '</td>\n' +
+        //                         '    <td class="text-end">' + data[i].totalMoney + '</td>\n' +
+        //                         '    <td>' + data[i].dateUsed + '</td>\n' +
+        //                         '</tr>'
+        //                 }
+        //                 $('.voucher-used-content').html(html);
+        //             }
+        //         })
+        //         // console.log($(this).children('.voucher-used-content'))
+        //     });
+        // }
 
         function onStatusChange(element) {
             const value = $(element).val();
@@ -538,9 +540,9 @@
                     success: function (data) {
                         console.log(data);
                         toastSuccess('Thành công', 'Đã cập nhật chương trình khuyến mại')
-                        setTimeout(function () {
-                            location.reload()
-                        }, 2000)
+                        // setTimeout(function () {
+                        //     location.reload()
+                        // }, 2000)
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         console.log(jqXHR);
@@ -576,23 +578,50 @@
         function onClickDeletePromotion(e) {
             let id = e.dataset.id
             if (id !== null && id !== undefined && id !== '') {
-                // sweetConfirm('Xác nhận', 'Xoá chương trình khuyến mại?', 'Xoá', function () {
-                $.ajax({
-                    url: '/api/promotion/delete/' + id,
-                    method: 'GET',
-                    contentType: 'application/json',
-                    success: function (data) {
-                        console.log(data);
-                        toastSuccess('Thành công', 'Đã xoá chương trình khuyến mại')
-                        setTimeout(function () {
-                            location.reload()
-                        }, 2000)
+                const swalWithBootstrapButtons = Swal.mixin({
+                    customClass: {
+                        confirmButton: 'btn btn-success mx-2',
+                        cancelButton: 'btn btn-danger mx-2'
                     },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        console.log(jqXHR);
-                        toastDanger('Lỗi', jqXHR.responseJSON.vn);
+                    buttonsStyling: false
+                })
+
+                swalWithBootstrapButtons.fire({
+                    title: 'Cảnh báo',
+                    text: `Bạn có chắc muốn xoá chương trình khuyến mại ${e.dataset.name}?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Xác nhận',
+                    cancelButtonText: 'Huỷ',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/api/promotion/delete/' + id,
+                            method: 'GET',
+                            contentType: 'application/json',
+                            success: function (data) {
+                                toastSuccess('Thành công', 'Đã xoá chương trình khuyến mại')
+                                setTimeout(function () {
+                                    location.reload()
+                                }, 2000)
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                console.log(jqXHR);
+                                toastDanger('Lỗi', jqXHR.responseJSON.vn);
+                            }
+                        })
+                    } else if (
+                        result.dismiss === Swal.DismissReason.cancel
+                    ) {
+                        swalWithBootstrapButtons.fire(
+                            'Đã huỷ tác vụ',
+                            'Dữ liệu được bảo toàn',
+                            'error'
+                        )
                     }
                 })
+
                 // })
             }
         }
@@ -679,13 +708,13 @@
                     toastDanger('Lỗi', 'Tỉ lệ không đúng (từ 0% - 100%)')
                     return null;
                 }
-                if (Number(voucherDiscount) === 0) {
+                if (Number(voucherDiscount) < 0) {
                     console.log('Tỉ lệ giảm phải từ 0%');
                     toastDanger('Lỗi', 'Tỉ lệ giảm phải từ 0%')
                     return null;
                 }
             } else if (voucherTypeDiscount === 'MONEY') {
-                if (Number(voucherDiscount) < 1) {
+                if (Number(voucherDiscount) < 0) {
                     console.log('Số tiền giảm không đúng (từ 0đ)');
                     toastDanger('Lỗi', 'Số tiền giảm không đúng (từ 0đ)')
                     return null;
@@ -714,6 +743,11 @@
                 toastDanger('Lỗi', 'Vui lòng nhập ngày kết thúc')
                 return null;
             }
+            if (Date.parse(voucherEndDate) < Date.parse(voucherEndDate) ) {
+                console.log('Ngày kết thúc không được bỏ trống')
+                toastDanger('Lỗi', 'Ngày kết thúc không được nhỏ hơn ngày bắt đầu')
+                return null;
+            }
             // voucherEndDate = voucherEndDate.substring(0, voucherEndDate.indexOf(' '));
             // if (!/^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/.test(voucherEndDate)) {
             //     console.log('Ngày kết thúc không đúng (dd-MM-yyyy)')
@@ -722,19 +756,19 @@
             // }
 
             // validate loại sản phẩm áp dụng
-            if (voucherCategory === null || voucherCategory === undefined) {
-                console.log('Vui lòng chọn loại sản phẩm áp dụng')
-                toastDanger('Lỗi', 'Vui lòng chọn mặt hàng áp dụng')
-                return null;
-            }
+            // if (voucherCategory === null || voucherCategory === undefined) {
+            //     console.log('Vui lòng chọn loại sản phẩm áp dụng')
+            //     toastDanger('Lỗi', 'Vui lòng chọn mặt hàng áp dụng')
+            //     return null;
+            // }
 
             return {
                 "id": id,
                 "name": voucherName,
                 "discount": voucherDiscount,
                 "typeDiscount": voucherTypeDiscount,
-                "startDate": voucherStartDate,
-                "endDate": voucherEndDate,
+                "startDate": Date.parse(voucherStartDate),
+                "endDate": Date.parse(voucherEndDate),
                 "categoryIds": voucherCategory,
                 "productIds": voucherProduct,
                 "description": getElementVoucherDescription === null || getElementVoucherDescription === undefined ? "" : getElementVoucherDescription.value

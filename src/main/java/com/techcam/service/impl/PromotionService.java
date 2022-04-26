@@ -178,9 +178,8 @@ public class PromotionService implements IPromotionService {
             throw new TechCamExp(ConstantsErrorCode.PROMOTION_NOT_FOUND);
         }
         PromotionEntity promotionEntity = promotionRepository.findById(id).get();
-        promotionEntity.setModifierDate((Timestamp) new Date());
+        promotionEntity.setModifierDate(new Timestamp(new Date().getTime()));
         promotionEntity.setModifierBy(null);
-        promotionEntity.setId(null);
         BeanUtils.copyProperties(promotionRequestDTO, promotionEntity, BeanUtil.getNullPropertyNames(promotionRequestDTO));
         List<PromotionProductEntity> promotionProducts = promotionProductRepository.findAllByPromotionId(id);
         List<String> productIds = promotionProducts.stream().map(x -> x.getProductId()).collect(Collectors.toList());
@@ -232,7 +231,7 @@ public class PromotionService implements IPromotionService {
             });
             promotionProductRepository.saveAll(promotionProductsUpdate);
         }
-        if (promotionRequestDTO.getStatus()) {
+        if (Objects.nonNull(promotionRequestDTO.getStatus()) && promotionRequestDTO.getStatus()) {
             Date now = new Date();
             if (promotionEntity.getStartDate().compareTo(now) <= 0 && DateUtil.addDays(promotionEntity.getEndDate(), 1).compareTo(now) >= 0) {
                 productIds = promotionProductRepository.findAllByPromotionIdAndDeleteFlagFalse(promotionEntity.getId()).stream().map(promotionProduct -> promotionProduct.getProductId()).collect(Collectors.toList());
@@ -300,9 +299,9 @@ public class PromotionService implements IPromotionService {
         PromotionEntity promotion = promotionRepository.getById(id);
         Date now = new Date();
         if (promotion.getStartDate().compareTo(now) <= 0 && DateUtil.addDays(promotion.getEndDate(), 1).compareTo(now) >= 0) {
-            promotion.setStatus(true);
             List<String> productIds = promotionProductRepository.findAllByPromotionIdAndDeleteFlagFalse(promotion.getId()).stream().map(promotionProduct -> promotionProduct.getProductId()).collect(Collectors.toList());
             List<ProductEntity> products = productRepository.findAllByIdInAndDeleteFlagFalse(productIds);
+            promotion.setStatus(true);
             if (products.size() > 0) {
                 products.forEach(product -> {
                     if (promotion.getTypeDiscount().equals(DiscountType.MONEY.name())) {
@@ -322,7 +321,7 @@ public class PromotionService implements IPromotionService {
 //                products.forEach(product -> {
 //                    product.setPromotion(0L);
 //                });
-//                productRepository.saveAllAndFlush(products);
+//                productRepository.saveAll(products);
 //            }
             throw new TechCamExp(ConstantsErrorCode.PROMOTION_NOT_ACEPTED);
         }
