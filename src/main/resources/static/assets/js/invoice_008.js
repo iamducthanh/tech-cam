@@ -206,7 +206,7 @@ function onClickAddInvoice() {
         getAllProductQuantityActual,
         getAllProductPrice
     )
-    if (obj !== null && obj !== undefined) {
+    if (obj !== null && obj !== undefined && onChangeQuantityOrPrice()) {
         $.ajax({
             url: '/api/invoice',
             method: 'POST',
@@ -326,7 +326,7 @@ function onClickSubmitEditInvoice(e) {
         getAllProductQuantityActual,
         getAllProductPrice
     )
-    if (obj !== null && obj !== undefined) {
+    if (obj !== null && obj !== undefined && onChangeQuantityOrPrice()) {
         $.ajax({
             url: '/api/invoice',
             method: 'PUT',
@@ -462,4 +462,32 @@ function onStatusChange(element) {
         tagAll.hide();
         tag.parent().parent().show();
     }
+}
+
+function onChangeQuantityOrPrice() {
+    let quantityActual = document.getElementsByClassName('ip-edit-quantity-actual');
+    let price = document.getElementsByClassName('ip-edit-price');
+    let totalAmount = 0;
+    if (quantityActual !== null && price !== null) {
+        for (let i = 0; i < quantityActual.length; i++) {
+            let quantityImport = Number(quantityActual[i].innerText)
+            let priceImport = Number(price[i].innerText)
+            totalAmount += (quantityImport * priceImport);
+        }
+    }
+    let getDiscount = $('#ip-edit-invoice-discount').val();
+    let getPaid = $('#ip-edit-invoice-paid').val();
+    if (totalAmount < Number(getDiscount)) {
+        toastDanger('Lỗi', `Tổng tiền nhập hàng không thể nhỏ hơn số tiền NCC giảm. Tổng tiền ${totalAmount}đ`)
+        return false;
+    }
+    if (totalAmount < Number(getPaid)) {
+        toastDanger('Lỗi', `Tổng tiền nhập hàng không thể nhỏ hơn số tiền trả NCC. Tổng tiền ${totalAmount}đ`)
+        return false;
+    }
+    if (totalAmount < Number(getDiscount) + Number(getPaid)) {
+        toastDanger('Lỗi', `Tổng tiền nhập hàng không thể nhỏ hơn tổng tiền trả NCC và tiền NCC giảm. Tổng tiền ${totalAmount}đ`)
+        return false;
+    }
+    return true;
 }

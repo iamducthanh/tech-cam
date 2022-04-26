@@ -24,4 +24,5 @@ public class EditOrderDetailsConfirmRequest {
     private String productId;
     private List<String> imei;
     private String note;
+    private String checkVoucherCode;
 }

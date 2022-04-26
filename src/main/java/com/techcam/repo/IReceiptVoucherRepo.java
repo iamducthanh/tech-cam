@@ -2,6 +2,7 @@ package com.techcam.repo;
 
 import com.techcam.entity.ReceiptVoucherEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,5 +19,6 @@ import java.util.List;
 public interface IReceiptVoucherRepo extends JpaRepository<ReceiptVoucherEntity,Integer> {
     ReceiptVoucherEntity findFirstByIdAndDeleteFlagFalse(Integer id);
 
-    List<ReceiptVoucherEntity> findAllByDeleteFlagFalseOrderByCreateDate();
+    @Query("select o from ReceiptVoucherEntity o ORDER BY o.createDate desc ")
+    List<ReceiptVoucherEntity> findAllOderBy();
 }

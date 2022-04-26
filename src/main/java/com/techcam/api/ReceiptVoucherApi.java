@@ -30,4 +30,9 @@ public class ReceiptVoucherApi {
     public GetInfoReceiptVoucher getInfoReceiptVoucher(@PathVariable Integer id){
         return iReceiptVoucherService.getInfoReceiptVoucher(id);
     }
+    @PostMapping("delete")
+    public ReceiptVoucherResponse delete(@RequestBody ReceiptVoucherRequest request){
+        return iReceiptVoucherService.deleteReceiptVoucher(request.getId(),request.getNote());
+
+    }
 }
