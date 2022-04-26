@@ -27,7 +27,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "orders", schema = "poly_techcam", catalog = "")
+@Table(name = "orders")
 public class OrdersEntity {
     private Integer id;
     private Date orderDate;
