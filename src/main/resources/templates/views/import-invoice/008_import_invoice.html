@@ -19,6 +19,7 @@
                         <div class="mb-3">
                             <label>Nhà cung cấp:</label>
                             <select class="select2 form-select" onchange="onChangeFilerSupplier(this)">
+                                <option value="">Tất cả</option>
                                 <option th:each="supplie : ${lstSupplier}" th:value="${supplie.id}"
                                         th:text="${supplie.name}"></option>
                             </select>
@@ -151,8 +152,12 @@
     <script>
         function onChangeFilerSupplier(e) {
             let value = e.value;
-            $('.ncc').parent().hide();
-            $('.ncc[data-id="' + value + '"]').parent().show();
+            if (value === '') {
+                $('.ncc').parent().show();
+            } else {
+                $('.ncc').parent().hide();
+                $('.ncc[data-id="' + value + '"]').parent().show();
+            }
         }
 
         function onChangeFilterDate(e) {

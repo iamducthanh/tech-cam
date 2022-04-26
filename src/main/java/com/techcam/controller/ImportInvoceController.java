@@ -49,9 +49,9 @@ public class ImportInvoceController {
         List<InvoiceOrderResponse> lstInvoiceOrder = goodsOrderService.getAllInvoiceOrder();
         List<SupplierResponseDTO> lstSupplier = supplierService.getAll();
         List<ProductResponse> lstProduct = productService.getAllProduct();
-        lstInvoice.sort((o1, o2) -> o2.getCreateDate().compareTo(o1.getCreateDate()));
-        lstInvoiceOrder.sort((o1, o2) -> o2.getCreateDate().compareTo(o1.getCreateDate()));
-        lstProduct.sort((o1, o2) -> o2.getCreateDate().compareTo(o1.getCreateDate()));
+//        lstInvoice.sort((o1, o2) -> o2.getCreateDate().compareTo(o1.getCreateDate()));
+//        lstInvoiceOrder.sort((o1, o2) -> o2.getCreateDate().compareTo(o1.getCreateDate()));
+//        lstProduct.sort((o1, o2) -> o2.getCreateDate().compareTo(o1.getCreateDate()));
         model.addAttribute("lstInvoice", lstInvoice);
         model.addAttribute("lstInvoiceOrder", lstInvoiceOrder);
         model.addAttribute("lstSupplier", lstSupplier);

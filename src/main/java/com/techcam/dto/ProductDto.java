@@ -32,7 +32,7 @@ public class ProductDto {
     @JsonProperty("productPrice")
     private String productPrice;
 
-    private Integer productQuantity;
+    private Integer quantity;
 
     @NotNull(message = ERROR_BLANK)
     @NotEmpty(message = ERROR_BLANK)

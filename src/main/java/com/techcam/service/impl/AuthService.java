@@ -33,7 +33,7 @@ public class AuthService implements IAuthService {
             String email = authentication.getName();
             return staffService.getByEmail(email);
         }
-        throw new TechCamExp("Bạn không có quyền thao tác");
+        return new StaffEntity();
     }
 
 }
