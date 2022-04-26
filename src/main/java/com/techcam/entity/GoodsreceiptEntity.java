@@ -20,7 +20,7 @@ public class GoodsreceiptEntity extends BaseEntity {
     @Column(name = "ID", nullable = false, length = 64)
     private String id;
 
-    @Column(name = "Supplier_ID", nullable = false)
+    @Column(name = "supplier_id", nullable = false)
     private String supplierId;
 
     @Column(name = "STATUS", nullable = false, length = 50)

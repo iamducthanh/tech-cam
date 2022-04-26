@@ -96,6 +96,8 @@ public class ReceiptVoucherServiceImpl implements IReceiptVoucherService {
         }
         return response;
     }
+
+    @Override
     public ReceiptVoucherResponse deleteReceiptVoucher(Integer id, String note){
         ReceiptVoucherResponse response = new ReceiptVoucherResponse().builder().status(CommonStatus.SUCCESS.name()).build();
         if( Objects.isNull(id)){
@@ -107,9 +109,11 @@ public class ReceiptVoucherServiceImpl implements IReceiptVoucherService {
         }
         receiptVoucherEntity.setModifierBy(getInfoStaff());
         receiptVoucherEntity.setDeleteFlag(true);
+        receiptVoucherEntity.setModifierDate(new Date());
         receiptVoucherEntity.setNote(note);
         try {
             receiptVoucherRepo.save(receiptVoucherEntity);
+            sendMail(String.valueOf(receiptVoucherEntity.getId()),note);
         } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(CommonStatus.FAIL.name());
@@ -127,7 +131,7 @@ public class ReceiptVoucherServiceImpl implements IReceiptVoucherService {
 
     @Override
     public List<GetInfoReceiptVoucher> getAllReceiptVoucher(){
-        List<ReceiptVoucherEntity> receiptVoucherEntities  = receiptVoucherRepo.findAllByDeleteFlagFalseOrderByCreateDate();
+        List<ReceiptVoucherEntity> receiptVoucherEntities  = receiptVoucherRepo.findAllOderBy();
         Type type = new TypeToken<List<GetInfoReceiptVoucher>>(){}.getType();
         if(CollectionUtils.isEmpty(receiptVoucherEntities)){
             return  new ArrayList<>();
@@ -137,12 +141,12 @@ public class ReceiptVoucherServiceImpl implements IReceiptVoucherService {
     }
     @Async
     public void sendMail(String id, String note){
-        List<String>  role = Arrays.asList("ADMIN");
+        List<String>  role = Arrays.asList("ROLE_ADMIN");
         // todo thiếu lấy danh sách mail boss
         List<StaffEntity> mailBoss =staffRepo.findAllByRoleInAndDeleteFlagFalse(role);
         MailDto mailDto = new MailDto();
         mailDto.setFrom(MessageUtil.FROM_MAIL);
-        mailDto.setSubject("Cảnh báo nhân viên thực hiện thao tác xóa");
+        mailDto.setSubject("Cảnh báo xóa phiếu chi ");
         mailDto.setBody(String.format(MessageUtil.MAIL_DELETE_RECEIPT_VOUCHER,getInfoStaff(),id,note));
         mailBoss.forEach(s -> {
             mailDto.setTo(s.getEmail());
