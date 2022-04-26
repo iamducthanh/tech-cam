@@ -2,6 +2,7 @@ package com.techcam.service.impl;
 
 import com.techcam.dto.request.invoice.InvoiceDetailRequest;
 import com.techcam.dto.request.invoice.InvoiceRequest;
+import com.techcam.dto.request.techcamlog.TechCamlogRequest;
 import com.techcam.dto.response.invoice.InvoiceDetailResponse;
 import com.techcam.dto.response.invoice.InvoiceResponse;
 import com.techcam.entity.*;
@@ -9,11 +10,15 @@ import com.techcam.exception.TechCamExp;
 import com.techcam.repo.*;
 import com.techcam.service.IGoodsreceiptService;
 import com.techcam.service.IProductService;
+import com.techcam.service.ITechCamLogService;
 import com.techcam.util.ConvertDateUtil;
+import com.techcam.util.DescLog;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -51,6 +56,10 @@ public class GoodsreceiptService implements IGoodsreceiptService {
     private final IProductService productService;
 
     private final IOrderDetailsRepo orderDetailsRepo;
+    @Autowired
+    private HttpSession session;
+    @Autowired
+    private ITechCamLogService techCamLogService;
 
     @Override
     public List<InvoiceResponse> findAllByInvoiceCode(String invoiceCode) {
@@ -133,6 +142,7 @@ public class GoodsreceiptService implements IGoodsreceiptService {
             }
             productRepo.saveAll(lstProductEntity);
             goodsreceiptdetailRepo.saveAll(lstDetails);
+            saveLog(DescLog.INSERT_ORDER,goodsreceiptEntity.getId());
             return SUCCESS.name();
         } catch (Exception e) {
             e.printStackTrace();
@@ -216,6 +226,7 @@ public class GoodsreceiptService implements IGoodsreceiptService {
                     throw new TechCamExp(INVOICE_INVENTORY, productEntity.getName());
                 }
             }
+            saveLog(DescLog.EDIT_ORDER_VERIFY,goodsreceiptEntity.getId());
             return SUCCESS.name();
         } catch (TechCamExp e) {
             throw new RuntimeException(e);
@@ -286,5 +297,15 @@ public class GoodsreceiptService implements IGoodsreceiptService {
                 .createDate(x.getCreateDate())
                 .build();
     }
+    public void saveLog(String typeMethod, String id) {
+        StaffEntity staffEntity = (StaffEntity) session.getAttribute("user");
+        TechCamlogRequest techCamlogRequest = new TechCamlogRequest();
+        techCamlogRequest.setCreateBy(staffEntity.getUsername());
+        techCamlogRequest.setStaffId(staffEntity.getId());
+        techCamlogRequest.setOperationLink("thêm link sau ");
+        techCamlogRequest.setOperationDesc(String.format(DescLog.LOG_ORDER, staffEntity.getUsername(), typeMethod, id));
+        techCamlogRequest.setOperationKey(id);
+        techCamLogService.saveLog(techCamlogRequest);
 
+    }
 }
