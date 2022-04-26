@@ -53,7 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/assets/**",
                 "/forgot-password/**",
                 "/api/request-forgot-password/**",
-                "/api/change-res    et-password/**",
+                "/api/change-reset-password/**",
                 "/api/count_login_false/**",
                 "/index",
                 "/api/voucher/**",
