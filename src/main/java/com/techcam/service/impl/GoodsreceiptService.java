@@ -133,14 +133,29 @@ public class GoodsreceiptService implements IGoodsreceiptService {
             ProductEntity productEntity;
             int importPriceToProduct;
             List<ProductEntity> lstProductEntity = new ArrayList<>();
-            for (GoodsreceiptdetailEntity x : lstDetails) {
-                productEntity = productRepo.getByIdAndDeleteFlagIsFalse(x.getProductId());
-                importPriceToProduct = (int) ((((productEntity.getImportPrice() * productEntity.getQuantity())) + (x.getPrice() * x.getQuantityActual())) / (productEntity.getQuantity() + x.getQuantityActual()));
-                productEntity.setImportPrice(importPriceToProduct);
-                productEntity.setQuantity(productEntity.getQuantity() + x.getQuantityActual());
-                lstProductEntity.add(productEntity);
-            }
-            productRepo.saveAll(lstProductEntity);
+            List<String> productIds = lstDetails.stream().map(GoodsreceiptdetailEntity::getProductId).collect(Collectors.toList());
+            List<ProductEntity> productEntities= productRepo.findAllByIdInAndDeleteFlagFalse(productIds);
+            productEntities.stream().filter( x ->{
+                lstDetails.stream().filter(item->{
+                          if(x.getId().equalsIgnoreCase(item.getProductId())){
+                              x.setImportPrice( (int) ((((x.getImportPrice() * x.getQuantity())) + (x.getPrice() * item.getQuantityActual())) / (x.getQuantity() + item.getQuantityActual())));
+                              x.setQuantity(x.getQuantity()+item.getQuantityActual());
+                          }
+                            return false;
+                        }
+                ).collect(Collectors.toList());
+                        return false;
+                    }
+            ).collect(Collectors.toList());
+
+//            for (GoodsreceiptdetailEntity x : lstDetails) {
+//                productEntity = productRepo.getByIdAndDeleteFlagIsFalse(x.getProductId());
+//                importPriceToProduct = (int) ((((productEntity.getImportPrice() * productEntity.getQuantity())) + (x.getPrice() * x.getQuantityActual())) / (productEntity.getQuantity() + x.getQuantityActual()));
+//                productEntity.setImportPrice(importPriceToProduct);
+//                productEntity.setQuantity(productEntity.getQuantity() + x.getQuantityActual());
+//                lstProductEntity.add(productEntity);
+//            }
+            productRepo.saveAll(productEntities);
             goodsreceiptdetailRepo.saveAll(lstDetails);
             saveLog(DescLog.INSERT_ORDER,goodsreceiptEntity.getId());
             return SUCCESS.name();
@@ -239,19 +254,30 @@ public class GoodsreceiptService implements IGoodsreceiptService {
     private GoodsreceiptEntity mapToInvoiceEntity(InvoiceRequest x) {
         if (Objects.isNull(x)) return null;
         GoodsreceiptEntity goodsOrderEntity = goodsreceiptRepo.getByIdAndDeleteFlagIsFalse(x.getInvoiceId());
-        if (Objects.isNull(goodsOrderEntity)) return null;
-        GoodsreceiptEntity goodsreceiptEntity = goodsOrderEntity.toBuilder()
-                .id(x.getInvoiceId())
-                .supplierId(x.getSupplierId())
-                .status(Objects.nonNull(x.getStatus()) && x.getStatus() ? ON.name() : OFF.name())
-                .note(x.getNote())
-                .orderId(Objects.isNull(x.getInvoiceOrderId()) || x.getInvoiceOrderId().isEmpty() ? null : x.getInvoiceOrderId())
-//                .receiptId(x.getInvoiceCode().toUpperCase())
-                .discount(BigDecimal.valueOf(x.getDiscount()))
-                .deliverier(x.getShipper())
-                .receiptStatus(ON.name())
-                .build();
-        return goodsOrderEntity;
+        GoodsreceiptEntity goodsreceiptEntity1 = new GoodsreceiptEntity();
+        if (Objects.isNull(goodsOrderEntity)) {
+            goodsreceiptEntity1.setId(x.getInvoiceId());
+            goodsreceiptEntity1.setSupplierId(x.getSupplierId());
+            goodsreceiptEntity1.setStatus(Objects.nonNull(x.getStatus()) && x.getStatus() ? ON.name() : OFF.name());
+            goodsreceiptEntity1.setNote(x.getNote());
+            goodsreceiptEntity1.setOrderId(Objects.isNull(x.getInvoiceOrderId()) || x.getInvoiceOrderId().isEmpty() ? null : x.getInvoiceOrderId());
+            goodsreceiptEntity1.setDiscount(BigDecimal.valueOf(x.getDiscount()));
+            goodsreceiptEntity1.setDeliverier(x.getShipper());
+            goodsreceiptEntity1.setReceiptStatus(ON.name());
+            return goodsreceiptEntity1;
+        }
+        return null;
+//        GoodsreceiptEntity goodsreceiptEntity = goodsOrderEntity.toBuilder()
+//                .id(x.getInvoiceId())
+//                .supplierId(x.getSupplierId())
+//                .status(Objects.nonNull(x.getStatus()) && x.getStatus() ? ON.name() : OFF.name())
+//                .note(x.getNote())
+//                .orderId(Objects.isNull(x.getInvoiceOrderId()) || x.getInvoiceOrderId().isEmpty() ? null : x.getInvoiceOrderId())
+////                .receiptId(x.getInvoiceCode().toUpperCase())
+//                .discount(BigDecimal.valueOf(x.getDiscount()))
+//                .deliverier(x.getShipper())
+//                .receiptStatus(ON.name())
+//                .build();
     }
 
     private InvoiceDetailResponse mapToInvoiceDetailReponse(GoodsreceiptdetailEntity x) {
