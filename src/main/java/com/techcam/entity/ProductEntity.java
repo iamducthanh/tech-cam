@@ -143,7 +143,7 @@ public class ProductEntity extends BaseEntity {
     @Column(name = "PROMOTION")
     private Long promotion;
     @Column(name = "IMPORT_PRICE", nullable = false)
-    private Double importPrice;
+    private Integer importPrice;
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<OrderdetailEntity> orderdetailEntities;

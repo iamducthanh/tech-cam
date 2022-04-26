@@ -239,8 +239,11 @@
                                     <td><span id="createDate" class="ps-2"></span></td>
                                 </tr>
                                 <tr>
-                                    <th><label for="inputVoucher">Mã voucher</label></th>
-                                    <td><input id="inputVoucher" name="inputVoucher" class="ps-2 bg-white" onblur="onType(this)"></td>
+                                    <th class="align-top"><label for="inputVoucher">Mã voucher</label></th>
+                                    <td>
+                                        <input id="inputVoucher" name="inputVoucher" class="ps-2 bg-white">
+                                        <button class="mt-2 btn btn-primary btn-sm">Áp dụng</button>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th><label for="priceVoucher">Giảm giá voucher</label></th>
@@ -281,10 +284,16 @@
                     <!-- Danh sách mua hàng -->
                     <div class="position-relative">
                         <h3 class="fw-bolder text-center">Danh sách sản phẩm</h3>
-                        <button type="button" class="btn btn-primary waves-effect waves-light" id="btnAddProduct" onclick="$('.modal-add-product').modal('show');" style="position:absolute; top: 0; right: 0; width: fit-content;">
-                            <i class="fas fa-plus me-2"></i>
-                            Thêm sản phẩm
-                        </button>
+                        <div style="position: absolute; top: 0; right: 0;">
+                            <button type="button" class="btn btn-warning waves-effect waves-light" id="btnTempSave" onclick="confirmListOrderDetail('TEMP_SAVE')" style="width: fit-content;">
+                                <i class="fas fa-check me-2"></i>
+                                Lưu tạm
+                            </button>
+                            <button type="button" class="btn btn-primary waves-effect waves-light" id="btnAddProduct" onclick="$('.modal-add-product').modal('show');" style="width: fit-content;">
+                                <i class="fas fa-plus me-2"></i>
+                                Thêm sản phẩm
+                            </button>
+                        </div>
                         <table class="table table-striped table-bordered table-hover table-condensed align-middle">
                             <thead class="align-middle text-center" style="background: lightgrey;">
                                 <th>STT</th>
@@ -303,10 +312,10 @@
                                 <tr class="order" style="display: none;">
                                     <td class="product-index text-center">STT</td>
                                     <td class="list-order-fn text-center">
-                                        <button type="button" class="btn btn-info waves-effect waves-light btnQty" title="Cập nhật số lượng">
+                                        <button type="button" class="btn btn-info btn-sm waves-effect waves-light btnQty" title="Cập nhật số lượng">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button type="button" class="btn btn-danger waves-effect waves-light btnDelete" title="Xoá sản phẩm">
+                                        <button type="button" class="btn btn-danger btn-sm waves-effect waves-light btnDelete" title="Xoá sản phẩm">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </td>
@@ -625,9 +634,13 @@
             deliveryDate.addClass('error');
             errorMessage += 'Ngày giao hàng không hợp lệ!\n';
             flag = false;
-        } else if (deliveryDate.val() <= moment(new Date()).format('DD/MM/YYYY')) {
+        } else if ($('#btnSave').find('span').text() === 'Xác nhận đơn hàng' && moment($('#deliveryDate').val(),"DD/MM/YYYY") <= moment()) {
             deliveryDate.addClass('error');
-            errorMessage += 'Ngày giao hàng phải lớn hơn ngày hiện tại!\n';
+            errorMessage += 'Ngày giao hàng phải sau ngày hiện tại!\n';
+            flag = false;
+        } else if (deliveryDate.val() <= $('#createDate').text()) {
+            deliveryDate.addClass('error');
+            errorMessage += 'Ngày giao hàng phải sau ngày mua hàng!\n';
             flag = false;
         }
 
@@ -787,7 +800,7 @@
 
         data["recipientName"] = $('input[name=recipientName]').val();
         data["recipientPhone"] = $('input[name=recipientPhone]').val();
-        data["recipientAddress"] = $('textarea[name=recipientAddress]').text();
+        data["recipientAddress"] = $('textarea[name=recipientAddress]').val();
         data["deliveryDate"] = moment($('input[name=deliveryDate]').val(), 'DD-MM-YYYY').format('YYYY-MM-DD');
         if (feeDelivery.val().indexOf(" đ") > 0) {
             data["feeDelivery"] = +feeDelivery.val().substring(0, feeDelivery.val().indexOf(" đ")).replace('.', '');
@@ -1091,29 +1104,34 @@
             data["orderProductDetailsRequests"].push(detail);
         });
 
-        if(validateForm()) {
-            $.ajax({
-                url: '/api/v1/orders/edit-order-details',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(data),
-                dataType: 'json',
-                success: function (result) {
+        $.ajax({
+            url: '/api/v1/orders/edit-order-details',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            dataType: 'json',
+            success: function (result) {
+
+                // Update "Tổng thanh toán" in table orders
+                const orderId = $('#order-id').val();
+                $(`#datatable .order-id:contains(${orderId})`).parent().find('.order-tax').text(addPoint($('#price').text()) + ' đ');
+
+                // when confirming
+                if (status === 'CONFIRM') {
                     $('.modal-info-order').modal('hide');
 
-                    // when confirming
-                    if (status === 'CONFIRM') {
-                        Swal.fire({
-                            position: 'center',
-                            icon: 'success',
-                            title: 'Xác nhận đơn hàng thành công',
-                            showConfirmButton: true,
-                            timerProgressBar: true,
-                            timer: 2000
-                        }).then(()=> window.location.reload());
-                    }
-                },
-                error: function (error) {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Xác nhận đơn hàng thành công',
+                        showConfirmButton: true,
+                        timerProgressBar: true,
+                        timer: 2000
+                    }).then(()=> window.location.reload());
+                }
+
+                // when saving temporal
+                if (status === 'TEMP_SAVE') {
                     const Toast = Swal.mixin({
                         toast: true,
                         position: 'top-end',
@@ -1126,20 +1144,35 @@
                         }
                     })
                     Toast.fire({
-                        icon: 'error',
-                        title: "Lỗi hệ thống!\nVui lòng thử lại sau"
+                        icon: 'success',
+                        title: "Lưu sản phẩm thành công!"
                     })
                 }
-            })
-            onLockEditOrder(true);
-        } else {
-            console.log("validate fail");
-        }
+            },
+            error: function (error) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+                Toast.fire({
+                    icon: 'error',
+                    title: error.responseJSON.vn
+                })
+            }
+        })
     }
 
     let orderId = "";
     function onBtnInfo (element) {
         const btnSave = $('#btnSave');
+        const btnTempSave = $('#btnTempSave');
         const btnEdit = $('.btnEdit');
         const btnAddProduct = $('#btnAddProduct');
         const btnSearchCustomer = $('#btnSearchCustomer');
@@ -1156,14 +1189,15 @@
         btnSave.removeClass('btn-primary btn-warning btn-success btn-info').addClass('btn-primary');
         btnSave.removeAttr('disabled');
         btnSave.show();
+        btnTempSave.show();
         btnAddProduct.show();
         btnSwitch.parent().hide();
         btnSearchCustomer.hide();
-        btnCancel.hide();
         onLockEditOrder(true);
 
         // Reset Modal before showing info
         $('.receiver input, .receiver textarea, .buyer input, .buyer textarea').removeClass('error').val('');
+        $('.buyer-nonInput, .btnEdit').show();
         $('.order:not(:eq(0))').remove();
         $('#price').text('');
         $('#inputVoucher').val('');
@@ -1188,7 +1222,6 @@
             btnEdit.show();
             btnSave.find('span').text("Giao hàng");
             btnSave.removeClass('btn-primary btn-warning btn-danger btn-success btn-info btn-secondary').addClass('btn-info');
-            btnAddProduct.hide();
 
             // Show Form input Info Go shipping
             $('.modal-info-order .col-lg-6').removeClass('col-lg-6').addClass('col-lg-4');
@@ -1196,6 +1229,8 @@
             $('.modal-info-order .col-lg-4:last').show();
 
             // remove unnecessary information
+            btnAddProduct.hide();
+            btnTempSave.hide();
             $('.list-order-fn').addClass('d-none');
             $('.order-verify').addClass('d-none');
         } else if ($(element).text() === "Đang giao hàng") {
@@ -1203,7 +1238,6 @@
             btnSave.find('span').text("Đang giao hàng");
             btnSave.removeClass('btn-primary btn-warning btn-danger btn-success btn-info btn-secondary').addClass('btn-primary');
             btnSave.attr('disabled', '');
-            btnAddProduct.hide();
 
             // Show Form input Info Go shipping
             $('.modal-info-order .col-lg-6').removeClass('col-lg-6').addClass('col-lg-4');
@@ -1211,14 +1245,14 @@
             $('.modal-info-order .col-lg-4:last').show();
 
             // remove unnecessary information
+            btnAddProduct.hide();
+            btnTempSave.hide();
             $('.list-order-fn').addClass('d-none');
             $('.order-verify').addClass('d-none');
         } else if ($(element).text() === "Hoàn thành") {
-            btnEdit.hide();
             btnSave.find('span').text("Hoàn thành");
             btnSave.removeClass('btn-primary btn-warning btn-danger btn-success btn-info btn-secondary').addClass('btn-success');
             btnSave.attr('disabled', '');
-            btnAddProduct.hide();
 
             // Show Form input Info Go shipping
             $('.modal-info-order .col-lg-6').removeClass('col-lg-6').addClass('col-lg-4');
@@ -1226,12 +1260,16 @@
             $('.modal-info-order .col-lg-4:last').show();
 
             // remove unnecessary information
+            btnEdit.hide();
+            btnAddProduct.hide();
+            btnTempSave.hide();
             $('.list-order-fn').addClass('d-none');
             $('.order-verify').addClass('d-none');
         } else if ($(element).text() === "Huỷ") {
             btnEdit.hide();
             btnSave.hide();
             btnAddProduct.hide();
+            btnTempSave.hide();
 
             // Show Form input Info Go shipping
             $('.modal-info-order .col-lg-6').removeClass('col-lg-6').addClass('col-lg-4');
@@ -1254,6 +1292,8 @@
 
             // remove unnecessary information
             $('.buyer-nonInput, .btnEdit').hide();
+            btnTempSave.hide();
+            btnCancel.hide();
         }
 
         // Call API get info Order
@@ -1304,10 +1344,10 @@
                             $('.btnDelete').attr('disabled', 'true');
                         }
                     }
-                    // Show/Hide btnCancel
-                    if ((result.orderType === 'ONLINE' || result.paymentMethod === 'CASH') && result.status === 'UNPAID' && $('#btnSave').find('span').text() === "Xác nhận") {
-                        btnCancel.show();
-                    }
+                    // // Show/Hide btnCancel if exists function "BẢO HÀNH"
+                    // if ((result.orderType === 'ONLINE' || result.paymentMethod === 'CASH') && result.status === 'UNPAID') {
+                    //     btnCancel.show();
+                    // }
 
                     if ($('#feeDelivery').val() === '0 đ') {
                         $('#inside').prop('checked', true);
@@ -1331,7 +1371,8 @@
                                     const product = $('#list-order').find('.order').eq(i + 1).show();
 
                                     product.find('.btnQty').attr('onclick', `onBtnQty('${res[i].id}', '${res[i].product.name}', '${res[i].product.quantity}')`);
-                                    product.find('.btnDelete').attr('onclick', `onBtnDelete('${res[i].id}')`);
+                                    // product.find('.btnDelete').attr('onclick', `onBtnDelete('${res[i].id}')`);
+                                    product.find('.btnDelete').attr('onclick', `onBtnDelete(this)`);
 
                                     product.find('.product-id').val(res[i].product.id);
                                     product.find('.order-detail-id').val(res[i].id);
@@ -1503,10 +1544,7 @@
     // Event delete item product in Orders
     function onBtnDelete(id) {
         const btnSave = $('#btnSave');
-        let productName = '';
-        if (btnSave.find('span').text() !== 'Xác nhận đơn hàng') {
-            productName = $('#list-order').find(`.order-detail-id[value=${id}]`).parent().parent().find('.product-name').text();
-        }
+        let productName = $(id).parent().parent().find('.product-name').text();
         const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
                 confirmButton: 'btn btn-success mx-2',
@@ -1525,65 +1563,21 @@
             reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
-                if (btnSave.find('span').text() !== 'Xác nhận đơn hàng') {
-                    $.ajax({
-                        url: `/api/v1/orders/detail/${id}`,
-                        type: 'DELETE',
-                        contentType: 'application/json',
-                        success: function (res) {
-                            const Toast = Swal.mixin({
-                                toast: true,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 2000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                }
-                            })
-                            Toast.fire({
-                                icon: 'success',
-                                title: `Xoá thành công<br>Sản phẩm "${productName}"!`
-                            })
-                        },
-                        error: function (err) {
-                            console.log(err);
-                        }
-                    })
+                // Modify list order detail
+                let sum = 0;
+                $('.order-price:not(:first)').each(function () {
+                    sum += +removePoint($(this).text());
+                })
+                // Modify total order
+                $('#price').text(addPoint(sum) + " đ");
 
-                    // Modify list order detail
-                    let sum = 0;
-                    $('.order-price:not(:first)').each(function () {
-                        sum += +removePoint($(this).text());
-                    })
-                    // Modify total order
-                    $('#price').text(addPoint(sum) + " đ");
+                // Remove row product of order for table
+                $(id).parent().parent().remove();
 
-                    // Remove row product of order for table
-                    $('#list-order').find(`.order-detail-id[value='${id}']`).parent().parent().remove();
-
-                    // Reset index list product of order
-                    $('.order:not(:first)').each(function (index) {
-                        $(this).find('.product-index').text(index + 1);
-                    });
-                } else {
-                    // Modify list order detail
-                    let sum = 0;
-                    $('.order-price:not(:first)').each(function () {
-                        sum += +removePoint($(this).text());
-                    })
-                    // Modify total order
-                    $('#price').text(addPoint(sum) + " đ");
-
-                    // Remove row product of order for table
-                    $(id).parent().parent().remove();
-
-                    // Reset index list product of order
-                    $('.order:not(:first)').each(function (index) {
-                        $(this).find('.product-index').text(index + 1);
-                    });
-                }
+                // Reset index list product of order
+                $('.order:not(:first)').each(function (index) {
+                    $(this).find('.product-index').text(index + 1);
+                });
             }
         })
     }
@@ -1660,7 +1654,6 @@
             type: 'GET',
             contentType: 'application/json',
             success: function (res) {
-                console.log(res)
                 if (res !== null && res.length > 0) {
                     Toast.fire({
                         icon: 'info',
@@ -1743,7 +1736,6 @@
             type: 'GET',
             contentType: 'application/json',
             success: function (res) {
-
                 let data = {};
                 data["productId"] = res.productId;
                 data["quantity"] = "1";
@@ -1754,97 +1746,39 @@
 
                 data["orders"] = orders;
 
-                if ($('#btnSave span').text() === 'Xác nhận đơn hàng') {
-                    // Clone row product of order for table
-                    $('.order').eq(0).clone().appendTo('#list-order');
+                // Clone row product of order for table
+                $('.order').eq(0).clone().appendTo('#list-order');
 
-                    // Get recently added row
-                    const product = $('#list-order').find('.order').last().show();
+                // Get recently added row
+                const product = $('#list-order').find('.order').last().show();
 
-                    product.find('.btnQty').attr('onclick', `onBtnQty('${res.productId}', '${res.productName}', '${res.productQuantity}')`);
-                    product.find('.btnDelete').attr('onclick', `onBtnDelete(this)`);
+                product.find('.btnQty').attr('onclick', `onBtnQty('${res.productId}', '${res.productName}', '${res.productQuantity}')`);
+                product.find('.btnDelete').attr('onclick', `onBtnDelete(this)`);
 
-                    product.find('.product-id').val(res.productId);
-                    product.find('.product-image').attr('src', res.thumbnail);
-                    product.find('.product-name').text(res.productName);
-                    product.find('.order-quantity').text(1);
-                    product.find('.product-quantity').text(res.productQuantity);
+                product.find('.product-id').val(res.productId);
+                product.find('.product-image').attr('src', res.thumbnail);
+                product.find('.product-name').text(res.productName);
+                product.find('.order-quantity').text(1);
+                product.find('.product-quantity').text(res.productQuantity);
 
-                    product.find('.product-available').addClass("text-success").text("Còn hàng");
+                product.find('.product-available').addClass("text-success").text("Còn hàng");
 
-                    product.find('.order-discount').text(addPoint(res.promotion) + " đ");
-                    product.find('.product-price').text(addPoint(res.productPrice) + " đ");
-                    product.find('.order-price').text(addPoint((res.productPrice - res.promotion) * product.find('.order-quantity').text()) + " đ");
+                product.find('.order-discount').text(addPoint(res.promotion) + " đ");
+                product.find('.product-price').text(addPoint(res.productPrice) + " đ");
+                product.find('.order-price').text(addPoint((res.productPrice - res.promotion) * product.find('.order-quantity').text()) + " đ");
 
-                    // Reset index list product of order
-                    $('.product-index:not(:eq(0))').each(function (index) {
-                        $(this).text(index + 1)
-                    });
+                // Reset index list product of order
+                $('.product-index:not(:eq(0))').each(function (index) {
+                    $(this).text(index + 1)
+                });
 
-                    $(tag).parent().parent().removeClass('text-success').addClass('text-secondary').attr('title', 'Đã tồn tại trong hoá đơn');
-                    $(tag).hide();
+                $(tag).parent().parent().removeClass('text-success').addClass('text-secondary').attr('title', 'Đã tồn tại trong hoá đơn');
+                $(tag).hide();
 
-                    Toast.fire({
-                        icon: 'success',
-                        title: `Thêm thành công sản phẩm<br>${res.productName}!`
-                    })
-                } else {
-                    // Call API add product to order
-                    $.ajax({
-                        url: `/api/v1/orders/detail/add`,
-                        type: 'POST',
-                        contentType: 'application/json',
-                        data: JSON.stringify(data),
-                        dataType: 'json',
-                        success: function (response) {
-                            if (response !== null) {
-                                const productRow = res;
-
-                                // Clone row product of order for table
-                                $('.order').eq(0).clone().appendTo('#list-order');
-
-                                // Get recently added row
-                                const product = $('#list-order').find('.order').last().show();
-
-                                product.find('.btnQty').attr('onclick', `onBtnQty('${productRow.productId}', '${productRow.productName}', '${productRow.productQuantity}')`);
-                                product.find('.btnDelete').attr('onclick', `onBtnDelete('${productRow.productId}')`);
-
-                                product.find('.product-id').val(productRow.productId);
-                                product.find('.order-detail-id').val($('.order-detail-id:not(:first)').val());
-                                product.find('.product-image').attr('src', productRow.thumbnail);
-                                product.find('.product-name').text(productRow.productName);
-                                product.find('.order-quantity').text(1);
-                                product.find('.product-quantity').text(productRow.productQuantity);
-
-                                product.find('.product-available').addClass("text-success").text("Còn hàng");
-
-                                product.find('.order-discount').text(addPoint(productRow.promotion) + " đ");
-                                product.find('.product-price').text(addPoint(productRow.productPrice) + " đ");
-                                product.find('.order-price').text(addPoint((productRow.productPrice - productRow.promotion) * productRow.productQuantity) + " đ");
-
-                                // Reset index list product of order
-                                $('.product-index:not(:eq(0))').each(function (index) {
-                                    $(this).text(index + 1)
-                                });
-
-                                $(tag).parent().parent().removeClass('text-success').addClass('text-secondary').attr('title', 'Đã tồn tại trong hoá đơn');
-                                $(tag).hide();
-
-                                Toast.fire({
-                                    icon: 'success',
-                                    title: `Thêm thành công sản phẩm<br>${productRow.productName}!`
-                                })
-                            }
-                        },
-                        error: function (error) {
-                            console.log(error);
-                            Toast.fire({
-                                icon: 'error',
-                                title: `Lỗi hệ thống<br>Vui lòng thử lại sau!`
-                            })
-                        }
-                    })
-                }
+                Toast.fire({
+                    icon: 'success',
+                    title: `Thêm thành công sản phẩm<br>${res.productName}!`
+                })
 
                 // Modify total order
                 let sum = 0;
@@ -2005,6 +1939,11 @@
                 })
             }
         })
+    }
+
+    // Save temporal item in order
+    function onTempSave() {
+
     }
 
     // Event on key press Add Product

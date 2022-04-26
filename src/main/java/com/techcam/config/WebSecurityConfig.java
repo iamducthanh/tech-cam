@@ -65,8 +65,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/voucher/**",
                 "/api/notification/**",
                 "/api/v1/orders/**",
-                "/vnp-pay/check-out/order/**",
-                "/api/receipt-voucher/**"
+                "/vnp-pay/check-out/order/**"
+//                "/api/receipt-voucher/**"
         ).permitAll();
 
         http.formLogin()
