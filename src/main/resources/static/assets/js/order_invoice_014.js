@@ -258,7 +258,12 @@ function onClickEditOrderInvoice(e) {
             $('.edit-quantity-product').val(0);
             for (const detail of data.details) {
                 $('.' + detail.productId).val(detail.quantity)
+                // let text = $('.' + detail.productId).parent().parent();
+                // $('.' + detail.productId).parent().parent().html();
+                // text += document.getElementById('bodyEditProductOrderInvoice').innerHTML;
+                // $('#bodyEditProductOrderInvoice').html(text);
             }
+
             if (data.status === 'ON') {
                 $('#btnSubmitEditInvoice').show();
                 $('#btnSubmitReverseCancel').hide();
@@ -288,12 +293,15 @@ function onAddProductOrderInvoice(e) {
 }
 
 function searchUser(e) {
-    let getInfoUser = document.getElementsByClassName('tr-order-add-product')
-    searchByValue(e.value.toLowerCase().trim(), getInfoUser);
+    let getAddProduct = document.getElementsByClassName('tr-order-add-product')
+    let getEditProduct = document.getElementsByClassName('tr-order-edit-product')
+    searchByValue(e.value.toLowerCase().trim(), getAddProduct);
+    searchByValue(e.value.toLowerCase().trim(), getEditProduct);
     // enableCheckBox();
 }
 
 function searchByValue(value, lstInfo) {
+    console.log(value)
     if (lstInfo !== null) {
         $(lstInfo).each((index, tr) => {
             $(tr).find('label').each((i, label) => {
