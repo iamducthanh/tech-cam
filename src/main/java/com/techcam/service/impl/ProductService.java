@@ -124,7 +124,7 @@ public class ProductService implements IProductService {
             lstProductPropertyEntities.add(productPropertyEntity);
         }
         try {
-            productEntity.setImportPrice(0.0);
+            productEntity.setImportPrice(0);
             productRepo.save(productEntity);
             productPropertyRepo.saveAll(lstProductPropertyEntities);
             for (ImagesEntity x : lstImage) {

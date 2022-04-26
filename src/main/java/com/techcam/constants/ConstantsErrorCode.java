@@ -43,6 +43,7 @@ public interface ConstantsErrorCode {
     String VOUCHER_END_USED = "TC-005-008";
     String VOUCHER_MAX_USED = "TC-005-009";
     String VOUCHER_DATE_NOT_PAST = "TC-005-010";
+    String VOUCHER_EXIT_DISCOUNT="TC-005-11";
 
     String ERROR_BLANK = "CM-TC-002";
 
