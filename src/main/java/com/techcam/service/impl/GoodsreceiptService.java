@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -98,7 +99,7 @@ public class GoodsreceiptService implements IGoodsreceiptService {
             if (Objects.isNull(supplierEntity)) return FAILED.name();
             long totalMoney = invoiceRequest.getDetails().stream()
                     .mapToLong(e -> (long) (e.getQuantityActual() * e.getPrice())).sum();
-            goodsreceiptEntity.setTotalAmount(Math.toIntExact(totalMoney));
+            goodsreceiptEntity.setTotalAmount(totalMoney);
             goodsreceiptEntity.setId(UUID.randomUUID().toString());
             goodsreceiptEntity.setStatus(ON.name());
             goodsreceiptEntity.setReceiptId(ConvertDateUtil.generationCode("NH"));
@@ -120,6 +121,7 @@ public class GoodsreceiptService implements IGoodsreceiptService {
 
             goodsreceiptRepo.save(goodsreceiptEntity);
 
+            DecimalFormat df = new DecimalFormat("#.##");
             int sumQuantity;
             ProductEntity productEntity;
             Double importPriceToProduct;
@@ -127,7 +129,7 @@ public class GoodsreceiptService implements IGoodsreceiptService {
             for (GoodsreceiptdetailEntity x : lstDetails) {
                 productEntity = productRepo.getByIdAndDeleteFlagIsFalse(x.getProductId());
                 importPriceToProduct = (((productEntity.getImportPrice() * productEntity.getQuantity())) + (x.getPrice() * x.getQuantityActual())) / (productEntity.getQuantity() + x.getQuantityActual());
-                productEntity.setImportPrice(importPriceToProduct);
+                productEntity.setImportPrice(Double.valueOf(df.format(importPriceToProduct)));
                 productEntity.setQuantity(productEntity.getQuantity() + x.getQuantityActual());
                 lstProductEntity.add(productEntity);
             }
@@ -150,7 +152,7 @@ public class GoodsreceiptService implements IGoodsreceiptService {
             if (Objects.isNull(supplierEntity)) return FAILED.name();
             long totalMoney = invoiceRequest.getDetails().stream()
                     .mapToLong(e -> (long) (e.getQuantityActual() * e.getPrice())).sum();
-            goodsreceiptEntity.setTotalAmount(Math.toIntExact(totalMoney));
+            goodsreceiptEntity.setTotalAmount(totalMoney);
             List<GoodsreceiptdetailEntity> lstDetails = new ArrayList<>();
             for (InvoiceDetailRequest x : invoiceRequest.getDetails()) {
                 if (x.getQuantityActual() < 1) return FAILED.name();
@@ -180,13 +182,14 @@ public class GoodsreceiptService implements IGoodsreceiptService {
 
             List<GoodsreceiptdetailEntity> lstFind = goodsreceiptdetailRepo.findAllByGoodsReceiptIdAndDeleteFlagIsFalse(invoiceRequest.getInvoiceId());
 
+            DecimalFormat df = new DecimalFormat("#.##");
             ProductEntity productEntity;
             Double importPriceToProduct;
             List<ProductEntity> lstProductEntity = new ArrayList<>();
             for (GoodsreceiptdetailEntity x : lstFind) {
                 productEntity = productRepo.getByIdAndDeleteFlagIsFalse(x.getProductId());
                 importPriceToProduct = ((productEntity.getQuantity() * productEntity.getImportPrice()) + x.getQuantityActual() * (productEntity.getImportPrice() - x.getPrice())) / x.getQuantityActual();
-                productEntity.setImportPrice(importPriceToProduct);
+                productEntity.setImportPrice(Double.valueOf(df.format(importPriceToProduct)));
                 productEntity.setQuantity(productEntity.getQuantity() - x.getQuantityActual());
                 lstProductEntity.add(productEntity);
             }
@@ -196,7 +199,7 @@ public class GoodsreceiptService implements IGoodsreceiptService {
             for (GoodsreceiptdetailEntity x : lstDetails) {
                 productEntity = productRepo.getByIdAndDeleteFlagIsFalse(x.getProductId());
                 importPriceToProduct = (((productEntity.getImportPrice() * productEntity.getQuantity())) + (x.getPrice() * x.getQuantityActual())) / (productEntity.getQuantity() + x.getQuantityActual());
-                productEntity.setImportPrice(importPriceToProduct);
+                productEntity.setImportPrice(Double.valueOf(df.format(importPriceToProduct)));
                 productEntity.setQuantity(productEntity.getQuantity() + x.getQuantityActual());
                 lstProductEntity.add(productEntity);
             }
@@ -239,6 +242,7 @@ public class GoodsreceiptService implements IGoodsreceiptService {
                 .discount(BigDecimal.valueOf(x.getDiscount()))
                 .deliverier(x.getShipper())
                 .receiptStatus(ON.name())
+                .paid(x.getPaid())
                 .build();
         return goodsreceiptEntity;
     }
@@ -268,7 +272,6 @@ public class GoodsreceiptService implements IGoodsreceiptService {
     private InvoiceResponse mapToInvoiceResponse(GoodsreceiptEntity x) {
         if (Objects.isNull(x)) return new InvoiceResponse();
         SupplierEntity supplierEntity = supplierRepo.getByIdAndDeleteFlagIsFalse(x.getSupplierId());
-        Long paid = Long.parseLong("0"); // số tiền đã thanh toán cho nhà cung cấp = tổng tiền hoá đơn chi
         GoodsOrderEntity goodsOrderEntity = goodsOrderRepo.getByIdAndDeleteFlagIsFalse(x.getOrderId());
         return InvoiceResponse.builder()
                 .invoiceId(x.getId())
@@ -280,7 +283,7 @@ public class GoodsreceiptService implements IGoodsreceiptService {
                 .status(x.getStatus())
                 .totalMoney((long) x.getTotalAmount())
                 .discount(x.getDiscount().longValue()) // giá giảm
-                .paid(paid)
+                .paid(x.getPaid())
                 .shipper(x.getDeliverier())
                 .note(x.getNote())
                 .createDate(x.getCreateDate())

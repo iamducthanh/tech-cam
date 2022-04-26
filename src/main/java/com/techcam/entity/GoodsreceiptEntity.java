@@ -34,7 +34,10 @@ public class GoodsreceiptEntity extends BaseEntity {
     private BigDecimal discount;
 
     @Column(name = "total_amount", nullable = false)
-    private Integer totalAmount;
+    private Long totalAmount;
+
+    @Column(name = "paid", nullable = false)
+    private Long paid;
 
     @Column(name = "receipt_status", length = 50)
     private String receiptStatus;
