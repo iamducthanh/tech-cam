@@ -20,6 +20,8 @@ public interface IReceiptVoucherService {
 
     GetInfoReceiptVoucher getInfoReceiptVoucher(Integer id);
 
+    ReceiptVoucherResponse deleteReceiptVoucher(Integer id, String note);
+
     //    public ReceiptVoucherResponse editReceiptById(){
     //
     //    }

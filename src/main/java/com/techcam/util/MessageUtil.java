@@ -24,5 +24,5 @@ public interface MessageUtil {
     String VOUCHER_DESCRIPTION_SEND_BIRTHDAY= "Voucher gửi tặng sinh nhật khách hàng";
 
     // mai xóa hóa đơn gửi cho oogn quản lí.
-    String MAIL_DELETE_RECEIPT_VOUCHER="%s vừa xóa phiếu thu %s với lí do : %s";
+    String MAIL_DELETE_RECEIPT_VOUCHER="%s vừa xóa phiếu chi %s với lí do : %s";
 }
