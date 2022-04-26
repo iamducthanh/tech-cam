@@ -12,7 +12,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class GoodsreceiptEntity extends BaseEntity {
@@ -20,7 +20,7 @@ public class GoodsreceiptEntity extends BaseEntity {
     @Column(name = "ID", nullable = false, length = 64)
     private String id;
 
-    @Column(name = "Supplier_ID", nullable = false)
+    @Column(name = "supplier_id", nullable = false)
     private String supplierId;
 
     @Column(name = "STATUS", nullable = false, length = 50)
@@ -34,7 +34,10 @@ public class GoodsreceiptEntity extends BaseEntity {
     private BigDecimal discount;
 
     @Column(name = "total_amount", nullable = false)
-    private Integer totalAmount;
+    private Long totalAmount;
+
+    @Column(name = "paid", nullable = false)
+    private Long paid;
 
     @Column(name = "receipt_status", length = 50)
     private String receiptStatus;

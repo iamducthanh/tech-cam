@@ -1,16 +1,16 @@
 <div class="row" xmlns:th="http://www.thymeleaf.org">
     <div class="col-lg-4">
-<!--        <div class="mb-3 row">-->
-<!--            <div class="col-lg-5">-->
-<!--                <label for="ip-edit-invoice-code">-->
-<!--                    Mã nhập hàng-->
-<!--                </label>-->
-<!--            </div>-->
-<!--            <div class="col-lg-7">-->
-<!--                <input type="text" id="ip-edit-invoice-code" placeholder="Mã nhập hàng...."-->
-<!--                       class="form-control" th:value="${invoice.invoiceCode}"/>-->
-<!--            </div>-->
-<!--        </div>-->
+        <!--        <div class="mb-3 row">-->
+        <!--            <div class="col-lg-5">-->
+        <!--                <label for="ip-edit-invoice-code">-->
+        <!--                    Mã nhập hàng-->
+        <!--                </label>-->
+        <!--            </div>-->
+        <!--            <div class="col-lg-7">-->
+        <!--                <input type="text" id="ip-edit-invoice-code" placeholder="Mã nhập hàng...."-->
+        <!--                       class="form-control" th:value="${invoice.invoiceCode}"/>-->
+        <!--            </div>-->
+        <!--        </div>-->
         <div class="mb-3 row">
             <div class="col-lg-5">
                 <label for="ip-edit-order-code">
@@ -19,7 +19,7 @@
             </div>
             <div class="col-lg-7">
                 <select id="ip-edit-order-code" class="form-control select2"
-                        onchange="onChangeInvoiceOrderEdit(this)">
+                        onchange="onChangeInvoiceOrderEdit(this)" style="width: 100%">
                     <option value="">Chưa đặt</option>
                     <option th:each="invoiceOrder : ${lstInvoiceOrder}"
                             th:selected="${invoice.orderInvoiceId == invoiceOrder.invoiceOrderId}"
@@ -47,7 +47,7 @@
                 </label>
             </div>
             <div class="col-lg-7">
-                <select id="ip-edit-supplier" class="form-control select2">
+                <select id="ip-edit-supplier" class="form-control select2" style="width: 100%">
                     <option th:each="supplier : ${lstSupplier}"
                             th:selected="${invoice.supplierId == supplier.id}"
                             th:value="${supplier.id}"
@@ -76,16 +76,6 @@
             <div class="col-lg-7">
                 <input type="number" th:value="${invoice.paid}" min="0" id="ip-edit-invoice-paid"
                        placeholder="Số tiền trả NCC...." class="form-control"/>
-            </div>
-        </div>
-        <div class="mb-3 row">
-            <div class="col-lg-5"></div>
-            <div class="col-lg-7">
-                <input class="form-check-input mt-2" type="checkbox"
-                       id="ip-edit-invoice-status" th:checked="${invoice.status == 'ON'}"/>
-                <label for="ip-edit-invoice-status" class="col-form-label">
-                    Đã nhập hàng
-                </label>
             </div>
         </div>
         <div class="mb-3 row">

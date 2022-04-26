@@ -23,4 +23,5 @@ import java.util.List;
 public class EditOrderDetailRequest {
     private Integer orderId;
     private List<OrderProductDetailsRequest> orderProductDetailsRequests;
+    private String checkVoucherCode;
 }

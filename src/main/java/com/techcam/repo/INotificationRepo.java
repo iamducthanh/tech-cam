@@ -24,4 +24,6 @@ public interface INotificationRepo extends JpaRepository<NotificationEntity, Str
 
     @Query("select count(o)from NotificationEntity o where o.read = false order by o.modifierDate desc")
     Integer countRead();
+
+    List<NotificationEntity> findAllByReadIsFalse();
 }

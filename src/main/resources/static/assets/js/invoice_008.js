@@ -49,7 +49,7 @@ function onChangeInvoiceOrder(e) {
             $(data).each((index, obj) => {
                 $('#ip-add-product option[value=' + obj.productId + ']').attr('selected', true)
                 $('#ip-add-product').change();
-                $('#ip-add-product-quantity-' + obj.productId).val(obj.productQuantity)
+                $('#ip-add-product-quantity-' + obj.productId).val(obj.quantity)
             })
         },
         error: function (error) {
@@ -183,13 +183,11 @@ function getSelectValues(select) {
 }
 
 function onClickAddInvoice() {
-    let getInvoiceCode = document.getElementById('ip-edit-invoice-code');
     let getInvoiceOrderCode = document.getElementById('ip-edit-order-code');
     let getInvoiceShip = document.getElementById('ip-edit-ship');
     let getSupplier = document.getElementById('ip-edit-supplier');
     let getInvoiceDiscount = document.getElementById('ip-edit-invoice-discount');
     let getInvoicePaid = document.getElementById('ip-edit-invoice-paid');
-    let getInvoiceStatus = document.getElementById('ip-edit-invoice-status');
     let getInvoiceNote = document.getElementById('ip-edit-invoice-note');
     let getAllProductId = document.getElementsByClassName('ip-edit-product');
     let getAllProductQuantity = document.getElementsByClassName('ip-edit-quantity');
@@ -197,20 +195,18 @@ function onClickAddInvoice() {
     let getAllProductPrice = document.getElementsByClassName('ip-edit-price');
     let obj = valueDateInvoice(
         '',
-        getInvoiceCode,
         getInvoiceOrderCode,
         getInvoiceShip,
         getSupplier,
         getInvoiceDiscount,
         getInvoicePaid,
-        getInvoiceStatus,
         getInvoiceNote,
         getAllProductId,
         getAllProductQuantity,
         getAllProductQuantityActual,
         getAllProductPrice
     )
-    if (obj !== null && obj !== undefined) {
+    if (obj !== null && obj !== undefined && onChangeQuantityOrPrice()) {
         $.ajax({
             url: '/api/invoice',
             method: 'POST',
@@ -307,13 +303,11 @@ function onClickEditInvoice(e) {
 }
 
 function onClickSubmitEditInvoice(e) {
-    let getInvoiceCode = document.getElementById('ip-edit-invoice-code');
     let getInvoiceOrderCode = document.getElementById('ip-edit-order-code');
     let getInvoiceShip = document.getElementById('ip-edit-ship');
     let getSupplier = document.getElementById('ip-edit-supplier');
     let getInvoiceDiscount = document.getElementById('ip-edit-invoice-discount');
     let getInvoicePaid = document.getElementById('ip-edit-invoice-paid');
-    let getInvoiceStatus = document.getElementById('ip-edit-invoice-status');
     let getInvoiceNote = document.getElementById('ip-edit-invoice-note');
     let getAllProductId = document.getElementsByClassName('ip-edit-product');
     let getAllProductQuantity = document.getElementsByClassName('ip-edit-quantity');
@@ -321,20 +315,18 @@ function onClickSubmitEditInvoice(e) {
     let getAllProductPrice = document.getElementsByClassName('ip-edit-price');
     let obj = valueDateInvoice(
         e.dataset.id,
-        getInvoiceCode,
         getInvoiceOrderCode,
         getInvoiceShip,
         getSupplier,
         getInvoiceDiscount,
         getInvoicePaid,
-        getInvoiceStatus,
         getInvoiceNote,
         getAllProductId,
         getAllProductQuantity,
         getAllProductQuantityActual,
         getAllProductPrice
     )
-    if (obj !== null && obj !== undefined) {
+    if (obj !== null && obj !== undefined && onChangeQuantityOrPrice()) {
         $.ajax({
             url: '/api/invoice',
             method: 'PUT',
@@ -356,13 +348,11 @@ function onClickSubmitEditInvoice(e) {
 
 function valueDateInvoice(
     id,
-    getInvoiceCode,
     getInvoiceOrderCode,
     getInvoiceShip,
     getSupplier,
     getInvoiceDiscount,
     getInvoicePaid,
-    getInvoiceStatus,
     getInvoiceNote,
     getAllProductId,
     getAllProductQuantity,
@@ -450,12 +440,10 @@ function valueDateInvoice(
     let invoiceOrderCode = getInvoiceOrderCode.value + '';
     return {
         "invoiceId": id,
-        "invoiceCode": getInvoiceCode.value,
         "shipper": getInvoiceShip.value,
         "invoiceOrderId": invoiceOrderCode.substring(0, invoiceOrderCode.indexOf('@')),
         "supplierId": getSupplier.value,
         "discount": getInvoiceDiscount.value,
-        "status": getInvoiceStatus.checked,
         "paid": getInvoicePaid.value,
         "note": getInvoiceNote.value,
         "details": detail
@@ -474,4 +462,32 @@ function onStatusChange(element) {
         tagAll.hide();
         tag.parent().parent().show();
     }
+}
+
+function onChangeQuantityOrPrice() {
+    let quantityActual = document.getElementsByClassName('ip-edit-quantity-actual');
+    let price = document.getElementsByClassName('ip-edit-price');
+    let totalAmount = 0;
+    if (quantityActual !== null && price !== null) {
+        for (let i = 0; i < quantityActual.length; i++) {
+            let quantityImport = Number(quantityActual[i].innerText)
+            let priceImport = Number(price[i].innerText)
+            totalAmount += (quantityImport * priceImport);
+        }
+    }
+    let getDiscount = $('#ip-edit-invoice-discount').val();
+    let getPaid = $('#ip-edit-invoice-paid').val();
+    if (totalAmount < Number(getDiscount)) {
+        toastDanger('Lỗi', `Tổng tiền nhập hàng không thể nhỏ hơn số tiền NCC giảm. Tổng tiền ${totalAmount}đ`)
+        return false;
+    }
+    if (totalAmount < Number(getPaid)) {
+        toastDanger('Lỗi', `Tổng tiền nhập hàng không thể nhỏ hơn số tiền trả NCC. Tổng tiền ${totalAmount}đ`)
+        return false;
+    }
+    if (totalAmount < Number(getDiscount) + Number(getPaid)) {
+        toastDanger('Lỗi', `Tổng tiền nhập hàng không thể nhỏ hơn tổng tiền trả NCC và tiền NCC giảm. Tổng tiền ${totalAmount}đ`)
+        return false;
+    }
+    return true;
 }

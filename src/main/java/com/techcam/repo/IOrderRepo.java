@@ -31,4 +31,7 @@ public interface IOrderRepo extends JpaRepository<OrdersEntity, Integer> {
     @Query("select o from OrdersEntity  o where o.voucher.code=?1 and o.customer.phoneNumber=?2 and o.transactionStatus not in ?3 and o.deleteFlag =false ")
     OrdersEntity findFirstByVoucherCodeAndCustomerPhoneNumberAndTransactionStatusNotIn(String code, String phoneNumber,String status);
 
+    @Query("select distinct(function('year', o.orderDate)) from OrdersEntity o")
+    List<Integer> findAllYear();
+
 }

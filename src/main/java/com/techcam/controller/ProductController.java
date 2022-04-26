@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static com.techcam.type.CustomerStatus.ON;
 
 /**
  * Description :
@@ -49,10 +53,19 @@ public class ProductController {
         for (ProductResponse x : lstProducts) {
             x.setProperties(productService.findAllPropertyByProductId(x.getProductId()));
         }
+        List<String> productLimitQuantity = lstProducts.stream()
+                .filter(e -> Objects.nonNull(e.getQuantity())
+                        && e.getProductStatus().equals(ON.name())
+                        && e.getQuantity() < 20)
+                .sorted((o1, o2) -> o2.getQuantity().compareTo(o1.getQuantity()))
+                .map(ProductResponse::getProductId)
+                .limit(10).collect(Collectors.toList());
         List<BrandResponse> lstBrands = brandService.getAllBrand();
         List<CategoryResponse> lstCategories = categoryService.getAllCategory();
         List<SupplierResponseDTO> lstSupplier = supplierService.getAll();
+//        lstProducts.sort((o1, o2) -> o2.getCreateDate().compareTo(o1.getCreateDate()));
         model.addAttribute("lstProducts", lstProducts);
+        model.addAttribute("productLimitQuantity", productLimitQuantity);
         model.addAttribute("lstBrands", lstBrands);
         model.addAttribute("lstCategories", lstCategories);
         model.addAttribute("lstSupplier", lstSupplier);

@@ -534,9 +534,12 @@ function enableCheckBox() {
 
 function onClickOrderInvoice() {
     $('.tr-order-add-product').hide();
+    $('.tr-order-title').hide();
     $('.quantity-product').val(0);
+    let count = 0;
     $('.chk-add-product').each((index, product) => {
         if (product.checked) {
+            count++;
             // $('.tr-order-add-product').show();
             // console.log($('.tr-order-add-product').show())
             // console.log($('.tr-order-add-product[data-id-product="' + product.id + '"]'))
@@ -544,6 +547,10 @@ function onClickOrderInvoice() {
             $('.tr-order-add-product[data-id-product="' + product.id + '"]').show()
         }
     })
+    if (count === 0) {
+        $('.tr-order-add-product[data-top="true"]').show();
+        $('.tr-order-title').show();
+    }
 }
 
 

@@ -124,7 +124,7 @@ public class ProductService implements IProductService {
             lstProductPropertyEntities.add(productPropertyEntity);
         }
         try {
-            productEntity.setImportPrice(0.0);
+            productEntity.setImportPrice(0);
             productRepo.save(productEntity);
             productPropertyRepo.saveAll(lstProductPropertyEntities);
             for (ImagesEntity x : lstImage) {
@@ -295,11 +295,11 @@ public class ProductService implements IProductService {
 
     private ProductResponse mapToResponse(ProductEntity x) {
         if (Objects.isNull(x)) return new ProductResponse();
-        List<GoodsreceiptdetailEntity> lstInvoiceDetail = goodsreceiptdetailRepo.findAllByProductIdAndDeleteFlagIsFalse(x.getId());
-        List<OrderdetailEntity> lstOrderDetail = orderDetailsRepo.findAllByProductIdAndDeleteFlagIsFalse(x.getId());
-        Long sumInvoice = lstInvoiceDetail.stream().mapToLong(GoodsreceiptdetailEntity::getQuantityActual).sum();
-        Long sumOrder = lstOrderDetail.stream().mapToLong(OrderdetailEntity::getQuantity).sum();
-        int sumQuantity = (int) (sumInvoice - sumOrder);
+//        List<GoodsreceiptdetailEntity> lstInvoiceDetail = goodsreceiptdetailRepo.findAllByProductIdAndDeleteFlagIsFalse(x.getId());
+//        List<OrderdetailEntity> lstOrderDetail = orderDetailsRepo.findAllByProductIdAndDeleteFlagIsFalse(x.getId());
+//        Long sumInvoice = lstInvoiceDetail.stream().mapToLong(GoodsreceiptdetailEntity::getQuantityActual).sum();
+//        Long sumOrder = lstOrderDetail.stream().mapToLong(OrderdetailEntity::getQuantity).sum();
+//        int sumQuantity = (int) (sumInvoice - sumOrder);
         ProductResponse s = new ProductResponse();
         s.setProductId(x.getId());
         s.setProductCode(x.getProductCode());
@@ -314,7 +314,8 @@ public class ProductService implements IProductService {
         s.setModifierDate(x.getModifierDate());
         s.setThumbnail(x.getThumbnail());
         s.setPromotion(x.getPromotion() + "");
-        s.setProductQuantity(sumQuantity);
+//        s.setProductQuantity(sumQuantity);
+        s.setProductQuantity(x.getQuantity());
         return s;
     }
 }

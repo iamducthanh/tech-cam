@@ -47,6 +47,8 @@ public class OrderInvoiceController {
         List<ProductResponse> lstProduct = productService.getAllProduct();
         lstProduct = lstProduct.stream().filter(e -> e.getProductStatus().equals(ON.name())).collect(Collectors.toList());
 //        lstSupplier = lstSupplier.stream().filter(e -> Objects.nonNull(e.getStatus()) && e.getStatus().equals(ON.name())).collect(Collectors.toList());
+//        lst.sort((o1, o2) -> o2.getCreateDate().compareTo(o1.getCreateDate()));
+//        lstProduct.sort((o1, o2) -> o2.getCreateDate().compareTo(o1.getCreateDate()));
         model.addAttribute("lstOrderInvoice", lst);
         model.addAttribute("lstSupplier", lstSupplier);
         model.addAttribute("lstProduct", lstProduct);

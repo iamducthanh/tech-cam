@@ -47,7 +47,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
-
         http.authorizeRequests().antMatchers(
                 "/login/**",
                 "/reset-password/**",
@@ -60,16 +59,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/voucher/**",
                 "/api/notification/**",
                 "/api/v1/orders/**",
-                "/vnp-pay/check-out/order/**",
-                "/api/receipt-voucher/**"
+                "/vnp-pay/check-out/order/**"
+//                "/api/receipt-voucher/**"
         ).permitAll();
-
-        http.authorizeRequests().antMatchers("/**").access("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')");
-
-        http.authorizeRequests().antMatchers("/admin").access("hasRole('ROLE_ADMIN')");
-
-        http.authorizeRequests().and().exceptionHandling().accessDeniedPage("/403");
-
+        http.authorizeRequests().antMatchers("/staff").hasAnyAuthority("ROLE_ADMIN")
+                .and().exceptionHandling().accessDeniedPage("/");
+        http.authorizeRequests().antMatchers("/invoice","/confirm-export-order").hasAnyAuthority("ROLE_ADMIN","ROLE_STOCK")
+                .and().exceptionHandling().accessDeniedPage("/");
+        http.authorizeRequests().antMatchers("/pay-the-bill","/receipt-voucher").hasAnyAuthority("ROLE_ADMIN","ROLE_ACC")
+                .and().exceptionHandling().accessDeniedPage("/");
+        http.authorizeRequests().anyRequest().authenticated();
         http.formLogin()
                 .loginProcessingUrl("/login-check")
                 .loginPage("/login")

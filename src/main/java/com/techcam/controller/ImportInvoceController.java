@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static com.techcam.type.CustomerStatus.ON;
 
 /**
  * Description :
@@ -49,6 +52,9 @@ public class ImportInvoceController {
         List<InvoiceOrderResponse> lstInvoiceOrder = goodsOrderService.getAllInvoiceOrder();
         List<SupplierResponseDTO> lstSupplier = supplierService.getAll();
         List<ProductResponse> lstProduct = productService.getAllProduct();
+//        lstInvoice.sort((o1, o2) -> o2.getCreateDate().compareTo(o1.getCreateDate()));
+//        lstInvoiceOrder.sort((o1, o2) -> o2.getCreateDate().compareTo(o1.getCreateDate()));
+//        lstProduct.sort((o1, o2) -> o2.getCreateDate().compareTo(o1.getCreateDate()));
         model.addAttribute("lstInvoice", lstInvoice);
         model.addAttribute("lstInvoiceOrder", lstInvoiceOrder);
         model.addAttribute("lstSupplier", lstSupplier);
@@ -59,7 +65,9 @@ public class ImportInvoceController {
     @GetMapping(value = "/component/edit-invoice", params = {"id"})
     public String modalEditInvoice(Model model, @RequestParam(value = "id", defaultValue = "") String id) {
         InvoiceResponse invoice = goodsreceiptService.getByInvoiceId(id);
-        List<InvoiceOrderResponse> lstInvoiceOrder = goodsOrderService.getAllInvoiceOrder();
+        List<InvoiceOrderResponse> lstInvoiceOrder = goodsOrderService.getAllInvoiceOrder().stream()
+                .filter(e -> e.getStatus().equals(ON.name()))
+                .collect(Collectors.toList());
         List<SupplierResponseDTO> lstSupplier = supplierService.getAll();
 //        List<ProductResponse> lstProduct = productService.getAllProduct();
         model.addAttribute("invoice", Objects.isNull(invoice) ? new InvoiceResponse() : invoice);

@@ -234,6 +234,7 @@ public class GoodsOrderService implements IGoodsOrderService {
                 .note(x.getNote())
                 .dateInvoice(dateInvoice)
 //                .statusInvoice(status)
+                .createDate(x.getCreateDate())
                 .build();
     }
 
@@ -249,9 +250,11 @@ public class GoodsOrderService implements IGoodsOrderService {
 
     private GoodsOrderEntity mapToInvoiceOrderEntity(InvoiceOrderRequest x) {
         if (Objects.isNull(x)) return null;
+        GoodsOrderEntity goodsOrderEntity = goodsOrderRepo.getByIdAndDeleteFlagIsFalse(x.getId());
+        if (Objects.isNull(goodsOrderEntity)) goodsOrderEntity = new GoodsOrderEntity();
         SupplierEntity supplierEntity = supplierRepo.getByIdAndDeleteFlagIsFalse(x.getSupplierId());
         Date date = ConvertUtil.get().strToDate(x.getDate(), "dd-MM-yyyy");
-        return GoodsOrderEntity.builder()
+        GoodsOrderEntity goodsOrderEntityReturn = goodsOrderEntity.toBuilder()
                 .id(x.getId())
 //                .orderId(x.getCode())
                 .supplierId(Objects.isNull(supplierEntity) ? null : x.getSupplierId())
@@ -263,6 +266,7 @@ public class GoodsOrderService implements IGoodsOrderService {
                 .orderStaff("ADMIN")
                 .note(x.getNote())
                 .build();
+        return goodsOrderEntityReturn;
     }
 
 }
