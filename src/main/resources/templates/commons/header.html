@@ -242,7 +242,7 @@
                 </a>
 
                 <div class="dropdown-menu" aria-labelledby="topnav-user-Interface">
-                  <a th:href="@{/invoice}" class="dropdown-item">
+                  <a sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_STOCK')" th:href="@{/invoice}" class="dropdown-item">
                     <i class="fas fa-file-invoice-dollar me-2"></i>
                     Nhập hàng
                   </a>
@@ -251,7 +251,7 @@
                     Đặt hàng NCC
                   </a>
                   <a href="/receipt-voucher" class="dropdown-item">
-                    <i class="fas fa-dolly-flatbed me-2"></i>
+                    <i class="fas fa-dollar-sign me-2"></i>
                     Thu Chi
                   </a>
                 </div>
@@ -264,7 +264,7 @@
                   <div class="arrow-down"></div>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="topnav-user-Interface">
-                  <a href="/staff" class="dropdown-item">
+                  <a sec:authorize="hasAnyAuthority('ROLE_ADMIN')" href="/staff" class="dropdown-item">
                     <i class="fas fa-user-secret me-2"></i>Nhân viên
                   </a>
                   <a href="/customer" class="dropdown-item">
@@ -275,13 +275,6 @@
                   </a>
                 </div>
               </li>
-
-              <li class="nav-item">
-                <a class="nav-link" href="#" id="topnav-pages">
-                  <i class="fas fa-dollar-sign me-2"></i>Sổ quỹ
-                </a>
-              </li>
-
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-report" role="button">
                   <i class="fas fa-signal me-2"></i>Báo cáo
