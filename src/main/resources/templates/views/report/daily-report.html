@@ -8,7 +8,7 @@
 </head>
 <body>
 <div layout:fragment="content" class="container-fluid" style="max-width: 98%;">
-    <div class="row container1" style="height: 80vh">
+    <div class="row container1" style="height: 80vh" id="containerBody">
         <div class="col-lg-2 h-100" id="leftKH">
             <div class="filter-report">
                 <div class="card" style="padding-left: 15px; padding-top: 15px">
@@ -181,17 +181,20 @@
             // }
 
             let printContents = document.getElementById("contentPdf").innerHTML;
-            let originalContents = document.body.innerHTML;
+            let originalContents = document.getElementById("containerBody").innerHTML;
 
             window.onbeforeprint = function () {
-                document.body.innerHTML = printContents;
+                document.getElementById("containerBody").innerHTML = printContents;
                 window.open(window.href, "_blank");
             }
 
             window.print();
 
+            setTimeout(function () {
+                document.getElementById("containerBody").innerHTML = originalContents;
+            }, 500);
             window.onafterprint = function () {
-                window.close();
+                document.getElementById("containerBody").innerHTML = originalContents;
             }
 
 

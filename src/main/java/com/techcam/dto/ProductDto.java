@@ -33,6 +33,7 @@ public class ProductDto {
     private String productPrice;
 
     private Integer productQuantity;
+    private Integer quantity;
 
     @NotNull(message = ERROR_BLANK)
     @NotEmpty(message = ERROR_BLANK)
