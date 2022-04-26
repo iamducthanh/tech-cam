@@ -182,14 +182,13 @@ public class GoodsreceiptService implements IGoodsreceiptService {
 
             List<GoodsreceiptdetailEntity> lstFind = goodsreceiptdetailRepo.findAllByGoodsReceiptIdAndDeleteFlagIsFalse(invoiceRequest.getInvoiceId());
 
-            DecimalFormat df = new DecimalFormat("#.##");
             ProductEntity productEntity;
             int importPriceToProduct;
             List<ProductEntity> lstProductEntity = new ArrayList<>();
             for (GoodsreceiptdetailEntity x : lstFind) {
                 productEntity = productRepo.getByIdAndDeleteFlagIsFalse(x.getProductId());
                 importPriceToProduct = (int) (((productEntity.getQuantity() * productEntity.getImportPrice()) + x.getQuantityActual() * (productEntity.getImportPrice() - x.getPrice())) / x.getQuantityActual());
-                productEntity.setImportPrice(Double.valueOf(df.format(importPriceToProduct)));
+                productEntity.setImportPrice(importPriceToProduct);
                 productEntity.setQuantity(productEntity.getQuantity() - x.getQuantityActual());
                 lstProductEntity.add(productEntity);
             }
