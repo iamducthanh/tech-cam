@@ -1451,7 +1451,7 @@
                         }
                     }
                     // Show/Hide btnCancel if exists function "BẢO HÀNH"
-                    if ((result.orderType === 'ONLINE' || result.paymentMethod === 'CASH') && result.status === 'UNPAID') {
+                    if ((result.orderType === 'ONLINE' || result.paymentMethod === 'CASH') && result.status === 'UNPAID' && result.transactionStatus !== 'CANCEL') {
                         btnCancel.show();
                     }
 
