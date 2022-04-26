@@ -94,6 +94,7 @@ public class ProductService implements IProductService {
             return ConstantsErrorCode.ERROR_DATA_REQUEST;
         }
         productEntity.setId(UUID.randomUUID().toString());
+        productEntity.setPromotion(Long.parseLong("0"));
         productEntity.setProductCode(ConvertDateUtil.generationCode("SP"));
         List<ImagesEntity> lstImage = new ArrayList<>();
         for (String x : productRequest.getProductImages()) {
