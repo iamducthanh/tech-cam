@@ -166,7 +166,7 @@ public class OrderServiceImpl implements IOrderService {
         if (StringUtils.isNotBlank(request.getVoucherId())) {
             voucherResponse = getInfoVoucher(request.getVoucherId(), request.getCustomer().getPhoneNumber());
             if (Objects.isNull(voucherResponse)) {
-                throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
+                throw new TechCamExp(ConstantsErrorCode.VOUCHER_ERROR);
             }
         }
         if (CollectionUtils.isEmpty(productEntities)) {
@@ -195,6 +195,9 @@ public class OrderServiceImpl implements IOrderService {
         int totalDiscount = 0;
         VoucherEntity voucher = new VoucherEntity();
         if (Objects.nonNull(voucherResponse)) {
+            if(voucherResponse.getVoucherMinAmount() > (orderRequestProduct.getTotalAmount()-orderRequestProduct.getTotalDiscount())){
+                throw new TechCamExp(ConstantsErrorCode.VOUCHER_EXIT_DISCOUNT);
+            }
             totalDiscount = valueVoucher(voucherResponse, orderRequestProduct.getTotalAmount()) + orderRequestProduct.getTotalDiscount();
             voucher.setId(voucherResponse.getVoucherId());
         }else {
@@ -482,7 +485,7 @@ public class OrderServiceImpl implements IOrderService {
         }).collect(Collectors.toList());
         if(Objects.nonNull(orders.getVoucher()) && orders.getVoucher().getMinAmount()<(orders.getTax())){
             if(orders.getVoucher().getTypeDiscount().equalsIgnoreCase("%")){
-                orders.setTotalAmount((int) (orders.getTotalAmount()+orders.getVoucher().getDiscount()*orders.getTax()));
+                orders.setTotalAmount((int) (orders.getTotalAmount()+(orders.getVoucher().getDiscount()*orders.getTax()/100)));
             }else {
                 orders.setTotalAmount((int) (orders.getTotalAmount()+orders.getVoucher().getDiscount()));
             }
