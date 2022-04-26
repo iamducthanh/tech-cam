@@ -1,6 +1,7 @@
 package com.techcam.dto.response.order;
 
 import com.techcam.dto.response.Customer.CustomerInfoResponse;
+import com.techcam.dto.response.voucher.VoucherResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -43,11 +44,11 @@ public class GetInfoOrder {
     private String status;
     private String note;
     private Date deliveryDate;
-    private String feeDelivery;
+    private Integer feeDelivery;
     private String ipAddress;
     private String bankTransaction;
     private CustomerInfoResponse customer;
-    private String voucherCustomerId;
+    private VoucherResponse voucher;
     private Date createDate;
     private Date modifierDate;
     private String createBy;
