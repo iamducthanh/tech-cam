@@ -37,7 +37,7 @@ public interface IProductRepo extends JpaRepository<ProductEntity, String> {
 
     List<ProductEntity> findAllByCategoryIdAndDeleteFlagFalse(String categoryId);
 
-    @Query("SELECT p FROM ProductEntity p WHERE p.name LIKE %:keyword% OR p.productCode LIKE %:keyword%")
+    @Query("SELECT p FROM ProductEntity p WHERE p.status = 'ON' AND p.name LIKE %:keyword% OR p.productCode LIKE %:keyword%")
     List<ProductEntity> findAllByKeyWords(@Param("keyword") String keyword);
 
     //    @Query(value = "call PR_TOP_PRODUCT_SALE_BY_MONTH(?1, ?2, ?3)", nativeQuery = true)
