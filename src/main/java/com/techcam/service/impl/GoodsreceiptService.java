@@ -2,7 +2,6 @@ package com.techcam.service.impl;
 
 import com.techcam.dto.request.invoice.InvoiceDetailRequest;
 import com.techcam.dto.request.invoice.InvoiceRequest;
-import com.techcam.dto.request.techcamlog.TechCamlogRequest;
 import com.techcam.dto.response.invoice.InvoiceDetailResponse;
 import com.techcam.dto.response.invoice.InvoiceResponse;
 import com.techcam.entity.*;
@@ -10,15 +9,11 @@ import com.techcam.exception.TechCamExp;
 import com.techcam.repo.*;
 import com.techcam.service.IGoodsreceiptService;
 import com.techcam.service.IProductService;
-import com.techcam.service.ITechCamLogService;
 import com.techcam.util.ConvertDateUtil;
-import com.techcam.util.DescLog;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -56,10 +51,6 @@ public class GoodsreceiptService implements IGoodsreceiptService {
     private final IProductService productService;
 
     private final IOrderDetailsRepo orderDetailsRepo;
-    @Autowired
-    private HttpSession session;
-    @Autowired
-    private ITechCamLogService techCamLogService;
 
     @Override
     public List<InvoiceResponse> findAllByInvoiceCode(String invoiceCode) {
@@ -133,31 +124,15 @@ public class GoodsreceiptService implements IGoodsreceiptService {
             ProductEntity productEntity;
             int importPriceToProduct;
             List<ProductEntity> lstProductEntity = new ArrayList<>();
-            List<String> productIds = lstDetails.stream().map(GoodsreceiptdetailEntity::getProductId).collect(Collectors.toList());
-            List<ProductEntity> productEntities= productRepo.findAllByIdInAndDeleteFlagFalse(productIds);
-            productEntities.stream().filter( x ->{
-                lstDetails.stream().filter(item->{
-                          if(x.getId().equalsIgnoreCase(item.getProductId())){
-                              x.setImportPrice( (int) ((((x.getImportPrice() * x.getQuantity())) + (x.getPrice() * item.getQuantityActual())) / (x.getQuantity() + item.getQuantityActual())));
-                              x.setQuantity(x.getQuantity()+item.getQuantityActual());
-                          }
-                            return false;
-                        }
-                ).collect(Collectors.toList());
-                        return false;
-                    }
-            ).collect(Collectors.toList());
-
-//            for (GoodsreceiptdetailEntity x : lstDetails) {
-//                productEntity = productRepo.getByIdAndDeleteFlagIsFalse(x.getProductId());
-//                importPriceToProduct = (int) ((((productEntity.getImportPrice() * productEntity.getQuantity())) + (x.getPrice() * x.getQuantityActual())) / (productEntity.getQuantity() + x.getQuantityActual()));
-//                productEntity.setImportPrice(importPriceToProduct);
-//                productEntity.setQuantity(productEntity.getQuantity() + x.getQuantityActual());
-//                lstProductEntity.add(productEntity);
-//            }
-            productRepo.saveAll(productEntities);
+            for (GoodsreceiptdetailEntity x : lstDetails) {
+                productEntity = productRepo.getByIdAndDeleteFlagIsFalse(x.getProductId());
+                importPriceToProduct = (int) ((((productEntity.getImportPrice() * productEntity.getQuantity())) + (x.getPrice() * x.getQuantityActual())) / (productEntity.getQuantity() + x.getQuantityActual()));
+                productEntity.setImportPrice(importPriceToProduct);
+                productEntity.setQuantity(productEntity.getQuantity() + x.getQuantityActual());
+                lstProductEntity.add(productEntity);
+            }
+            productRepo.saveAll(lstProductEntity);
             goodsreceiptdetailRepo.saveAll(lstDetails);
-            saveLog(DescLog.INSERT_ORDER,goodsreceiptEntity.getId());
             return SUCCESS.name();
         } catch (Exception e) {
             e.printStackTrace();
@@ -241,7 +216,6 @@ public class GoodsreceiptService implements IGoodsreceiptService {
                     throw new TechCamExp(INVOICE_INVENTORY, productEntity.getName());
                 }
             }
-            saveLog(DescLog.EDIT_ORDER_VERIFY,goodsreceiptEntity.getId());
             return SUCCESS.name();
         } catch (TechCamExp e) {
             throw new RuntimeException(e);
@@ -254,30 +228,19 @@ public class GoodsreceiptService implements IGoodsreceiptService {
     private GoodsreceiptEntity mapToInvoiceEntity(InvoiceRequest x) {
         if (Objects.isNull(x)) return null;
         GoodsreceiptEntity goodsOrderEntity = goodsreceiptRepo.getByIdAndDeleteFlagIsFalse(x.getInvoiceId());
-        GoodsreceiptEntity goodsreceiptEntity1 = new GoodsreceiptEntity();
-        if (Objects.isNull(goodsOrderEntity)) {
-            goodsreceiptEntity1.setId(x.getInvoiceId());
-            goodsreceiptEntity1.setSupplierId(x.getSupplierId());
-            goodsreceiptEntity1.setStatus(Objects.nonNull(x.getStatus()) && x.getStatus() ? ON.name() : OFF.name());
-            goodsreceiptEntity1.setNote(x.getNote());
-            goodsreceiptEntity1.setOrderId(Objects.isNull(x.getInvoiceOrderId()) || x.getInvoiceOrderId().isEmpty() ? null : x.getInvoiceOrderId());
-            goodsreceiptEntity1.setDiscount(BigDecimal.valueOf(x.getDiscount()));
-            goodsreceiptEntity1.setDeliverier(x.getShipper());
-            goodsreceiptEntity1.setReceiptStatus(ON.name());
-            return goodsreceiptEntity1;
-        }
-        return null;
-//        GoodsreceiptEntity goodsreceiptEntity = goodsOrderEntity.toBuilder()
-//                .id(x.getInvoiceId())
-//                .supplierId(x.getSupplierId())
-//                .status(Objects.nonNull(x.getStatus()) && x.getStatus() ? ON.name() : OFF.name())
-//                .note(x.getNote())
-//                .orderId(Objects.isNull(x.getInvoiceOrderId()) || x.getInvoiceOrderId().isEmpty() ? null : x.getInvoiceOrderId())
-////                .receiptId(x.getInvoiceCode().toUpperCase())
-//                .discount(BigDecimal.valueOf(x.getDiscount()))
-//                .deliverier(x.getShipper())
-//                .receiptStatus(ON.name())
-//                .build();
+        if (Objects.isNull(goodsOrderEntity)) goodsOrderEntity = new GoodsreceiptEntity();
+        GoodsreceiptEntity goodsreceiptEntity = goodsOrderEntity.toBuilder()
+                .id(x.getInvoiceId())
+                .supplierId(x.getSupplierId())
+                .status(Objects.nonNull(x.getStatus()) && x.getStatus() ? ON.name() : OFF.name())
+                .note(x.getNote())
+                .orderId(Objects.isNull(x.getInvoiceOrderId()) || x.getInvoiceOrderId().isEmpty() ? null : x.getInvoiceOrderId())
+//                .receiptId(x.getInvoiceCode().toUpperCase())
+                .discount(BigDecimal.valueOf(x.getDiscount()))
+                .deliverier(x.getShipper())
+                .receiptStatus(ON.name())
+                .build();
+        return goodsreceiptEntity;
     }
 
     private InvoiceDetailResponse mapToInvoiceDetailReponse(GoodsreceiptdetailEntity x) {
@@ -323,15 +286,5 @@ public class GoodsreceiptService implements IGoodsreceiptService {
                 .createDate(x.getCreateDate())
                 .build();
     }
-    public void saveLog(String typeMethod, String id) {
-        StaffEntity staffEntity = (StaffEntity) session.getAttribute("user");
-        TechCamlogRequest techCamlogRequest = new TechCamlogRequest();
-        techCamlogRequest.setCreateBy(staffEntity.getUsername());
-        techCamlogRequest.setStaffId(staffEntity.getId());
-        techCamlogRequest.setOperationLink("thêm link sau ");
-        techCamlogRequest.setOperationDesc(String.format(DescLog.LOG_ORDER, staffEntity.getUsername(), typeMethod, id));
-        techCamlogRequest.setOperationKey(id);
-        techCamLogService.saveLog(techCamlogRequest);
 
-    }
 }
