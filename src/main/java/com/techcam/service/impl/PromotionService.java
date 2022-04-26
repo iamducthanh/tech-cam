@@ -78,7 +78,7 @@ public class PromotionService implements IPromotionService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public PromotionResponseDTO create(PromotionRequestDTO promotionRequestDTO) {
-        List<String> productIds;
+        List<String> productIds = new ArrayList<>();
         if (promotionRequestDTO.getProductIds().size() > 0) {
             productIds = promotionRequestDTO.getProductIds();
             List<String> promotionIds = promotionProductRepository.findAllByProductIdInAndDeleteFlagFalse(productIds).stream().map(x -> x.getPromotionId()).collect(Collectors.toList());
@@ -96,13 +96,33 @@ public class PromotionService implements IPromotionService {
                 throw new TechCamExp(ConstantsErrorCode.PROMOTION_PRODUCT_EXIST);
             }
         }
-
+        List<PromotionEntity> promotionList = promotionRepository.findAllByDeleteFlagFalse();
+        List<String> promotionIds = promotionList.stream().map(x -> x.getId()).collect(Collectors.toList());
+        List<PromotionProductEntity> promotionProductEntityList = promotionProductRepository.findAllByPromotionIdInAndDeleteFlagFalse(promotionIds);
+        List<String> productIdTotal = promotionProductEntityList.stream().map(x -> x.getProductId()).collect(Collectors.toList());
+        int i = 0;
+        for (String x : productIds) {
+            for(String id: productIdTotal){
+                if(id.equals(x)){
+                    i++;
+                    break;
+                }
+            }
+        }
+        if(i>0){
+            promotionList.forEach(x -> {
+                if ((promotionRequestDTO.getStartDate().compareTo(x.getEndDate()) <= 0 && promotionRequestDTO.getEndDate().compareTo(x.getEndDate()) >= 0) ||
+                        (promotionRequestDTO.getEndDate().compareTo(x.getStartDate()) >= 0 && promotionRequestDTO.getStartDate().compareTo(x.getStartDate()) <= 0)) {
+                    throw new TechCamExp(ConstantsErrorCode.PROMOTION_PRODUCT_EXIST);
+                }
+            });
+        }
         if (promotionRequestDTO.getEndDate().compareTo(promotionRequestDTO.getStartDate()) < 0) {
             throw new TechCamExp(ConstantsErrorCode.DATE_ERROR);
         }
         Date now = new Date();
         promotionRequestDTO.setStatus(false);
-        if (promotionRequestDTO.getStartDate().compareTo(now) <= 0 && DateUtil.addDays(promotionRequestDTO.getEndDate(), 1).compareTo(now) >= 0) {
+        if (promotionRequestDTO.getStartDate().compareTo(DateUtil.addHour(now,7)) <= 0 && DateUtil.addDays(promotionRequestDTO.getEndDate(), 1).compareTo(DateUtil.addHour(now,7)) >= 0) {
             promotionRequestDTO.setStatus(true);
         }
         PromotionEntity promotionEntity = promotionMapper.toPromotionEntity(promotionRequestDTO);
@@ -177,6 +197,13 @@ public class PromotionService implements IPromotionService {
         if (!promotionRepository.findByIdAndDeleteFlagFalse(id).isPresent()) {
             throw new TechCamExp(ConstantsErrorCode.PROMOTION_NOT_FOUND);
         }
+
+        Date now = new Date();
+        if (promotionRequestDTO.getStartDate().compareTo(DateUtil.addHour(now,7)) <= 0 && DateUtil.addDays(promotionRequestDTO.getEndDate(), 1).compareTo(DateUtil.addHour(now,7)) >= 0) {
+            promotionRequestDTO.setStatus(true);
+        } else {
+            promotionRequestDTO.setStatus(false);
+        }
         PromotionEntity promotionEntity = promotionRepository.findById(id).get();
         promotionEntity.setModifierDate(new Timestamp(new Date().getTime()));
         promotionEntity.setModifierBy(null);
@@ -189,6 +216,7 @@ public class PromotionService implements IPromotionService {
                 product.setPromotion(0L);
             });
             productRepository.saveAll(products);
+            promotionProductRepository.deleteAll(promotionProducts);
         }
         if (Objects.nonNull(promotionRequestDTO.getIsAllProduct()) && promotionRequestDTO.getIsAllProduct()) {
             List<PromotionProductEntity> promotionProductsUpdate = new ArrayList<>();
@@ -210,6 +238,26 @@ public class PromotionService implements IPromotionService {
             products = productRepository.findAllByCategoryIdInAndDeleteFlagFalse(promotionRequestDTO.getCategoryIds());
             productIds = products.stream().map(x -> x.getId()).collect(Collectors.toList());
             if (productIds.size() > 0) {
+                List<PromotionEntity> promotionList = promotionRepository.findAllByDeleteFlagFalse();
+                promotionList.remove(promotionEntity);
+                List<String> promotionIds = promotionList.stream().map(x -> x.getId()).collect(Collectors.toList());
+                List<PromotionProductEntity> promotionProductEntityList = promotionProductRepository.findAllByPromotionIdInAndDeleteFlagFalse(promotionIds);
+                List<String> productIdTotal = promotionProductEntityList.stream().map(x -> x.getProductId()).collect(Collectors.toList());
+                int i = 0;
+                for (String x : productIds) {
+                    if (productIdTotal.contains(x)) {
+                        i++;
+                        break;
+                    }
+                }
+                if(i>0){
+                    promotionList.forEach(x -> {
+                        if ((promotionRequestDTO.getStartDate().compareTo(x.getEndDate()) <= 0 && promotionRequestDTO.getEndDate().compareTo(x.getEndDate()) >= 0) ||
+                                (promotionRequestDTO.getEndDate().compareTo(x.getStartDate()) >= 0 && promotionRequestDTO.getStartDate().compareTo(x.getStartDate()) <= 0)) {
+                            throw new TechCamExp(ConstantsErrorCode.PROMOTION_PRODUCT_EXIST);
+                        }
+                    });
+                }
                 products.forEach(x -> {
                     PromotionProductEntity promotionProduct = new PromotionProductEntity();
                     promotionProduct.setPromotionId(id);
@@ -221,6 +269,26 @@ public class PromotionService implements IPromotionService {
             }
         }
         if (Objects.nonNull(promotionRequestDTO.getProductIds()) && promotionRequestDTO.getProductIds().size() > 0) {
+            List<PromotionEntity> promotionList = promotionRepository.findAllByDeleteFlagFalse();
+            promotionList.remove(promotionEntity);
+            List<String> promotionIds = promotionList.stream().map(x -> x.getId()).collect(Collectors.toList());
+            List<PromotionProductEntity> promotionProductEntityList = promotionProductRepository.findAllByPromotionIdInAndDeleteFlagFalse(promotionIds);
+            List<String> productIdTotal = promotionProductEntityList.stream().map(x -> x.getProductId()).collect(Collectors.toList());
+            int i = 0;
+            for (String x : promotionRequestDTO.getProductIds()) {
+                if (productIdTotal.contains(x)) {
+                    i++;
+                    break;
+                }
+            }
+            if(i>0){
+                promotionList.forEach(x -> {
+                    if ((promotionRequestDTO.getStartDate().compareTo(x.getEndDate()) <= 0 && promotionRequestDTO.getEndDate().compareTo(x.getEndDate()) >= 0) ||
+                            (promotionRequestDTO.getEndDate().compareTo(x.getStartDate()) >= 0 && promotionRequestDTO.getStartDate().compareTo(x.getStartDate()) <= 0)) {
+                        throw new TechCamExp(ConstantsErrorCode.PROMOTION_PRODUCT_EXIST);
+                    }
+                });
+            }
             List<PromotionProductEntity> promotionProductsUpdate = new ArrayList<>();
             promotionRequestDTO.getProductIds().forEach(x -> {
                 PromotionProductEntity promotionProductEntity = new PromotionProductEntity();
@@ -232,8 +300,7 @@ public class PromotionService implements IPromotionService {
             promotionProductRepository.saveAll(promotionProductsUpdate);
         }
         if (Objects.nonNull(promotionRequestDTO.getStatus()) && promotionRequestDTO.getStatus()) {
-            Date now = new Date();
-            if (promotionEntity.getStartDate().compareTo(now) <= 0 && DateUtil.addDays(promotionEntity.getEndDate(), 1).compareTo(now) >= 0) {
+            if (promotionEntity.getStartDate().compareTo(DateUtil.addHour(now,7)) <= 0 && DateUtil.addDays(promotionEntity.getEndDate(), 1).compareTo(DateUtil.addHour(now,7)) >= 0) {
                 productIds = promotionProductRepository.findAllByPromotionIdAndDeleteFlagFalse(promotionEntity.getId()).stream().map(promotionProduct -> promotionProduct.getProductId()).collect(Collectors.toList());
                 products = productRepository.findAllByIdInAndDeleteFlagFalse(productIds);
                 if (products.size() > 0) {
@@ -269,7 +336,8 @@ public class PromotionService implements IPromotionService {
             });
             List<ProductEntity> products = productRepository.findAllByIdInAndDeleteFlagFalse(productIds);
             products.forEach(product -> product.setPromotion(0L));
-            promotionProductRepository.saveAll(promotionProducts);
+            promotionProductRepository.deleteAll(promotionProducts);
+            promotionRepository.delete(promotionEntity);
             productRepository.saveAll(products);
         }
     }
@@ -298,7 +366,7 @@ public class PromotionService implements IPromotionService {
         }
         PromotionEntity promotion = promotionRepository.getById(id);
         Date now = new Date();
-        if (promotion.getStartDate().compareTo(now) <= 0 && DateUtil.addDays(promotion.getEndDate(), 1).compareTo(now) >= 0) {
+        if (promotion.getStartDate().compareTo(DateUtil.addHour(now,7)) <= 0 && DateUtil.addDays(promotion.getEndDate(), 1).compareTo(DateUtil.addHour(now,7)) >= 0) {
             List<String> productIds = promotionProductRepository.findAllByPromotionIdAndDeleteFlagFalse(promotion.getId()).stream().map(promotionProduct -> promotionProduct.getProductId()).collect(Collectors.toList());
             List<ProductEntity> products = productRepository.findAllByIdInAndDeleteFlagFalse(productIds);
             promotion.setStatus(true);

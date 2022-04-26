@@ -53,7 +53,7 @@ public class ActivePromotion {
         Date now = new Date();
         List<PromotionEntity> promotionList = promotionRepository.findAllByDeleteFlagFalse();
         promotionList.forEach(promotion -> {
-            if (promotion.getStartDate().compareTo(now) <= 0 && DateUtil.addDays(promotion.getEndDate(), 1).compareTo(now) >= 0) {
+            if (promotion.getStartDate().compareTo(DateUtil.addHour(now,7)) <= 0 && DateUtil.addDays(promotion.getEndDate(), 1).compareTo(DateUtil.addHour(now,7)) >= 0) {
                 if (!promotion.getStatus()) {
                     promotion.setStatus(true);
                     List<String> productIds = promotionProductRepository.findAllByPromotionIdAndDeleteFlagFalse(promotion.getId())
@@ -72,7 +72,7 @@ public class ActivePromotion {
                     }
                 }
             }
-            if (DateUtil.addDays(promotion.getEndDate(), 1).compareTo(now) <= 0) {
+            if (DateUtil.addDays(promotion.getEndDate(), 1).compareTo(DateUtil.addHour(now,7)) <= 0) {
                 promotion.setStatus(false);
                 List<String> productIds = promotionProductRepository.findAllByPromotionIdAndDeleteFlagFalse(promotion.getId())
                         .stream().map(promotionProduct -> promotionProduct.getProductId()).collect(Collectors.toList());
@@ -83,6 +83,7 @@ public class ActivePromotion {
                     });
                     productRepository.saveAllAndFlush(products);
                 }
+                promotionRepository.delete(promotion);
             }
         });
         promotionRepository.saveAllAndFlush(promotionList);

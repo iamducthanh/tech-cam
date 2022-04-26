@@ -11,4 +11,11 @@ public class DateUtil {
         cal.add(Calendar.DATE, days);
         return cal.getTime();
     }
+
+    public static Date addHour(Date date, int hours) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.HOUR_OF_DAY, hours);
+        return cal.getTime();
+    }
 }

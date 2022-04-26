@@ -18,4 +18,6 @@ public interface IPromotionProductRepo extends JpaRepository<PromotionProductEnt
     List<PromotionProductEntity> findAllByProductIdInAndDeleteFlagFalse(List<String> productIds);
 
     List<PromotionProductEntity> findByProductIdAndDeleteFlagFalse(String productId);
+
+    List<PromotionProductEntity> findAllByPromotionIdInAndDeleteFlagFalse(List<String> promotionIds);
 }
