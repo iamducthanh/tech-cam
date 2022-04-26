@@ -46,7 +46,7 @@ public class SendBirthDay {
     public void sendMailBirthDay() {
         Date date = new Date();
         List<CustomerEntity> customerEntities = customerRepo.findAllBySendBirthDay(CustomerStatus.ON.name(),
-                new SimpleDateFormat("MM").format(date), new SimpleDateFormat("dd").format(date));
+               Integer.parseInt(new SimpleDateFormat("MM").format(date)), Integer.parseInt(new SimpleDateFormat("dd").format(date)));
         System.out.println(customerEntities.size());
         if (customerEntities.isEmpty()) {
             return;
@@ -54,12 +54,13 @@ public class SendBirthDay {
         customerEntities.forEach(customerEntity -> {
             if (Objects.nonNull(customerEntity.getEmail())) {
                 try {
-                    VoucherRequest voucherRequest = sendVoucher(customerEntity.getId());
-                    String response = voucherService.createVoucher(voucherRequest);
-                    if (CommonStatus.SUCCESS.name().equals(response)) {
-                        sendMail(String.format(message, voucherRequest.getVoucherCode(), voucherRequest.getVoucherEndDate()), customerEntity.getEmail(), subject, fromMail);
+//                    VoucherRequest voucherRequest = sendVoucher(customerEntity.getId());
+//                    String response = voucherService.createVoucher(voucherRequest);
+//                    VoucherRequest voucherRequest  = voucherService.findAllByCode("")
+//                    if (CommonStatus.SUCCESS.name().equals(response)) {
+                        sendMail(String.format(message, "SNTECHCAM","2222-04-27"), customerEntity.getEmail(), subject, fromMail);
                         Thread.sleep(5000);
-                    }
+//                    }
                 } catch (InterruptedException | MessagingException e) {
                     e.printStackTrace();
                 }
@@ -71,7 +72,7 @@ public class SendBirthDay {
         Date date = new Date();
         Date endDate = DateUtils.addDays(date,15);
         VoucherRequest voucherRequest = new VoucherRequest();
-        voucherRequest.setVoucherId(UUID.randomUUID().toString());
+//        voucherRequest.setVoucherId(UUID.randomUUID().toString());
         voucherRequest.setVoucherCode(renderCode());
         voucherRequest.setVoucherDescription(MessageUtil.VOUCHER_DESCRIPTION_SEND_BIRTHDAY);
         voucherRequest.setVoucherCategory(null);
@@ -81,7 +82,7 @@ public class SendBirthDay {
         voucherRequest.setVoucherEndDate(new SimpleDateFormat("dd-MM-yyyy").format(endDate));
         voucherRequest.setVoucherStartDate(new SimpleDateFormat("dd-MM-yyyy").format(date));
         voucherRequest.setTypeDiscountMoneyMin(null);
-        voucherRequest.setVoucherMoneyMin("0");
+        voucherRequest.setVoucherMoneyMin("100");
         voucherRequest.setVoucherTypeDiscount("đ");
         voucherRequest.setVoucherQuantity("1");
         voucherRequest.setVoucherPersonApply(customerId);

@@ -23,7 +23,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "customer", schema = "poly_techcam", catalog = "")
+@Table(name = "customer")
 public class CustomerEntity {
     private String id;
     private String fullName;

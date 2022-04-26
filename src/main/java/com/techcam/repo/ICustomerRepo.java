@@ -22,8 +22,9 @@ public interface ICustomerRepo extends JpaRepository<CustomerEntity, String> {
 
     List<CustomerEntity> findAllByStatus(String status);
 
-    @Query(value = "select o.* from Customer o where o.status=:status and month(o.DATE_OF_BIRTH)= :month and day (o.DATE_OF_BIRTH)= :day ", nativeQuery = true)
-    List<CustomerEntity> findAllBySendBirthDay(@Param("status") String status, @Param("month") String month, @Param("day") String day);
+//    @Query(value = "select o.* from Customer o where o.status=:status and month(o.DATE_OF_BIRTH)= :month and day (o.DATE_OF_BIRTH)= :day ", nativeQuery = true)
+    @Query(value = "select o from CustomerEntity o where o.status=:status and function('month',o.dateOfBirth) = :month and function('day',o.dateOfBirth)= :day")
+    List<CustomerEntity> findAllBySendBirthDay(@Param("status") String status, @Param("month") Integer month, @Param("day") Integer day);
 
 //    List<CustomerEntity> findAllBy(String status, int dateOfBirth_day);
 
