@@ -1,11 +1,11 @@
 package com.techcam.dto.response.invoice;
 
-import com.techcam.dto.request.invoice.InvoiceDetailRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,6 +38,11 @@ public class InvoiceResponse {
     private String supplierName;
 
     /**
+     * id đặt hàng
+     */
+    private String orderInvoiceId;
+
+    /**
      * mã đặt hàng
      */
     private String orderInvoiceCode;
@@ -63,6 +68,13 @@ public class InvoiceResponse {
      * ghi chú
      */
     private String note;
+
+    /**
+     * người giao hàng
+     */
+    private String shipper;
+
+    private Date createDate;
 
     /**
      * chi tiết nhập hàng

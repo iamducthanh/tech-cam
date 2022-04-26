@@ -24,11 +24,6 @@ public class ProductDto {
 
     @NotNull(message = ERROR_BLANK)
     @NotEmpty(message = ERROR_BLANK)
-    @JsonProperty("productCode")
-    private String productCode;
-
-    @NotNull(message = ERROR_BLANK)
-    @NotEmpty(message = ERROR_BLANK)
     @JsonProperty("productName")
     private String productName;
 
@@ -36,6 +31,9 @@ public class ProductDto {
     @NotEmpty(message = ERROR_BLANK)
     @JsonProperty("productPrice")
     private String productPrice;
+
+    private Integer productQuantity;
+    private Integer quantity;
 
     @NotNull(message = ERROR_BLANK)
     @NotEmpty(message = ERROR_BLANK)
@@ -57,5 +55,9 @@ public class ProductDto {
     @JsonProperty("productDescription")
     private String productDescription;
 
+//    @NotNull(message = ERROR_BLANK)
+//    @NotEmpty(message = ERROR_BLANK)
+//    @JsonProperty("promotion")
+    private String promotion;
 
 }

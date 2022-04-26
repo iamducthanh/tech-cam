@@ -50,13 +50,14 @@ public class VoucherRequest {
 
     @NotNull(message = ConstantsErrorCode.ERROR_DATA_REQUEST)
     @NotBlank(message = ConstantsErrorCode.VOUCHER_DISCOUNT_BLANK)
-    @Pattern(regexp = ContainsFormat.REGEX_NUMBER)
     private String voucherDiscount;
 
-    @Pattern(regexp = ContainsFormat.REGEX_NUMBER)
+    @NotNull(message = ConstantsErrorCode.ERROR_DATA_REQUEST)
+    @NotBlank(message = ConstantsErrorCode.VOUCHER_DISCOUNT_BLANK)
+    private String voucherAccompanyPromo;
+
     private String voucherMoneyMin;
 
-    @Pattern(regexp = ContainsFormat.REGEX_NUMBER)
     private String voucherQuantity;
 
     private String voucherDescription;

@@ -1,15 +1,14 @@
 package com.techcam.api;
 
-import com.techcam.constants.ConstantsErrorCode;
-import com.techcam.dto.request.CategoryReqDto;
+import com.techcam.dto.request.category.AttributeReqDto;
+import com.techcam.dto.request.category.CategoryReqDto;
 import com.techcam.dto.response.CategoryDto;
 import com.techcam.entity.CategoryEntity;
-import com.techcam.exception.TechCamExp;
 import com.techcam.service.ICategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
+import java.util.List;
 
 /**
  * Description:
@@ -26,15 +25,26 @@ public class CategoryApi {
 
  @PostMapping("")
  public String saveCategory(@RequestBody CategoryReqDto categoryDto){
+  System.out.println(categoryDto.toString());
   categoryService.saveCategory(categoryDto);
+  return "";
+ }
+
+ @PutMapping("")
+ public String updateCategory(@RequestBody CategoryDto categoryDto){
+  System.out.println(categoryDto.toString());
+  categoryService.updateCategory(categoryDto);
   return "";
  }
 
  @GetMapping("/{categoryId}")
  public CategoryDto getByCategoryId(@PathVariable("categoryId") String categoryId){
   CategoryEntity categoryEntity = categoryService.findById(categoryId);
+  List<AttributeReqDto> attributes = categoryService.findAllAttribute(categoryId);
   CategoryDto categoryDto = CategoryDto.builder()
+          .categoryId(categoryId)
           .categoryName(categoryEntity.getName())
+          .attributes(attributes)
           .build();
   return categoryDto;
  }

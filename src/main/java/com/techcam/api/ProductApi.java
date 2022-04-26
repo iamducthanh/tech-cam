@@ -11,6 +11,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -79,6 +80,15 @@ public class ProductApi {
             return ResponseEntity.ok(productResponse);
         }
         return ResponseEntity.badRequest().body(new ProductResponse());
+    }
+
+    @GetMapping("/search/{keyword}")
+    public ResponseEntity<List<ProductResponse>> searchProductByKeyword(@PathVariable("keyword") String keyword) {
+        List<ProductResponse> productResponse = productService.findAllByKeyWords(keyword);
+        if (Objects.nonNull(productResponse)) {
+            return ResponseEntity.ok(productResponse);
+        }
+        return ResponseEntity.badRequest().body(new ArrayList<>());
     }
 
     private void validateInputProduct(Errors errors, String productName, List<String> productImages) {

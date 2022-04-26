@@ -10,11 +10,13 @@ package com.techcam.type;
  */
 
 public enum OrderStatus {
-    VERIFY,
-    CONFIRM,
-    PAID,// đã thanh toán
-    UNPAID, // chưa thanh toán
-    DONE,
-    SHIPPING,
+    UNPAID,     // Chưa thanh toán
+    PAID,       // Đã thanh toán
 
+    VERIFY,     // Chờ xác nhận
+    CONFIRM,    // Chờ xuất hàng
+    SHIPPING,   // Chờ giao hàng
+    GOSHIPPING, // đang đi giao hàng
+    DONE,       // Hoàn thành
+    CANCEL
 }

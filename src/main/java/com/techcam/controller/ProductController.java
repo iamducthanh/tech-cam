@@ -1,5 +1,6 @@
 package com.techcam.controller;
 
+import com.techcam.dto.response.SupplierResponseDTO;
 import com.techcam.dto.response.brand.BrandResponse;
 import com.techcam.dto.response.category.CategoryResponse;
 import com.techcam.dto.response.product.ProductPropertyResponse;
@@ -15,6 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static com.techcam.type.CustomerStatus.ON;
 
 /**
  * Description :
@@ -40,18 +45,31 @@ public class ProductController {
 
     private final ICategoryService categoryService;
 
+    private final ISupplierService supplierService;
+
     @GetMapping
     public String productManager(Model model) {
         List<ProductResponse> lstProducts = productService.getAllProduct();
         for (ProductResponse x : lstProducts) {
             x.setProperties(productService.findAllPropertyByProductId(x.getProductId()));
         }
+        List<String> productLimitQuantity = lstProducts.stream()
+                .filter(e -> Objects.nonNull(e.getQuantity())
+                        && e.getProductStatus().equals(ON.name())
+                        && e.getQuantity() < 20)
+                .sorted((o1, o2) -> o2.getQuantity().compareTo(o1.getQuantity()))
+                .map(ProductResponse::getProductId)
+                .limit(10).collect(Collectors.toList());
         List<BrandResponse> lstBrands = brandService.getAllBrand();
         List<CategoryResponse> lstCategories = categoryService.getAllCategory();
+        List<SupplierResponseDTO> lstSupplier = supplierService.getAll();
+//        lstProducts.sort((o1, o2) -> o2.getCreateDate().compareTo(o1.getCreateDate()));
         model.addAttribute("lstProducts", lstProducts);
+        model.addAttribute("productLimitQuantity", productLimitQuantity);
         model.addAttribute("lstBrands", lstBrands);
         model.addAttribute("lstCategories", lstCategories);
-        return "/views/product/index";
+        model.addAttribute("lstSupplier", lstSupplier);
+        return "views/product/index";
     }
 
     @GetMapping(value = "/property/add", params = "category")
@@ -61,7 +79,7 @@ public class ProductController {
             x.setFixedValue(attributeService.findAllFixedValueByPropertyId(x.getPropertyId()));
         }
         model.addAttribute("lstProperty", lstPropertyResponses);
-        return "/component/product/property";
+        return "views/product/component/property";
     }
 
     @GetMapping(value = "/property/edit", params = {"category", "product"})
@@ -94,7 +112,7 @@ public class ProductController {
             x.setFixedValue(attributeService.findAllFixedValueByPropertyId(x.getPropertyId()));
         }
         model.addAttribute("lstProperty", lstProductPropertyResponses);
-        return "/component/product/propertyEdit";
+        return "views/product/component/propertyEdit";
     }
 
 }

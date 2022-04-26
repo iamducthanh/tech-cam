@@ -1,7 +1,9 @@
 package com.techcam.repo;
 
+import com.techcam.entity.AttributeEntity;
 import com.techcam.entity.AttributeFixedValueEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -19,4 +21,7 @@ public interface IAttributeFixedValueRepo extends JpaRepository<AttributeFixedVa
     AttributeFixedValueEntity getByIdAndDeleteFlagIsFalse(String fixedValueId);
 
     List<AttributeFixedValueEntity> findAllByAttributeIdAndDeleteFlagIsFalse(String propertyId);
+
+    @Query("select o from AttributeFixedValueEntity o where o.attributeId = ?1 and o.deleteFlag = false ")
+    List<AttributeFixedValueEntity> findByAttributeId(String attributeId);
 }

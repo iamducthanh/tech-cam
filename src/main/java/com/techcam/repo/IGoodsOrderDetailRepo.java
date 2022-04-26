@@ -19,4 +19,5 @@ public interface IGoodsOrderDetailRepo extends JpaRepository<GoodsOrderDetailEnt
 
     List<GoodsOrderDetailEntity> findAllByGoodsOrdersIdAndDeleteFlagIsFalse(String orderId);
 
+    List<GoodsOrderDetailEntity> findAllByProductIdAndDeleteFlagIsFalse(String productId);
 }

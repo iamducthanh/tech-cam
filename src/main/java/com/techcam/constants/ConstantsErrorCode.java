@@ -15,6 +15,9 @@ public interface ConstantsErrorCode {
     String ERROR_MIN_MONEY = "CM-TC-003";
     String ERROR_EXISTS = "CM-TC-004";
     String ERROR_NOT_EXISTS = "CM-TC-005";
+    String ERROR_FORMAT_NUMBER = "CM-TC-007";
+
+    String ERROR_SAVE_FAILED = "CM-TC-006";
 
     // lỗi hệ thống
     String ERROR_DATA_REQUEST = "TC-000-001";
@@ -23,6 +26,7 @@ public interface ConstantsErrorCode {
     String PHONE_NUMBER_EXIST = "TC-000-003";
     String CATEGORY_NAME_EXIST = "TC-LG-011";
     String CATEGORY_NAME = "TC-LG-010";
+    String DATE_ERROR = "TC-000-005";
 
 
     // lỗi customer
@@ -38,6 +42,7 @@ public interface ConstantsErrorCode {
     String VOUCHER_NOT_EXISTS = "TC-005-007";
     String VOUCHER_END_USED = "TC-005-008";
     String VOUCHER_MAX_USED = "TC-005-009";
+    String VOUCHER_DATE_NOT_PAST = "TC-005-010";
 
     String ERROR_BLANK = "CM-TC-002";
 
@@ -78,5 +83,14 @@ public interface ConstantsErrorCode {
     String IMEI_DUPLICATE = "TC-007-004";
 
     String INVOICE_NOT_DETAIL = "TC-008-001";
+    String INVOICE_NOT_ZERO = "TC-008-002";
+    String INVOICE_INVENTORY = "TC-008-003";
+
+    String PROMOTION_EXIST = "TC-012-001";
+    String PROMOTION_NOT_FOUND = "TC-012-002";
+    String PROMOTION_PRODUCT_EXIST = "TC-012-003";
+    String PROMOTION_PRODUCT_NOT_FOUND = "TC-012-004";
+    String PROMOTION_NOT_ACEPTED = "TC-012-007";
+    String ATB_NAME = "TC-012-001";
 
 }

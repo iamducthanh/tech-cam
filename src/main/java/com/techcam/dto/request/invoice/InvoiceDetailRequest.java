@@ -31,13 +31,18 @@ public class InvoiceDetailRequest {
     private String productId;
 
     /**
-     * số lượng
+     * số lượng trên hoá đơn
      */
     private Integer quantity;
 
     /**
+     * số lượng thực nhận
+     */
+    private Integer quantityActual;
+
+    /**
      * giá tiền
      */
-    private Long price;
+    private Double price;
 
 }

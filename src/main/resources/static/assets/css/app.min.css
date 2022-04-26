@@ -3133,7 +3133,7 @@ body[data-layout=horizontal][data-layout-size=boxed] .navbar-header {
 
 .error {
     color: #ea553d;
-    background-color: #ff230024;
+    background-color: #ff230024!important;
     border-color: red;
 }
 

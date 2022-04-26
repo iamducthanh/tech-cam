@@ -23,8 +23,10 @@ import org.springframework.web.servlet.view.RedirectView;
 @RestController
 @RequestMapping("/vnp-pay/check-out/order")
 public class CheckOutVnpay {
+
     @Autowired
     private IOrderService orderService;
+
     @GetMapping("")
     public RedirectView checkOutVnpay(@RequestParam String vnp_TxnRef, @RequestParam String vnp_ResponseCode){
        OrderResponse response = orderService.checkOutBank(vnp_ResponseCode,vnp_TxnRef);

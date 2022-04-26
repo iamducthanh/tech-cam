@@ -87,7 +87,7 @@
                                                 Chi tiết
                                             </button>
                                             <button th:data-id="${voucher.voucherId}" class="btn btn-danger btn-sm"
-                                                    onclick="onClickDeleteVoucher(this)">
+                                                    onclick="onClickDeleteVoucher(this)" th:data-code="${voucher.voucherCode}">
                                                 Xoá
                                             </button>
                                         </td>
@@ -100,22 +100,22 @@
                                             th:text="${#dates.format(voucher.voucherEndDate, 'dd-MM-yyyy')}">Đến ngày
                                         </td>
                                         <td class="text-end"
-                                            th:text="${#numbers.formatDecimal(voucher.voucherQuantity, 0, 'COMMA', 0, 'POINT')}">
+                                            th:text="${#numbers.formatDecimal(voucher.voucherQuantity, 0, 'POINT', 0, 'COMMA')}">
                                             Số lần sử dụng
                                         </td>
                                         <td class="text-end"
-                                            th:text="${#numbers.formatDecimal(voucher.voucherDiscount, 0, 'COMMA', 0, 'POINT') + voucher.voucherTypeDiscount}">
+                                            th:text="${#numbers.formatDecimal(voucher.voucherDiscount, 0, 'POINT', 0, 'COMMA') + voucher.voucherTypeDiscount}">
                                             Mệnh giá
                                         </td>
                                         <td class="text-center">
-                            <span th:unless="${voucher.voucherStatus != null && voucher.voucherStatus == 'ON'}"
-                                  class="badge bg-danger">
-                                Không sử dụng
-                            </span>
+                                            <span th:unless="${voucher.voucherStatus != null && voucher.voucherStatus == 'ON'}"
+                                                  class="badge bg-danger">
+                                                Không sử dụng
+                                            </span>
                                             <span th:if="${voucher.voucherStatus != null && voucher.voucherStatus == 'ON'}"
                                                   class="badge bg-success">
-                                Kích hoạt
-                            </span>
+                                                Kích hoạt
+                                            </span>
                                         </td>
                                         <td th:text="${voucher.voucherCreateBy}">
                                             Người tạo
@@ -135,23 +135,23 @@
                                                     <li class="nav-item">
                                                         <a class="nav-link active" data-bs-toggle="tab"
                                                            th:href="${'#info-voucher-' + voucher.voucherId}" role="tab">
-                                                <span class="d-none d-md-block">
-                                                    Thông tin
-                                                </span>
+                                                            <span class="d-none d-md-block">
+                                                                Thông tin
+                                                            </span>
                                                             <span class="d-block d-md-none">
-                                                    <i class="mdi mdi-home-variant h5"></i>
-                                                </span>
+                                                                <i class="mdi mdi-home-variant h5"></i>
+                                                            </span>
                                                         </a>
                                                     </li>
                                                     <li class="nav-item">
                                                         <a class="nav-link" data-bs-toggle="tab"
                                                            th:href="${'#history-use-' + voucher.voucherId}" role="tab">
-                                                <span class="d-none d-md-block">
-                                                    Lịch sử sử dụng
-                                                </span>
+                                                            <span class="d-none d-md-block">
+                                                                Lịch sử sử dụng
+                                                            </span>
                                                             <span class="d-block d-md-none">
-                                                    <i class="mdi mdi-account h5"></i>
-                                                </span>
+                                                                <i class="mdi mdi-account h5"></i>
+                                                            </span>
                                                         </a>
                                                     </li>
                                                 </ul>
@@ -166,7 +166,8 @@
                                                                         Mã giảm giá
                                                                     </div>
                                                                     <div class="col-lg-7">
-                                                                        <input type="text" placeholder="Mã giảm giá tự động"
+                                                                        <input type="text"
+                                                                               placeholder="Mã giảm giá tự động"
                                                                                th:class="${'form-control ip-voucher-code' + voucher.voucherId}"
                                                                                th:value="${voucher.voucherCode}"/>
                                                                     </div>
@@ -176,7 +177,8 @@
                                                                         Tên chương trình
                                                                     </div>
                                                                     <div class="col-lg-7">
-                                                                        <input type="text" placeholder="Tên chương trình...."
+                                                                        <input type="text"
+                                                                               placeholder="Tên chương trình...."
                                                                                th:class="${'form-control ip-voucher-name' + voucher.voucherId}"
                                                                                th:value="${voucher.voucherName}"/>
                                                                     </div>
@@ -186,7 +188,7 @@
                                                                         Số lần sử dụng
                                                                     </div>
                                                                     <div class="col-lg-7">
-                                                                        <input type="number" min="1" value="1"
+                                                                        <input type="number"
                                                                                placeholder="Nhập số lần sử dụng..."
                                                                                th:class="${'form-control ip-voucher-quantity' + voucher.voucherId}"
                                                                                th:value="${voucher.voucherQuantity}"/>
@@ -199,14 +201,16 @@
                                                                     <div class="col-lg-7">
                                                                         <div class="input-group">
                                                                             <input type="text"
+                                                                                   th:disabled="${voucher.getVoucherCreateDate().before(#dates.createNow())}"
                                                                                    th:class="${'form-control ip-voucher-discount' + voucher.voucherId}"
                                                                                    placeholder="Nhập mệnh giá..."
                                                                                    th:value="${voucher.voucherDiscount}">
                                                                             <span class="input-group-text ip-voucher-type-discount"
                                                                                   onclick="onClickChangeTypeDiscount(this)"
-                                                                                  style="cursor: pointer;">
-                                                                    [[${voucher.voucherTypeDiscount}]]
-                                                                </span>
+                                                                                  th:style="${voucher.getVoucherCreateDate().before(#dates.createNow()) ? 'pointer-events: none;' : 'cursor: pointer;'}"
+                                                                                  th:disabled="${voucher.getVoucherCreateDate().before(#dates.createNow())}">
+                                                                                [[${voucher.voucherTypeDiscount}]]
+                                                                            </span>
                                                                         </div><!-- input-group -->
                                                                     </div>
                                                                 </div>
@@ -219,6 +223,22 @@
                                                                                placeholder="Nhập số tiền hàng tối thiểu..."
                                                                                th:class="${'form-control ip-voucher-money-min' + voucher.voucherId}"
                                                                                th:value="${voucher.voucherMinAmount}"/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="mb-3 row">
+                                                                    <div class="col-lg-5">
+                                                                    </div>
+                                                                    <div class="col-lg-7">
+                                                                        <input class="form-check-input mt-2"
+                                                                               type="checkbox"
+                                                                               th:checked="${voucher.voucherKey == 'USED'}"
+                                                                               th:class="${'ip-voucher-promo' + voucher.voucherId}"
+                                                                               th:id="${'ip-voucher-promo' + voucher.voucherId}"
+                                                                        />
+                                                                        <label th:for="${'ip-voucher-promo' + voucher.voucherId}"
+                                                                               class="col-form-label">
+                                                                            Sử dụng cùng khuyến mại
+                                                                        </label>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -237,7 +257,8 @@
                                                                             <input type="text"
                                                                                    th:class="${'form-control ip-voucher-start-date' + voucher.voucherId}"
                                                                                    placeholder=" Bắt đầu"
-                                                                                   th:value="${#dates.format(voucher.voucherStartDate, 'dd-MM-yyyy 00:00:00')}"/>
+                                                                                   th:value="${#dates.format(voucher.voucherStartDate, 'dd-MM-yyyy 00:00:00')}"
+                                                                                   th:disabled="${voucher.getVoucherCreateDate().before(#dates.createNow())}"/>
                                                                             <input type="text"
                                                                                    th:class="${'form-control ip-voucher-end-date' + voucher.voucherId}"
                                                                                    placeholder="Kết thúc"
@@ -331,7 +352,8 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="tab-pane p-3" th:id="${'history-use-' + voucher.voucherId}"
+                                                    <div class="tab-pane p-3"
+                                                         th:id="${'history-use-' + voucher.voucherId}"
                                                          role="tabpanel">
                                                         <table class="table table-bordered table-hover voucher-used"
                                                                th:data-id="${voucher.voucherId}">
@@ -343,14 +365,7 @@
                                                                 <th>Ngày sử dụng</th>
                                                             </tr>
                                                             </thead>
-                                                            <tbody class="voucher-used-content">
-                                                            <tr>
-                                                                <td class="text-center">1</td>
-                                                                <td>Họ và tên</td>
-                                                                <td class="text-end">Tổng tiền hoá đơn</td>
-                                                                <td>Ngày sử dụng</td>
-                                                            </tr>
-                                                            </tbody>
+                                                            <tbody class="voucher-used-content"></tbody>
                                                         </table>
                                                     </div>
                                                 </div>
@@ -426,6 +441,16 @@
                                 <div class="col-lg-7">
                                     <input type="number" min="0" class="form-control"
                                            id="ip-voucher-money-min"/>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col-lg-5">
+                                </div>
+                                <div class="col-lg-7">
+                                    <input class="form-check-input mt-2" type="checkbox" id="ip-voucher-promo"/>
+                                    <label for="ip-voucher-promo" class="col-form-label">
+                                        Sử dụng cùng khuyến mại
+                                    </label>
                                 </div>
                             </div>
                         </div>

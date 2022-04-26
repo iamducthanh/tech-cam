@@ -1,5 +1,11 @@
 package com.techcam.service;
 
+import com.techcam.dto.request.receiptvoucher.ReceiptVoucherRequest;
+import com.techcam.dto.response.receiptvoucher.GetInfoReceiptVoucher;
+import com.techcam.dto.response.receiptvoucher.ReceiptVoucherResponse;
+
+import java.util.List;
+
 /**
  * Description:
  *
@@ -10,4 +16,14 @@ package com.techcam.service;
  */
 
 public interface IReceiptVoucherService {
+    ReceiptVoucherResponse resgistration(ReceiptVoucherRequest request);
+
+    GetInfoReceiptVoucher getInfoReceiptVoucher(Integer id);
+
+    //    public ReceiptVoucherResponse editReceiptById(){
+    //
+    //    }
+    String getInfoStaff();
+
+    List<GetInfoReceiptVoucher> getAllReceiptVoucher();
 }

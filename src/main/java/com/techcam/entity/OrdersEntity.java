@@ -4,6 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -25,7 +29,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "orders", schema = "poly_techcam", catalog = "")
 public class OrdersEntity {
-    private String id;
+    private Integer id;
     private Date orderDate;
     private Integer tax;
     private String transactionStatus;
@@ -44,17 +48,29 @@ public class OrdersEntity {
     private String shipmentId;
     private String status;
     private String note;
-    private Date createDate;
-    private Date modifierDate;
-    private String createBy;
-    private String modifierBy;
-    private Boolean deleteFlag;
     private String ipAddress;
     private Date deliveryDate;
     private CustomerEntity customer;
     private VoucherEntity voucher;
     private String bankTransaction;
     private List<OrderdetailEntity> ordersEntities;
+    private Integer feeDelivery;
+    private String shipperName;
+    private String shipperPhone;
+
+    @CreatedDate
+    private Date createDate;
+
+    @LastModifiedDate
+    private Date modifierDate;
+
+    @CreatedBy
+    private String createBy;
+
+    @LastModifiedBy
+    private String modifierBy;
+    private Boolean deleteFlag;
+
 //    private List<ReceiptVoucherEntity> orReceiptVoucherEntities;
 //    @OneToMany(mappedBy = "orders")
 //    public List<ReceiptVoucherEntity> getOrReceiptVoucherEntities() {
@@ -93,11 +109,11 @@ public class OrdersEntity {
     }
     @Id
     @Column(name = "id")
-    public String getId() {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Integer getId() {
         return id;
     }
-
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -357,6 +373,33 @@ public class OrdersEntity {
 
     public void setCustomer(CustomerEntity customer) {
         this.customer = customer;
+    }
+    @Basic
+    @Column(name = "ship_fee")
+    public Integer getFeeDelivery() {
+        return feeDelivery;
+    }
+
+    public void setFeeDelivery(Integer feeDelivery) {
+        this.feeDelivery = feeDelivery;
+    }
+    @Basic
+    @Column(name = "shipper")
+    public String getShipperName() {
+        return shipperName;
+    }
+
+    public void setShipperName(String shipperName) {
+        this.shipperName = shipperName;
+    }
+    @Basic
+    @Column(name = "shipper_phone")
+    public String getShipperPhone() {
+        return shipperPhone;
+    }
+
+    public void setShipperPhone(String shipperPhone) {
+        this.shipperPhone = shipperPhone;
     }
 
     @Override

@@ -1,14 +1,25 @@
 package com.techcam.controller;
 
+import com.techcam.entity.LogEntity;
+import com.techcam.entity.StatisProfit;
+import com.techcam.entity.TopProductSaleByMonth;
+import com.techcam.repo.IOrderRepo;
+import com.techcam.repo.IProductRepo;
+import com.techcam.repo.IStatisProfitRepo;
+import com.techcam.repo.ITopProductSaleByMonth;
+import com.techcam.service.ILogService;
 import com.techcam.service.IOrderService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.time.LocalDate;
+import java.util.List;
 
 /**
  * Project_name : SMW_TECHCAM
@@ -25,19 +36,32 @@ public class IndexController {
     private final String LOCALHOST_IPV6 = "0:0:0:0:0:0:0:1";
 
     @Autowired
-    private IOrderService orderService;
+    private ILogService logService;
+    @Autowired
+    private IStatisProfitRepo statisProfitRepo;
+    @Autowired
+    private IOrderRepo orderRepo;
 
     @GetMapping("/")
-    public String index() {
+    public String index(Model model) {
+        List<LogEntity> list = logService.findAllLog̣();
+        model.addAttribute("logs",list);
+
+        List<StatisProfit> statisProfits = statisProfitRepo.findProfit(2022);
+        List<Integer> listYear = orderRepo.findAllYear();
+        listYear.sort((o1, o2) -> {
+            return o1 < o2 ? 1 : -1;
+        });
+        model.addAttribute("years", listYear);
         return "views/index";
     }
 
-    @GetMapping("/index")
-    public String index1(HttpServletRequest request) {
-        System.out.println(getDevice(request));
-        System.out.println(orderService.findAllOrdersDetailsById("39f49e48-3d80-4065-ab06-79a26c22a3a3").size());
-        return "test_vnpay";
-    }
+//    @GetMapping("/index")
+//    public String index1(HttpServletRequest request) {
+//        System.out.println(getDevice(request));
+//        System.out.println(orderService.findAllOrdersDetailsById("39f49e48-3d80-4065-ab06-79a26c22a3a3").size());
+//        return "test_vnpay";
+//    }
 
     public String getDevice(HttpServletRequest request) {
         String ipAddress = request.getHeader("X-Forwarded-For");

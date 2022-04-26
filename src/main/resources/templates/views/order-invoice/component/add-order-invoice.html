@@ -1,0 +1,88 @@
+<div class="row" xmlns:th="http://www.thymeleaf.org">
+    <div class="col-lg-4">
+<!--        <div class="mb-3">-->
+<!--            <label for="ip-edit-invoice-code">-->
+<!--                Mã đặt hàng:-->
+<!--            </label>-->
+<!--        </div>-->
+<!--        <div class="mb-3">-->
+<!--            <input th:disabled="${orderInvoice.dateInvoice != null}" type="text" id="ip-edit-invoice-code"-->
+<!--                   placeholder="Mã đặt hàng...."-->
+<!--                   class="form-control" th:value="${orderInvoice.invoiceOrderCode}"/>-->
+<!--        </div>-->
+        <div class="mb-3">
+            <label for="ip-edit-order-code">
+                Hẹn ngày nhận:
+            </label>
+        </div>
+        <div class="mb-3">
+            <input th:disabled="${orderInvoice.dateInvoice != null}" type="text" class="form-control"
+                   placeholder="dd-MM-yyyy"
+                   data-date-format="dd-MM-yyyy" data-date-container='#datepicker2' data-provide="datepicker"
+                   data-date-autoclose="true"
+                   th:value="${#temporals.format(orderInvoice.orderDelivery, 'dd-MM-yyyy')}">
+        </div>
+        <div class="mb-3">
+            <label for="ip-edit-supplier">
+                Nhà cung cấp:
+            </label>
+        </div>
+        <div class="mb-3">
+            <select th:disabled="${orderInvoice.dateInvoice != null}" id="ip-edit-supplier"
+                    class="form-control select2">
+                <option th:each="supplier : ${lstSupplier}"
+                        th:selected="${orderInvoice.invoiceSupplierId == supplier.id}"
+                        th:value="${supplier.id}"
+                        th:text="${supplier.name}">
+                </option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="ip-edit-invoice-note">
+                Ghi chú:
+            </label>
+        </div>
+        <div class="mb-3">
+            <textarea rows="5" placeholder="Ghi chú...." class="form-control"
+                      th:value="${orderInvoice.note}"></textarea>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="table-responsive" style="overflow-y: auto; max-height: 60vh">
+            <table class="table table-editable table-nowrap align-middle table-edits">
+                <thead>
+                <tr class="text-center">
+                    <th colspan="1"></th>
+                    <th colspan="1">Sản phẩm</th>
+                    <th colspan="1">Số lượng đặt</th>
+                    <th th:if="${orderInvoice.dateInvoice != null}"></th>
+                </tr>
+                </thead>
+                <tbody id="bodyAddProductOrderInvoice">
+                <th:block th:each="product, theCount : ${lstProduct}">
+                    <tr th:data-id="${theCount.index + 1}" th:id="${product.productId}" class="tr-order-product">
+                        <td class="text-center">
+                            <input type="checkbox" class="form-check-input"/>
+                        </td>
+                        <td class="text-left text-wrap" th:text="${product.productName}"></td>
+                        <td th:style="${orderInvoice.dateInvoice != null ? 'pointer-events:none' : ''}" colspan="1"
+                            class="ip-edit-quantity text-end" data-field="quantity">
+                            0
+                        </td>
+                        <td th:if="${orderInvoice.dateInvoice == null}" style="width: 100px" class="text-center">
+                            <a class="btn btn-outline-secondary btn-sm edit" title="Edit">
+                                <i class="fas fa-pencil-alt"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
+        </div>
+        <div th:if="${orderInvoice.dateInvoice == null}" class="text-end">
+            <button class="btn btn-secondary" id="btnAddProduct" onclick="onAddProductOrderInvoice( this)">
+                Thêm sản phẩm
+            </button>
+        </div>
+    </div>
+</div>

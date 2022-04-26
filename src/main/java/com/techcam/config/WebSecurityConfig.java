@@ -4,6 +4,7 @@ import com.techcam.entity.StaffEntity;
 import com.techcam.service.impl.StaffDetailsServiceImpl;
 import com.techcam.service.impl.StaffService;
 import com.techcam.util.CookieUtil;
+import com.techcam.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private StaffDetailsServiceImpl staffDetailsService;
     private final StaffService staffService;
 
+    private final SessionUtil sessionUtil;
+
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -44,7 +47,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
-
+        http.authorizeRequests().antMatchers("/staff").hasAnyAuthority("ROLE_ADMIN")
+                .and().exceptionHandling().accessDeniedPage("/");
+        http.authorizeRequests().antMatchers("/invoice","/confirm-export-order").hasAnyAuthority("ROLE_ADMIN","ROLE_STOCK")
+                .and().exceptionHandling().accessDeniedPage("/");
+        http.authorizeRequests().antMatchers("/pay-the-bill","/receipt-voucher").hasAnyAuthority("ROLE_ADMIN","ROLE_ACC")
+                .and().exceptionHandling().accessDeniedPage("/");
         http.authorizeRequests().antMatchers(
                 "/login/**",
                 "/reset-password/**",
@@ -54,21 +62,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/change-res    et-password/**",
                 "/api/count_login_false/**",
                 "/index",
-//                "/api/v1/orders",
+                "/api/voucher/**",
+                "/api/notification/**",
                 "/api/v1/orders/**",
                 "/vnp-pay/check-out/order/**",
-                "/api/staff/**",
-                "/staff/**",
-                "/api/v1/customer/**",
-                "/customer/**",
-                "/customer"
+                "/api/receipt-voucher/**"
         ).permitAll();
-
-        http.authorizeRequests().antMatchers("/**").access("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')");
-
-        http.authorizeRequests().antMatchers("/admin").access("hasRole('ROLE_ADMIN')");
-
-        http.authorizeRequests().and().exceptionHandling().accessDeniedPage("/403");
 
         http.formLogin()
                 .loginProcessingUrl("/login-check")
@@ -86,6 +85,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     staffService.saveStaff(staffEntity);
                     response.sendRedirect(request.getContextPath());
                     cookieUtil.add("username", username, 168); //7 days
+                    sessionUtil.addObject("username", username);
                 })
                 .and().logout().logoutUrl("/logout").logoutSuccessUrl("/login?status=logout");
 
@@ -102,7 +102,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     public static void main(String[] args) {
-        System.out.println(new BCryptPasswordEncoder().encode("0123456789"));
+        System.out.println(new BCryptPasswordEncoder().encode("1234"));
     }
 
 }

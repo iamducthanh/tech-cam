@@ -24,4 +24,16 @@ public class BrandResponse {
 
     private String brandName;
 
+    private String brandPhone;
+
+    private String brandEmail;
+
+    private String brandAddress;
+
+    private String brandStatus;
+
+    private String brandNote;
+
+    private String brandAvatar;
+
 }

@@ -1,7 +1,13 @@
 package com.techcam.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -10,9 +16,12 @@ import java.util.Objects;
  * @since 8.3.2022
  */
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 @Table(name = "attribute_fixed_value", schema = "poly_techcam", catalog = "")
 public class AttributeFixedValueEntity {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "ID")
     private String id;
@@ -30,10 +39,10 @@ public class AttributeFixedValueEntity {
     private String note;
     @Basic
     @Column(name = "CREATE_DATE")
-    private Timestamp createDate;
+    private Date createDate;
     @Basic
     @Column(name = "MODIFIER_DATE")
-    private Timestamp modifierDate;
+    private Date modifierDate;
     @Basic
     @Column(name = "CREATE_BY")
     private String createBy;
@@ -84,17 +93,11 @@ public class AttributeFixedValueEntity {
         this.note = note;
     }
 
-    public Timestamp getCreateDate() {
-        return createDate;
-    }
 
     public void setCreateDate(Timestamp createDate) {
         this.createDate = createDate;
     }
 
-    public Timestamp getModifierDate() {
-        return modifierDate;
-    }
 
     public void setModifierDate(Timestamp modifierDate) {
         this.modifierDate = modifierDate;

@@ -9,7 +9,6 @@ window.onload = function () {
     let getSelectPersonApply = document.getElementsByClassName('ip-voucher-person-apply')
     if (getSelectPersonApply !== null && getSelectPersonApply !== undefined) {
         for (let index = 0; index < getSelectPersonApply.length; index++) {
-            console.log(getSelectPersonApply[index])
             onChangePersonApply(getSelectPersonApply[index])
         }
     }
@@ -18,11 +17,9 @@ window.onload = function () {
 
 function loadUsedByVoucherId() {
     $('.voucher-used').each(function () {
-        console.log()
         $.ajax({
             url: '/api/voucher/' + $(this).attr('data-id') + '/used',
             success: function (data) {
-                console.log(data)
                 let html = '';
                 for (let i = 0; i < data.length; i++) {
                     html += '<tr>\n' +
@@ -80,6 +77,7 @@ function onClickSaveVoucher() {
     let getElementTypeDiscountPerson = document.getElementById('ip-type-discount-person');
     // get element mô tả chi tiết mã giảm giá
     let getElementVoucherDescription = document.getElementById('ip-voucher-description');
+    let getElementVoucherPromo = document.getElementById('ip-voucher-promo');
     let objVoucher = validateObjectVoucher(
         null,
         getElementVoucherCode
@@ -95,8 +93,8 @@ function onClickSaveVoucher() {
         , getElementTypeDiscountMoneyMin
         , getElementTypeDiscountPerson
         , getElementVoucherDescription
+        , getElementVoucherPromo
     );
-    console.log(objVoucher);
     if (objVoucher !== null && objVoucher !== undefined) {
         $.ajax({
             url: '/api/voucher',
@@ -104,7 +102,6 @@ function onClickSaveVoucher() {
             contentType: 'application/json',
             data: JSON.stringify(objVoucher),
             success: function (data) {
-                console.log(data);
                 toastSuccess('Thành công', 'Đã tạo mã giảm giá')
                 setTimeout(function () {
                     location.reload()
@@ -147,6 +144,7 @@ function onClickUpdateVoucher(e) {
     let getElementTypeDiscountPerson = document.querySelector('.ip-type-discount-person' + id);
     // get element mô tả chi tiết mã giảm giá
     let getElementVoucherDescription = document.querySelector('.ip-voucher-description' + id);
+    let getElementVoucherPromo = document.querySelector('.ip-voucher-promo' + id);
     let objVoucher = validateObjectVoucher(
         id,
         getElementVoucherCode
@@ -162,8 +160,8 @@ function onClickUpdateVoucher(e) {
         , getElementTypeDiscountMoneyMin
         , getElementTypeDiscountPerson
         , getElementVoucherDescription
+        , getElementVoucherPromo
     );
-    console.log(objVoucher);
     if (objVoucher !== null && objVoucher !== undefined) {
         $.ajax({
             url: '/api/voucher',
@@ -171,7 +169,6 @@ function onClickUpdateVoucher(e) {
             contentType: 'application/json',
             data: JSON.stringify(objVoucher),
             success: function (data) {
-                console.log(data);
                 toastSuccess('Thành công', 'Đã cập nhật mã giảm giá')
                 setTimeout(function () {
                     location.reload()
@@ -194,7 +191,6 @@ function onClickActiveVoucher(e) {
             method: 'PUT',
             contentType: 'application/json',
             success: function (data) {
-                console.log(data);
                 toastSuccess('Thành công', 'Đã kích hoạt mã giảm giá')
                 setTimeout(function () {
                     location.reload()
@@ -212,22 +208,50 @@ function onClickDeleteVoucher(e) {
     let id = e.dataset.id
     if (id !== null && id !== undefined && id !== '') {
         // sweetConfirm('Xác nhận', 'Xoá mã giảm giá?', 'Xoá', function () {
-        $.ajax({
-            url: '/api/voucher/' + id,
-            method: 'DELETE',
-            contentType: 'application/json',
-            success: function (data) {
-                console.log(data);
-                toastSuccess('Thành công', 'Đã xoá mã giảm giá')
-                setTimeout(function () {
-                    location.reload()
-                }, 2000)
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success mx-2',
+                cancelButton: 'btn btn-danger mx-2'
             },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.log(jqXHR);
-                toastDanger('Lỗi', jqXHR.responseJSON.vn);
+            buttonsStyling: false
+        })
+
+        swalWithBootstrapButtons.fire({
+            title: 'Cảnh báo',
+            text: `Bạn có chắc muốn xoá mã giảm giá ${e.dataset.code}?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Xác nhận',
+            cancelButtonText: 'Huỷ',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/api/voucher/' + id,
+                    method: 'DELETE',
+                    contentType: 'application/json',
+                    success: function (data) {
+                        toastSuccess('Thành công', 'Đã xoá mã giảm giá')
+                        setTimeout(function () {
+                            location.reload()
+                        }, 2000)
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.log(jqXHR);
+                        toastDanger('Lỗi', jqXHR.responseJSON.vn);
+                    }
+                })
+            } else if (
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Đã huỷ tác vụ',
+                    'Dữ liệu được bảo toàn',
+                    'error'
+                )
             }
         })
+
         // })
     }
 }
@@ -247,6 +271,7 @@ function validateObjectVoucher(
     , getElementTypeDiscountMoneyMin
     , getElementTypeDiscountPerson
     , getElementVoucherDescription
+    , getElementVoucherPromo
 ) {
     let voucherCode, voucherName, voucherQuantity, voucherDiscount, voucherTypeDiscount, voucherMoneyMin,
         voucherStartDate, voucherEndDate, voucherCategory,
@@ -469,6 +494,7 @@ function validateObjectVoucher(
         "voucherPersonApply": voucherPersonApply,
         "typeDiscountMoneyMin": typeDiscountMoneyMin,
         "typeDiscountPerson": typeDiscountPerson,
+        "voucherAccompanyPromo": getElementVoucherPromo.checked ? 'ON' : 'OFF',
         "voucherDescription": getElementVoucherDescription === null || getElementVoucherDescription === undefined ? "" : getElementVoucherDescription.value
     };
 }

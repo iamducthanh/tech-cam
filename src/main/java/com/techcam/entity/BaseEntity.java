@@ -13,7 +13,6 @@ import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import java.sql.Timestamp;
-import java.util.Date;
 
 /**
  * @author DucBV
@@ -45,6 +44,6 @@ public abstract class BaseEntity {
     private String modifierBy = "ADMIN";
 
     @Column(name = "DELETE_FLAG")
-    private boolean deleteFlag;
+    private boolean deleteFlag = false;
 
 }

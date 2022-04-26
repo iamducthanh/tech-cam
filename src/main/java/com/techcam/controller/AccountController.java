@@ -4,10 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.techcam.constants.RequestForgotPasswordConstant;
 import com.techcam.dto.request.ForgotPasswordDto;
+import com.techcam.entity.NotificationEntity;
+import com.techcam.repo.INotificationRepo;
 import com.techcam.util.EncodeUtil;
 import com.techcam.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,11 +38,6 @@ public class AccountController {
     @GetMapping("/forgot-password")
     public String forgotPasswordPage() {
         return "views/forgotpassword";
-    }
-
-    @GetMapping("/change-password")
-    public String changePasswordPage() {
-        return "views/changepassword";
     }
 
     @GetMapping("/reset-password")
