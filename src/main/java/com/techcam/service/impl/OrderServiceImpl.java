@@ -166,7 +166,7 @@ public class OrderServiceImpl implements IOrderService {
         if (StringUtils.isNotBlank(request.getVoucherId())) {
             voucherResponse = getInfoVoucher(request.getVoucherId(), request.getCustomer().getPhoneNumber());
             if (Objects.isNull(voucherResponse)) {
-                throw new TechCamExp(ConstantsErrorCode.ERROR_DATA_REQUEST);
+                throw new TechCamExp(ConstantsErrorCode.VOUCHER_ERROR);
             }
         }
         if (CollectionUtils.isEmpty(productEntities)) {

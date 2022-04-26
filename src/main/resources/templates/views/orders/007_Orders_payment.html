@@ -238,12 +238,9 @@
                                     <th><label for="createDate">Ngày mua</label></th>
                                     <td><span id="createDate" class="ps-2"></span></td>
                                 </tr>
-                                <tr>
+                                <tr class="inputVoucher">
                                     <th class="align-top"><label for="inputVoucher">Mã voucher</label></th>
-                                    <td>
-                                        <input id="inputVoucher" name="inputVoucher" class="ps-2 bg-white">
-                                        <button class="mt-2 btn btn-primary btn-sm">Áp dụng</button>
-                                    </td>
+                                    <td><input id="inputVoucher" name="inputVoucher" class="ps-2 bg-white"></td>
                                 </tr>
                                 <tr>
                                     <th><label for="priceVoucher">Giảm giá voucher</label></th>
@@ -1122,6 +1119,7 @@
 
         data["paymentMethod"] = "CASH";
         data["orderMethod"] = "CASH";
+        data["voucherId"] = $('#inputVoucher').val();
         data["orderType"] = $('#create-order-type').prop('checked') ? "ORDER_ONLINE" : "COUNTER";
 
         data["productDetails"] = [];
@@ -1153,6 +1151,7 @@
                         }).then(() => window.location.reload());
                     },
                     error: function (error) {
+                        console.log(error)
                         const Toast = Swal.mixin({
                             toast: true,
                             position: 'top-end',
@@ -1166,7 +1165,7 @@
                         })
                         Toast.fire({
                             icon: 'error',
-                            title: "Lỗi hệ thống!\nVui lòng thử lại sau"
+                            title: error.responseJSON.vn
                         })
                     }
                 })
@@ -1255,6 +1254,7 @@
                 }
             },
             error: function (error) {
+                $('#inputVoucher').addClass('error');
                 const Toast = Swal.mixin({
                     toast: true,
                     position: 'top-end',
@@ -1293,6 +1293,7 @@
         $('.list-order-fn').removeClass('d-none');
         btnSave.removeClass('btn-primary btn-warning btn-success btn-info').addClass('btn-primary');
         btnSave.removeAttr('disabled');
+        $('.inputVoucher').hide();
         btnSave.show();
         btnTempSave.show();
         btnAddProduct.show();
@@ -1392,6 +1393,7 @@
             btnSearchCustomer.show();
             $('#fullName, #phoneNumber').removeClass('border-none').removeAttr('disabled', '');
             btnSave.find('span').text("Xác nhận đơn hàng");
+            $('.inputVoucher').show();
             btnSave.removeClass('btn-primary btn-warning btn-danger btn-success btn-info btn-secondary').addClass('btn-primary');
 
             // remove unnecessary information
