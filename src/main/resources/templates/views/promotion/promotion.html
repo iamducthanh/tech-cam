@@ -75,9 +75,18 @@
                                     <tr>
                                         <td class="text-center">
                                             <button th:if="${promotion.status == false}"
-                                                    th:data-id="${promotion.id}" class="btn btn-success btn-sm"
+                                                    th:data-id="${promotion.id}"
+                                                    th:data-name="${promotion.name}"
+                                                    class="btn btn-success btn-sm"
                                                     onclick="onClickActiveVoucher(this)">
                                                 Kích hoạt
+                                            </button>
+                                            <button th:if="${promotion.status == true}"
+                                                    th:data-id="${promotion.id}"
+                                                    th:data-name="${promotion.name}"
+                                                    class="btn btn-danger btn-sm"
+                                                    onclick="onClickInActiveVoucher(this)">
+                                                Ngừng kích hoạt
                                             </button>
                                             <button class="btn btn-info btn-sm" th:data-id="${promotion.id}"
                                                     onclick="onClickInfoVoucher(this)">
@@ -186,7 +195,7 @@
                                                                         <div class="col-lg-7">
                                                                             <div class="input-daterange input-group"
                                                                                  id="datepicker6"
-                                                                                 data-date-format="dd-mm-yyyy"
+                                                                                 data-date-format="yyyy-mm-dd"
                                                                                  data-date-autoclose="true"
                                                                                  data-provide="datepicker"
                                                                                  data-date-container='#datepicker6'>
@@ -573,20 +582,98 @@
         function onClickActiveVoucher(e) {
             let id = e.dataset.id
             if (id !== null && id !== undefined && id !== '') {
-                $.ajax({
-                    url: '/api/promotion/active/' + id,
-                    method: 'GET',
-                    contentType: 'application/json',
-                    success: function (data) {
-                        console.log(data);
-                        toastSuccess('Thành công', 'Đã kích hoạt chương trình khuyến mại')
-                        setTimeout(function () {
-                            location.reload()
-                        }, 2000)
+                const swalWithBootstrapButtons = Swal.mixin({
+                    customClass: {
+                        confirmButton: 'btn btn-success mx-2',
+                        cancelButton: 'btn btn-danger mx-2'
                     },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        console.log(jqXHR);
-                        toastDanger('Lỗi', jqXHR.responseJSON.vn);
+                    buttonsStyling: false
+                })
+
+                swalWithBootstrapButtons.fire({
+                    title: 'Cảnh báo',
+                    text: `Bạn có muốn kích hoạt chương trình khuyến mại ${e.dataset.name}?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Xác nhận',
+                    cancelButtonText: 'Huỷ',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/api/promotion/active/' + id,
+                            method: 'GET',
+                            contentType: 'application/json',
+                            success: function (data) {
+                                console.log(data);
+                                toastSuccess('Thành công', 'Đã kích hoạt chương trình khuyến mại')
+                                setTimeout(function () {
+                                    location.reload()
+                                }, 2000)
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                console.log(jqXHR);
+                                toastDanger('Lỗi', jqXHR.responseJSON.vn);
+                            }
+                        })
+                    }
+                    else if (
+                        result.dismiss === Swal.DismissReason.cancel
+                    ) {
+                        swalWithBootstrapButtons.fire(
+                            'Đã huỷ tác vụ',
+                            'error'
+                        )
+                    }
+                })
+            }
+        }
+
+        function onClickInActiveVoucher(e) {
+            let id = e.dataset.id
+            if (id !== null && id !== undefined && id !== '') {
+                const swalWithBootstrapButtons = Swal.mixin({
+                    customClass: {
+                        confirmButton: 'btn btn-success mx-2',
+                        cancelButton: 'btn btn-danger mx-2'
+                    },
+                    buttonsStyling: false
+                })
+
+                swalWithBootstrapButtons.fire({
+                    title: 'Cảnh báo',
+                    text: `Bạn có muốn ngừng kích hoạt chương trình khuyến mại ${e.dataset.name}?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Xác nhận',
+                    cancelButtonText: 'Huỷ',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/api/promotion/inactive/' + id,
+                            method: 'GET',
+                            contentType: 'application/json',
+                            success: function (data) {
+                                console.log(data);
+                                toastSuccess('Thành công', 'Đã ngừng kích hoạt chương trình khuyến mại')
+                                setTimeout(function () {
+                                    location.reload()
+                                }, 2000)
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                console.log(jqXHR);
+                                toastDanger('Lỗi', jqXHR.responseJSON.vn);
+                            }
+                        })
+                    }
+                    else if (
+                        result.dismiss === Swal.DismissReason.cancel
+                    ) {
+                        swalWithBootstrapButtons.fire(
+                            'Đã huỷ tác vụ',
+                            'error'
+                        )
                     }
                 })
             }
@@ -638,8 +725,6 @@
                         )
                     }
                 })
-
-                // })
             }
         }
 
@@ -672,11 +757,13 @@
 
             // get thời gian bắt đầu
             if (getElementVoucherStartDate !== null && getElementVoucherStartDate !== undefined) {
-                voucherStartDate = this.changeDateFormat(getElementVoucherStartDate.value);
+                console.log(getElementVoucherStartDate.value)
+                voucherStartDate = getElementVoucherStartDate.value;
+                console.log(voucherStartDate);
             }
             // get thời gian kết thúc
             if (getElementVoucherEndDate !== null && getElementVoucherEndDate !== undefined) {
-                voucherEndDate = this.changeDateFormat(getElementVoucherEndDate.value);
+                voucherEndDate = getElementVoucherEndDate.value;
             }
             // get mặt hàng áp dụng
             if (getElementVoucherCategory !== null && getElementVoucherCategory !== undefined) {

@@ -4,7 +4,6 @@ import com.techcam.constants.ConstantsErrorCode;
 import com.techcam.dto.request.promotion.PromotionRequestDTO;
 import com.techcam.dto.response.product.ProductResponseDTO;
 import com.techcam.dto.response.PromotionResponseDTO;
-import com.techcam.entity.CategoryEntity;
 import com.techcam.entity.ProductEntity;
 import com.techcam.entity.PromotionEntity;
 import com.techcam.entity.PromotionProductEntity;
@@ -18,6 +17,7 @@ import com.techcam.service.IPromotionService;
 import com.techcam.type.DiscountType;
 import com.techcam.util.BeanUtil;
 import com.techcam.util.DateUtil;
+import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,8 +87,20 @@ public class PromotionService implements IPromotionService {
                 throw new TechCamExp(ConstantsErrorCode.PROMOTION_PRODUCT_EXIST);
             }
         }
+        StringBuilder productMessage = new StringBuilder();
         if (promotionRequestDTO.getCategoryIds().size() > 0) {
             List<ProductEntity> products = productRepository.findAllByCategoryIdInAndDeleteFlagFalse(promotionRequestDTO.getCategoryIds());
+            products = productRepository.findAllByIdInAndDeleteFlagFalse(promotionRequestDTO.getProductIds());
+            if(promotionRequestDTO.getTypeDiscount().equals("MONEY") && products.size() > 0){
+                products.forEach(product -> {
+                    if(product.getPrice()< promotionRequestDTO.getDiscount()){
+                        productMessage.append(product.getName()+", ");
+                    }
+                });
+            }
+            if(StringUtils.isNotBlank(productMessage.toString())){
+                throw new TechCamExp(ConstantsErrorCode.PRODUCT_PRICE_NOT_ACEPTED,productMessage.toString());
+            }
             productIds = products.stream().map(x -> x.getId()).collect(Collectors.toList());
             List<String> promotionIds = promotionProductRepository.findAllByProductIdInAndDeleteFlagFalse(productIds).stream().map(x -> x.getPromotionId()).collect(Collectors.toList());
             List<PromotionEntity> promotions = promotionRepository.findAllByStatusTrueAndIdIn(promotionIds);
@@ -142,6 +154,16 @@ public class PromotionService implements IPromotionService {
         }
         if (Objects.nonNull(promotionRequestDTO.getCategoryIds()) && promotionRequestDTO.getCategoryIds().size() > 0) {
             List<ProductEntity> products = productRepository.findAllByCategoryIdInAndDeleteFlagFalse(promotionRequestDTO.getCategoryIds());
+            if(promotionRequestDTO.getTypeDiscount().equals("MONEY") && products.size() > 0){
+                products.forEach(product -> {
+                    if(product.getPrice()< promotionRequestDTO.getDiscount()){
+                        productMessage.append(product.getName()+", ");
+                    }
+                });
+            }
+            if(StringUtils.isNotBlank(productMessage.toString())){
+                throw new TechCamExp(ConstantsErrorCode.PRODUCT_PRICE_NOT_ACEPTED,productMessage.toString());
+            }
             productIds = products.stream().map(x -> x.getId()).collect(Collectors.toList());
             if (productIds.size() > 0) {
                 products.forEach(x -> {
@@ -230,9 +252,20 @@ public class PromotionService implements IPromotionService {
                 promotionProductRepository.saveAll(promotionProductsUpdate);
             }
         }
+        StringBuilder productMessage = new StringBuilder();
         if (Objects.nonNull(promotionRequestDTO.getCategoryIds()) && promotionRequestDTO.getCategoryIds().size() > 0) {
             List<PromotionProductEntity> promotionProductsUpdate = new ArrayList<>();
             products = productRepository.findAllByCategoryIdInAndDeleteFlagFalse(promotionRequestDTO.getCategoryIds());
+            if(promotionRequestDTO.getTypeDiscount().equals("MONEY") && products.size() > 0){
+                products.forEach(product -> {
+                    if(product.getPrice()< promotionRequestDTO.getDiscount()){
+                        productMessage.append(product.getName()+", ");
+                    }
+                });
+            }
+            if(StringUtils.isNotBlank(productMessage.toString())){
+                throw new TechCamExp(ConstantsErrorCode.PRODUCT_PRICE_NOT_ACEPTED,productMessage.toString());
+            }
             productIds = products.stream().map(x -> x.getId()).collect(Collectors.toList());
             if (productIds.size() > 0) {
                 List<PromotionEntity> promotionList = promotionRepository.findAllByDeleteFlagFalse();
@@ -266,6 +299,17 @@ public class PromotionService implements IPromotionService {
             }
         }
         if (Objects.nonNull(promotionRequestDTO.getProductIds()) && promotionRequestDTO.getProductIds().size() > 0) {
+            products = productRepository.findAllByIdInAndDeleteFlagFalse(promotionRequestDTO.getProductIds());
+            if(promotionRequestDTO.getTypeDiscount().equals("MONEY") && products.size() > 0){
+                products.forEach(product -> {
+                    if(product.getPrice()< promotionRequestDTO.getDiscount()){
+                        productMessage.append(product.getName()+", ");
+                    }
+                });
+            }
+            if(StringUtils.isNotBlank(productMessage.toString())){
+                throw new TechCamExp(ConstantsErrorCode.PRODUCT_PRICE_NOT_ACEPTED,productMessage.toString());
+            }
             List<PromotionEntity> promotionList = promotionRepository.findAllByDeleteFlagFalse();
             promotionList.remove(promotionEntity);
             List<String> promotionIds = promotionList.stream().map(x -> x.getId()).collect(Collectors.toList());
@@ -309,7 +353,7 @@ public class PromotionService implements IPromotionService {
                             product.setPromotion(product.getPrice() - product.getPrice() * promotionEntity.getDiscount() / 100);
                         }
                     });
-                    productRepository.saveAllAndFlush(products);
+                    productRepository.saveAll(products);
                 }
             }
         }
@@ -390,6 +434,25 @@ public class PromotionService implements IPromotionService {
 //            }
             throw new TechCamExp(ConstantsErrorCode.PROMOTION_NOT_ACEPTED);
         }
+        promotionRepository.save(promotion);
+    }
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void inActivePromotion(String id) {
+        if (!promotionRepository.findById(id).isPresent()) {
+            throw new TechCamExp(ConstantsErrorCode.PROMOTION_NOT_FOUND);
+        }
+        PromotionEntity promotion = promotionRepository.findById(id).get();
+        List<PromotionProductEntity> promotionProducts = promotionProductRepository.findAllByPromotionId(promotion.getId());
+        List<String> productIds = promotionProducts.stream().map(PromotionProductEntity::getProductId).collect(Collectors.toList());
+        if(Objects.nonNull(productIds) && productIds.size() > 0) {
+            List<ProductEntity> products = productRepository.findAllByIdInAndDeleteFlagFalse(productIds);
+            products.forEach(x -> {
+                x.setPromotion(0L);
+            });
+            productRepository.saveAll(products);
+        }
+        promotion.setStatus(false);
         promotionRepository.save(promotion);
     }
 }

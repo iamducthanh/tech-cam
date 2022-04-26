@@ -25,4 +25,7 @@ public interface IPromotionService {
 
     @Transactional(rollbackFor = Exception.class)
     void activePromotion(String id);
+
+    @Transactional(rollbackFor = Exception.class)
+    void inActivePromotion(String id);
 }

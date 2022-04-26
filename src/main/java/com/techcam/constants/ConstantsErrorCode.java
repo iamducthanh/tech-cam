@@ -93,5 +93,5 @@ public interface ConstantsErrorCode {
     String PROMOTION_PRODUCT_NOT_FOUND = "TC-012-004";
     String PROMOTION_NOT_ACEPTED = "TC-012-007";
     String ATB_NAME = "TC-012-001";
-
+    String PRODUCT_PRICE_NOT_ACEPTED = "TC-012-008";
 }
