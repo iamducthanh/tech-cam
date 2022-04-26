@@ -186,7 +186,7 @@
                                                                         <div class="col-lg-7">
                                                                             <div class="input-daterange input-group"
                                                                                  id="datepicker6"
-                                                                                 data-date-format="yyyy-mm-dd"
+                                                                                 data-date-format="dd-mm-yyyy"
                                                                                  data-date-autoclose="true"
                                                                                  data-provide="datepicker"
                                                                                  data-date-container='#datepicker6'>
@@ -504,6 +504,19 @@
             }
         }
 
+        function changeDateFormat(inputDate){  // expects dd-mm-yyyy
+            var splitDate = inputDate.split('-');
+            if(splitDate.count == 0){
+                return null;
+            }
+
+            var year = splitDate[2];
+            var month = splitDate[1];
+            var day = splitDate[0];
+
+            return year + '-' + month + '-' + day;
+        }
+
         function onClickUpdateVoucher(e) {
             let id = e.dataset.id;
             console.log(id)
@@ -659,11 +672,11 @@
 
             // get thời gian bắt đầu
             if (getElementVoucherStartDate !== null && getElementVoucherStartDate !== undefined) {
-                voucherStartDate = getElementVoucherStartDate.value;
+                voucherStartDate = this.changeDateFormat(getElementVoucherStartDate.value);
             }
             // get thời gian kết thúc
             if (getElementVoucherEndDate !== null && getElementVoucherEndDate !== undefined) {
-                voucherEndDate = getElementVoucherEndDate.value;
+                voucherEndDate = this.changeDateFormat(getElementVoucherEndDate.value);
             }
             // get mặt hàng áp dụng
             if (getElementVoucherCategory !== null && getElementVoucherCategory !== undefined) {

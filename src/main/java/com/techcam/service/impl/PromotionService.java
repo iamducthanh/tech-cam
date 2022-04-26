@@ -122,9 +122,6 @@ public class PromotionService implements IPromotionService {
         }
         Date now = new Date();
         promotionRequestDTO.setStatus(false);
-        if (promotionRequestDTO.getStartDate().compareTo(DateUtil.addHour(now,7)) <= 0 && DateUtil.addDays(promotionRequestDTO.getEndDate(), 1).compareTo(DateUtil.addHour(now,7)) >= 0) {
-            promotionRequestDTO.setStatus(true);
-        }
         PromotionEntity promotionEntity = promotionMapper.toPromotionEntity(promotionRequestDTO);
         promotionEntity.setId(UUID.randomUUID().toString());
         promotionEntity = promotionRepository.save(promotionEntity);
