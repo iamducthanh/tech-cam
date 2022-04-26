@@ -485,7 +485,7 @@ public class OrderServiceImpl implements IOrderService {
         }).collect(Collectors.toList());
         if(Objects.nonNull(orders.getVoucher()) && orders.getVoucher().getMinAmount()<(orders.getTax())){
             if(orders.getVoucher().getTypeDiscount().equalsIgnoreCase("%")){
-                orders.setTotalAmount((int) (orders.getTotalAmount()+orders.getVoucher().getDiscount()*orders.getTax()));
+                orders.setTotalAmount((int) (orders.getTotalAmount()+(orders.getVoucher().getDiscount()*orders.getTax()/100)));
             }else {
                 orders.setTotalAmount((int) (orders.getTotalAmount()+orders.getVoucher().getDiscount()));
             }
