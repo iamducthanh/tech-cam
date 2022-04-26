@@ -133,7 +133,7 @@
                                     <button th:case="VERIFY" class="status badge btn btn-danger fs-6 waves-effect waves-light" onclick="onBtnInfo(this)" onmouseover="$(this).text('Xác nhận')" onmouseleave="$(this).text('Chờ xác nhận')">Chờ xác nhận</button>
                                     <button th:case="CONFIRM" class="status badge btn btn-warning fs-6 waves-effect waves-light" onclick="onBtnInfo(this)" onmouseover="$(this).text('Xuất hàng')" onmouseleave="$(this).text('Chờ xuất hàng')">Chờ xuất hàng</button>
                                     <button th:case="SHIPPING" class="status badge btn btn-info fs-6 waves-effect waves-light" onclick="onBtnInfo(this)" onmouseover="$(this).text('Giao hàng')" onmouseleave="$(this).text('Chờ giao hàng')">Chờ giao hàng</button>
-                                    <button th:case="GOSHIPPING" class="status badge btn btn-primary fs-6 waves-effect waves-light" onclick="onBtnInfo(this)">Đang giao hàng</button>
+                                    <button th:case="GOSHIPPING" class="status badge btn btn-primary fs-6 waves-effect waves-light" onclick="onBtnInfo(this)" onmouseover="$(this).text('Xác nhận hoàn thành')" onmouseleave="$(this).text('Đang giao hàng')">Đang giao hàng</button>
                                     <button th:case="DONE" class="status badge btn btn-success fs-6 waves-effect waves-light" onclick="onBtnInfo(this)">Hoàn thành</button>
                                 </td>
                                 <td class="order-id" th:text="HD00 + ${order.getId()}">Mã hoá đơn</td>
@@ -287,7 +287,7 @@
                         <div style="position: absolute; top: 0; right: 0;">
                             <button type="button" class="btn btn-warning waves-effect waves-light" id="btnTempSave" onclick="confirmListOrderDetail('TEMP_SAVE')" style="width: fit-content;">
                                 <i class="fas fa-check me-2"></i>
-                                Lưu tạm
+                                Lưu
                             </button>
                             <button type="button" class="btn btn-primary waves-effect waves-light" id="btnAddProduct" onclick="$('.modal-add-product').modal('show');" style="width: fit-content;">
                                 <i class="fas fa-plus me-2"></i>
@@ -399,6 +399,35 @@
     </div>
     <!-- End Modal IMEI -->
 
+    <!-- Modal Input Given money -->
+    <div class="modal fade modal-given-money" tabindex="-1" style="display: none; background-color: rgb(56 55 76 / 86%);" aria-hidden="true">
+        <div class="modal-dialog modal-sm" style="margin-top: 5%;">
+            <div class="modal-content">
+                <!-- Modal Header-->
+                <div class="modal-header">
+                    <h5 class="modal-title mt-0">Nhập số tiền thu về</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <!-- Modal Body-->
+                <div class="modal-body px-4 overflow-auto">
+                    <input type="number" class="form-control mt-3 text-center" id="given-money" placeholder="Nhập số tiền" onblur="onType(this)">
+                </div>
+                <!-- Modal Footer-->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary waves-effect waves-light" data-bs-dismiss="modal">
+                        <i class="fas fa-ban me-2"></i>
+                        Đóng
+                    </button>
+                    <button type="button" class="btn btn-primary waves-effect waves-light" onclick="completeOrder()">
+                        <i class="fas fa-save pe-2"></i>
+                        <span>Xác nhận</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Modal Input Given money -->
+
     <!-- Modal Plus/Minus Product -->
     <div class="modal fade modal-quantity" tabindex="-1" style="display: none; background-color: rgb(56 55 76 / 86%);" aria-hidden="true">
         <div class="modal-dialog modal-sm" style="margin-top: 5%;">
@@ -481,8 +510,6 @@
         </div>
     </div>
     <!-- End Modal Add Product -->
-
-
 
     <!-- Modal Add Customer -->
     <div class="modal fade modal-add-customer" tabindex="-1" style="display: none; background-color: rgb(56 55 76 / 86%);" aria-hidden="true">
@@ -784,6 +811,8 @@
             shippingOrder();
         } else if (btnSubmit === 'Giao hàng') {
             goShippingOrder();
+        } else if (btnSubmit === 'Xác nhận hoàn thành') {
+            $('.modal-given-money').modal('show');
         }
 
         // Submit thanh toán tại quầy
@@ -992,6 +1021,82 @@
             onLockEditOrder(true);
         } else {
             console.log("validate fail");
+        }
+    }
+
+    //API Give money and Complete order
+    function completeOrder() {
+        let errorMessage = '';
+        let flag = true;
+
+        const money = $('#given-money');
+        const patternMoney = /^[0-9]$/i;
+
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        })
+
+        if (money.val() === '') {
+            Toast.fire({
+                icon: 'error',
+                title: "Chưa nhập số tiền!"
+            })
+            money.addClass('error');
+        } else if (+money.val() < +removePoint($('#price').text())) {
+            Toast.fire({
+                icon: 'error',
+                title: "Số tiền nhập không đủ!"
+            })
+            money.addClass('error');
+        } else {
+            // Get Order
+            let data = {};
+            data["id"] = $('input[id=order-id]').val();
+            data["givenMoney"] = money.val();
+
+            $.ajax({
+                url: '/api/v1/orders/pay-the-bill',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                dataType: 'json',
+                success: function (result) {
+                    $('.modal-given-money').modal('hide');
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Hoá đơn hoàn tất',
+                        showConfirmButton: true,
+                        timerProgressBar: true,
+                        timer: 2000
+                    }).then(() => window.location.reload());
+                },
+                error: function (error) {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+                    Toast.fire({
+                        icon: 'error',
+                        title: "Lỗi hệ thống!\nVui lòng thử lại sau"
+                    })
+                }
+            })
         }
     }
 
@@ -1233,11 +1338,10 @@
             btnTempSave.hide();
             $('.list-order-fn').addClass('d-none');
             $('.order-verify').addClass('d-none');
-        } else if ($(element).text() === "Đang giao hàng") {
+        } else if ($(element).text() === "Xác nhận hoàn thành") {
             btnEdit.show();
-            btnSave.find('span').text("Đang giao hàng");
+            btnSave.find('span').text("Xác nhận hoàn thành");
             btnSave.removeClass('btn-primary btn-warning btn-danger btn-success btn-info btn-secondary').addClass('btn-primary');
-            btnSave.attr('disabled', '');
 
             // Show Form input Info Go shipping
             $('.modal-info-order .col-lg-6').removeClass('col-lg-6').addClass('col-lg-4');
@@ -1543,7 +1647,6 @@
 
     // Event delete item product in Orders
     function onBtnDelete(id) {
-        const btnSave = $('#btnSave');
         let productName = $(id).parent().parent().find('.product-name').text();
         const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
@@ -1563,6 +1666,9 @@
             reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
+                // Remove row product of order for table
+                $(id).parent().parent().remove();
+
                 // Modify list order detail
                 let sum = 0;
                 $('.order-price:not(:first)').each(function () {
@@ -1570,9 +1676,6 @@
                 })
                 // Modify total order
                 $('#price').text(addPoint(sum) + " đ");
-
-                // Remove row product of order for table
-                $(id).parent().parent().remove();
 
                 // Reset index list product of order
                 $('.order:not(:first)').each(function (index) {
@@ -1984,6 +2087,11 @@
     $('.modal-add-customer').on('hide.bs.modal', function () {
         $('#add-customer_input').removeClass('error').val('');
         $('.add-customer:not(:first)').remove();
+    })
+
+    // Event hide Modal Given money
+    $('.modal-given-money').on('hide.bs.modal', function () {
+        $('#given-money').removeClass('error').val('');
     })
 
     // Event on key press Search Customer
