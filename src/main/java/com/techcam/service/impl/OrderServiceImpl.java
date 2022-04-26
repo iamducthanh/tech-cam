@@ -195,6 +195,9 @@ public class OrderServiceImpl implements IOrderService {
         int totalDiscount = 0;
         VoucherEntity voucher = new VoucherEntity();
         if (Objects.nonNull(voucherResponse)) {
+            if(voucherResponse.getVoucherMinAmount() > (orderRequestProduct.getTotalAmount()-orderRequestProduct.getTotalDiscount())){
+                throw new TechCamExp(ConstantsErrorCode.VOUCHER_EXIT_DISCOUNT);
+            }
             totalDiscount = valueVoucher(voucherResponse, orderRequestProduct.getTotalAmount()) + orderRequestProduct.getTotalDiscount();
             voucher.setId(voucherResponse.getVoucherId());
         }else {
