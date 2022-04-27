@@ -273,6 +273,7 @@
                         </div>
                     </div>
                     <input type="hidden" id="order-id">
+                    <input type="hidden" id="order_type">
                     <input type="hidden" id="customer-id">
 
                     <!-- Split line-->
@@ -809,7 +810,50 @@
         } else if (btnSubmit === 'Giao hàng') {
             goShippingOrder();
         } else if (btnSubmit === 'Xác nhận hoàn thành') {
-            $('.modal-given-money').modal('show');
+            if ($('#order_type').val() === 'ONLINE') {
+                // Get Order
+                let data = {};
+                data["id"] = $('input[id=order-id]').val();
+                data["givenMoney"] = 0;
+
+                $.ajax({
+                    url: '/api/v1/orders/pay-the-bill',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    dataType: 'json',
+                    success: function (result) {
+                        $('.modal-given-money').modal('hide');
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: 'Hoá đơn hoàn tất',
+                            showConfirmButton: true,
+                            timerProgressBar: true,
+                            timer: 2000
+                        }).then(() => window.location.reload());
+                    },
+                    error: function (error) {
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        })
+                        Toast.fire({
+                            icon: 'error',
+                            title: "Lỗi hệ thống!\nVui lòng thử lại sau"
+                        })
+                    }
+                })
+            } else {
+                $('.modal-given-money').modal('show');
+            }
         }
 
         // Submit thanh toán tại quầy
@@ -1309,7 +1353,7 @@
         $('#price').text('');
         $('#inputVoucher').val('');
         $('#priceVoucher').text('');
-        $('#order-id, #customer-id').val('');
+        $('#order-id, #order_type, #customer-id').val('');
         $('.modal-info-order').find('h5>span').text('Chi tiết hoá đơn');
 
         // Change text button by transaction-status
@@ -1410,6 +1454,7 @@
                 type: 'GET',
                 contentType: 'application/json',
                 success: function (result) {
+                    console.log(result)
                     $('.modal-info-order').find('h5>span').html(`Chi tiết hoá đơn <i>HD00${orderId}</i>`);
                     $('input[name=recipientName]').val(result.recipientName);
                     $('input[name=recipientPhone]').val(result.recipientPhone);
@@ -1425,6 +1470,7 @@
                     $('input[name=fullName]').val(result.customer.fullName);
                     $('input[name=phoneNumber]').val(result.customer.phoneNumber);
                     $('input[id=order-id]').val(result.id);
+                    $('input[id=order_type]').val(result.orderType);
 
                     // Form input Go shipping
                     $('input[name=shipperName]').val(result.shipperName);
